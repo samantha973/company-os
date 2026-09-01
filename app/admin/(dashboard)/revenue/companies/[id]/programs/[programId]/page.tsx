@@ -144,60 +144,6 @@ export default async function ProgramDetailPage({
       ),
     },
     {
-      key: "tokens",
-      label: "Tokens",
-      content: (
-        <section className="admin-card admin-section-card">
-          {!hasRepo ? (
-            <Empty text="No repo connected. Delivery tracking starts once this program is linked to a GitHub repo." />
-          ) : (
-            <>
-              <div className="mp-kpi-grid" style={{ marginBottom: 16 }}>
-                <MetricCard label="Delivered hrs (total)" value={fmtHours(detail.deliveredHours)} />
-                <MetricCard label="AI tokens (total)" value={detail.aiTokens.toLocaleString()} />
-                <MetricCard
-                  label="AI leverage"
-                  value={formatLeverage(detail.leverage)}
-                  sub="AI value delivered per human hour"
-                />
-              </div>
-              <h2 className="admin-card-title">Delivered hours, last 8 weeks</h2>
-              <BarChart
-                ariaLabel="Delivered hours per ISO week, last 8 weeks"
-                data={detail.weeklyHours.map((w) => ({ label: w.isoWeek.slice(5), value: Math.round(w.hours * 10) / 10 }))}
-                emptyText="No delivered hours tracked in the last 8 weeks."
-                formatValue={(n) => `${fmtHours(n)}h`}
-              />
-            </>
-          )}
-        </section>
-      ),
-    },
-    {
-      key: "prs",
-      label: "Pull Requests",
-      count: detail.prTotalAll,
-      content: (
-        <section className="admin-card admin-section-card">
-          {!hasRepo ? (
-            <Empty text="No repo connected. Pull requests appear once this program is linked to a GitHub repo." />
-          ) : (
-            <DataTable
-              columns={prColumns}
-              rows={detail.pullRequests}
-              total={detail.prTotal}
-              page={detail.prPage}
-              pageSize={PR_PAGE_SIZE}
-              basePath={basePath}
-              searchParams={searchParams}
-              searchPlaceholder="Search pull requests"
-              emptyText={prSearch ? "No pull requests match this search." : "No pull requests tracked yet."}
-            />
-          )}
-        </section>
-      ),
-    },
-    {
       key: "documents",
       label: "Documents",
       count: detail.documents.length,
