@@ -85,7 +85,7 @@ export function BoardView({
   canManage?: boolean;
   teamOptions?: BoardPerson[];
   clientOptions?: { id: string; name: string }[];
-  // All AI Programs with their owning company; the settings picker shows the
+  // All PR Programs with their owning company; the settings picker shows the
   // ones belonging to the selected client. Empty = picker hidden.
   programOptions?: { id: string; name: string; company_id: string }[];
   viewerPersonId?: string | null;
@@ -114,7 +114,7 @@ export function BoardView({
   const [boardName, setBoardName] = useState(board.name);
   const [boardDescription, setBoardDescription] = useState(board.description ?? "");
   const [boardClientId, setBoardClientId] = useState(board.client_company_id ?? "");
-  const [boardProgramId, setBoardProgramId] = useState(board.ai_program_id ?? "");
+  const [boardProgramId, setBoardProgramId] = useState(board.pr_program_id ?? "");
   const [newMemberId, setNewMemberId] = useState("");
   const [newSubtask, setNewSubtask] = useState("");
   const [newComment, setNewComment] = useState("");
@@ -193,8 +193,8 @@ export function BoardView({
     // an unrelated rename never clears an existing program tag, even when the
     // options list failed to load and the current program is not in it.
     const programPatch =
-      boardProgramId !== (board.ai_program_id ?? "")
-        ? { aiProgramId: boardProgramId || null }
+      boardProgramId !== (board.pr_program_id ?? "")
+        ? { prProgramId: boardProgramId || null }
         : {};
     startSaving(async () => {
       const r = await updateBoard(
@@ -1130,7 +1130,7 @@ export function BoardView({
           </div>
           {boardClientId && clientPrograms.length > 0 && (
             <div className="admin-field">
-              <label className="admin-label">AI Program</label>
+              <label className="admin-label">PR Program</label>
               <select
                 className="admin-select"
                 value={clientPrograms.some((p) => p.id === boardProgramId) ? boardProgramId : ""}
@@ -1143,7 +1143,7 @@ export function BoardView({
                   </option>
                 ))}
               </select>
-              <p className="admin-hint">Optional: key this board to one of the client&apos;s AI Programs.</p>
+              <p className="admin-hint">Optional: key this board to one of the client&apos;s PR Programs.</p>
             </div>
           )}
           <div className="admin-form-actions">

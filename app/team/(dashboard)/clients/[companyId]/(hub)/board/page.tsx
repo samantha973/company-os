@@ -34,8 +34,8 @@ export default async function TeamClientBoardTab({ params }: { params: { company
   const companies = await getActorClientCompanies(actor);
   if (!companies.some((c) => c.id === params.companyId)) notFound();
 
-  // With AI Programs present this tab is company-wide: only an untagged board
-  // qualifies; program boards render in their AI Program view.
+  // With PR Programs present this tab is company-wide: only an untagged board
+  // qualifies; program boards render in their PR Program view.
   const hasPrograms = await companyHasPrograms(params.companyId);
   const board = await getClientBoardViewForActor(actor, params.companyId, { untaggedOnly: hasPrograms });
 
@@ -44,7 +44,7 @@ export default async function TeamClientBoardTab({ params }: { params: { company
       <div className="admin-card admin-section-card" style={{ padding: 22 }}>
         <p className="admin-page-sub" style={{ margin: 0 }}>
           {hasPrograms
-            ? "No company-wide work board. Program boards live in their AI Program view."
+            ? "No company-wide work board. Program boards live in their PR Program view."
             : "This client has no active work board yet."}
         </p>
       </div>

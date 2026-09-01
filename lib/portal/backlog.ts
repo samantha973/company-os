@@ -1,4 +1,4 @@
-// Client-facing backlog / AI Program view. Company-scoped: a portal member sees
+// Client-facing backlog / PR Program view. Company-scoped: a portal member sees
 // their own company's backlog and can (a) set the client priority on any item and
 // (b) propose new items for Edge8 to accept. Every read goes through portalRead,
 // every write re-checks the item belongs to the actor's company scope before
@@ -201,7 +201,7 @@ export async function setClientNoteForActor(
 // resolved from the actor's scope, never trusted from the client.
 export async function proposeItemForActor(
   actor: PortalActor,
-  input: { companyId: string; groupKey: string; title: string; note?: string; priority?: string; aiProgramId?: string | null },
+  input: { companyId: string; groupKey: string; title: string; note?: string; priority?: string; prProgramId?: string | null },
 ): Promise<Result & { id?: string }> {
   if (!actor.companyScope.includes(input.companyId)) {
     return { ok: false, error: "Not your company." };
@@ -211,15 +211,15 @@ export async function proposeItemForActor(
   if (!title) return { ok: false, error: "A short title is required." };
   // Proposals made inside a program view carry its tag, so they land in that
   // program's roadmap. The program must be the company's own (IDOR guard).
-  const aiProgramId = input.aiProgramId ?? null;
-  if (aiProgramId) {
+  const prProgramId = input.prProgramId ?? null;
+  if (prProgramId) {
     const { data: programRow } = await companyOs
-      .from("ai_programs")
+      .from("pr_programs")
       .select("id")
-      .eq("id", aiProgramId)
+      .eq("id", prProgramId)
       .eq("company_id", input.companyId)
       .maybeSingle();
-    if (!programRow) return { ok: false, error: "That AI Program no longer exists." };
+    if (!programRow) return { ok: false, error: "That PR Program no longer exists." };
   }
   // The group must be one of this company's own active sections.
   const { data: groupRow } = await companyOs
@@ -236,7 +236,7 @@ export async function proposeItemForActor(
     .from("client_backlog_items")
     .insert({
       company_id: input.companyId,
-      ai_program_id: aiProgramId,
+      pr_program_id: prProgramId,
       group_key: input.groupKey,
       title,
       client_note: input.note?.trim() || null,

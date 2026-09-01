@@ -1,6 +1,6 @@
 // Shared core for client documents (company_os.program_documents + the private
 // program-documents bucket). Documents belong to a client COMPANY; tagging to an
-// AI Program is optional (docs/plans/2026-08-11-client-portal-improvements.md).
+// PR Program is optional (docs/plans/2026-08-11-client-portal-improvements.md).
 //
 // This module is auth-agnostic on purpose: it filters by whatever company ids the
 // caller passes and trusts nothing else. Every surface wraps it with its own
@@ -32,7 +32,7 @@ export type DocResult<T = unknown> = ({ ok: true } & T) | Err;
 type DocRow = {
   id: string;
   company_id: string;
-  ai_program_id: string | null;
+  pr_program_id: string | null;
   storage_path: string;
   filename: string;
   size_bytes: number | null;
@@ -51,7 +51,7 @@ export function safeDocName(filename: string): string {
 }
 
 const SELECT =
-  "id, company_id, ai_program_id, storage_path, filename, size_bytes, uploaded_by, created_at, program:ai_programs!ai_program_id(name)";
+  "id, company_id, pr_program_id, storage_path, filename, size_bytes, uploaded_by, created_at, program:pr_programs!pr_program_id(name)";
 
 // Uploaded-by emails resolve to people names for display; unmatched emails show
 // as-is. One IN query for the whole list.
@@ -74,7 +74,7 @@ function mapRows(rows: DocRow[], names: Map<string, string>): ClientDocument[] {
   return rows.map((r) => ({
     id: r.id,
     companyId: r.company_id,
-    programId: r.ai_program_id,
+    programId: r.pr_program_id,
     programName: one(r.program)?.name ?? null,
     filename: r.filename,
     sizeBytes: r.size_bytes,
@@ -171,7 +171,7 @@ export async function recordDocument(input: {
   }
   const { error } = await companyOs.from("program_documents").insert({
     company_id: input.companyId,
-    ai_program_id: input.programId ?? null,
+    pr_program_id: input.programId ?? null,
     storage_path: input.path,
     filename: safeDocName(input.filename),
     size_bytes: input.sizeBytes,

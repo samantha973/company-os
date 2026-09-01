@@ -1,8 +1,8 @@
-// Portal "AI Programs" data access. Same discipline as lib/portal/work-requests.ts:
+// Portal "PR Programs" data access. Same discipline as lib/portal/work-requests.ts:
 // every read/write is scoped to the actor's own companyScope, and cross-company
 // ids are rejected (IDOR guard). Tables live in company_os (service-role only,
 // RLS on with no policies); files live in the private program-documents bucket.
-// Plan: docs/plans/2026-07-19-clients-page-and-ai-programs.md
+// Plan: docs/plans/2026-07-19-clients-page-and-pr-programs.md
 
 import { supabase, companyOs } from "@/lib/supabase";
 import type { PortalActor } from "@/lib/portal-auth";
@@ -30,7 +30,7 @@ export type PortalProgramPlan = {
   createdAt: string;
 };
 
-export type PortalAiProgram = {
+export type PortalPrProgram = {
   id: string;
   companyId: string;
   name: string;
@@ -62,7 +62,7 @@ function resolveCompanyId(actor: PortalActor, companyId?: string): string | null
 async function ownedProgram(actor: PortalActor, programId: string): Promise<{ companyId: string } | null> {
   if (actor.companyScope.length === 0) return null;
   const { data } = await companyOs
-    .from("ai_programs")
+    .from("pr_programs")
     .select("id, company_id")
     .eq("id", programId)
     .in("company_id", actor.companyScope)
@@ -71,10 +71,10 @@ async function ownedProgram(actor: PortalActor, programId: string): Promise<{ co
   return row ? { companyId: row.company_id } : null;
 }
 
-export async function listProgramsForActor(actor: PortalActor): Promise<PortalAiProgram[]> {
+export async function listProgramsForActor(actor: PortalActor): Promise<PortalPrProgram[]> {
   if (actor.companyScope.length === 0) return [];
   const { data: programs } = await companyOs
-    .from("ai_programs")
+    .from("pr_programs")
     .select("id, company_id, name, status, created_at")
     .in("company_id", actor.companyScope)
     .order("created_at", { ascending: false });
@@ -92,19 +92,19 @@ export async function listProgramsForActor(actor: PortalActor): Promise<PortalAi
   const [{ data: plans }, { data: docs }] = await Promise.all([
     companyOs
       .from("program_plans")
-      .select("id, ai_program_id, title, method, brief_html, created_at")
-      .in("ai_program_id", ids)
+      .select("id, pr_program_id, title, method, brief_html, created_at")
+      .in("pr_program_id", ids)
       .order("created_at", { ascending: true }),
     companyOs
       .from("program_documents")
-      .select("id, ai_program_id, filename, size_bytes, uploaded_by, created_at")
-      .in("ai_program_id", ids)
+      .select("id, pr_program_id, filename, size_bytes, uploaded_by, created_at")
+      .in("pr_program_id", ids)
       .order("created_at", { ascending: true }),
   ]);
 
   const planRows = (plans ?? []) as Array<{
     id: string;
-    ai_program_id: string;
+    pr_program_id: string;
     title: string;
     method: ProgramMethod;
     brief_html: string | null;
@@ -112,7 +112,7 @@ export async function listProgramsForActor(actor: PortalActor): Promise<PortalAi
   }>;
   const docRows = (docs ?? []) as Array<{
     id: string;
-    ai_program_id: string;
+    pr_program_id: string;
     filename: string;
     size_bytes: number | null;
     uploaded_by: string | null;
@@ -126,7 +126,7 @@ export async function listProgramsForActor(actor: PortalActor): Promise<PortalAi
     status: r.status,
     createdAt: r.created_at,
     plans: planRows
-      .filter((p) => p.ai_program_id === r.id)
+      .filter((p) => p.pr_program_id === r.id)
       .map((p) => ({
         id: p.id,
         title: p.title,
@@ -135,12 +135,12 @@ export async function listProgramsForActor(actor: PortalActor): Promise<PortalAi
         createdAt: p.created_at,
       })),
     documents: docRows
-      .filter((d) => d.ai_program_id === r.id)
+      .filter((d) => d.pr_program_id === r.id)
       .map((d) => ({ id: d.id, filename: d.filename, sizeBytes: d.size_bytes, uploadedBy: d.uploaded_by, createdAt: d.created_at })),
   }));
 }
 
-export async function getProgramForActor(actor: PortalActor, programId: string): Promise<PortalAiProgram | null> {
+export async function getProgramForActor(actor: PortalActor, programId: string): Promise<PortalPrProgram | null> {
   if (!(await ownedProgram(actor, programId))) return null;
   const all = await listProgramsForActor(actor);
   return all.find((p) => p.id === programId) ?? null;
@@ -154,13 +154,13 @@ async function createProgramWithPlan(
   input: { companyId?: string; name: string; method: ProgramMethod; briefHtml?: string },
 ): Promise<Result<{ programId: string; planId: string }>> {
   const name = input.name?.trim();
-  if (!name) return { ok: false, error: "Name your AI program." };
+  if (!name) return { ok: false, error: "Name your PR program." };
   const companyId = resolveCompanyId(actor, input.companyId);
   if (!companyId) return { ok: false, error: "Pick which company this program is for." };
   if (!canContribute(actor, companyId)) return { ok: false, error: ROLE_DENIED };
 
   const { data: prog, error: progErr } = await companyOs
-    .from("ai_programs")
+    .from("pr_programs")
     .insert({ company_id: companyId, name, status: "active", created_by: actor.email })
     .select("id")
     .single();
@@ -169,7 +169,7 @@ async function createProgramWithPlan(
   const { data: plan, error: planErr } = await companyOs
     .from("program_plans")
     .insert({
-      ai_program_id: prog.id,
+      pr_program_id: prog.id,
       title: name,
       method: input.method,
       brief_html: input.briefHtml ?? null,
@@ -178,7 +178,7 @@ async function createProgramWithPlan(
     .select("id")
     .single();
   if (planErr || !plan) {
-    await companyOs.from("ai_programs").delete().eq("id", prog.id); // don't orphan
+    await companyOs.from("pr_programs").delete().eq("id", prog.id); // don't orphan
     return { ok: false, error: "Couldn't create the plan. Please try again." };
   }
 
@@ -233,7 +233,7 @@ export async function recordProgramDocument(
   }
   const { error } = await companyOs.from("program_documents").insert({
     company_id: owned.companyId, // documents are company-owned; the program is a tag
-    ai_program_id: input.programId,
+    pr_program_id: input.programId,
     storage_path: input.path,
     filename: safeName(input.filename),
     size_bytes: input.sizeBytes,
@@ -250,11 +250,11 @@ export async function getPlanBriefForActor(actor: PortalActor, planId: string): 
   if (actor.companyScope.length === 0) return null;
   const { data } = await companyOs
     .from("program_plans")
-    .select("brief_html, ai_program_id")
+    .select("brief_html, pr_program_id")
     .eq("id", planId)
     .maybeSingle();
-  const row = data as { brief_html: string | null; ai_program_id: string } | null;
-  if (!row || !(await ownedProgram(actor, row.ai_program_id))) return null;
+  const row = data as { brief_html: string | null; pr_program_id: string } | null;
+  if (!row || !(await ownedProgram(actor, row.pr_program_id))) return null;
   return row.brief_html;
 }
 

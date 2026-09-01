@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalMember } from "@/lib/portal-auth";
-import { getProgramForActor, getPlanBriefForActor } from "@/lib/portal/ai-programs";
+import { getProgramForActor, getPlanBriefForActor } from "@/lib/portal/pr-programs";
 import {
   getPortalProgramDelivery,
   listHubBoardsForActor,
@@ -30,8 +30,8 @@ import { ProgramDocuments } from "./ProgramDocuments";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "AI Program",
-  description: "Your AI program's overview, roadmap, work board, documents, and meetings.",
+  title: "PR Program",
+  description: "Your PR program's overview, roadmap, work board, documents, and meetings.",
 };
 
 function fmtHours(n: number): string {
@@ -46,11 +46,11 @@ function Empty({ text }: { text: string }) {
   return <div className="admin-empty">{text}</div>;
 }
 
-// The client-facing AI Program workspace: one program's roadmap, work board,
+// The client-facing PR Program workspace: one program's roadmap, work board,
 // progress, documents, plan brief, and meetings, mirroring the admin program
 // view with client-safe fields only (program name + counts + PR titles; repo
 // org/name, author logins, and sync details never render here).
-export default async function AiProgramDetailPage({
+export default async function PrProgramDetailPage({
   params,
   searchParams,
 }: {
@@ -73,16 +73,16 @@ export default async function AiProgramDetailPage({
 
   // Roadmap: this program's items, under its own sections plus any
   // company-wide section a program item still sits in (same rule as the hub).
-  const roadmapItems = allItems.filter((i) => i.ai_program_id === program.id);
+  const roadmapItems = allItems.filter((i) => i.pr_program_id === program.id);
   const usedKeys = new Set(roadmapItems.map((i) => i.group_key));
   const roadmapGroups = allGroups.filter(
-    (g) => g.ai_program_id === program.id || (g.ai_program_id === null && usedKeys.has(g.key)),
+    (g) => g.pr_program_id === program.id || (g.pr_program_id === null && usedKeys.has(g.key)),
   );
   const canPrioritize = isPortalAdmin(actor, program.companyId);
   const canPropose = canContribute(actor, program.companyId);
 
   // Work board(s): the program's boards; ?board= picks one when several exist.
-  const programBoards = allBoards.filter((b) => b.aiProgramId === program.id);
+  const programBoards = allBoards.filter((b) => b.prProgramId === program.id);
   const boardSlug = firstParam(searchParams.board);
   const selectedBoard = programBoards.find((b) => b.slug === boardSlug) ?? programBoards[0] ?? null;
   const boardView: PortalBoardView | null = selectedBoard
@@ -99,7 +99,7 @@ export default async function AiProgramDetailPage({
   // rule (same as the hub): getMeetingsForActor returns published meetings,
   // plus drafts of companies the actor manages, so client managers see this
   // program's drafts here too and other members stay published-only.
-  const meetings = allMeetings.filter((m) => m.aiProgramId === program.id);
+  const meetings = allMeetings.filter((m) => m.prProgramId === program.id);
 
   // Plan briefs (guided 5Ds plans with saved HTML).
   const briefs = new Map<string, string>();
@@ -269,7 +269,7 @@ export default async function AiProgramDetailPage({
   return (
     <div className="admin-content">
       <PageHead
-        eyebrow={<Link href="/portal/hub">← AI Programs</Link>}
+        eyebrow={<Link href="/portal/hub">← PR Programs</Link>}
         title={program.name}
         sub={`Created ${formatDate(program.createdAt)}`}
         action={<Badge tone={statusTone(program.status)}>{humanize(program.status)}</Badge>}

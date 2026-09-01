@@ -233,10 +233,10 @@ export default async function CompanyDetailPage({
   }
 
   // ── Client Hub tabs + top band data ──────────────────────────────
-  // The hub home is organized by AI Program: a company-grain Human Tokens
+  // The hub home is organized by PR Program: a company-grain Human Tokens
   // strip, the program card grid, then the company-wide tabs. When programs
   // exist, the Work Board / Roadmap / Documents / Meetings tabs show ONLY
-  // untagged (ai_program_id null) rows, so nothing is presented twice; tagged
+  // untagged (pr_program_id null) rows, so nothing is presented twice; tagged
   // rows live in their program view. When no programs exist, the tabs behave
   // exactly as before.
   async function hubData(): Promise<{ tabs: TabDef[]; programs: ProgramSummary[]; usage: TokenUsage }> {
@@ -259,11 +259,11 @@ export default async function CompanyDetailPage({
       team,
       documents,
     ] = await Promise.all([
-      companyOs.from("ai_programs").select(PROGRAM_SELECT).eq("company_id", company.id).order("created_at", { ascending: false }),
+      companyOs.from("pr_programs").select(PROGRAM_SELECT).eq("company_id", company.id).order("created_at", { ascending: false }),
       fetchDeliveryRaw([company.id]),
       companyOs
         .from("boards")
-        .select("id, slug, ai_program_id")
+        .select("id, slug, pr_program_id")
         .eq("client_company_id", company.id)
         .eq("status", "active")
         .is("archived_at", null)
@@ -294,8 +294,8 @@ export default async function CompanyDetailPage({
 
     const programRowsFull = (programData ?? []) as ProgramSummaryInputs["programs"];
     const hasPrograms = programRowsFull.length > 0;
-    const hubBoards = (boardRowsRes.data ?? []) as Array<{ id: string; slug: string; ai_program_id: string | null }>;
-    const untaggedBoards = hubBoards.filter((b) => !b.ai_program_id);
+    const hubBoards = (boardRowsRes.data ?? []) as Array<{ id: string; slug: string; pr_program_id: string | null }>;
+    const untaggedBoards = hubBoards.filter((b) => !b.pr_program_id);
     // First active board (same "first active" convention as before); with
     // programs present, first active UNTAGGED board (program boards render in
     // their program view instead).
@@ -304,12 +304,12 @@ export default async function CompanyDetailPage({
     const allItems = itemRows;
     const allGroups = (groupRows.data ?? []) as unknown as RoadmapGroup[];
     // Company-wide slices: untagged rows only once programs exist.
-    const roadmapItems = hasPrograms ? allItems.filter((i) => !i.ai_program_id) : allItems;
+    const roadmapItems = hasPrograms ? allItems.filter((i) => !i.pr_program_id) : allItems;
     const usedKeys = new Set(roadmapItems.map((i) => i.group_key));
     const roadmapGroups = hasPrograms
-      ? allGroups.filter((g) => g.ai_program_id === null || usedKeys.has(g.key))
+      ? allGroups.filter((g) => g.pr_program_id === null || usedKeys.has(g.key))
       : allGroups;
-    const hubMeetings = hasPrograms ? meetings.filter((m) => !m.aiProgramId) : meetings;
+    const hubMeetings = hasPrograms ? meetings.filter((m) => !m.prProgramId) : meetings;
     const hubDocuments = hasPrograms ? documents.filter((d) => !d.programId) : documents;
     // Both tabs drop together only when at least one row is program-tagged AND
     // nothing company-wide remains (zero data loss of access; each tagged row
@@ -371,7 +371,7 @@ export default async function CompanyDetailPage({
                 <Empty
                   text={
                     hasPrograms
-                      ? "No company-wide work board. Program boards live in their AI Program view."
+                      ? "No company-wide work board. Program boards live in their PR Program view."
                       : "This client has no active work board yet. Create one from Work Boards."
                   }
                 />

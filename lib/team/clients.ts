@@ -196,8 +196,8 @@ export async function getClientRoadmapSnippets(
 // The client-visible board for an assigned company: exactly what the client
 // sees on /portal/board (shared view in lib/boards/client-view.ts). Null when
 // unassigned (authorization) or when the client has no active board. With
-// untaggedOnly, only a company-wide (ai_program_id null) board qualifies;
-// program-tagged boards render in their AI Program view.
+// untaggedOnly, only a company-wide (pr_program_id null) board qualifies;
+// program-tagged boards render in their PR Program view.
 export async function getClientBoardViewForActor(
   actor: TeamActor,
   companyId: string,
@@ -208,12 +208,12 @@ export async function getClientBoardViewForActor(
   return getClientBoardView([companyId], opts);
 }
 
-// Whether a company has any AI Programs at all: the switch the hub tab pages
+// Whether a company has any PR Programs at all: the switch the hub tab pages
 // use to decide between "everything" (no programs, today's behavior) and
 // "untagged only" (programs exist; tagged rows live in their program view).
 export async function companyHasPrograms(companyId: string): Promise<boolean> {
   const { data } = await companyOs
-    .from("ai_programs")
+    .from("pr_programs")
     .select("id")
     .eq("company_id", companyId)
     .limit(1);
@@ -229,28 +229,28 @@ export type HubTabFlags = { hasPrograms: boolean; dropCompanyWide: boolean };
 // with programs but no boards/items keeps its tabs.
 export async function getHubTabFlags(companyId: string): Promise<HubTabFlags> {
   const [{ data: progRows }, { data: boardRows }, items] = await Promise.all([
-    companyOs.from("ai_programs").select("id").eq("company_id", companyId).limit(1),
+    companyOs.from("pr_programs").select("id").eq("company_id", companyId).limit(1),
     companyOs
       .from("boards")
-      .select("ai_program_id")
+      .select("pr_program_id")
       .eq("client_company_id", companyId)
       .eq("status", "active")
       .is("archived_at", null),
     // Paginated: backlog items routinely outgrow PostgREST's 1000-row cap, and
     // a truncated read here could wrongly drop the company-wide tabs.
-    fetchAll<{ ai_program_id: string | null }>(() =>
+    fetchAll<{ pr_program_id: string | null }>(() =>
       companyOs
         .from("client_backlog_items")
-        .select("ai_program_id")
+        .select("pr_program_id")
         .eq("company_id", companyId)
         .is("archived_at", null)
         .order("id"),
     ),
   ]);
   const hasPrograms = (progRows ?? []).length > 0;
-  const boards = (boardRows ?? []) as Array<{ ai_program_id: string | null }>;
-  const untaggedBoards = boards.filter((b) => !b.ai_program_id).length;
-  const untaggedItems = items.filter((i) => !i.ai_program_id).length;
+  const boards = (boardRows ?? []) as Array<{ pr_program_id: string | null }>;
+  const untaggedBoards = boards.filter((b) => !b.pr_program_id).length;
+  const untaggedItems = items.filter((i) => !i.pr_program_id).length;
   const taggedCount = boards.length - untaggedBoards + (items.length - untaggedItems);
   return {
     hasPrograms,
@@ -261,7 +261,7 @@ export async function getHubTabFlags(companyId: string): Promise<HubTabFlags> {
 export type HubOverview = { usage: TokenUsage; programs: ProgramSummary[] };
 
 // The hub Overview's top band for an assigned client: the company-grain token
-// usage and the AI Program summaries, both derived from one shared fetch of
+// usage and the PR Program summaries, both derived from one shared fetch of
 // the delivery rows (same one-fetch discipline as the admin hub home). Null
 // when the company is not in the actor's active assignment set.
 export async function getHubOverviewForActor(
@@ -293,7 +293,7 @@ export async function getHubOverviewForActor(
   return { usage, programs };
 }
 
-// One AI Program's full detail for an assigned client. Null both when the
+// One PR Program's full detail for an assigned client. Null both when the
 // company is outside the actor's assignments (authorization) and when the
 // program is not one of that company's (getProgramDetail only ever matches
 // programs of the given company), so either way the page 404s.
@@ -421,12 +421,12 @@ export async function getActorEmail(actor: TeamActor): Promise<string | null> {
 // authorization rule as reads: the company must be in the actor's active
 // assignment set, resolved server-side; the ids in the input are never trusted.
 
-// Optional programId tags the upload to one of the company's own AI Programs
+// Optional programId tags the upload to one of the company's own PR Programs
 // (validated here, never trusted); the program view passes it so its uploads
 // land in that program's Documents tab.
 async function programBelongsToCompany(companyId: string, programId: string): Promise<boolean> {
   const { data } = await companyOs
-    .from("ai_programs")
+    .from("pr_programs")
     .select("id")
     .eq("id", programId)
     .eq("company_id", companyId)
@@ -441,7 +441,7 @@ export async function signedClientDocumentUploadForActor(
   const companies = await actorCompanyIds(actor);
   if (!companies.has(input.companyId)) return { ok: false, error: "Not found." };
   if (input.programId && !(await programBelongsToCompany(input.companyId, input.programId))) {
-    return { ok: false, error: "Invalid AI Program." };
+    return { ok: false, error: "Invalid PR Program." };
   }
   return createSignedDocumentUpload({
     companyId: input.companyId,
@@ -457,7 +457,7 @@ export async function recordClientDocumentForActor(
   const companies = await actorCompanyIds(actor);
   if (!companies.has(input.companyId)) return { ok: false, error: "Not found." };
   if (input.programId && !(await programBelongsToCompany(input.companyId, input.programId))) {
-    return { ok: false, error: "Invalid AI Program." };
+    return { ok: false, error: "Invalid PR Program." };
   }
   const email = await getActorEmail(actor);
   if (!email) return { ok: false, error: "Could not resolve your account email." };

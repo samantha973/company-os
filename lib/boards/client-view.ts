@@ -55,9 +55,9 @@ export async function getClientBoardView(
     .in("client_company_id", companyIds)
     .eq("status", "active")
     .is("archived_at", null);
-  // untaggedOnly: company-wide boards only (ai_program_id null); program-tagged
-  // boards render in their AI Program view instead.
-  if (opts?.untaggedOnly) boardQb = boardQb.is("ai_program_id", null);
+  // untaggedOnly: company-wide boards only (pr_program_id null); program-tagged
+  // boards render in their PR Program view instead.
+  if (opts?.untaggedOnly) boardQb = boardQb.is("pr_program_id", null);
   const { data: boardRow } = await boardQb.order("sort_order").limit(1).maybeSingle();
   if (!boardRow) return null;
   const board = boardRow as { id: string; slug: string; name: string };

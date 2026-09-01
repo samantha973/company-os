@@ -5,17 +5,17 @@ import { PageHead } from "@/components/admin/PageHead";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Add AI Program Plan",
-  description: "Start a new AI program by uploading documents or building a plan.",
+  title: "Add PR Program Plan",
+  description: "Start a new PR program by uploading documents or building a plan.",
 };
 
-export default async function AddAiProgramPage() {
+export default async function AddPrProgramPage() {
   await requirePortalMember();
   return (
     <div className="admin-content">
       <PageHead
-        eyebrow={<Link href="/portal/programs">← AI Programs</Link>}
-        title="Add AI Program Plan"
+        eyebrow={<Link href="/portal/programs">← PR Programs</Link>}
+        title="Add PR Program Plan"
         sub="Two ways to start a program. Build a plan from scratch with our guided assistant, or upload documents you already have."
       />
       <div className="mp-kpi-grid mp-kpi-grid--2up" style={{ gridAutoRows: "1fr" }}>
@@ -23,7 +23,7 @@ export default async function AddAiProgramPage() {
           <h2 className="admin-card-title" style={{ marginBottom: 8 }}>Create a plan</h2>
           <p className="admin-page-sub" style={{ margin: 0, minHeight: 56 }}>
             A guided assistant walks you through mapping your team&apos;s AI opportunities, picking one,
-            writing a problem statement and FAST goal, and assembling a 5Ds AI Program Brief you can save and download.
+            writing a problem statement and FAST goal, and assembling a 5Ds PR Program Brief you can save and download.
           </p>
           <div style={{ marginTop: "auto", paddingTop: 16 }}>
             <Link href="/portal/programs/add/plan" className="admin-btn admin-btn--primary">

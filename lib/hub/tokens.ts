@@ -115,12 +115,12 @@ async function fetchAll<T>(
 // ---------------------------------------------------------------------------
 
 // The repo select is the superset both consumers need: token usage reads
-// id/name, the program layer additionally reads ai_program_id, live_url and
+// id/name, the program layer additionally reads pr_program_id, live_url and
 // last_synced_at. One fetch serves both.
 export type DeliveryRepo = {
   id: string;
   name: string;
-  ai_program_id: string | null;
+  pr_program_id: string | null;
   live_url: string | null;
   last_synced_at: string | null;
 };
@@ -140,7 +140,7 @@ export async function fetchDeliveryRaw(companyIds: string[]): Promise<DeliveryRa
     fetchAll<DeliveryRepo>(() =>
       htt
         .from("repos")
-        .select("id, name, ai_program_id, live_url, last_synced_at")
+        .select("id, name, pr_program_id, live_url, last_synced_at")
         .in("company_id", companyIds)
         .order("name")
         .order("id"),
@@ -253,7 +253,7 @@ export function computeTokenUsage(args: {
     aiByRepo.set(row.repo_id, (aiByRepo.get(row.repo_id) ?? 0) + a);
   }
 
-  // One row per AI Program (spine: 1 repo = 1 AI Program), plus one for tracked
+  // One row per PR Program (spine: 1 repo = 1 PR Program), plus one for tracked
   // work not attributed to a repo. Programs with no activity yet still list, so
   // the client sees what is being tracked.
   const programs: ProgramUsage[] = delivery.repos.map((repo) => {

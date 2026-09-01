@@ -1,4 +1,4 @@
-// Portal-facing AI Program hub loaders (Client Hub by AI Program, portal PR).
+// Portal-facing PR Program hub loaders (Client Hub by PR Program, portal PR).
 // Same discipline as the other lib/portal helpers: every read is scoped to the
 // actor's own companyScope and cross-company ids resolve to null (IDOR guard).
 //
@@ -28,7 +28,7 @@ import type { ClientBoardColumn, ClientBoardCard } from "@/lib/boards/client-vie
 async function ownedProgramCompany(actor: PortalActor, programId: string): Promise<string | null> {
   if (actor.companyScope.length === 0) return null;
   const { data } = await companyOs
-    .from("ai_programs")
+    .from("pr_programs")
     .select("id, company_id")
     .eq("id", programId)
     .in("company_id", actor.companyScope)
@@ -55,7 +55,7 @@ export type PortalProgramSummary = {
 };
 
 // Strip a brief's HTML down to one readable line. Headings and short label
-// lines ("Dream", "AI Program Brief") are skipped; the first substantial text
+// lines ("Dream", "PR Program Brief") are skipped; the first substantial text
 // run wins, capped at a word boundary.
 const MAX_DESCRIPTION = 160;
 export function briefToOneLine(html: string): string | null {
@@ -94,14 +94,14 @@ export async function listPortalProgramSummaries(actor: PortalActor): Promise<Po
   // First chat-plan brief per program feeds the one-line description.
   const { data: planData } = await companyOs
     .from("program_plans")
-    .select("ai_program_id, brief_html")
-    .in("ai_program_id", rows.map((r) => r.s.id))
+    .select("pr_program_id, brief_html")
+    .in("pr_program_id", rows.map((r) => r.s.id))
     .eq("method", "chat")
     .not("brief_html", "is", null)
     .order("created_at", { ascending: true });
   const briefByProgram = new Map<string, string>();
-  for (const p of (planData ?? []) as Array<{ ai_program_id: string; brief_html: string }>) {
-    if (!briefByProgram.has(p.ai_program_id)) briefByProgram.set(p.ai_program_id, p.brief_html);
+  for (const p of (planData ?? []) as Array<{ pr_program_id: string; brief_html: string }>) {
+    if (!briefByProgram.has(p.pr_program_id)) briefByProgram.set(p.pr_program_id, p.brief_html);
   }
 
   return rows.map(({ companyId, s }) => ({
@@ -138,7 +138,7 @@ async function countMergedPrsForCompanies(companyIds: string[]): Promise<number>
   return count ?? 0;
 }
 
-// The client-safe company overview for the AI Programs hub: the shared Human
+// The client-safe company overview for the PR Programs hub: the shared Human
 // Token pool figures, the AI-token total, total merged PRs, and the normalized
 // leverage multiple. Scalars only, scoped to the actor's companies.
 export type PortalHubOverview = {
@@ -187,7 +187,7 @@ export type PortalHubBoard = {
   id: string;
   name: string;
   slug: string;
-  aiProgramId: string | null;
+  prProgramId: string | null;
 };
 
 // Every active board for the actor's companies, with its program tag, so the
@@ -196,13 +196,13 @@ export async function listHubBoardsForActor(actor: PortalActor): Promise<PortalH
   if (actor.companyScope.length === 0) return [];
   const { data } = await companyOs
     .from("boards")
-    .select("id, name, slug, ai_program_id")
+    .select("id, name, slug, pr_program_id")
     .in("client_company_id", actor.companyScope)
     .eq("status", "active")
     .is("archived_at", null)
     .order("sort_order", { ascending: true });
-  return ((data ?? []) as Array<{ id: string; name: string; slug: string; ai_program_id: string | null }>).map(
-    (b) => ({ id: b.id, name: b.name, slug: b.slug, aiProgramId: b.ai_program_id }),
+  return ((data ?? []) as Array<{ id: string; name: string; slug: string; pr_program_id: string | null }>).map(
+    (b) => ({ id: b.id, name: b.name, slug: b.slug, prProgramId: b.pr_program_id }),
   );
 }
 
@@ -369,7 +369,7 @@ export async function getProgramHighlights(
   const { data: repoRow } = await htt
     .from("repos")
     .select("id")
-    .eq("ai_program_id", programId)
+    .eq("pr_program_id", programId)
     .maybeSingle();
   const repoId = (repoRow as { id: string } | null)?.id;
   if (!repoId) return [];

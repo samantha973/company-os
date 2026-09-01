@@ -6,7 +6,7 @@ import { formatLeverage, type TokenUsage } from "@/lib/hub/tokens";
 
 // The hub home's top band, shared by the admin company 360 (Client Hub view)
 // and the team client hub Overview: the company-grain Human Tokens strip, then
-// the AI Programs card grid. Read-only; each card links into the surface's own
+// the PR Programs card grid. Read-only; each card links into the surface's own
 // program view via programHref. Markup mirrors the admin hub home verbatim so
 // both render identically.
 
@@ -33,7 +33,7 @@ export function HubProgramsBand({
     <>
       <div className="hub-band-head">
         <h2 className="admin-card-title">Human Tokens</h2>
-        <span className="admin-cell-muted" style={{ fontSize: 12 }}>Company credit pool, shared by all AI Programs</span>
+        <span className="admin-cell-muted" style={{ fontSize: 12 }}>Company credit pool, shared by all PR Programs</span>
       </div>
       <div className="mp-kpi-grid" style={{ marginBottom: 20 }}>
         <MetricCard label="Bought" value={usage.boughtTokens.toLocaleString()} sub="Purchased + allocated tokens" />
@@ -48,11 +48,11 @@ export function HubProgramsBand({
       </div>
 
       <div className="hub-band-head">
-        <h2 className="admin-card-title">AI Programs</h2>
+        <h2 className="admin-card-title">PR Programs</h2>
       </div>
       {programs.length === 0 ? (
         <div className="admin-card admin-section-card" style={{ marginBottom: 20 }}>
-          <div className="admin-empty">No AI Programs yet. Created from the client portal or by Edge8.</div>
+          <div className="admin-empty">No PR Programs yet. Created from the client portal or by Edge8.</div>
         </div>
       ) : (
         <div className="mp-kpi-grid hub-programs-grid">

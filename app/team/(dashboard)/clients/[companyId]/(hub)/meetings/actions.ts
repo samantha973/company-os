@@ -46,7 +46,7 @@ export async function publishMeeting(id: string, published: boolean): Promise<Re
   return { ok: true };
 }
 
-// Tag a client meeting to one of its company's AI Programs, or clear the tag
+// Tag a client meeting to one of its company's PR Programs, or clear the tag
 // (programId null = company-wide). Same actor-scoped authorization as
 // publishMeeting; the program must belong to the meeting's own company
 // (mirroring programBelongs in the admin client-roadmaps actions).
@@ -67,17 +67,17 @@ export async function setMeetingProgram(id: string, programId: string | null): P
 
   if (programId) {
     const { data: program } = await companyOs
-      .from("ai_programs")
+      .from("pr_programs")
       .select("id")
       .eq("id", programId)
       .eq("company_id", companyId)
       .maybeSingle();
-    if (!program) return { ok: false, error: "Invalid AI Program." };
+    if (!program) return { ok: false, error: "Invalid PR Program." };
   }
 
   const { error } = await companyOs
     .from("meetings")
-    .update({ ai_program_id: programId, updated_at: new Date().toISOString() })
+    .update({ pr_program_id: programId, updated_at: new Date().toISOString() })
     .eq("id", id);
   if (error) return { ok: false, error: error.message };
 
@@ -86,7 +86,7 @@ export async function setMeetingProgram(id: string, programId: string | null): P
     recordId: id,
     operation: "update",
     actor: actor.displayName,
-    context: { action: "set_program", ai_program_id: programId },
+    context: { action: "set_program", pr_program_id: programId },
   });
 
   revalidatePath(`/team/clients/${companyId}/meetings`);

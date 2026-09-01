@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Build a plan",
-  description: "Build your AI Program Brief with the guided assistant.",
+  description: "Build your PR Program Brief with the guided assistant.",
 };
 
 export default async function PlanBuilderPage() {
@@ -21,7 +21,7 @@ export default async function PlanBuilderPage() {
       <PageHead
         eyebrow={<Link href="/portal/programs/add">← Add a program</Link>}
         title="Build a plan"
-        sub="Work through four short activities with the assistant. At the end you'll get a 5Ds AI Program Brief you can save and download."
+        sub="Work through four short activities with the assistant. At the end you'll get a 5Ds PR Program Brief you can save and download."
       />
       <PlanChat companies={companies} />
     </div>

@@ -40,10 +40,10 @@ const NAV: NavGroup[] = [
   {
     label: "Delivery",
     items: [
-      // AI Programs leads: /portal/hub is the one AI Programs hub (company
+      // PR Programs leads: /portal/hub is the one PR Programs hub (company
       // overview + program cards); /portal/programs redirects here, so this is
       // the single entry point. Membership is the entitlement.
-      { label: "AI Programs", href: "/portal/hub", ico: "\u21c9", built: true },
+      { label: "PR Programs", href: "/portal/hub", ico: "\u21c9", built: true },
       // Requests has no entitlement key on purpose: being a portal member IS the
       // entitlement to ask for work; all data inside is company-scoped anyway.
       { label: "Requests", href: "/portal/requests", ico: "\u270e", built: true },
@@ -67,7 +67,7 @@ const NAV: NavGroup[] = [
       // as Users.
       { label: "Company Profile", href: "/portal/company", ico: "\u2302", built: true, entitlementKey: "companyProfile" },
       // Tokens: buy Human Token packs and track Bought / Delivered / balance
-      // per AI Program. Company-scoped like Invoices; visible to any member
+      // per PR Program. Company-scoped like Invoices; visible to any member
       // with a company in scope.
       { label: "Tokens", href: "/portal/tokens", ico: "\u25c7", built: true, entitlementKey: "tokens" },
       { label: "Invoices", href: "/portal/invoices", ico: "\u25a4", built: true, entitlementKey: "invoices" },

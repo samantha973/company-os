@@ -21,7 +21,7 @@ const statements = [
     strategy_id uuid references company_os.strategies(id),
     level text not null check (level in ('company','office','executor')),
     office text check (office in ('revenue','talent','operations','innovation')),
-    business_line text check (business_line in ('staffing','ai_programs')),
+    business_line text check (business_line in ('staffing','pr_programs')),
     parent_kr_id uuid,
     quarter text not null,
     title text not null,

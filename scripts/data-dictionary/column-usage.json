@@ -261,7 +261,7 @@
    "client_types": [
     "lib/portal/profile.ts"
    ],
-   "is_ai_program": [
+   "is_pr_program": [
     "scripts/htt/phase2-copy.mjs",
     "scripts/htt/process-registrations.mjs"
    ]
@@ -348,7 +348,7 @@
    ]
   }
  },
- "ai_programs": {
+ "pr_programs": {
   "files": [
    "app/admin/(dashboard)/boards/[slug]/actions.ts",
    "app/admin/(dashboard)/edges/client-roadmaps/actions.ts",
@@ -362,7 +362,7 @@
    "app/team/(dashboard)/clients/[companyId]/programs/[programId]/page.tsx",
    "lib/boards/data.ts",
    "lib/hub/program.ts",
-   "lib/portal/ai-programs.ts",
+   "lib/portal/pr-programs.ts",
    "lib/portal/backlog.ts",
    "lib/portal/program-hub.ts",
    "lib/team/clients.ts",
@@ -385,7 +385,7 @@
     "app/team/(dashboard)/clients/[companyId]/programs/[programId]/page.tsx",
     "lib/boards/data.ts",
     "lib/hub/program.ts",
-    "lib/portal/ai-programs.ts",
+    "lib/portal/pr-programs.ts",
     "lib/portal/backlog.ts",
     "lib/portal/program-hub.ts",
     "lib/team/clients.ts",
@@ -403,7 +403,7 @@
     "app/team/(dashboard)/clients/[companyId]/programs/[programId]/page.tsx",
     "lib/boards/data.ts",
     "lib/hub/program.ts",
-    "lib/portal/ai-programs.ts",
+    "lib/portal/pr-programs.ts",
     "lib/portal/program-hub.ts",
     "lib/team/clients.ts",
     "scripts/edges/migrate.mjs",
@@ -419,7 +419,7 @@
     "app/team/(dashboard)/clients/[companyId]/programs/[programId]/page.tsx",
     "lib/boards/data.ts",
     "lib/hub/program.ts",
-    "lib/portal/ai-programs.ts",
+    "lib/portal/pr-programs.ts",
     "lib/portal/backlog.ts",
     "lib/portal/program-hub.ts",
     "lib/team/clients.ts",
@@ -431,7 +431,7 @@
    "created_by": [
     "app/admin/(dashboard)/boards/[slug]/actions.ts",
     "app/admin/(dashboard)/revenue/meetings/actions.ts",
-    "lib/portal/ai-programs.ts",
+    "lib/portal/pr-programs.ts",
     "scripts/edges/migrate.mjs",
     "scripts/htt/phase2-copy.mjs",
     "scripts/htt/process-registrations.mjs"
@@ -532,7 +532,7 @@
     "app/admin/(dashboard)/edges/client-roadmaps/actions.ts",
     "lib/boards/data.ts"
    ],
-   "ai_program_id": [
+   "pr_program_id": [
     "app/admin/(dashboard)/boards/[slug]/actions.ts",
     "app/admin/(dashboard)/edges/client-roadmaps/actions.ts",
     "app/admin/(dashboard)/revenue/companies/[id]/page.tsx",
@@ -751,7 +751,7 @@
     "lib/boards/data.ts",
     "scripts/boards/file-fleet-fitness-cards.mjs"
    ],
-   "ai_program_id": [
+   "pr_program_id": [
     "app/admin/(dashboard)/boards/[slug]/actions.ts",
     "app/admin/(dashboard)/revenue/companies/[id]/page.tsx",
     "app/team/(dashboard)/clients/[companyId]/programs/[programId]/page.tsx",
@@ -1220,7 +1220,7 @@
     "scripts/meetings/03-fold-meeting-notes.mjs",
     "scripts/meetings/04-move-coaching-transcripts.mjs"
    ],
-   "ai_program_id": [
+   "pr_program_id": [
     "app/admin/(dashboard)/boards/[slug]/actions.ts",
     "app/admin/(dashboard)/revenue/companies/[id]/page.tsx",
     "app/admin/(dashboard)/revenue/meetings/actions.ts",
@@ -2904,7 +2904,7 @@
     "app/admin/(dashboard)/edges/client-roadmaps/actions.ts",
     "lib/boards/data.ts"
    ],
-   "ai_program_id": [
+   "pr_program_id": [
     "app/admin/(dashboard)/edges/client-roadmaps/actions.ts",
     "app/admin/(dashboard)/revenue/companies/[id]/page.tsx",
     "app/team/(dashboard)/clients/[companyId]/programs/[programId]/page.tsx",
@@ -2952,7 +2952,7 @@
    "updated_by": [
     "app/admin/(dashboard)/edges/client-roadmaps/actions.ts"
    ],
-   "ai_program_id": [
+   "pr_program_id": [
     "app/admin/(dashboard)/edges/client-roadmaps/actions.ts",
     "app/admin/(dashboard)/revenue/companies/[id]/page.tsx",
     "app/team/(dashboard)/clients/[companyId]/programs/[programId]/page.tsx",
@@ -8220,7 +8220,7 @@
     "lib/htt/session-ingest.ts",
     "scripts/htt/phase2-copy.mjs"
    ],
-   "ai_program_id": [
+   "pr_program_id": [
     "lib/hub/program.ts",
     "lib/hub/tokens.ts",
     "lib/portal/program-hub.ts",
@@ -9125,32 +9125,32 @@
  "program_documents": {
   "files": [
    "lib/client-documents.ts",
-   "lib/portal/ai-programs.ts"
+   "lib/portal/pr-programs.ts"
   ],
   "cols": {
-   "ai_program_id": [
+   "pr_program_id": [
     "lib/client-documents.ts",
-    "lib/portal/ai-programs.ts"
+    "lib/portal/pr-programs.ts"
    ],
    "storage_path": [
     "lib/client-documents.ts",
-    "lib/portal/ai-programs.ts"
+    "lib/portal/pr-programs.ts"
    ],
    "filename": [
     "lib/client-documents.ts",
-    "lib/portal/ai-programs.ts"
+    "lib/portal/pr-programs.ts"
    ],
    "size_bytes": [
     "lib/client-documents.ts",
-    "lib/portal/ai-programs.ts"
+    "lib/portal/pr-programs.ts"
    ],
    "uploaded_by": [
     "lib/client-documents.ts",
-    "lib/portal/ai-programs.ts"
+    "lib/portal/pr-programs.ts"
    ],
    "company_id": [
     "lib/client-documents.ts",
-    "lib/portal/ai-programs.ts"
+    "lib/portal/pr-programs.ts"
    ]
   }
  },
@@ -9587,28 +9587,28 @@
  },
  "program_plans": {
   "files": [
-   "lib/portal/ai-programs.ts",
+   "lib/portal/pr-programs.ts",
    "lib/portal/program-hub.ts"
   ],
   "cols": {
-   "ai_program_id": [
-    "lib/portal/ai-programs.ts",
+   "pr_program_id": [
+    "lib/portal/pr-programs.ts",
     "lib/portal/program-hub.ts"
    ],
    "title": [
-    "lib/portal/ai-programs.ts",
+    "lib/portal/pr-programs.ts",
     "lib/portal/program-hub.ts"
    ],
    "method": [
-    "lib/portal/ai-programs.ts",
+    "lib/portal/pr-programs.ts",
     "lib/portal/program-hub.ts"
    ],
    "brief_html": [
-    "lib/portal/ai-programs.ts",
+    "lib/portal/pr-programs.ts",
     "lib/portal/program-hub.ts"
    ],
    "created_by": [
-    "lib/portal/ai-programs.ts"
+    "lib/portal/pr-programs.ts"
    ]
   }
  },

@@ -681,10 +681,10 @@ COMMENT ON COLUMN "company_os"."affiliates"."company_id" IS 'The affiliate compa
 
 
 --
--- Name: ai_programs; Type: TABLE; Schema: company_os; Owner: -
+-- Name: pr_programs; Type: TABLE; Schema: company_os; Owner: -
 --
 
-CREATE TABLE "company_os"."ai_programs" (
+CREATE TABLE "company_os"."pr_programs" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "company_id" "uuid" NOT NULL,
     "name" "text" NOT NULL,
@@ -695,15 +695,15 @@ CREATE TABLE "company_os"."ai_programs" (
     "repo_url" "text",
     "github_repo" "extensions"."citext",
     "github_repo_id" bigint,
-    CONSTRAINT "ai_programs_status_check" CHECK (("status" = ANY (ARRAY['draft'::"text", 'active'::"text", 'complete'::"text"])))
+    CONSTRAINT "pr_programs_status_check" CHECK (("status" = ANY (ARRAY['draft'::"text", 'active'::"text", 'complete'::"text"])))
 );
 
 
 --
--- Name: TABLE "ai_programs"; Type: COMMENT; Schema: company_os; Owner: -
+-- Name: TABLE "pr_programs"; Type: COMMENT; Schema: company_os; Owner: -
 --
 
-COMMENT ON TABLE "company_os"."ai_programs" IS 'Portal AI Programs: company-scoped client AI program records (draft/active/complete).';
+COMMENT ON TABLE "company_os"."pr_programs" IS 'Portal PR Programs: company-scoped client PR program records (draft/active/complete).';
 
 
 --
@@ -893,7 +893,7 @@ CREATE TABLE "company_os"."boards" (
     "archived_by" "text",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "ai_program_id" "uuid"
+    "pr_program_id" "uuid"
 );
 
 
@@ -1150,7 +1150,7 @@ CREATE TABLE "company_os"."client_backlog_items" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "client_sort_order" integer,
-    "ai_program_id" "uuid",
+    "pr_program_id" "uuid",
     CONSTRAINT "client_backlog_items_client_priority_check" CHECK ((("client_priority" IS NULL) OR ("client_priority" = ANY (ARRAY['now'::"text", 'next'::"text", 'later'::"text", 'park'::"text"])))),
     CONSTRAINT "client_backlog_items_edge8_priority_check" CHECK (("edge8_priority" = ANY (ARRAY['now'::"text", 'next'::"text", 'later'::"text", 'park'::"text"]))),
     CONSTRAINT "client_backlog_items_source_check" CHECK (("source" = ANY (ARRAY['edge8'::"text", 'client'::"text"]))),
@@ -1174,7 +1174,7 @@ CREATE TABLE "company_os"."client_roadmap_groups" (
     "archived_by" "text",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "ai_program_id" "uuid"
+    "pr_program_id" "uuid"
 );
 
 
@@ -1187,7 +1187,7 @@ CREATE TABLE "company_os"."client_roadmap_overview" (
     "body" "text" DEFAULT ''::"text" NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_by" "text",
-    "ai_program_id" "uuid"
+    "pr_program_id" "uuid"
 );
 
 
@@ -1410,7 +1410,7 @@ CREATE TABLE "company_os"."companies" (
     "industry_normalized" "text",
     "website_url" "extensions"."citext",
     "client_types" "text"[] DEFAULT '{}'::"text"[] NOT NULL,
-    "is_ai_program" boolean DEFAULT false NOT NULL,
+    "is_pr_program" boolean DEFAULT false NOT NULL,
     CONSTRAINT "companies_industry_normalized_check" CHECK ((("industry_normalized" IS NULL) OR ("industry_normalized" = ANY (ARRAY['Technology & Software'::"text", 'Food & Beverage'::"text", 'Hospitality & Travel'::"text", 'Financial Services'::"text", 'Professional Services'::"text", 'Real Estate & Construction'::"text", 'Retail & Consumer Goods'::"text", 'Manufacturing'::"text", 'Healthcare & Wellness'::"text", 'Legal'::"text", 'Marketing & Media'::"text", 'Education'::"text", 'Logistics & Supply Chain'::"text", 'Energy'::"text", 'Other'::"text"])))),
     CONSTRAINT "companies_priority_check" CHECK ((("priority" IS NULL) OR ("priority" = ANY (ARRAY['low'::"text", 'medium'::"text", 'high'::"text"])))),
     CONSTRAINT "companies_size_band_check" CHECK ((("size_band" IS NULL) OR ("size_band" = ANY (ARRAY['0-50'::"text", '51-250'::"text", '251-5000'::"text", '5000+'::"text"]))))
@@ -2965,16 +2965,16 @@ CREATE TABLE "company_os"."meetings" (
     "source_file_name" "text",
     "created_by" "text",
     "archived_at" timestamp with time zone,
-    "ai_program_id" "uuid",
+    "pr_program_id" "uuid",
     CONSTRAINT "meetings_source_check" CHECK (("source" = ANY (ARRAY['lark'::"text", 'thoughtflow'::"text", 'manual'::"text", 'zoom'::"text", 'google'::"text", 'other'::"text", 'notes'::"text", 'coaching'::"text", 'review'::"text"])))
 );
 
 
 --
--- Name: COLUMN "meetings"."ai_program_id"; Type: COMMENT; Schema: company_os; Owner: -
+-- Name: COLUMN "meetings"."pr_program_id"; Type: COMMENT; Schema: company_os; Owner: -
 --
 
-COMMENT ON COLUMN "company_os"."meetings"."ai_program_id" IS 'Optional AI Program tag; NULL = company-wide meeting.';
+COMMENT ON COLUMN "company_os"."meetings"."pr_program_id" IS 'Optional PR Program tag; NULL = company-wide meeting.';
 
 
 --
@@ -2998,7 +2998,7 @@ CREATE TABLE "company_os"."objectives" (
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "brand" "text",
     CONSTRAINT "objectives_brand_check" CHECK (("brand" = ANY (ARRAY['edge8'::"text", 'aio'::"text"]))),
-    CONSTRAINT "objectives_business_line_check" CHECK (("business_line" = ANY (ARRAY['staffing'::"text", 'ai_programs'::"text"]))),
+    CONSTRAINT "objectives_business_line_check" CHECK (("business_line" = ANY (ARRAY['staffing'::"text", 'pr_programs'::"text"]))),
     CONSTRAINT "objectives_cascade_link" CHECK ((("level" = 'company'::"text") OR ("parent_kr_id" IS NOT NULL))),
     CONSTRAINT "objectives_level_check" CHECK (("level" = ANY (ARRAY['company'::"text", 'office'::"text", 'executor'::"text"]))),
     CONSTRAINT "objectives_office_check" CHECK (("office" = ANY (ARRAY['revenue'::"text", 'talent'::"text", 'operations'::"text", 'innovation'::"text"]))),
@@ -3408,7 +3408,7 @@ CREATE TABLE "company_os"."products" (
 
 CREATE TABLE "company_os"."program_documents" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "ai_program_id" "uuid",
+    "pr_program_id" "uuid",
     "storage_path" "text" NOT NULL,
     "filename" "text" NOT NULL,
     "size_bytes" bigint,
@@ -3422,7 +3422,7 @@ CREATE TABLE "company_os"."program_documents" (
 -- Name: TABLE "program_documents"; Type: COMMENT; Schema: company_os; Owner: -
 --
 
-COMMENT ON TABLE "company_os"."program_documents" IS 'Client documents in the private program-documents bucket, company-owned; ai_program_id is an optional tag.';
+COMMENT ON TABLE "company_os"."program_documents" IS 'Client documents in the private program-documents bucket, company-owned; pr_program_id is an optional tag.';
 
 
 --
@@ -3431,7 +3431,7 @@ COMMENT ON TABLE "company_os"."program_documents" IS 'Client documents in the pr
 
 CREATE TABLE "company_os"."program_plans" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "ai_program_id" "uuid" NOT NULL,
+    "pr_program_id" "uuid" NOT NULL,
     "title" "text" NOT NULL,
     "method" "text" NOT NULL,
     "brief_html" "text",
@@ -3446,7 +3446,7 @@ CREATE TABLE "company_os"."program_plans" (
 -- Name: TABLE "program_plans"; Type: COMMENT; Schema: company_os; Owner: -
 --
 
-COMMENT ON TABLE "company_os"."program_plans" IS 'Plans within an AI program: uploaded-doc markers or chatbot-produced 5Ds briefs (brief_html).';
+COMMENT ON TABLE "company_os"."program_plans" IS 'Plans within an PR program: uploaded-doc markers or chatbot-produced 5Ds briefs (brief_html).';
 
 
 --
@@ -4101,7 +4101,7 @@ CREATE TABLE "htt"."pull_requests" (
 
 CREATE TABLE "htt"."repos" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "ai_program_id" "uuid" NOT NULL,
+    "pr_program_id" "uuid" NOT NULL,
     "company_id" "uuid" NOT NULL,
     "slug" "text",
     "name" "text" NOT NULL,
@@ -4241,11 +4241,11 @@ ALTER TABLE ONLY "company_os"."affiliates"
 
 
 --
--- Name: ai_programs ai_programs_pkey; Type: CONSTRAINT; Schema: company_os; Owner: -
+-- Name: pr_programs pr_programs_pkey; Type: CONSTRAINT; Schema: company_os; Owner: -
 --
 
-ALTER TABLE ONLY "company_os"."ai_programs"
-    ADD CONSTRAINT "ai_programs_pkey" PRIMARY KEY ("id");
+ALTER TABLE ONLY "company_os"."pr_programs"
+    ADD CONSTRAINT "pr_programs_pkey" PRIMARY KEY ("id");
 
 
 --
@@ -5817,11 +5817,11 @@ ALTER TABLE ONLY "htt"."pull_requests"
 
 
 --
--- Name: repos repos_ai_program_id_key; Type: CONSTRAINT; Schema: htt; Owner: -
+-- Name: repos repos_pr_program_id_key; Type: CONSTRAINT; Schema: htt; Owner: -
 --
 
 ALTER TABLE ONLY "htt"."repos"
-    ADD CONSTRAINT "repos_ai_program_id_key" UNIQUE ("ai_program_id");
+    ADD CONSTRAINT "repos_pr_program_id_key" UNIQUE ("pr_program_id");
 
 
 --
@@ -5885,24 +5885,24 @@ CREATE INDEX "affiliates_company_id_idx" ON "company_os"."affiliates" USING "btr
 
 
 --
--- Name: ai_programs_company_idx; Type: INDEX; Schema: company_os; Owner: -
+-- Name: pr_programs_company_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
-CREATE INDEX "ai_programs_company_idx" ON "company_os"."ai_programs" USING "btree" ("company_id");
-
-
---
--- Name: ai_programs_github_repo_key; Type: INDEX; Schema: company_os; Owner: -
---
-
-CREATE UNIQUE INDEX "ai_programs_github_repo_key" ON "company_os"."ai_programs" USING "btree" ("github_repo") WHERE ("github_repo" IS NOT NULL);
+CREATE INDEX "pr_programs_company_idx" ON "company_os"."pr_programs" USING "btree" ("company_id");
 
 
 --
--- Name: ai_programs_status_idx; Type: INDEX; Schema: company_os; Owner: -
+-- Name: pr_programs_github_repo_key; Type: INDEX; Schema: company_os; Owner: -
 --
 
-CREATE INDEX "ai_programs_status_idx" ON "company_os"."ai_programs" USING "btree" ("status");
+CREATE UNIQUE INDEX "pr_programs_github_repo_key" ON "company_os"."pr_programs" USING "btree" ("github_repo") WHERE ("github_repo" IS NOT NULL);
+
+
+--
+-- Name: pr_programs_status_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "pr_programs_status_idx" ON "company_os"."pr_programs" USING "btree" ("status");
 
 
 --
@@ -5948,10 +5948,10 @@ CREATE INDEX "board_members_person_idx" ON "company_os"."board_members" USING "b
 
 
 --
--- Name: boards_ai_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
+-- Name: boards_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
-CREATE INDEX "boards_ai_program_id_idx" ON "company_os"."boards" USING "btree" ("ai_program_id") WHERE ("ai_program_id" IS NOT NULL);
+CREATE INDEX "boards_pr_program_id_idx" ON "company_os"."boards" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
 
 
 --
@@ -5976,10 +5976,10 @@ CREATE INDEX "call_transcripts_started_at_idx" ON "company_os"."call_transcripts
 
 
 --
--- Name: client_backlog_items_ai_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
+-- Name: client_backlog_items_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
-CREATE INDEX "client_backlog_items_ai_program_id_idx" ON "company_os"."client_backlog_items" USING "btree" ("ai_program_id") WHERE ("ai_program_id" IS NOT NULL);
+CREATE INDEX "client_backlog_items_pr_program_id_idx" ON "company_os"."client_backlog_items" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
 
 
 --
@@ -6004,10 +6004,10 @@ CREATE UNIQUE INDEX "client_backlog_items_company_ref_key" ON "company_os"."clie
 
 
 --
--- Name: client_roadmap_groups_ai_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
+-- Name: client_roadmap_groups_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
-CREATE INDEX "client_roadmap_groups_ai_program_id_idx" ON "company_os"."client_roadmap_groups" USING "btree" ("ai_program_id") WHERE ("ai_program_id" IS NOT NULL);
+CREATE INDEX "client_roadmap_groups_pr_program_id_idx" ON "company_os"."client_roadmap_groups" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
 
 
 --
@@ -6018,10 +6018,10 @@ CREATE INDEX "client_roadmap_groups_company_idx" ON "company_os"."client_roadmap
 
 
 --
--- Name: client_roadmap_overview_ai_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
+-- Name: client_roadmap_overview_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
-CREATE INDEX "client_roadmap_overview_ai_program_id_idx" ON "company_os"."client_roadmap_overview" USING "btree" ("ai_program_id") WHERE ("ai_program_id" IS NOT NULL);
+CREATE INDEX "client_roadmap_overview_pr_program_id_idx" ON "company_os"."client_roadmap_overview" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
 
 
 --
@@ -7145,10 +7145,10 @@ CREATE UNIQUE INDEX "marketing_pillars_brand_name_idx" ON "company_os"."marketin
 
 
 --
--- Name: meetings_ai_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
+-- Name: meetings_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
-CREATE INDEX "meetings_ai_program_id_idx" ON "company_os"."meetings" USING "btree" ("ai_program_id") WHERE ("ai_program_id" IS NOT NULL);
+CREATE INDEX "meetings_pr_program_id_idx" ON "company_os"."meetings" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
 
 
 --
@@ -7260,7 +7260,7 @@ CREATE INDEX "program_documents_company_idx" ON "company_os"."program_documents"
 -- Name: program_documents_program_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
-CREATE INDEX "program_documents_program_idx" ON "company_os"."program_documents" USING "btree" ("ai_program_id");
+CREATE INDEX "program_documents_program_idx" ON "company_os"."program_documents" USING "btree" ("pr_program_id");
 
 
 --
@@ -7274,7 +7274,7 @@ CREATE UNIQUE INDEX "program_documents_storage_path_key" ON "company_os"."progra
 -- Name: program_plans_program_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
-CREATE INDEX "program_plans_program_idx" ON "company_os"."program_plans" USING "btree" ("ai_program_id");
+CREATE INDEX "program_plans_program_idx" ON "company_os"."program_plans" USING "btree" ("pr_program_id");
 
 
 --
@@ -8095,11 +8095,11 @@ ALTER TABLE ONLY "company_os"."affiliates"
 
 
 --
--- Name: ai_programs ai_programs_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+-- Name: pr_programs pr_programs_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
-ALTER TABLE ONLY "company_os"."ai_programs"
-    ADD CONSTRAINT "ai_programs_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company_os"."companies"("id");
+ALTER TABLE ONLY "company_os"."pr_programs"
+    ADD CONSTRAINT "pr_programs_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company_os"."companies"("id");
 
 
 --
@@ -8247,11 +8247,11 @@ ALTER TABLE ONLY "company_os"."board_members"
 
 
 --
--- Name: boards boards_ai_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+-- Name: boards boards_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
 ALTER TABLE ONLY "company_os"."boards"
-    ADD CONSTRAINT "boards_ai_program_id_fkey" FOREIGN KEY ("ai_program_id") REFERENCES "company_os"."ai_programs"("id") ON DELETE SET NULL;
+    ADD CONSTRAINT "boards_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
 
 
 --
@@ -8383,11 +8383,11 @@ ALTER TABLE ONLY "company_os"."candidates"
 
 
 --
--- Name: client_backlog_items client_backlog_items_ai_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+-- Name: client_backlog_items client_backlog_items_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
 ALTER TABLE ONLY "company_os"."client_backlog_items"
-    ADD CONSTRAINT "client_backlog_items_ai_program_id_fkey" FOREIGN KEY ("ai_program_id") REFERENCES "company_os"."ai_programs"("id") ON DELETE SET NULL;
+    ADD CONSTRAINT "client_backlog_items_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
 
 
 --
@@ -8399,11 +8399,11 @@ ALTER TABLE ONLY "company_os"."client_backlog_items"
 
 
 --
--- Name: client_roadmap_groups client_roadmap_groups_ai_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+-- Name: client_roadmap_groups client_roadmap_groups_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
 ALTER TABLE ONLY "company_os"."client_roadmap_groups"
-    ADD CONSTRAINT "client_roadmap_groups_ai_program_id_fkey" FOREIGN KEY ("ai_program_id") REFERENCES "company_os"."ai_programs"("id") ON DELETE SET NULL;
+    ADD CONSTRAINT "client_roadmap_groups_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
 
 
 --
@@ -8415,11 +8415,11 @@ ALTER TABLE ONLY "company_os"."client_roadmap_groups"
 
 
 --
--- Name: client_roadmap_overview client_roadmap_overview_ai_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+-- Name: client_roadmap_overview client_roadmap_overview_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
 ALTER TABLE ONLY "company_os"."client_roadmap_overview"
-    ADD CONSTRAINT "client_roadmap_overview_ai_program_id_fkey" FOREIGN KEY ("ai_program_id") REFERENCES "company_os"."ai_programs"("id") ON DELETE SET NULL;
+    ADD CONSTRAINT "client_roadmap_overview_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
 
 
 --
@@ -9407,11 +9407,11 @@ ALTER TABLE ONLY "company_os"."meeting_participants"
 
 
 --
--- Name: meetings meetings_ai_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+-- Name: meetings meetings_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
 ALTER TABLE ONLY "company_os"."meetings"
-    ADD CONSTRAINT "meetings_ai_program_id_fkey" FOREIGN KEY ("ai_program_id") REFERENCES "company_os"."ai_programs"("id") ON DELETE SET NULL;
+    ADD CONSTRAINT "meetings_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
 
 
 --
@@ -9703,11 +9703,11 @@ ALTER TABLE ONLY "company_os"."products"
 
 
 --
--- Name: program_documents program_documents_ai_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+-- Name: program_documents program_documents_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
 ALTER TABLE ONLY "company_os"."program_documents"
-    ADD CONSTRAINT "program_documents_ai_program_id_fkey" FOREIGN KEY ("ai_program_id") REFERENCES "company_os"."ai_programs"("id") ON DELETE SET NULL;
+    ADD CONSTRAINT "program_documents_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
 
 
 --
@@ -9719,11 +9719,11 @@ ALTER TABLE ONLY "company_os"."program_documents"
 
 
 --
--- Name: program_plans program_plans_ai_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+-- Name: program_plans program_plans_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
 ALTER TABLE ONLY "company_os"."program_plans"
-    ADD CONSTRAINT "program_plans_ai_program_id_fkey" FOREIGN KEY ("ai_program_id") REFERENCES "company_os"."ai_programs"("id") ON DELETE CASCADE;
+    ADD CONSTRAINT "program_plans_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE CASCADE;
 
 
 --
@@ -10119,11 +10119,11 @@ ALTER TABLE ONLY "htt"."pull_requests"
 
 
 --
--- Name: repos repos_ai_program_id_fkey; Type: FK CONSTRAINT; Schema: htt; Owner: -
+-- Name: repos repos_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: htt; Owner: -
 --
 
 ALTER TABLE ONLY "htt"."repos"
-    ADD CONSTRAINT "repos_ai_program_id_fkey" FOREIGN KEY ("ai_program_id") REFERENCES "company_os"."ai_programs"("id") ON DELETE RESTRICT;
+    ADD CONSTRAINT "repos_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE RESTRICT;
 
 
 --
@@ -10193,10 +10193,10 @@ ALTER TABLE "company_os"."affiliate_payouts" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "company_os"."affiliates" ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: ai_programs; Type: ROW SECURITY; Schema: company_os; Owner: -
+-- Name: pr_programs; Type: ROW SECURITY; Schema: company_os; Owner: -
 --
 
-ALTER TABLE "company_os"."ai_programs" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "company_os"."pr_programs" ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: application_stage_log; Type: ROW SECURITY; Schema: company_os; Owner: -
@@ -13478,12 +13478,12 @@ GRANT SELECT ON TABLE "company_os"."affiliates" TO "team_chatbot_reader";
 
 
 --
--- Name: TABLE "ai_programs"; Type: ACL; Schema: company_os; Owner: -
+-- Name: TABLE "pr_programs"; Type: ACL; Schema: company_os; Owner: -
 --
 
-GRANT SELECT ON TABLE "company_os"."ai_programs" TO "chatbot_reader";
-GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."ai_programs" TO "chatbot_writer";
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "company_os"."ai_programs" TO "service_role";
+GRANT SELECT ON TABLE "company_os"."pr_programs" TO "chatbot_reader";
+GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."pr_programs" TO "chatbot_writer";
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "company_os"."pr_programs" TO "service_role";
 
 
 --

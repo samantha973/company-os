@@ -1,5 +1,5 @@
 // Portal "Documents" data access: the company-level document list, upload, and
-// delete-own for /portal/documents. Same discipline as lib/portal/ai-programs.ts:
+// delete-own for /portal/documents. Same discipline as lib/portal/pr-programs.ts:
 // every read/write is scoped to the actor's own companyScope and cross-company
 // ids are rejected (IDOR guard). Delete is uploader-only on this surface: you
 // may remove what you uploaded, never someone else's file
@@ -20,7 +20,7 @@ import {
 
 export type { ClientDocument } from "@/lib/client-documents";
 
-// The single company an actor acts under (same rule as ai-programs.ts): with one
+// The single company an actor acts under (same rule as pr-programs.ts): with one
 // membership it's implied; with several the form supplies the choice, which is
 // still validated against companyScope.
 function resolveCompanyId(actor: PortalActor, companyId?: string): string | null {

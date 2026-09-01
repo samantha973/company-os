@@ -23,8 +23,8 @@ function refresh() {
 
 export type BacklogItemInput = {
   group_key: string;
-  // Optional AI Program tag. null/undefined = company-wide (the default).
-  ai_program_id?: string | null;
+  // Optional PR Program tag. null/undefined = company-wide (the default).
+  pr_program_id?: string | null;
   ref?: string;
   title: string;
   who?: string;
@@ -66,10 +66,10 @@ async function groupExists(companyId: string, key: string | undefined): Promise<
   return !!data;
 }
 
-// An AI Program tag is only valid when the program belongs to the same company.
+// A PR Program tag is only valid when the program belongs to the same company.
 async function programBelongs(companyId: string, programId: string): Promise<boolean> {
   const { data } = await companyOs
-    .from("ai_programs")
+    .from("pr_programs")
     .select("id")
     .eq("id", programId)
     .eq("company_id", companyId)
@@ -92,8 +92,8 @@ export async function createBacklogItem(
   if (input.status && !BACKLOG_STATUSES.includes(input.status)) {
     return { ok: false, error: "Invalid status." };
   }
-  if (input.ai_program_id && !(await programBelongs(companyId, input.ai_program_id))) {
-    return { ok: false, error: "Invalid AI Program." };
+  if (input.pr_program_id && !(await programBelongs(companyId, input.pr_program_id))) {
+    return { ok: false, error: "Invalid PR Program." };
   }
 
   const row = {
@@ -113,15 +113,15 @@ export async function createBacklogItem(
 
 export async function updateBacklogItem(id: string, patch: Partial<BacklogItemInput>): Promise<Result> {
   const admin = await requireAdmin();
-  if (patch.group_key !== undefined || patch.ai_program_id) {
+  if (patch.group_key !== undefined || patch.pr_program_id) {
     const { data: item } = await companyOs.from(TABLE).select("company_id").eq("id", id).maybeSingle();
     if (!item) return { ok: false, error: "Item not found." };
     const companyId = (item as { company_id: string }).company_id;
     if (patch.group_key !== undefined && !(await groupExists(companyId, patch.group_key))) {
       return { ok: false, error: "Invalid group." };
     }
-    if (patch.ai_program_id && !(await programBelongs(companyId, patch.ai_program_id))) {
-      return { ok: false, error: "Invalid AI Program." };
+    if (patch.pr_program_id && !(await programBelongs(companyId, patch.pr_program_id))) {
+      return { ok: false, error: "Invalid PR Program." };
     }
   }
   if (patch.edge8_priority && !BACKLOG_PRIORITIES.includes(patch.edge8_priority)) {
@@ -209,8 +209,8 @@ export type RoadmapGroupInput = {
   step_label?: string;
   title: string;
   intro?: string;
-  // Optional AI Program tag. null/undefined = company-wide (the default).
-  ai_program_id?: string | null;
+  // Optional PR Program tag. null/undefined = company-wide (the default).
+  pr_program_id?: string | null;
 };
 
 function slugify(title: string): string {
@@ -231,8 +231,8 @@ export async function createRoadmapGroup(
   if (!companyId) return { ok: false, error: "Pick a client first." };
   const title = input.title?.trim();
   if (!title) return { ok: false, error: "Give the group a title." };
-  if (input.ai_program_id && !(await programBelongs(companyId, input.ai_program_id))) {
-    return { ok: false, error: "Invalid AI Program." };
+  if (input.pr_program_id && !(await programBelongs(companyId, input.pr_program_id))) {
+    return { ok: false, error: "Invalid PR Program." };
   }
 
   // Unique key per company: slug of the title, suffixed on collision.
@@ -253,7 +253,7 @@ export async function createRoadmapGroup(
     step_label: input.step_label?.trim() || null,
     title,
     intro: input.intro?.trim() || null,
-    ai_program_id: input.ai_program_id ?? null,
+    pr_program_id: input.pr_program_id ?? null,
     sort_order: sortOrder,
   };
   const { data, error } = await companyOs.from(GROUPS_TABLE).insert(row).select("id").single();

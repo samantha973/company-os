@@ -11,15 +11,15 @@ type ActionResult = { ok: boolean; error?: string };
 export type ProgramOption = { id: string; name: string };
 
 // Only these fields are rendered, so any meeting row shape works (the admin
-// AdminMeetingRow, or the portal's PortalMeeting). The AI Program fields are
+// AdminMeetingRow, or the portal's PortalMeeting). The PR Program fields are
 // optional: surfaces that do not load them just never show a tag.
 type MeetingRowLike = {
   id: string;
   title: string | null;
   meetingDate: string | null;
   publishedAt: string | null;
-  aiProgramId?: string | null;
-  aiProgramName?: string | null;
+  prProgramId?: string | null;
+  prProgramName?: string | null;
 };
 
 // Client Hub meetings tab. Read-only list of meetings with their publish state.
@@ -27,7 +27,7 @@ type MeetingRowLike = {
 // Unpublish control; on client-facing surfaces it is omitted and the caller
 // passes only already-published meetings. When `programAction` and
 // `programOptions` are also supplied (same Edge8 surfaces), each row gets a
-// small AI Program select ("Company-wide" = no tag), the same pattern as the
+// small PR Program select ("Company-wide" = no tag), the same pattern as the
 // documents tab. Client-facing renders show a tagged row's program name as
 // muted text instead.
 export function MeetingsPanel({
@@ -92,10 +92,10 @@ export function MeetingsPanel({
                     m.title || "Untitled meeting"
                   )}
                 </div>
-                {(m.meetingDate || (!canTag && m.aiProgramName)) && (
+                {(m.meetingDate || (!canTag && m.prProgramName)) && (
                   <div className="admin-list-sub">
                     {m.meetingDate && formatDate(m.meetingDate)}
-                    {!canTag && m.aiProgramName && `${m.meetingDate ? " · " : ""}${m.aiProgramName}`}
+                    {!canTag && m.prProgramName && `${m.meetingDate ? " · " : ""}${m.prProgramName}`}
                   </div>
                 )}
               </div>
@@ -103,11 +103,11 @@ export function MeetingsPanel({
                 {canTag && (
                   <select
                     className="admin-select"
-                    value={m.aiProgramId ?? ""}
+                    value={m.prProgramId ?? ""}
                     disabled={pending && busyId === m.id}
                     onChange={(e) => setProgram(m.id, e.target.value || null)}
                     style={{ maxWidth: 220 }}
-                    aria-label="Tag this meeting to an AI Program (optional)"
+                    aria-label="Tag this meeting to a PR Program (optional)"
                   >
                     <option value="">Company-wide</option>
                     {programOptions!.map((p) => (

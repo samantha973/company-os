@@ -28,7 +28,7 @@ import { publishMeeting, setMeetingProgram } from "../../(hub)/meetings/actions"
 
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: "AI Program" };
+export const metadata = { title: "PR Program" };
 
 const STATUS_TONE: Record<ProgramStatus, BadgeTone> = {
   draft: "neutral",
@@ -50,7 +50,7 @@ function fmtHours(n: number): string {
   return n.toLocaleString(undefined, { maximumFractionDigits: 1 });
 }
 
-// The team AI Program view, mirroring the admin program view (KPI strip +
+// The team PR Program view, mirroring the admin program view (KPI strip +
 // Roadmap / Boards / Tokens / Pull Requests / Documents / Meetings) with team
 // affordances: roadmap add/edit as the team roadmap tab allows, boards linking
 // to the team board routes, the team publish/tag meeting actions, and the team
@@ -86,13 +86,13 @@ export default async function TeamProgramDetailPage({
   // (Add-item options: the program's own groups plus every company-wide one,
   // so the first program item can land under a company-wide section too).
   const [{ data: programRows }, { data: groupRows }, { data: overviewRow }] = await Promise.all([
-    companyOs.from("ai_programs").select("id, name").eq("company_id", params.companyId).order("created_at", { ascending: false }),
+    companyOs.from("pr_programs").select("id, name").eq("company_id", params.companyId).order("created_at", { ascending: false }),
     companyOs.from("client_roadmap_groups").select(ROADMAP_GROUPS_SELECT).eq("company_id", params.companyId).is("archived_at", null).order("sort_order", { ascending: true }),
     companyOs.from("client_roadmap_overview").select("body").eq("company_id", params.companyId).maybeSingle(),
   ]);
   const programOptions = (programRows ?? []) as ProgramOption[];
   const allGroups = (groupRows ?? []) as unknown as RoadmapGroup[];
-  const addableGroups = allGroups.filter((g) => g.ai_program_id === detail.id || g.ai_program_id === null);
+  const addableGroups = allGroups.filter((g) => g.pr_program_id === detail.id || g.pr_program_id === null);
   const overview = ((overviewRow as { body: string } | null)?.body ?? "").trim() || null;
   const hasRepo = !!detail.repoId;
   const basePath = `/team/clients/${company.id}/programs/${detail.id}`;

@@ -21,7 +21,7 @@ type SseEvent =
   | { type: "error"; error: string }
   | { type: "done"; messages: unknown[] };
 
-const KICKOFF = "Let's begin building my AI Program Plan.";
+const KICKOFF = "Let's begin building my PR Program Plan.";
 const HTML_BLOCK = /```html\s*([\s\S]*?)```/i;
 const HTML_TAIL = /```html[\s\S]*$/i;
 
@@ -38,8 +38,8 @@ function renderInline(text: string, keyBase: string): React.ReactNode[] {
 // Keep the raw brief HTML out of the chat bubble: replace a finished block with a
 // note, and an in-progress fence tail with an "assembling" note.
 function stripBrief(text: string): string {
-  if (HTML_BLOCK.test(text)) return text.replace(HTML_BLOCK, "\n(Your AI Program Brief is ready — save it below.)\n");
-  if (HTML_TAIL.test(text)) return text.replace(HTML_TAIL, "\n(Assembling your AI Program Brief…)\n");
+  if (HTML_BLOCK.test(text)) return text.replace(HTML_BLOCK, "\n(Your PR Program Brief is ready — save it below.)\n");
+  if (HTML_TAIL.test(text)) return text.replace(HTML_TAIL, "\n(Assembling your PR Program Brief…)\n");
   return text;
 }
 
@@ -71,7 +71,7 @@ export function PlanChat({ companies }: { companies: CompanyOption[] }) {
   const [input, setInput] = useState("");
   const [pending, setPending] = useState(false);
   const [brief, setBrief] = useState<string | null>(null);
-  const [planName, setPlanName] = useState("AI Program Plan");
+  const [planName, setPlanName] = useState("PR Program Plan");
   const [companyId, setCompanyId] = useState(companies[0]?.companyId ?? "");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -211,7 +211,7 @@ export function PlanChat({ companies }: { companies: CompanyOption[] }) {
 
       {brief && (
         <div className="admin-card admin-section-card" style={{ marginTop: 14, borderColor: "var(--admin-ok-ink, #2e7d32)" }}>
-          <h2 className="admin-card-title" style={{ marginBottom: 8 }}>Your AI Program Brief is ready</h2>
+          <h2 className="admin-card-title" style={{ marginBottom: 8 }}>Your PR Program Brief is ready</h2>
           <label className="admin-label" htmlFor="plan-name">Program name</label>
           <input
             id="plan-name"

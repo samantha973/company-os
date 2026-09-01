@@ -3,9 +3,9 @@
 // Reads the tracker table exports (JSON files from `supabase db query --linked "select * from public.<t>"`,
 // one per table, in the directory given as argv[2]) plus phase2-identity-map.json, and writes a single
 // idempotent SQL file (argv[3]) that:
-//   1. flags the 5 companies is_ai_program=true, backfills people.github_login,
+//   1. flags the 5 companies is_pr_program=true, backfills people.github_login,
 //      inserts company_github_orgs and person_git_emails (source='discovered'),
-//   2. creates one company_os.ai_programs row per tracker project (deterministic
+//   2. creates one company_os.pr_programs row per tracker project (deterministic
 //      uuid passed in, so re-runs upsert), one htt.repos row per project keeping
 //      the tracker project uuid as the repo id,
 //   3. copies pull_requests, token_entries, man_hour_entries, client_identities,
@@ -112,7 +112,7 @@ let sql = `-- Applied via Supabase Management API (supabase db query --linked, r
 -- (API request-size cap); apply in order, re-apply safe.
 
 -- 1) companies touched become AI-program companies
-update company_os.companies set is_ai_program = true
+update company_os.companies set is_pr_program = true
  where id in (${[...new Set(clients.map((c) => companyOf(c.id)))].map(q).join(",")});
 
 `;
@@ -145,9 +145,9 @@ sql += insert(
   "on conflict (git_email) do nothing"
 );
 
-sql += "\n-- 2) one AI Program per tracker project (deterministic ids), then htt.repos keeping project uuids\n";
+sql += "\n-- 2) one PR Program per tracker project (deterministic ids), then htt.repos keeping project uuids\n";
 sql += insert(
-  "company_os.ai_programs",
+  "company_os.pr_programs",
   ["id", "company_id", "name", "status", "repo_url", "github_repo", "github_repo_id", "created_by"],
   projects.map((p) => ({
     id: detUuid(`program:${p.id}`),
@@ -163,12 +163,12 @@ sql += insert(
 );
 sql += insert(
   "htt.repos",
-  ["id", "ai_program_id", "company_id", "slug", "name", "github_repo", "github_repo_id", "github_repo_aliases",
+  ["id", "pr_program_id", "company_id", "slug", "name", "github_repo", "github_repo_id", "github_repo_aliases",
    "roi_metric_name", "roi_metric_unit", "roi_metric_baseline", "roi_metric_target", "roi_metric_period",
    "started_at", "ended_at", "status", "last_synced_at", "live_url", "created_by", "created_at", "updated_at"],
   projects.map((p) => ({
     ...p,
-    ai_program_id: detUuid(`program:${p.id}`),
+    pr_program_id: detUuid(`program:${p.id}`),
     company_id: companyOf(p.client_id),
     github_repo_aliases: p.github_repo_aliases ?? [],
     created_by: p.created_by == null ? null : String(p.created_by),

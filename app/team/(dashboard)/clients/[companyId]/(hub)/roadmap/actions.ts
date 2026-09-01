@@ -29,8 +29,8 @@ export async function teamCreateRoadmapItem(
   const r = await createRoadmapItemForActor(actor, companyId, input);
   if (r.ok) {
     refresh(companyId);
-    if (input.ai_program_id) {
-      revalidatePath(`/team/clients/${companyId}/programs/${input.ai_program_id}`);
+    if (input.pr_program_id) {
+      revalidatePath(`/team/clients/${companyId}/programs/${input.pr_program_id}`);
     }
   }
   return r;

@@ -55,7 +55,7 @@ function putToSignedUrl(signedUrl: string, file: File, onProgress: (p: number) =
   });
 }
 
-// programId (optional) tags every upload to that AI Program, so uploads from
+// programId (optional) tags every upload to that PR Program, so uploads from
 // a program view land in its Documents tab; the server re-validates it.
 export function ClientDocumentsList({
   documents,

@@ -1,7 +1,7 @@
-// Shared, company-scoped loaders for the AI Program view (Client Hub by AI
-// Program, PR 1). An AI Program = one company_os.ai_programs row, optionally
+// Shared, company-scoped loaders for the PR Program view (Client Hub by AI
+// Program, PR 1). A PR Program = one company_os.pr_programs row, optionally
 // 1:1 with an htt.repos row (tracker telemetry), plus roadmap items, boards,
-// and documents tagged via their nullable ai_program_id columns.
+// and documents tagged via their nullable pr_program_id columns.
 //
 // Same discipline as lib/admin/company-hub.ts: these take a companyId directly
 // and never widen scope; authorization is the caller's gate (requireAdmin via
@@ -39,7 +39,7 @@ export type ProgramSummary = {
   aiTokens: number; // token_entries, kind claude/app
   leverage: number | null; // value tokens per delivered hour (multiple); null when no hours
   prsMergedLast7d: number;
-  // Company OS rollups (by ai_program_id).
+  // Company OS rollups (by pr_program_id).
   roadmapDone: number; // backlog items with status 'shipped'
   roadmapTotal: number;
   boardCount: number; // active boards keyed to this program
@@ -80,7 +80,7 @@ export type ProgramDetail = ProgramSummary & {
   prTotalAll: number; // full count regardless of filter (tab badge)
   weeklyHours: ProgramWeek[]; // last 8 ISO weeks, oldest first
   documents: ClientDocument[];
-  meetings: AdminMeetingRow[]; // meetings tagged to this program (meetings.ai_program_id)
+  meetings: AdminMeetingRow[]; // meetings tagged to this program (meetings.pr_program_id)
 };
 
 export type ProgramPrOptions = {
@@ -130,7 +130,7 @@ type ProgramRow = {
 };
 
 // The select behind ProgramRow, exported so a surface that already needs the
-// full ai_programs rows (the hub home) can fetch them once and hand them in.
+// full pr_programs rows (the hub home) can fetch them once and hand them in.
 export const PROGRAM_SELECT = "id, name, status, github_repo, repo_url";
 
 // Everything listProgramSummaries aggregates over, so a caller that already
@@ -141,30 +141,30 @@ export const PROGRAM_SELECT = "id, name, status, github_repo, repo_url";
 export type ProgramSummaryInputs = {
   programs: ProgramRow[];
   delivery: DeliveryRaw;
-  backlogRows: Array<{ ai_program_id: string | null; status: string }>; // active items
-  boardRows: Array<{ ai_program_id: string | null }>; // active boards
+  backlogRows: Array<{ pr_program_id: string | null; status: string }>; // active items
+  boardRows: Array<{ pr_program_id: string | null }>; // active boards
 };
 
 export async function fetchProgramSummaryInputs(companyId: string): Promise<ProgramSummaryInputs> {
   const [{ data: programData }, delivery, backlogRows, boardRows] = await Promise.all([
     companyOs
-      .from("ai_programs")
+      .from("pr_programs")
       .select(PROGRAM_SELECT)
       .eq("company_id", companyId)
       .order("created_at", { ascending: false }),
     fetchDeliveryRaw([companyId]),
-    fetchAll<{ ai_program_id: string | null; status: string }>(() =>
+    fetchAll<{ pr_program_id: string | null; status: string }>(() =>
       companyOs
         .from("client_backlog_items")
-        .select("ai_program_id, status")
+        .select("pr_program_id, status")
         .eq("company_id", companyId)
         .is("archived_at", null)
         .order("id"),
     ),
-    fetchAll<{ ai_program_id: string | null }>(() =>
+    fetchAll<{ pr_program_id: string | null }>(() =>
       companyOs
         .from("boards")
-        .select("ai_program_id")
+        .select("pr_program_id")
         .eq("client_company_id", companyId)
         .eq("status", "active")
         .is("archived_at", null)
@@ -186,7 +186,7 @@ export async function listProgramSummaries(
   const { programs, backlogRows, boardRows } = inputs;
   const { repos, hourRows, aiRows } = inputs.delivery;
   if (programs.length === 0) return [];
-  const repoByProgram = new Map(repos.filter((r) => r.ai_program_id).map((r) => [r.ai_program_id as string, r]));
+  const repoByProgram = new Map(repos.filter((r) => r.pr_program_id).map((r) => [r.pr_program_id as string, r]));
   const repoIds = repos.map((r) => r.id);
 
   // The only repo-dependent query; everything else arrives via the inputs.
@@ -222,17 +222,17 @@ export async function listProgramSummaries(
   const doneByProgram = new Map<string, number>();
   const totalByProgram = new Map<string, number>();
   for (const r of backlogRows) {
-    if (!r.ai_program_id) continue;
-    totalByProgram.set(r.ai_program_id, (totalByProgram.get(r.ai_program_id) ?? 0) + 1);
+    if (!r.pr_program_id) continue;
+    totalByProgram.set(r.pr_program_id, (totalByProgram.get(r.pr_program_id) ?? 0) + 1);
     if (r.status === "shipped") {
-      doneByProgram.set(r.ai_program_id, (doneByProgram.get(r.ai_program_id) ?? 0) + 1);
+      doneByProgram.set(r.pr_program_id, (doneByProgram.get(r.pr_program_id) ?? 0) + 1);
     }
   }
 
   const boardsByProgram = new Map<string, number>();
   for (const r of boardRows) {
-    if (!r.ai_program_id) continue;
-    boardsByProgram.set(r.ai_program_id, (boardsByProgram.get(r.ai_program_id) ?? 0) + 1);
+    if (!r.pr_program_id) continue;
+    boardsByProgram.set(r.pr_program_id, (boardsByProgram.get(r.pr_program_id) ?? 0) + 1);
   }
 
   return programs.map((p) => {
@@ -383,14 +383,14 @@ export async function getProgramDetail(
       .from("client_backlog_items")
       .select(BACKLOG_SELECT)
       .eq("company_id", companyId)
-      .eq("ai_program_id", programId)
+      .eq("pr_program_id", programId)
       .is("archived_at", null)
       .order("sort_order", { ascending: true }),
     companyOs
       .from("boards")
       .select("id, name, slug")
       .eq("client_company_id", companyId)
-      .eq("ai_program_id", programId)
+      .eq("pr_program_id", programId)
       .eq("status", "active")
       .is("archived_at", null)
       .order("sort_order", { ascending: true }),
@@ -428,7 +428,7 @@ export async function getProgramDetail(
   // still sits under, so no item renders orphaned.
   const usedKeys = new Set(roadmapItems.map((i) => i.group_key));
   const roadmapGroups = ((groupData ?? []) as unknown as RoadmapGroup[]).filter(
-    (g) => g.ai_program_id === programId || (g.ai_program_id === null && usedKeys.has(g.key)),
+    (g) => g.pr_program_id === programId || (g.pr_program_id === null && usedKeys.has(g.key)),
   );
 
   const boardRows = (boardData ?? []) as Array<{ id: string; name: string; slug: string }>;

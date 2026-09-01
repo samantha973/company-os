@@ -12,7 +12,7 @@ import { humanize } from "@/lib/admin/format";
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
-export const metadata: Metadata = { title: "AI Programs" };
+export const metadata: Metadata = { title: "PR Programs" };
 
 function fmtTokens(n: number): string {
   return Math.round(n).toLocaleString("en-US");
@@ -25,7 +25,7 @@ function fmtCompact(n: number): string {
   return new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(n);
 }
 
-// The AI Programs hub: a company-grain overview row (the shared Human Token
+// The PR Programs hub: a company-grain overview row (the shared Human Token
 // pool, AI usage, merged pull requests, and normalized leverage), then the AI
 // Program cards. One list for the whole portal (/portal/programs redirects
 // here). Every figure is a client-safe scalar from the projection boundary in
@@ -38,7 +38,7 @@ export default async function PortalHubPage() {
     listPortalProgramSummaries(actor),
   ]);
   // Creating programs is contributor+ (viewers browse only), same gate as the
-  // former AI Programs list page.
+  // former PR Programs list page.
   const canCreate = contributorCompanyScope(actor).length > 0;
 
   const boughtSub =
@@ -48,12 +48,12 @@ export default async function PortalHubPage() {
     <div className="admin-content">
       <PageHead
         eyebrow="Client Portal"
-        title="AI Programs"
-        sub="Your AI Programs with Edge8, and the company-wide delivery they add up to."
+        title="PR Programs"
+        sub="Your PR Programs with Edge8, and the company-wide delivery they add up to."
         action={
           canCreate ? (
             <Link href="/portal/programs/add" className="admin-btn admin-btn--primary">
-              Add AI Program
+              Add PR Program
             </Link>
           ) : undefined
         }
@@ -76,15 +76,15 @@ export default async function PortalHubPage() {
 
       {programs.length === 0 ? (
         <div className="admin-card admin-section-card">
-          <h2 className="admin-card-title" style={{ marginBottom: 8 }}>No AI Programs yet</h2>
+          <h2 className="admin-card-title" style={{ marginBottom: 8 }}>No PR Programs yet</h2>
           <p className="admin-page-sub" style={{ margin: 0 }}>
-            This is where you plan and track AI programs with Edge8. Start one from a guided plan or by
+            This is where you plan and track PR programs with Edge8. Start one from a guided plan or by
             uploading your own documents.
           </p>
           {canCreate && (
             <div style={{ marginTop: 16 }}>
               <Link href="/portal/programs/add" className="admin-btn admin-btn--primary">
-                Add AI Program
+                Add PR Program
               </Link>
             </div>
           )}

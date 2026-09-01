@@ -42,9 +42,9 @@ for (const g of YEAR_GOALS) {
 
 // ── Collectors, keyed by metrics.name. Each returns a number or null (skip). ──
 const collectors = {
-  'Open AI Program deals': async () => {
+  'Open PR Program deals': async () => {
     const [r] = await sql`select count(*)::int as n from company_os.deals
-      where status = 'open' and metadata->'categories' @> '[{"name":"AI Program"}]'::jsonb`;
+      where status = 'open' and metadata->'categories' @> '[{"name":"PR Program"}]'::jsonb`;
     return r.n;
   },
   'Sync packet on time': async () => {
