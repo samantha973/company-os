@@ -1,14 +1,10 @@
 import Link from "next/link";
 import { Badge, type BadgeTone } from "@/components/admin/Badge";
-import { MetricCard } from "@/components/admin/MetricCard";
 import type { ProgramStatus, ProgramSummary } from "@/lib/hub/program";
-import { formatLeverage, type TokenUsage } from "@/lib/hub/tokens";
 
 // The hub home's top band, shared by the admin company 360 (Client Hub view)
-// and the team client hub Overview: the company-grain Human Tokens strip, then
-// the PR Programs card grid. Read-only; each card links into the surface's own
-// program view via programHref. Markup mirrors the admin hub home verbatim so
-// both render identically.
+// and the team client hub Overview: the PR Programs card grid. Read-only; each
+// card links into the surface's own program view via programHref.
 
 const PROGRAM_STATUS_TONE: Record<ProgramStatus, BadgeTone> = {
   draft: "neutral",
@@ -16,37 +12,15 @@ const PROGRAM_STATUS_TONE: Record<ProgramStatus, BadgeTone> = {
   complete: "info",
 };
 
-function fmtHours(n: number): string {
-  return n.toLocaleString(undefined, { maximumFractionDigits: 1 });
-}
-
 export function HubProgramsBand({
-  usage,
   programs,
   programHref,
 }: {
-  usage: TokenUsage;
   programs: ProgramSummary[];
   programHref: (programId: string) => string;
 }) {
   return (
     <>
-      <div className="hub-band-head">
-        <h2 className="admin-card-title">Human Tokens</h2>
-        <span className="admin-cell-muted" style={{ fontSize: 12 }}>Company credit pool, shared by all PR Programs</span>
-      </div>
-      <div className="mp-kpi-grid" style={{ marginBottom: 20 }}>
-        <MetricCard label="Bought" value={usage.boughtTokens.toLocaleString()} sub="Purchased + allocated tokens" />
-        <MetricCard label="Delivered" value={fmtHours(usage.deliveredHours)} sub="Hours of tracked work" />
-        <MetricCard label="Balance" value={fmtHours(usage.balanceTokens)} sub="Bought minus delivered" />
-        <MetricCard label="Planned" value={usage.plannedTokens.toLocaleString()} sub="Roadmap high estimates" />
-        <MetricCard
-          label="AI leverage"
-          value={formatLeverage(usage.leverage)}
-          sub="AI value delivered per human hour"
-        />
-      </div>
-
       <div className="hub-band-head">
         <h2 className="admin-card-title">PR Programs</h2>
       </div>
@@ -68,9 +42,6 @@ export function HubProgramsBand({
                   <span className="admin-cell-strong" style={{ fontSize: 15 }}>{p.name}</span>
                   <Badge tone={PROGRAM_STATUS_TONE[p.status]}>{p.status}</Badge>
                 </div>
-                <div className="admin-cell-muted admin-cell-mono" style={{ marginTop: 4, minHeight: 18, fontSize: 12, overflowWrap: "anywhere" }}>
-                  {p.githubRepo ?? "No repo connected"}
-                </div>
                 <div style={{ marginTop: 14 }}>
                   <div className="admin-cell-muted hub-program-progressrow">
                     <span>
@@ -85,9 +56,6 @@ export function HubProgramsBand({
                   </div>
                 </div>
                 <div className="admin-cell-muted" style={{ marginTop: 12, fontSize: 12 }}>
-                  {p.repoId
-                    ? `${fmtHours(p.deliveredHours)} hrs delivered · ${p.prsMergedLast7d} PR${p.prsMergedLast7d === 1 ? "" : "s"} merged 7d · `
-                    : ""}
                   {p.boardCount} {p.boardCount === 1 ? "board" : "boards"}
                 </div>
               </Link>

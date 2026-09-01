@@ -486,7 +486,6 @@ export default async function CompanyDetailPage({
 
       {hub && (
         <HubProgramsBand
-          usage={hub.usage}
           programs={hub.programs}
           programHref={(programId) => `/admin/revenue/companies/${company.id}/programs/${programId}`}
         />

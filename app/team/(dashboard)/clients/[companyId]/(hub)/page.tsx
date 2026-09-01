@@ -18,7 +18,6 @@ export default async function TeamClientHubOverview({ params }: { params: { comp
 
   return (
     <HubProgramsBand
-      usage={overview.usage}
       programs={overview.programs}
       programHref={(programId) => `/team/clients/${params.companyId}/programs/${programId}`}
     />
