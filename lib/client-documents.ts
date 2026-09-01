@@ -24,6 +24,12 @@ export type ClientDocument = {
   uploadedBy: string | null; // email as recorded at upload time
   uploaderName: string | null; // resolved display name, when the email matches a person
   createdAt: string;
+  // A row is EITHER an uploaded file (source 'upload', storagePath set) OR an
+  // external link (source 'link', externalUrl set) — a Google Drive URL or the
+  // like. The DB CHECK enforces exactly one; older rows with no source default
+  // to 'upload'.
+  source: "upload" | "link";
+  externalUrl: string | null;
 };
 
 type Err = { ok: false; error: string };
@@ -33,13 +39,31 @@ type DocRow = {
   id: string;
   company_id: string;
   pr_program_id: string | null;
-  storage_path: string;
+  storage_path: string | null;
   filename: string;
   size_bytes: number | null;
   uploaded_by: string | null;
   created_at: string;
+  source: string | null;
+  external_url: string | null;
   program: { name: string | null } | { name: string | null }[] | null;
 };
+
+// A link document is valid only for a real http(s) URL. This blocks
+// javascript:/data: and other schemes that would be unsafe to open, and keeps
+// storage-path rows and link rows cleanly separated.
+export function normalizeExternalUrl(raw: string): string | null {
+  const trimmed = (raw ?? "").trim();
+  if (!trimmed) return null;
+  let parsed: URL;
+  try {
+    parsed = new URL(trimmed);
+  } catch {
+    return null;
+  }
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+  return parsed.toString();
+}
 
 const one = <T,>(e: T | T[] | null | undefined): T | null =>
   Array.isArray(e) ? e[0] ?? null : e ?? null;
@@ -51,7 +75,7 @@ export function safeDocName(filename: string): string {
 }
 
 const SELECT =
-  "id, company_id, pr_program_id, storage_path, filename, size_bytes, uploaded_by, created_at, program:pr_programs!pr_program_id(name)";
+  "id, company_id, pr_program_id, storage_path, filename, size_bytes, uploaded_by, created_at, source, external_url, program:pr_programs!pr_program_id(name)";
 
 // Uploaded-by emails resolve to people names for display; unmatched emails show
 // as-is. One IN query for the whole list.
@@ -81,6 +105,8 @@ function mapRows(rows: DocRow[], names: Map<string, string>): ClientDocument[] {
     uploadedBy: r.uploaded_by,
     uploaderName: r.uploaded_by ? names.get(r.uploaded_by.toLowerCase()) ?? null : null,
     createdAt: r.created_at,
+    source: r.source === "link" ? "link" : "upload",
+    externalUrl: r.external_url,
   }));
 }
 
@@ -103,21 +129,25 @@ export async function listDocumentsForCompanies(companyIds: string[]): Promise<C
 export async function getDocumentRow(id: string): Promise<{
   id: string;
   companyId: string;
-  storagePath: string;
+  storagePath: string | null;
   filename: string;
   uploadedBy: string | null;
+  source: "upload" | "link";
+  externalUrl: string | null;
 } | null> {
   const { data } = await companyOs
     .from("program_documents")
-    .select("id, company_id, storage_path, filename, uploaded_by")
+    .select("id, company_id, storage_path, filename, uploaded_by, source, external_url")
     .eq("id", id)
     .maybeSingle();
   const row = data as {
     id: string;
     company_id: string;
-    storage_path: string;
+    storage_path: string | null;
     filename: string;
     uploaded_by: string | null;
+    source: string | null;
+    external_url: string | null;
   } | null;
   if (!row) return null;
   return {
@@ -126,6 +156,8 @@ export async function getDocumentRow(id: string): Promise<{
     storagePath: row.storage_path,
     filename: row.filename,
     uploadedBy: row.uploaded_by,
+    source: row.source === "link" ? "link" : "upload",
+    externalUrl: row.external_url,
   };
 }
 
@@ -188,12 +220,43 @@ export async function recordDocument(input: {
   return { ok: true };
 }
 
-// Remove the storage object, then the row. Callers do the scope/ownership check;
-// this just executes. Storage-first so a failed removal never leaves a row that
-// points at a live file the user believes deleted.
-export async function deleteDocumentRow(row: { id: string; storagePath: string }): Promise<DocResult> {
-  const { error: storageErr } = await supabase.storage.from(DOCUMENTS_BUCKET).remove([row.storagePath]);
-  if (storageErr) return { ok: false, error: "Could not delete the file." };
+// Record an external link (e.g. a Google Drive URL) as a document row. No bucket
+// object is created; the row carries external_url and source='link', with
+// storage_path NULL. The caller validates scope/permission; the URL is
+// re-validated here so an unsafe scheme never reaches the list.
+export async function recordLinkDocument(input: {
+  companyId: string;
+  programId?: string | null;
+  url: string;
+  label: string;
+  uploadedBy: string;
+}): Promise<DocResult> {
+  const url = normalizeExternalUrl(input.url);
+  if (!url) return { ok: false, error: "Enter a valid http(s) link." };
+  const label = input.label.trim().slice(0, 200) || url;
+  const { error } = await companyOs.from("program_documents").insert({
+    company_id: input.companyId,
+    pr_program_id: input.programId ?? null,
+    storage_path: null,
+    external_url: url,
+    source: "link",
+    filename: label,
+    size_bytes: null,
+    uploaded_by: input.uploadedBy,
+  });
+  if (error) return { ok: false, error: "Could not save the link." };
+  return { ok: true };
+}
+
+// Remove a document. For an uploaded file, delete the storage object first, then
+// the row (storage-first so a failed removal never orphans a row pointing at a
+// live file). Link rows have no object, so just delete the row. Callers do the
+// scope/ownership check; this just executes.
+export async function deleteDocumentRow(row: { id: string; storagePath: string | null }): Promise<DocResult> {
+  if (row.storagePath) {
+    const { error: storageErr } = await supabase.storage.from(DOCUMENTS_BUCKET).remove([row.storagePath]);
+    if (storageErr) return { ok: false, error: "Could not delete the file." };
+  }
   const { error } = await companyOs.from("program_documents").delete().eq("id", row.id);
   if (error) return { ok: false, error: "Could not delete the document record." };
   return { ok: true };

@@ -30,6 +30,7 @@ export function HubTabs({
     { href: "", label: "Overview" },
     ...companyWideTabs,
     { href: "/documents", label: "Documents" },
+    { href: "/coverage", label: "Coverage" },
     { href: "/meetings", label: "Meetings" },
     { href: "/invoices", label: "Invoices" },
     { href: "/team", label: "Team" },

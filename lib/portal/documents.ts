@@ -13,6 +13,7 @@ import {
   signedDownloadForPath,
   createSignedDocumentUpload,
   recordDocument,
+  recordLinkDocument,
   deleteDocumentRow,
   type ClientDocument,
   type DocResult,
@@ -55,12 +56,23 @@ export async function recordCompanyDocument(
   return recordDocument({ ...input, uploadedBy: actor.email });
 }
 
+export async function recordCompanyLink(
+  actor: PortalActor,
+  input: { companyId?: string; url: string; label: string },
+): Promise<DocResult> {
+  const companyId = resolveCompanyId(actor, input.companyId);
+  if (!companyId) return { ok: false, error: "Pick which company this link is for." };
+  if (!canContribute(actor, companyId)) return { ok: false, error: ROLE_DENIED };
+  return recordLinkDocument({ companyId, url: input.url, label: input.label, uploadedBy: actor.email });
+}
+
 export async function signedCompanyDocumentDownload(
   actor: PortalActor,
   documentId: string,
 ): Promise<DocResult<{ url: string; filename: string }>> {
   const row = await getDocumentRow(documentId);
   if (!row || !actor.companyScope.includes(row.companyId)) return { ok: false, error: "Not found." };
+  if (!row.storagePath) return { ok: false, error: "This is a link — open it directly." };
   const r = await signedDownloadForPath(row.storagePath, row.filename);
   if (!r.ok) return r;
   return { ok: true, url: r.url, filename: row.filename };

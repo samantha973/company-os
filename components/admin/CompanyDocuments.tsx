@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { ClientDocument } from "@/lib/client-documents";
 import {
   adminSignedDocumentUpload,
   adminRecordDocument,
+  adminRecordLink,
   adminDownloadDocument,
   adminDeleteDocument,
 } from "@/app/admin/(dashboard)/revenue/companies/documents-actions";
@@ -76,6 +77,24 @@ export function CompanyDocuments({
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [linkUrl, setLinkUrl] = useState("");
+  const [linkLabel, setLinkLabel] = useState("");
+  const [linkBusy, setLinkBusy] = useState(false);
+
+  async function addLink(e: FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLinkBusy(true);
+    const r = await adminRecordLink({ companyId, programId: programId || null, url: linkUrl, label: linkLabel });
+    setLinkBusy(false);
+    if (!r.ok) {
+      setError(r.error);
+      return;
+    }
+    setLinkUrl("");
+    setLinkLabel("");
+    router.refresh();
+  }
 
   function update(id: number, patch: Partial<QueueItem>) {
     setQueue((q) => q.map((it) => (it.id === id ? { ...it, ...patch } : it)));
@@ -159,6 +178,29 @@ export function CompanyDocuments({
         <input ref={inputRef} type="file" multiple hidden onChange={(e) => { addFiles(Array.from(e.target.files ?? [])); if (inputRef.current) inputRef.current.value = ""; }} />
       </div>
 
+      <form onSubmit={addLink} style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginBottom: 12 }}>
+        <input
+          type="url"
+          className="admin-input"
+          placeholder="Add a link instead (e.g. a Google Drive URL)"
+          value={linkUrl}
+          onChange={(e) => setLinkUrl(e.target.value)}
+          required
+          style={{ flex: "2 1 240px" }}
+        />
+        <input
+          type="text"
+          className="admin-input"
+          placeholder="Label (optional)"
+          value={linkLabel}
+          onChange={(e) => setLinkLabel(e.target.value)}
+          style={{ flex: "1 1 160px" }}
+        />
+        <button type="submit" className="admin-btn admin-btn--sm" disabled={linkBusy || linkUrl.trim() === ""}>
+          {linkBusy ? "Adding…" : "Add link"}
+        </button>
+      </form>
+
       {queue.length > 0 && (
         <div className="admin-list" style={{ marginBottom: 12 }}>
           {queue.map((it) => (
@@ -187,23 +229,35 @@ export function CompanyDocuments({
           {documents.map((d) => (
             <div className="admin-list-row" key={d.id}>
               <div className="admin-list-main">
-                <div className="admin-list-title">{d.filename}</div>
+                <div className="admin-list-title">
+                  {d.source === "link" && d.externalUrl ? (
+                    <a href={d.externalUrl} target="_blank" rel="noopener noreferrer">{d.filename}</a>
+                  ) : (
+                    d.filename
+                  )}
+                </div>
                 <div className="admin-list-sub">
-                  {formatDay(d.createdAt)}
-                  {(d.uploaderName || d.uploadedBy) && ` · uploaded by ${d.uploaderName ?? d.uploadedBy}`}
+                  {d.source === "link" ? "Link" : formatDay(d.createdAt)}
+                  {(d.uploaderName || d.uploadedBy) && ` · ${d.source === "link" ? "added" : "uploaded"} by ${d.uploaderName ?? d.uploadedBy}`}
                   {d.sizeBytes != null && ` · ${formatBytes(d.sizeBytes)}`}
                   {d.programName && ` · ${d.programName}`}
                 </div>
               </div>
               <div className="admin-list-aside">
-                <button
-                  type="button"
-                  className="admin-btn admin-btn--sm"
-                  onClick={() => download(d.id)}
-                  disabled={busyId === d.id}
-                >
-                  {busyId === d.id ? "…" : "Download"}
-                </button>
+                {d.source === "link" && d.externalUrl ? (
+                  <a className="admin-btn admin-btn--sm" href={d.externalUrl} target="_blank" rel="noopener noreferrer">
+                    Open
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    className="admin-btn admin-btn--sm"
+                    onClick={() => download(d.id)}
+                    disabled={busyId === d.id}
+                  >
+                    {busyId === d.id ? "…" : "Download"}
+                  </button>
+                )}
                 <button
                   type="button"
                   className="admin-btn admin-btn--sm admin-btn--danger"

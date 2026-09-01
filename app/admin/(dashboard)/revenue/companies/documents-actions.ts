@@ -6,6 +6,7 @@ import { companyOs } from "@/lib/supabase";
 import {
   createSignedDocumentUpload,
   recordDocument,
+  recordLinkDocument,
   getDocumentRow,
   signedDownloadForPath,
   deleteDocumentRow,
@@ -53,12 +54,42 @@ export async function adminRecordDocument(input: {
   return r;
 }
 
+// Record a Drive/URL link against a company, optionally tagged to one of its PR
+// Programs (re-validated the same way as a tagged upload).
+export async function adminRecordLink(input: {
+  companyId: string;
+  programId?: string | null;
+  url: string;
+  label: string;
+}): Promise<DocResult> {
+  const admin = await requireAdmin();
+  if (input.programId) {
+    const { data } = await companyOs
+      .from("pr_programs")
+      .select("id")
+      .eq("id", input.programId)
+      .eq("company_id", input.companyId)
+      .maybeSingle();
+    if (!data) return { ok: false, error: "That program does not belong to this company." };
+  }
+  const r = await recordLinkDocument({
+    companyId: input.companyId,
+    programId: input.programId ?? null,
+    url: input.url,
+    label: input.label,
+    uploadedBy: admin.email,
+  });
+  if (r.ok) refresh(input.companyId);
+  return r;
+}
+
 export async function adminDownloadDocument(
   documentId: string,
 ): Promise<DocResult<{ url: string; filename: string }>> {
   await requireAdmin();
   const row = await getDocumentRow(documentId);
   if (!row) return { ok: false, error: "Not found." };
+  if (!row.storagePath) return { ok: false, error: "This is a link — open it directly." };
   const r = await signedDownloadForPath(row.storagePath, row.filename);
   if (!r.ok) return r;
   return { ok: true, url: r.url, filename: row.filename };
