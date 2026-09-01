@@ -6,6 +6,7 @@ import {
   signedClientDocumentDownloadForActor,
   signedClientDocumentUploadForActor,
   recordClientDocumentForActor,
+  recordClientLinkForActor,
   deleteOwnClientDocumentForActor,
 } from "@/lib/team/clients";
 import type { DocResult } from "@/lib/client-documents";
@@ -39,6 +40,24 @@ export async function teamRecordClientDocument(input: {
 }): Promise<DocResult> {
   const actor = await requireTeamMember();
   const r = await recordClientDocumentForActor(actor, input);
+  if (r.ok) {
+    revalidatePath(`/team/clients/${input.companyId}`);
+    revalidatePath(`/team/clients/${input.companyId}/documents`);
+    if (input.programId) {
+      revalidatePath(`/team/clients/${input.companyId}/programs/${input.programId}`);
+    }
+  }
+  return r;
+}
+
+export async function teamRecordClientLink(input: {
+  companyId: string;
+  url: string;
+  label: string;
+  programId?: string | null;
+}): Promise<DocResult> {
+  const actor = await requireTeamMember();
+  const r = await recordClientLinkForActor(actor, input);
   if (r.ok) {
     revalidatePath(`/team/clients/${input.companyId}`);
     revalidatePath(`/team/clients/${input.companyId}/documents`);
