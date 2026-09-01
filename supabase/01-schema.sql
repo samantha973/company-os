@@ -2861,8 +2861,11 @@ CREATE TABLE "company_os"."marketing_content" (
     "read_time" "text",
     "published_at" timestamp with time zone,
     "body_html" "text",
+    "company_id" "uuid",
+    "outlet" "text",
+    "reach" integer,
     CONSTRAINT "marketing_calendar_image_type_check" CHECK ((("image_type" IS NULL) OR ("image_type" = ANY (ARRAY['real'::"text", 'ai'::"text", 'mixed'::"text", 'none'::"text"])))),
-    CONSTRAINT "marketing_content_channel_check" CHECK (("channel" = ANY (ARRAY['blog'::"text", 'email'::"text", 'linkedin'::"text", 'facebook'::"text"]))),
+    CONSTRAINT "marketing_content_channel_check" CHECK (("channel" = ANY (ARRAY['blog'::"text", 'email'::"text", 'linkedin'::"text", 'facebook'::"text", 'earned'::"text", 'podcast'::"text", 'speaking'::"text"]))),
     CONSTRAINT "marketing_content_status_check" CHECK (("status" = ANY (ARRAY['idea'::"text", 'drafted'::"text", 'approved'::"text", 'scheduled'::"text", 'published'::"text", 'skipped'::"text"])))
 );
 
@@ -3409,12 +3412,16 @@ CREATE TABLE "company_os"."products" (
 CREATE TABLE "company_os"."program_documents" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "pr_program_id" "uuid",
-    "storage_path" "text" NOT NULL,
+    "storage_path" "text",
     "filename" "text" NOT NULL,
     "size_bytes" bigint,
     "uploaded_by" "text",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "company_id" "uuid" NOT NULL
+    "company_id" "uuid" NOT NULL,
+    "external_url" "text",
+    "source" "text" DEFAULT 'upload'::"text" NOT NULL,
+    CONSTRAINT "program_documents_path_or_url_check" CHECK (((("storage_path" IS NOT NULL) AND ("external_url" IS NULL)) OR (("storage_path" IS NULL) AND ("external_url" IS NOT NULL)))),
+    CONSTRAINT "program_documents_source_check" CHECK (("source" = ANY (ARRAY['upload'::"text", 'link'::"text"])))
 );
 
 
@@ -3438,6 +3445,8 @@ CREATE TABLE "company_os"."program_plans" (
     "created_by" "text",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "quarter" "text",
+    "signed_off_at" "date",
     CONSTRAINT "program_plans_method_check" CHECK (("method" = ANY (ARRAY['upload'::"text", 'chat'::"text"])))
 );
 
@@ -7117,6 +7126,13 @@ CREATE INDEX "marketing_content_campaign_idx" ON "company_os"."marketing_content
 
 
 --
+-- Name: marketing_content_company_id_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "marketing_content_company_id_idx" ON "company_os"."marketing_content" USING "btree" ("company_id") WHERE ("company_id" IS NOT NULL);
+
+
+--
 -- Name: marketing_content_pillar_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
@@ -9340,6 +9356,14 @@ ALTER TABLE ONLY "company_os"."marketing_content"
 
 ALTER TABLE ONLY "company_os"."marketing_content"
     ADD CONSTRAINT "marketing_calendar_pillar_id_fkey" FOREIGN KEY ("pillar_id") REFERENCES "company_os"."marketing_pillars"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: marketing_content marketing_content_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."marketing_content"
+    ADD CONSTRAINT "marketing_content_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company_os"."companies"("id") ON DELETE SET NULL;
 
 
 --
