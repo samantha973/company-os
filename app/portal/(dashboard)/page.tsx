@@ -5,7 +5,6 @@ import { getAssignedTimeOff, getLeaveDecisionQueue } from "@/lib/portal/time-off
 import { getInvoicesForActor } from "@/lib/portal/invoices";
 import { listWorkRequestsForActor } from "@/lib/portal/work-requests";
 import { getMyEvents } from "@/lib/portal/events";
-import { getTokenBalance } from "@/lib/portal/tokens";
 import { getRoadmapPreviewForActor } from "@/lib/portal/backlog";
 import { getBoardForClient } from "@/lib/portal/boards";
 import { listDocumentsForActor } from "@/lib/portal/documents";
@@ -55,7 +54,7 @@ function eventRange(startsAt: string | null, endsAt: string | null): string {
 export default async function PortalHome() {
   const actor = await requirePortalMember();
 
-  const [team, timeOff, leaveDecisions, invoices, requests, events, tokens, roadmap, board, documents] =
+  const [team, timeOff, leaveDecisions, invoices, requests, events, roadmap, board, documents] =
     await Promise.all([
       getAssignedTeam(actor),
       getAssignedTimeOff(actor),
@@ -63,7 +62,6 @@ export default async function PortalHome() {
       getInvoicesForActor(actor),
       listWorkRequestsForActor(actor),
       getMyEvents(actor),
-      getTokenBalance(actor),
       getRoadmapPreviewForActor(actor, 3),
       getBoardForClient(actor),
       listDocumentsForActor(actor),
@@ -255,14 +253,6 @@ export default async function PortalHome() {
       )}
 
       <div className="mp-kpi-grid" style={{ marginBottom: 16 }}>
-        <MetricCard
-          label="Token balance"
-          value={tokens.balanceTokens}
-          sub={
-            tokens.pendingTokens > 0 ? `${tokens.pendingTokens} processing` : "hours of skilled work"
-          }
-          href="/portal/tokens"
-        />
         <MetricCard
           label="Open requests"
           value={openRequestCount}
@@ -494,9 +484,6 @@ export default async function PortalHome() {
           </Link>
           <Link href="/portal/requests/hire" className="admin-btn">
             Full-time hire estimate
-          </Link>
-          <Link href="/portal/tokens" className="admin-btn">
-            Buy tokens
           </Link>
           <Link href="/portal/referrals" className="admin-btn">
             Refer &amp; earn

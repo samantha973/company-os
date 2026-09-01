@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requirePortalMember } from "@/lib/portal-auth";
 import { contributorCompanyScope } from "@/lib/portal/roles";
-import { listPortalProgramSummaries, getPortalHubOverview } from "@/lib/portal/program-hub";
-import { formatLeverage } from "@/lib/hub/tokens";
+import { listPortalProgramSummaries } from "@/lib/portal/program-hub";
 import { PageHead } from "@/components/admin/PageHead";
-import { MetricCard } from "@/components/admin/MetricCard";
 import { Badge, statusTone } from "@/components/admin/Badge";
 import { humanize } from "@/lib/admin/format";
 
@@ -14,42 +12,21 @@ export const fetchCache = "force-no-store";
 
 export const metadata: Metadata = { title: "PR Programs" };
 
-function fmtTokens(n: number): string {
-  return Math.round(n).toLocaleString("en-US");
-}
-function fmtHours(n: number): string {
-  return (Math.round(n * 10) / 10).toLocaleString("en-US", { maximumFractionDigits: 1 });
-}
-// AI tokens run into the hundreds of millions; compact keeps the KPI legible.
-function fmtCompact(n: number): string {
-  return new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(n);
-}
-
-// The PR Programs hub: a company-grain overview row (the shared Human Token
-// pool, AI usage, merged pull requests, and normalized leverage), then the AI
-// Program cards. One list for the whole portal (/portal/programs redirects
-// here). Every figure is a client-safe scalar from the projection boundary in
-// lib/portal/program-hub.ts; repo names, PR numbers, and author logins never
-// reach this module.
+// The PR Programs hub: the PR Program cards for the actor's companies. One list
+// for the whole portal (/portal/programs redirects here).
 export default async function PortalHubPage() {
   const actor = await requirePortalMember();
-  const [overview, programs] = await Promise.all([
-    getPortalHubOverview(actor),
-    listPortalProgramSummaries(actor),
-  ]);
+  const programs = await listPortalProgramSummaries(actor);
   // Creating programs is contributor+ (viewers browse only), same gate as the
   // former PR Programs list page.
   const canCreate = contributorCompanyScope(actor).length > 0;
-
-  const boughtSub =
-    overview.boughtTokens > 0 ? `${fmtTokens(overview.boughtTokens)} bought` : "none bought yet";
 
   return (
     <div className="admin-content">
       <PageHead
         eyebrow="Client Portal"
         title="PR Programs"
-        sub="Your PR Programs with Edge8, and the company-wide delivery they add up to."
+        sub="Your PR Programs with Edge8."
         action={
           canCreate ? (
             <Link href="/portal/programs/add" className="admin-btn admin-btn--primary">
@@ -58,21 +35,6 @@ export default async function PortalHubPage() {
           ) : undefined
         }
       />
-
-      <div className="mp-kpi-grid" style={{ marginBottom: 20 }}>
-        <MetricCard label="Human Tokens" value={fmtTokens(overview.balanceTokens)} sub={boughtSub} />
-        <MetricCard label="AI Tokens" value={fmtCompact(overview.aiTokens)} sub="Claude + app tokens used" />
-        <MetricCard
-          label="Pull Requests"
-          value={overview.prsMergedTotal.toLocaleString("en-US")}
-          sub="merged to date"
-        />
-        <MetricCard
-          label="Leverage"
-          value={formatLeverage(overview.leverage)}
-          sub="AI value delivered per human hour"
-        />
-      </div>
 
       {programs.length === 0 ? (
         <div className="admin-card admin-section-card">
@@ -94,15 +56,8 @@ export default async function PortalHubPage() {
           <h2 className="admin-card-title" style={{ marginBottom: 10 }}>Your programs</h2>
           <div className="admin-list">
             {programs.map((p) => {
-              const meta = [
-                p.roadmapTotal > 0 ? `Roadmap ${p.roadmapDone}/${p.roadmapTotal} done` : "No roadmap items yet",
-                ...(p.hasRepo
-                  ? [
-                      `${fmtHours(p.deliveredHours)} hrs delivered`,
-                      `${p.prsMergedLast7d} ${p.prsMergedLast7d === 1 ? "update" : "updates"} this week`,
-                    ]
-                  : []),
-              ].join(" · ");
+              const meta =
+                p.roadmapTotal > 0 ? `Roadmap ${p.roadmapDone}/${p.roadmapTotal} done` : "No roadmap items yet";
               return (
                 <Link
                   key={p.id}

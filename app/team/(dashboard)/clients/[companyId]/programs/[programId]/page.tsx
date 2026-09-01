@@ -7,18 +7,13 @@ import {
   getActorEmail,
   getProgramDetailForActor,
 } from "@/lib/team/clients";
-import { PR_PAGE_SIZE, type ProgramPullRequest, type ProgramStatus } from "@/lib/hub/program";
-import { formatLeverage } from "@/lib/hub/tokens";
+import { type ProgramStatus } from "@/lib/hub/program";
 import { ROADMAP_GROUPS_SELECT, type RoadmapGroup } from "@/lib/client-backlog";
 import { PageHead } from "@/components/admin/PageHead";
 import { Badge, type BadgeTone } from "@/components/admin/Badge";
 import { Tabs, type TabDef } from "@/components/admin/Tabs";
-import { MetricCard } from "@/components/admin/MetricCard";
-import { DataTable, type Column } from "@/components/admin/DataTable";
-import { BarChart } from "@/components/admin/charts/BarChart";
 import { BotText } from "@/components/assistant/BotText";
 import { MeetingsPanel, type ProgramOption } from "@/components/hub/MeetingsPanel";
-import { formatDate } from "@/lib/admin/format";
 import { firstParam, type SearchParamsObj } from "@/lib/admin/url";
 import { ClientDocumentsList } from "../../(hub)/ClientDocumentsList";
 import { AddItemForm } from "../../(hub)/roadmap/AddItemForm";
@@ -36,27 +31,17 @@ const STATUS_TONE: Record<ProgramStatus, BadgeTone> = {
   complete: "info",
 };
 
-const PR_STATE_TONE: Record<ProgramPullRequest["state"], BadgeTone> = {
-  open: "info",
-  merged: "ok",
-  closed: "neutral",
-};
-
 function Empty({ text }: { text: string }) {
   return <div className="admin-empty">{text}</div>;
 }
 
-function fmtHours(n: number): string {
-  return n.toLocaleString(undefined, { maximumFractionDigits: 1 });
-}
-
-// The team PR Program view, mirroring the admin program view (KPI strip +
-// Roadmap / Boards / Tokens / Pull Requests / Documents / Meetings) with team
-// affordances: roadmap add/edit as the team roadmap tab allows, boards linking
-// to the team board routes, the team publish/tag meeting actions, and the team
-// documents list. Authorization mirrors the hub layout: the company must be in
-// the actor's active staff assignments, and the program must belong to that
-// company; either miss is a 404.
+// The team PR Program view, mirroring the admin program view (Roadmap / Boards
+// / Documents / Meetings) with team affordances: roadmap add/edit as the team
+// roadmap tab allows, boards linking to the team board routes, the team
+// publish/tag meeting actions, and the team documents list. Authorization
+// mirrors the hub layout: the company must be in the actor's active staff
+// assignments, and the program must belong to that company; either miss is a
+// 404.
 export default async function TeamProgramDetailPage({
   params,
   searchParams,
@@ -66,17 +51,9 @@ export default async function TeamProgramDetailPage({
 }) {
   const actor = await requireTeamMember();
 
-  // PR tab state from the URL: server-side search + pagination over the full
-  // PR set (the table's links/search preserve ?tab= so they land back here).
-  const prSearch = firstParam(searchParams.q) ?? "";
-  const prPageParam = Number(firstParam(searchParams.page)) || 1;
-
   const [companies, detail, actorEmail] = await Promise.all([
     getActorClientCompanies(actor),
-    getProgramDetailForActor(actor, params.companyId, params.programId, {
-      page: prPageParam,
-      search: prSearch,
-    }),
+    getProgramDetailForActor(actor, params.companyId, params.programId),
     getActorEmail(actor),
   ]);
   const company = companies.find((c) => c.id === params.companyId);
@@ -94,25 +71,6 @@ export default async function TeamProgramDetailPage({
   const allGroups = (groupRows ?? []) as unknown as RoadmapGroup[];
   const addableGroups = allGroups.filter((g) => g.pr_program_id === detail.id || g.pr_program_id === null);
   const overview = ((overviewRow as { body: string } | null)?.body ?? "").trim() || null;
-  const hasRepo = !!detail.repoId;
-  const basePath = `/team/clients/${company.id}/programs/${detail.id}`;
-
-  const prColumns: Column<ProgramPullRequest>[] = [
-    {
-      key: "number",
-      header: "#",
-      cell: (p) =>
-        p.url ? (
-          <a href={p.url} target="_blank" rel="noopener noreferrer">{p.number != null ? `#${p.number}` : "PR"}</a>
-        ) : (
-          p.number != null ? `#${p.number}` : "PR"
-        ),
-    },
-    { key: "title", header: "Title", cell: (p) => <span className="admin-cell-strong">{p.title}</span> },
-    { key: "state", header: "State", cell: (p) => <Badge tone={PR_STATE_TONE[p.state]}>{p.state}</Badge> },
-    { key: "author", header: "Author", cell: (p) => p.author ?? "unknown" },
-    { key: "merged", header: "Merged", cell: (p) => (p.mergedAt ? formatDate(p.mergedAt) : "") },
-  ];
 
   const tabs: TabDef[] = [
     {
@@ -192,60 +150,6 @@ export default async function TeamProgramDetailPage({
       ),
     },
     {
-      key: "tokens",
-      label: "Tokens",
-      content: (
-        <section className="admin-card admin-section-card">
-          {!hasRepo ? (
-            <Empty text="No repo connected. Delivery tracking starts once this program is linked to a GitHub repo." />
-          ) : (
-            <>
-              <div className="mp-kpi-grid" style={{ marginBottom: 16 }}>
-                <MetricCard label="Delivered hrs (total)" value={fmtHours(detail.deliveredHours)} />
-                <MetricCard label="AI tokens (total)" value={detail.aiTokens.toLocaleString()} />
-                <MetricCard
-                  label="AI leverage"
-                  value={formatLeverage(detail.leverage)}
-                  sub="AI value delivered per human hour"
-                />
-              </div>
-              <h2 className="admin-card-title">Delivered hours, last 8 weeks</h2>
-              <BarChart
-                ariaLabel="Delivered hours per ISO week, last 8 weeks"
-                data={detail.weeklyHours.map((w) => ({ label: w.isoWeek.slice(5), value: Math.round(w.hours * 10) / 10 }))}
-                emptyText="No delivered hours tracked in the last 8 weeks."
-                formatValue={(n) => `${fmtHours(n)}h`}
-              />
-            </>
-          )}
-        </section>
-      ),
-    },
-    {
-      key: "prs",
-      label: "Pull Requests",
-      count: detail.prTotalAll,
-      content: (
-        <section className="admin-card admin-section-card">
-          {!hasRepo ? (
-            <Empty text="No repo connected. Pull requests appear once this program is linked to a GitHub repo." />
-          ) : (
-            <DataTable
-              columns={prColumns}
-              rows={detail.pullRequests}
-              total={detail.prTotal}
-              page={detail.prPage}
-              pageSize={PR_PAGE_SIZE}
-              basePath={basePath}
-              searchParams={searchParams}
-              searchPlaceholder="Search pull requests"
-              emptyText={prSearch ? "No pull requests match this search." : "No pull requests tracked yet."}
-            />
-          )}
-        </section>
-      ),
-    },
-    {
       key: "documents",
       label: "Documents",
       count: detail.documents.length,
@@ -284,47 +188,12 @@ export default async function TeamProgramDetailPage({
         title={detail.name}
         sub={detail.githubRepo ?? undefined}
         action={
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>{/* layout-ok: mirrors the admin program PageHead action stack verbatim */}
-            <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>{/* layout-ok: mirrors the admin program badge row verbatim */}
-              <Badge tone={STATUS_TONE[detail.status]}>{detail.status}</Badge>
-              {detail.githubRepo && <Badge tone="neutral">{detail.githubRepo}</Badge>}
-            </span>
-            <span className="admin-cell-muted" style={{ fontSize: 13 }}>
-              {detail.liveUrl && (
-                <>
-                  <a href={detail.liveUrl} target="_blank" rel="noopener noreferrer">Live site</a>
-                  {" · "}
-                </>
-              )}
-              {detail.lastSyncedAt ? `Synced ${formatDate(detail.lastSyncedAt)}` : "Not synced yet"}
-            </span>
-          </div>
+          <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>{/* layout-ok: mirrors the admin program badge row verbatim */}
+            <Badge tone={STATUS_TONE[detail.status]}>{detail.status}</Badge>
+            {detail.githubRepo && <Badge tone="neutral">{detail.githubRepo}</Badge>}
+          </span>
         }
       />
-
-      <div className="mp-kpi-grid" style={{ marginBottom: 16 }}>
-        <MetricCard
-          label="Delivered hrs"
-          value={hasRepo ? fmtHours(detail.deliveredHours) : "Not tracked"}
-          sub={hasRepo ? undefined : "No repo connected"}
-        />
-        <MetricCard
-          label="AI tokens"
-          value={hasRepo ? detail.aiTokens.toLocaleString() : "Not tracked"}
-          sub={hasRepo ? undefined : "No repo connected"}
-        />
-        <MetricCard
-          label="AI leverage"
-          value={hasRepo ? formatLeverage(detail.leverage) : "Not tracked"}
-          sub={hasRepo ? "AI value delivered per human hour" : "No repo connected"}
-        />
-        <MetricCard label="Planned tokens" value={detail.plannedTokens.toLocaleString()} sub="Roadmap high estimates" />
-        <MetricCard
-          label="PRs merged 30d"
-          value={hasRepo ? detail.prsMergedLast30d.toLocaleString() : "Not tracked"}
-          sub={hasRepo ? undefined : "No repo connected"}
-        />
-      </div>
 
       <div className="admin-card admin-section-card">
         <Tabs tabs={tabs} initialKey={firstParam(searchParams.tab)} syncParam="tab" />

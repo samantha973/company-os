@@ -3,12 +3,9 @@ import { notFound } from "next/navigation";
 import { requirePortalMember } from "@/lib/portal-auth";
 import { getProgramForActor, getPlanBriefForActor } from "@/lib/portal/pr-programs";
 import {
-  getPortalProgramDelivery,
   listHubBoardsForActor,
   getBoardViewForActor,
-  getProgramHighlights,
   type PortalBoardView,
-  type ProgramHighlightWeek,
 } from "@/lib/portal/program-hub";
 import { getBacklogForActor, getGroupsForActor } from "@/lib/portal/backlog";
 import { getMeetingsForActor } from "@/lib/portal/meetings";
@@ -16,9 +13,6 @@ import { isPortalAdmin, canContribute } from "@/lib/portal/roles";
 import { PageHead } from "@/components/admin/PageHead";
 import { Badge, statusTone } from "@/components/admin/Badge";
 import { Tabs, type TabDef } from "@/components/admin/Tabs";
-import { MetricCard } from "@/components/admin/MetricCard";
-import { formatLeverage } from "@/lib/hub/tokens";
-import { BarChart } from "@/components/admin/charts/BarChart";
 import { ClientBoardView } from "@/components/hub/ClientBoardView";
 import { MeetingsPanel } from "@/components/hub/MeetingsPanel";
 import { BacklogPortalView } from "../../roadmap/BacklogPortalView";
@@ -34,22 +28,13 @@ export const metadata = {
   description: "Your PR program's overview, roadmap, work board, documents, and meetings.",
 };
 
-function fmtHours(n: number): string {
-  return (Math.round(n * 10) / 10).toLocaleString("en-US", { maximumFractionDigits: 1 });
-}
-// AI tokens run into the millions; compact keeps the KPI legible.
-function fmtCompact(n: number): string {
-  return new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(n);
-}
-
 function Empty({ text }: { text: string }) {
   return <div className="admin-empty">{text}</div>;
 }
 
 // The client-facing PR Program workspace: one program's roadmap, work board,
-// progress, documents, plan brief, and meetings, mirroring the admin program
-// view with client-safe fields only (program name + counts + PR titles; repo
-// org/name, author logins, and sync details never render here).
+// documents, plan brief, and meetings, mirroring the admin program view with
+// client-safe fields only.
 export default async function PrProgramDetailPage({
   params,
   searchParams,
@@ -62,14 +47,12 @@ export default async function PrProgramDetailPage({
   const program = await getProgramForActor(actor, params.id);
   if (!program) notFound();
 
-  const [delivery, allItems, allGroups, allMeetings, allBoards] = await Promise.all([
-    getPortalProgramDelivery(actor, program.id),
+  const [allItems, allGroups, allMeetings, allBoards] = await Promise.all([
     getBacklogForActor(actor),
     getGroupsForActor(actor),
     getMeetingsForActor(actor),
     listHubBoardsForActor(actor),
   ]);
-  if (!delivery) notFound();
 
   // Roadmap: this program's items, under its own sections plus any
   // company-wide section a program item still sits in (same rule as the hub).
@@ -88,12 +71,6 @@ export default async function PrProgramDetailPage({
   const boardView: PortalBoardView | null = selectedBoard
     ? await getBoardViewForActor(actor, selectedBoard.id)
     : null;
-
-  // Progress: delivery stats exist only once a repo is connected.
-  const hasRepo = delivery.hasRepo;
-  const highlights: ProgramHighlightWeek[] = hasRepo
-    ? await getProgramHighlights(actor, program.id)
-    : [];
 
   // Meetings: this program's tagged meetings. Visibility is the lib's own
   // rule (same as the hub): getMeetingsForActor returns published meetings,
@@ -116,83 +93,34 @@ export default async function PrProgramDetailPage({
     {
       key: "overview",
       label: "Overview",
-      content: (
-        <>
-          <section className="admin-card admin-section-card">
-            {!hasRepo ? (
-              <Empty text="Delivery tracking starts when a repo is connected." />
-            ) : (
-              <>
-                <div className="mp-kpi-grid" style={{ marginBottom: 16 }}>
-                  <MetricCard
-                    label="Human Tokens"
-                    value={fmtHours(delivery.deliveredHours)}
-                    sub="hours of skilled work delivered"
-                  />
-                  <MetricCard label="AI Tokens" value={fmtCompact(delivery.aiTokens)} sub="Claude + app tokens used" />
-                  <MetricCard
-                    label="Pull Requests"
-                    value={delivery.prsMergedTotal.toLocaleString("en-US")}
-                    sub="merged to date"
-                  />
-                  <MetricCard
-                    label="Leverage"
-                    value={formatLeverage(delivery.leverage)}
-                    sub="AI value delivered per human hour"
-                  />
-                </div>
-                <h2 className="admin-card-title">Delivered hours, last 8 weeks</h2>
-                <BarChart
-                  ariaLabel="Delivered hours per ISO week, last 8 weeks"
-                  data={delivery.weeklyHours.map((w) => ({ label: w.isoWeek.slice(5), value: Math.round(w.hours * 10) / 10 }))}
-                  emptyText="No delivered hours tracked in the last 8 weeks."
-                  formatValue={(n) => `${fmtHours(n)}h`}
-                />
-                <h2 className="admin-card-title" style={{ marginTop: 20 }}>Shipped highlights</h2>
-                {highlights.length === 0 ? (
-                  <Empty text="Nothing shipped in the last 8 weeks yet." />
-                ) : (
-                  highlights.map((w) => (
-                    <div key={w.isoWeek} style={{ marginBottom: 14 }}>
-                      <div className="admin-cell-muted" style={{ fontSize: 12, fontWeight: 600, marginBottom: 4 }}>
-                        Week {w.isoWeek.slice(5).replace("W", "")} ({w.isoWeek.slice(0, 4)})
-                      </div>
-                      <ul style={{ margin: 0, paddingLeft: 18, fontSize: 14, lineHeight: 1.7 }}>
-                        {w.titles.map((t, i) => (
-                          <li key={`${w.isoWeek}-${i}`}>{t}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))
-                )}
-              </>
-            )}
-          </section>
-          {program.plans.length > 0 && (
-            <section className="admin-card admin-section-card" style={{ maxWidth: 900, marginTop: 16 }}>
-              <h2 className="admin-card-title" style={{ marginBottom: 12 }}>Plan</h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                {program.plans.map((pl) => (
-                  <div key={pl.id}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                      <strong>{pl.title}</strong>
-                      <Badge>{pl.method === "chat" ? "Guided plan" : "Documents"}</Badge>
-                      <span className="admin-cell-muted">{formatDate(pl.createdAt)}</span>
-                    </div>
-                    {pl.method === "chat" && briefs.has(pl.id) ? (
-                      <BriefViewer html={briefs.get(pl.id)!} title={pl.title} />
-                    ) : pl.method === "chat" ? (
-                      <div className="admin-cell-muted">This plan has no saved brief.</div>
-                    ) : (
-                      <div className="admin-cell-muted">See the Documents tab.</div>
-                    )}
+      content:
+        program.plans.length > 0 ? (
+          <section className="admin-card admin-section-card" style={{ maxWidth: 900 }}>
+            <h2 className="admin-card-title" style={{ marginBottom: 12 }}>Plan</h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              {program.plans.map((pl) => (
+                <div key={pl.id}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                    <strong>{pl.title}</strong>
+                    <Badge>{pl.method === "chat" ? "Guided plan" : "Documents"}</Badge>
+                    <span className="admin-cell-muted">{formatDate(pl.createdAt)}</span>
                   </div>
-                ))}
-              </div>
-            </section>
-          )}
-        </>
-      ),
+                  {pl.method === "chat" && briefs.has(pl.id) ? (
+                    <BriefViewer html={briefs.get(pl.id)!} title={pl.title} />
+                  ) : pl.method === "chat" ? (
+                    <div className="admin-cell-muted">This plan has no saved brief.</div>
+                  ) : (
+                    <div className="admin-cell-muted">See the Documents tab.</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : (
+          <section className="admin-card admin-section-card">
+            <Empty text="No plan for this program yet. Edge8 adds one as the program is scoped." />
+          </section>
+        ),
     },
     {
       key: "roadmap",

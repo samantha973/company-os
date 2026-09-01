@@ -151,24 +151,6 @@ const CRON_META: Record<string, CronMeta> = {
     content: ["Idea submissions"],
     apps: ["Supabase"],
   },
-  "/api/cron/htt-sync-prs/": {
-    name: "HTT: PR sync",
-    description: "Nightly. For every tracked repo with a GitHub repo, fetches PRs updated since the last run and upserts them (Human Token Tracker).",
-    content: ["GitHub PRs (tracked repos)"],
-    apps: ["GitHub", "Supabase"],
-  },
-  "/api/cron/htt-ingest-effort-logs/": {
-    name: "HTT: effort-log ingest",
-    description: "Nightly. Ingests each tracked repo's effort-log file into the Human Token Tracker.",
-    content: ["Effort logs (tracked repos)"],
-    apps: ["GitHub", "Supabase"],
-  },
-  "/api/cron/htt-refresh-summaries/": {
-    name: "HTT: summary refresh",
-    description: "Nightly, after the PR sync. Refreshes per-repo summaries and goals for the Human Token Tracker.",
-    content: ["Repo digests", "Project goals"],
-    apps: ["GitHub", "Supabase"],
-  },
 };
 
 // ── Local routines (snapshot) ─────────────────────────────────────────────

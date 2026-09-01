@@ -36,15 +36,8 @@ import {
   getProgramDetail,
   listProgramSummaries,
   type ProgramDetail,
-  type ProgramPrOptions,
   type ProgramSummary,
 } from "@/lib/hub/program";
-import {
-  computeTokenUsage,
-  getAllocatedTokensForCompanies,
-  getTokenBalanceForCompanies,
-  type TokenUsage,
-} from "@/lib/hub/tokens";
 
 export type ClientCompany = { id: string; name: string; roleTitle: string | null };
 
@@ -259,12 +252,10 @@ export async function getHubTabFlags(companyId: string): Promise<HubTabFlags> {
   };
 }
 
-export type HubOverview = { usage: TokenUsage; programs: ProgramSummary[] };
+export type HubOverview = { programs: ProgramSummary[] };
 
-// The hub Overview's top band for an assigned client: the company-grain token
-// usage and the PR Program summaries, both derived from one shared fetch of
-// the delivery rows (same one-fetch discipline as the admin hub home). Null
-// when the company is not in the actor's active assignment set.
+// The hub Overview's top band for an assigned client: the PR Program summaries.
+// Null when the company is not in the actor's active assignment set.
 export async function getHubOverviewForActor(
   actor: TeamActor,
   companyId: string,
@@ -272,26 +263,9 @@ export async function getHubOverviewForActor(
   const companies = await actorCompanyIds(actor);
   if (!companies.has(companyId)) return null;
 
-  const [inputs, balance, allocatedTokens, plannedRows] = await Promise.all([
-    fetchProgramSummaryInputs(companyId),
-    getTokenBalanceForCompanies([companyId]),
-    getAllocatedTokensForCompanies([companyId]),
-    // Paginated: a truncated read here would undercount plannedTokens once the
-    // company's active backlog passes PostgREST's 1000-row cap.
-    fetchAll<{ token_high: number | null }>(() =>
-      companyOs
-        .from("client_backlog_items")
-        .select("token_high")
-        .eq("company_id", companyId)
-        .is("archived_at", null)
-        .order("id"),
-    ),
-  ]);
-
+  const inputs = await fetchProgramSummaryInputs(companyId);
   const programs = await listProgramSummaries(companyId, inputs);
-  const plannedTokens = plannedRows.reduce((sum, r) => sum + Number(r.token_high ?? 0), 0);
-  const usage = computeTokenUsage({ balance, allocatedTokens, plannedTokens, delivery: inputs.delivery });
-  return { usage, programs };
+  return { programs };
 }
 
 // One PR Program's full detail for an assigned client. Null both when the
@@ -302,11 +276,10 @@ export async function getProgramDetailForActor(
   actor: TeamActor,
   companyId: string,
   programId: string,
-  prOpts: ProgramPrOptions = {},
 ): Promise<ProgramDetail | null> {
   const companies = await actorCompanyIds(actor);
   if (!companies.has(companyId)) return null;
-  return getProgramDetail(companyId, programId, prOpts);
+  return getProgramDetail(companyId, programId);
 }
 
 // Read-only client documents for an assigned company (title, date, uploader,

@@ -1,23 +1,18 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { companyOs } from "@/lib/supabase";
-import { getProgramDetail, PR_PAGE_SIZE } from "@/lib/hub/program";
-import { formatLeverage } from "@/lib/hub/tokens";
+import { getProgramDetail } from "@/lib/hub/program";
 import { getLiveCardItemIds } from "@/lib/admin/company-hub";
 import { PageHead } from "@/components/admin/PageHead";
 import { Badge, type BadgeTone } from "@/components/admin/Badge";
 import { Tabs, type TabDef } from "@/components/admin/Tabs";
-import { MetricCard } from "@/components/admin/MetricCard";
-import { DataTable, type Column } from "@/components/admin/DataTable";
-import { BarChart } from "@/components/admin/charts/BarChart";
 import { CompanyDocuments, type ProgramOption } from "@/components/admin/CompanyDocuments";
 import { MeetingsPanel } from "@/components/hub/MeetingsPanel";
 import { setMeetingPublished, setMeetingProgram } from "@/app/admin/(dashboard)/revenue/meetings/actions";
 import { BacklogAdminEditor } from "@/app/admin/(dashboard)/edges/client-roadmaps/BacklogAdminEditor";
 import { OverviewEditor } from "@/app/admin/(dashboard)/edges/client-roadmaps/OverviewEditor";
-import { formatDate } from "@/lib/admin/format";
 import { firstParam, type SearchParamsObj } from "@/lib/admin/url";
-import type { ProgramPullRequest, ProgramStatus } from "@/lib/hub/program";
+import type { ProgramStatus } from "@/lib/hub/program";
 
 export const dynamic = "force-dynamic";
 
@@ -27,24 +22,13 @@ const STATUS_TONE: Record<ProgramStatus, BadgeTone> = {
   complete: "info",
 };
 
-const PR_STATE_TONE: Record<ProgramPullRequest["state"], BadgeTone> = {
-  open: "info",
-  merged: "ok",
-  closed: "neutral",
-};
-
 function Empty({ text }: { text: string }) {
   return <div className="admin-empty">{text}</div>;
 }
 
-function fmtHours(n: number): string {
-  return n.toLocaleString(undefined, { maximumFractionDigits: 1 });
-}
-
 // The PR Program view (Client Hub by PR Program, PR 1): one program = one
-// repo = one roadmap = one token view = its work boards, plus tagged documents
-// and pull requests. Data comes from lib/hub/program.ts; a program with no htt
-// repo shows real zero states, never fake numbers.
+// roadmap = its work boards, plus tagged documents and meetings. Data comes
+// from lib/hub/program.ts.
 export default async function ProgramDetailPage({
   params,
   searchParams,
@@ -52,13 +36,8 @@ export default async function ProgramDetailPage({
   params: { id: string; programId: string };
   searchParams: SearchParamsObj;
 }) {
-  // PR tab state from the URL: server-side search + pagination over the full
-  // PR set (the table's links/search preserve ?tab= so they land back here).
-  const prSearch = firstParam(searchParams.q) ?? "";
-  const prPageParam = Number(firstParam(searchParams.page)) || 1;
-
   const [detail, { data: companyRow }, { data: programRows }, { data: overviewRow }] = await Promise.all([
-    getProgramDetail(params.id, params.programId, { page: prPageParam, search: prSearch }),
+    getProgramDetail(params.id, params.programId),
     companyOs.from("companies").select("id, name").eq("id", params.id).maybeSingle(),
     companyOs.from("pr_programs").select("id, name").eq("company_id", params.id).order("created_at", { ascending: false }),
     companyOs.from("client_roadmap_overview").select("body").eq("company_id", params.id).maybeSingle(),
@@ -69,27 +48,8 @@ export default async function ProgramDetailPage({
   const companyName = company.name || "(no name)";
   const overviewBody = (overviewRow as { body: string } | null)?.body ?? "";
   const programOptions = (programRows ?? []) as ProgramOption[];
-  const hasRepo = !!detail.repoId;
-  const basePath = `/admin/revenue/companies/${company.id}/programs/${detail.id}`;
 
   const liveCardItemIds = await getLiveCardItemIds(detail.roadmapItems.map((i) => i.id));
-
-  const prColumns: Column<ProgramPullRequest>[] = [
-    {
-      key: "number",
-      header: "#",
-      cell: (p) =>
-        p.url ? (
-          <a href={p.url} target="_blank" rel="noopener noreferrer">{p.number != null ? `#${p.number}` : "PR"}</a>
-        ) : (
-          p.number != null ? `#${p.number}` : "PR"
-        ),
-    },
-    { key: "title", header: "Title", cell: (p) => <span className="admin-cell-strong">{p.title}</span> },
-    { key: "state", header: "State", cell: (p) => <Badge tone={PR_STATE_TONE[p.state]}>{p.state}</Badge> },
-    { key: "author", header: "Author", cell: (p) => p.author ?? "unknown" },
-    { key: "merged", header: "Merged", cell: (p) => (p.mergedAt ? formatDate(p.mergedAt) : "") },
-  ];
 
   const tabs: TabDef[] = [
     {
@@ -182,47 +142,12 @@ export default async function ProgramDetailPage({
         title={detail.name}
         sub={detail.githubRepo ?? undefined}
         action={
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>{/* layout-ok: mirrors the company 360 PageHead action stack verbatim */}
-            <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>{/* layout-ok: mirrors the company 360 badge row verbatim */}
-              <Badge tone={STATUS_TONE[detail.status]}>{detail.status}</Badge>
-              {detail.githubRepo && <Badge tone="neutral">{detail.githubRepo}</Badge>}
-            </span>
-            <span className="admin-cell-muted" style={{ fontSize: 13 }}>
-              {detail.liveUrl && (
-                <>
-                  <a href={detail.liveUrl} target="_blank" rel="noopener noreferrer">Live site</a>
-                  {" · "}
-                </>
-              )}
-              {detail.lastSyncedAt ? `Synced ${formatDate(detail.lastSyncedAt)}` : "Not synced yet"}
-            </span>
-          </div>
+          <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>{/* layout-ok: mirrors the company 360 badge row verbatim */}
+            <Badge tone={STATUS_TONE[detail.status]}>{detail.status}</Badge>
+            {detail.githubRepo && <Badge tone="neutral">{detail.githubRepo}</Badge>}
+          </span>
         }
       />
-
-      <div className="mp-kpi-grid" style={{ marginBottom: 16 }}>
-        <MetricCard
-          label="Delivered hrs"
-          value={hasRepo ? fmtHours(detail.deliveredHours) : "Not tracked"}
-          sub={hasRepo ? undefined : "No repo connected"}
-        />
-        <MetricCard
-          label="AI tokens"
-          value={hasRepo ? detail.aiTokens.toLocaleString() : "Not tracked"}
-          sub={hasRepo ? undefined : "No repo connected"}
-        />
-        <MetricCard
-          label="AI leverage"
-          value={hasRepo ? formatLeverage(detail.leverage) : "Not tracked"}
-          sub={hasRepo ? "AI value delivered per human hour" : "No repo connected"}
-        />
-        <MetricCard label="Planned tokens" value={detail.plannedTokens.toLocaleString()} sub="Roadmap high estimates" />
-        <MetricCard
-          label="PRs merged 30d"
-          value={hasRepo ? detail.prsMergedLast30d.toLocaleString() : "Not tracked"}
-          sub={hasRepo ? undefined : "No repo connected"}
-        />
-      </div>
 
       <div className="admin-card admin-section-card">
         <Tabs tabs={tabs} initialKey={firstParam(searchParams.tab)} syncParam="tab" />
