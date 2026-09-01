@@ -5,6 +5,7 @@ import { requirePortalMember } from "@/lib/portal-auth";
 import {
   signedCompanyDocumentUpload,
   recordCompanyDocument,
+  recordCompanyLink,
   signedCompanyDocumentDownload,
   deleteOwnDocument,
 } from "@/lib/portal/documents";
@@ -35,6 +36,17 @@ export async function recordCompanyDocumentAction(input: {
 }): Promise<DocResult> {
   const actor = await requirePortalMember();
   const r = await recordCompanyDocument(actor, input);
+  if (r.ok) refresh();
+  return r;
+}
+
+export async function recordCompanyLinkAction(input: {
+  companyId?: string;
+  url: string;
+  label: string;
+}): Promise<DocResult> {
+  const actor = await requirePortalMember();
+  const r = await recordCompanyLink(actor, input);
   if (r.ok) refresh();
   return r;
 }
