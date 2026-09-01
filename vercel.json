@@ -80,36 +80,6 @@
   },
   "redirects": [
     {
-      "source": "/workflows/one-on-one",
-      "destination": "/workflows/one-on-one-coaching",
-      "permanent": true
-    },
-    {
-      "source": "/workflows/one-on-one/",
-      "destination": "/workflows/one-on-one-coaching/",
-      "permanent": true
-    },
-    {
-      "source": "/workflows/onboarding-plans",
-      "destination": "/workflows/edge8-onboarding-cycle",
-      "permanent": true
-    },
-    {
-      "source": "/workflows/onboarding-plans/",
-      "destination": "/workflows/edge8-onboarding-cycle/",
-      "permanent": true
-    },
-    {
-      "source": "/ai-capabilities-audit",
-      "destination": "/contact",
-      "permanent": true
-    },
-    {
-      "source": "/ai-capabilities-audit/",
-      "destination": "/contact",
-      "permanent": true
-    },
-    {
       "source": "/proposals/shopify-engine-research.html",
       "destination": "/proposals/arca-wellness-proposal-2026-06-26.html",
       "permanent": true

@@ -1,0 +1,284 @@
+/* The PR Hub — Company OS entry page. Brand: theprhub.com.au
+   (mint #2EDBBB / #8BE6D3 / tint #CDF7E9, black/white, wide-tracked caps). */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  color: #000000;
+  font-family: var(--font-dm-sans), 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px clamp(24px, 5vw, 72px);
+  border-bottom: 1px solid #f0f1f2;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.logo {
+  display: flex;
+  align-items: baseline;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+.logoPr { color: #8be6d3; }
+.brandMeta {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #e0e2e4;
+  padding-left: 14px;
+}
+.brandName { font-size: 13px; font-weight: 700; letter-spacing: 0.5px; }
+.brandOs { font-size: 11px; color: #9aa0a6; letter-spacing: 1.5px; }
+
+.btnBlack {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #000000;
+  color: #ffffff;
+  padding: 12px 26px;
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+.btnBlack:hover { background: #1f2327; }
+
+/* ── Hero ── */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  background: #000000;
+  color: #ffffff;
+  padding: 84px clamp(24px, 5vw, 72px) 110px;
+  text-align: center;
+}
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #3c4043;
+  border-radius: 999px;
+  padding: 10px 24px;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #8be6d3;
+}
+.heroBadgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2edbbb;
+}
+.heroTitle {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: 3px;
+  max-width: 860px;
+  margin: 0;
+  text-wrap: balance;
+}
+.heroSub {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #bdc1c6;
+  max-width: 620px;
+  letter-spacing: 0.28px;
+  margin: 0;
+}
+.heroChips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px 32px;
+  padding-top: 8px;
+}
+.heroChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  color: #9aa0a6;
+}
+
+/* ── Doors ── */
+.doors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  padding: 0 clamp(24px, 5vw, 72px) 72px;
+  margin-top: -48px;
+}
+.door {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid #e8eaed;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  padding: 36px 32px;
+}
+.doorMint {
+  background: #cdf7e9;
+  border-color: #b6ecd9;
+}
+.doorTag { font-size: 10px; letter-spacing: 2.5px; color: #9aa0a6; }
+.doorMint .doorTag { color: #4a6b60; }
+.doorTitle { font-size: 22px; font-weight: 700; letter-spacing: 1.5px; margin: 0; }
+.doorDesc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #3c4043;
+  letter-spacing: 0.28px;
+  flex-grow: 1;
+  margin: 0;
+}
+.doorMint .doorDesc { color: #2d3f39; }
+.btnOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #ffffff;
+  color: #000000;
+  border: 1.5px solid #000000;
+  padding: 15px 24px;
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+.btnOutline:hover { background: #f6f7f8; }
+.doorHelp { font-size: 12px; color: #9aa0a6; text-align: center; }
+.doorMint .doorHelp { color: #4a6b60; }
+.doorHelp a { color: inherit; text-decoration: underline; }
+.doorHelp a:hover { color: #000000; }
+
+/* ── Unique ── */
+.unique {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  padding: 24px clamp(24px, 5vw, 72px) 80px;
+}
+.uniqueHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+.uniqueLabel { font-size: 11px; letter-spacing: 3px; color: #9aa0a6; }
+.uniqueTitle { font-size: 30px; font-weight: 700; letter-spacing: 2px; margin: 0; }
+.uniqueSub {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #3c4043;
+  max-width: 560px;
+  letter-spacing: 0.28px;
+  margin: 0;
+}
+.uniqueGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 48px;
+  width: 100%;
+}
+.uniqueItem { display: flex; flex-direction: column; gap: 12px; }
+.uniqueItemTitle {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  border-bottom: 2px solid #2edbbb;
+  padding-bottom: 10px;
+  margin: 0;
+}
+.uniqueItemBody {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #3c4043;
+  letter-spacing: 0.28px;
+  margin: 0;
+}
+
+/* ── Quote band ── */
+.quote {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  background: #cdf7e9;
+  padding: 52px clamp(24px, 5vw, 72px);
+  text-align: center;
+}
+.quoteText {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: 20px;
+  line-height: 1.6;
+  font-style: italic;
+  max-width: 760px;
+  margin: 0;
+}
+.quoteAttr { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; }
+
+/* ── Footer ── */
+.footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  padding: 32px clamp(24px, 5vw, 72px);
+  background: #f6f7f8;
+  margin-top: auto;
+}
+.footerLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: 500;
+}
+.footerLinks a { color: #000000; text-decoration: none; }
+.footerLinks a:hover { color: #2edbbb; }
+.footerMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  font-size: 12px;
+  color: #9aa0a6;
+  letter-spacing: 0.4px;
+}
+.footerMeta a { color: inherit; text-decoration: none; }
+.footerMeta a:hover { color: #000000; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .doors { grid-template-columns: 1fr; margin-top: -32px; }
+  .uniqueGrid { grid-template-columns: 1fr; gap: 32px; }
+  .brandMeta { display: none; }
+  .hero { padding-top: 52px; padding-bottom: 80px; }
+  .heroChips { flex-direction: column; align-items: center; gap: 12px; }
+  .footer { flex-direction: column; align-items: flex-start; }
+}
