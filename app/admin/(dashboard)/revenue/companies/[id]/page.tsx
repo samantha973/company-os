@@ -20,13 +20,6 @@ import {
   type ProgramSummary,
   type ProgramSummaryInputs,
 } from "@/lib/hub/program";
-import {
-  computeTokenUsage,
-  fetchDeliveryRaw,
-  getAllocatedTokensForCompanies,
-  getTokenBalanceForCompanies,
-  type TokenUsage,
-} from "@/lib/hub/tokens";
 import { BACKLOG_SELECT, ROADMAP_GROUPS_SELECT, type BacklogItem, type RoadmapGroup } from "@/lib/client-backlog";
 import { getAdminUser } from "@/lib/admin-auth";
 import { PageHead } from "@/components/admin/PageHead";
@@ -239,16 +232,13 @@ export default async function CompanyDetailPage({
   // untagged (pr_program_id null) rows, so nothing is presented twice; tagged
   // rows live in their program view. When no programs exist, the tabs behave
   // exactly as before.
-  async function hubData(): Promise<{ tabs: TabDef[]; programs: ProgramSummary[]; usage: TokenUsage }> {
+  async function hubData(): Promise<{ tabs: TabDef[]; programs: ProgramSummary[] }> {
     // Wave 1: every query here depends only on the company id, and every
-    // dataset is fetched exactly once. The program summaries and the token
-    // usage are DERIVED from these rows below rather than re-fetching them.
+    // dataset is fetched exactly once. The program summaries are DERIVED from
+    // these rows below rather than re-fetching them.
     const [
       { data: programData },
-      delivery,
       boardRowsRes,
-      balance,
-      allocatedTokens,
       boardOptions,
       admin,
       itemRows,
@@ -260,7 +250,6 @@ export default async function CompanyDetailPage({
       documents,
     ] = await Promise.all([
       companyOs.from("pr_programs").select(PROGRAM_SELECT).eq("company_id", company.id).order("created_at", { ascending: false }),
-      fetchDeliveryRaw([company.id]),
       companyOs
         .from("boards")
         .select("id, slug, pr_program_id")
@@ -268,13 +257,11 @@ export default async function CompanyDetailPage({
         .eq("status", "active")
         .is("archived_at", null)
         .order("sort_order", { ascending: true }),
-      getTokenBalanceForCompanies([company.id]),
-      getAllocatedTokensForCompanies([company.id]),
       listBoardManageOptions(),
       getAdminUser(),
       // Paginated: backlog items routinely outgrow PostgREST's 1000-row cap,
-      // and a truncated read would undercount plannedTokens and could wrongly
-      // drop the company-wide tabs. Trailing .order("id") keeps pages stable.
+      // and a truncated read could wrongly drop the company-wide tabs. Trailing
+      // .order("id") keeps pages stable.
       fetchAll<BacklogItem>(() =>
         companyOs
           .from("client_backlog_items")
@@ -330,7 +317,6 @@ export default async function CompanyDetailPage({
     const [programSummaries, boardDetail, liveCardItemIds, viewerRow] = await Promise.all([
       listProgramSummaries(company.id, {
         programs: programRowsFull,
-        delivery,
         backlogRows: allItems,
         boardRows: hubBoards,
       }),
@@ -342,9 +328,6 @@ export default async function CompanyDetailPage({
         : Promise.resolve({ data: null }),
     ]);
     const viewerPersonId = (viewerRow.data as { id: string } | null)?.id ?? null;
-
-    const plannedTokens = allItems.reduce((sum, i) => sum + Number(i.token_high ?? 0), 0);
-    const usage = computeTokenUsage({ balance, allocatedTokens, plannedTokens, delivery });
 
     const programOptions: ProgramOption[] = programRowsFull.map((p) => ({ id: p.id, name: p.name }));
     const hubInvoices = invoices.map((r) => ({
@@ -433,7 +416,7 @@ export default async function CompanyDetailPage({
       { key: "team", label: "Team", content: <HubTeamPanel team={team} /> },
     ];
 
-    return { tabs, programs: programSummaries, usage };
+    return { tabs, programs: programSummaries };
   }
 
   const hub = view === "hub" ? await hubData() : null;
@@ -465,18 +448,14 @@ export default async function CompanyDetailPage({
       />
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
-        {isClient ? (
-          <div className="admin-viewtoggle">
-            <Link href={`/admin/revenue/companies/${company.id}${mergeQuery(searchParams, { view: "internal" })}`} className={view === "internal" ? "is-active" : ""}>
-              Internal
-            </Link>
-            <Link href={`/admin/revenue/companies/${company.id}${mergeQuery(searchParams, { view: "hub" })}`} className={view === "hub" ? "is-active" : ""}>
-              Client Hub
-            </Link>
-          </div>
-        ) : (
-          <span className="admin-cell-muted" style={{ fontSize: 13 }}>Internal record</span>
-        )}
+        <div className="admin-viewtoggle">
+          <Link href={`/admin/revenue/companies/${company.id}${mergeQuery(searchParams, { view: "internal" })}`} className={view === "internal" ? "is-active" : ""}>
+            Internal
+          </Link>
+          <Link href={`/admin/revenue/companies/${company.id}${mergeQuery(searchParams, { view: "hub" })}`} className={view === "hub" ? "is-active" : ""}>
+            Client Hub
+          </Link>
+        </div>
         <span className="admin-cell-muted" style={{ fontSize: 13 }}>
           {deals.length} {deals.length === 1 ? "deal" : "deals"}
           {dealValueCents ? ` · ${formatCents(dealValueCents, "usd")} total` : ""} ·{" "}

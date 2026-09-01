@@ -5,7 +5,6 @@ import {
   listPortalInquiriesForActor,
   listWorkRequestsForActor,
 } from "@/lib/portal/work-requests";
-import { getTokenBalance } from "@/lib/portal/tokens";
 import { PageHead } from "@/components/admin/PageHead";
 import { Badge, statusTone } from "@/components/admin/Badge";
 import { formatDate, humanize } from "@/lib/admin/format";
@@ -32,10 +31,9 @@ export default async function PortalRequestsPage() {
   // Viewers are read-only (PR 2 roles): they see their company's requests but
   // get no "start a request" actions. The server actions re-check anyway.
   const canCreate = contributorCompanyScope(actor).length > 0;
-  const [requests, inquiries, tokens] = await Promise.all([
+  const [requests, inquiries] = await Promise.all([
     listWorkRequestsForActor(actor),
     listPortalInquiriesForActor(actor),
-    getTokenBalance(actor),
   ]);
 
   return (
@@ -43,7 +41,7 @@ export default async function PortalRequestsPage() {
       <PageHead
         eyebrow="Client Portal"
         title="Requests"
-        sub="Five ways to get work moving: ask us anything, brief a contractor directly, hire a full-time team member in Vietnam, top up human tokens, or plan a PR Program."
+        sub="Four ways to get work moving: ask us anything, brief a contractor directly, hire a full-time team member in Vietnam, or plan a PR Program."
       />
 
       {canCreate && (<>
@@ -66,19 +64,6 @@ export default async function PortalRequestsPage() {
           <div style={{ marginTop: "auto", paddingTop: 16 }}>
             <Link href="/portal/requests/new" className="admin-btn admin-btn--primary">
               New project request
-            </Link>
-          </div>
-        </div>
-        <div className="admin-card admin-section-card" style={{ display: "flex", flexDirection: "column" }}>
-          <h2 className="admin-card-title" style={{ marginBottom: 8 }}>Human tokens</h2>
-          <p className="admin-page-sub" style={{ margin: 0, minHeight: 40 }}>
-            {tokens.balanceTokens > 0
-              ? `You have ${tokens.balanceTokens} tokens (1 token = 1 hour of skilled work).`
-              : "Pre-buy packs of skilled hours: 40 tokens per pack, $2,000."}
-          </p>
-          <div style={{ marginTop: "auto", paddingTop: 16 }}>
-            <Link href="/portal/tokens" className="admin-btn admin-btn--primary">
-              {tokens.balanceTokens > 0 ? "View & buy tokens" : "Buy token packs"}
             </Link>
           </div>
         </div>

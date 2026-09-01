@@ -20,7 +20,6 @@ export type PortalEntitlements = {
   roadmap: boolean;
   users: boolean;
   companyProfile: boolean;
-  tokens: boolean;
 };
 
 type EntitlementKey = keyof PortalEntitlements;
@@ -66,10 +65,6 @@ const NAV: NavGroup[] = [
       // Company Profile edits the shared company record: admins only, same gate
       // as Users.
       { label: "Company Profile", href: "/portal/company", ico: "\u2302", built: true, entitlementKey: "companyProfile" },
-      // Tokens: buy Human Token packs and track Bought / Delivered / balance
-      // per PR Program. Company-scoped like Invoices; visible to any member
-      // with a company in scope.
-      { label: "Tokens", href: "/portal/tokens", ico: "\u25c7", built: true, entitlementKey: "tokens" },
       { label: "Invoices", href: "/portal/invoices", ico: "\u25a4", built: true, entitlementKey: "invoices" },
       // Users: portal admins manage their own company's users (PR 3).
       { label: "Users", href: "/portal/users", ico: "\u265f", built: true, entitlementKey: "users" },
