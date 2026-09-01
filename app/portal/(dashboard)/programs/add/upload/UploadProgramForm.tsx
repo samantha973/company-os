@@ -128,7 +128,7 @@ export function UploadProgramForm({ companies }: { companies: CompanyOption[] })
         className="admin-input"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="e.g. Sales enablement AI program"
+        placeholder="e.g. Sales enablement PR program"
         disabled={busy}
       />
 

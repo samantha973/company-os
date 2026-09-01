@@ -25,14 +25,14 @@ export default async function TeamClientRoadmapTab({ params }: { params: { compa
   ]);
   if (!roadmap) notFound();
 
-  // With AI Programs present this tab is company-wide: untagged items only
-  // (program roadmaps live in their AI Program view), plus any group that is
+  // With PR Programs present this tab is company-wide: untagged items only
+  // (program roadmaps live in their PR Program view), plus any group that is
   // company-wide or still holds an untagged item, so nothing renders orphaned.
   const { overview } = roadmap;
-  const items = hasPrograms ? roadmap.items.filter((i) => !i.ai_program_id) : roadmap.items;
+  const items = hasPrograms ? roadmap.items.filter((i) => !i.pr_program_id) : roadmap.items;
   const usedKeys = new Set(items.map((i) => i.group_key));
   const groups = hasPrograms
-    ? roadmap.groups.filter((g) => g.ai_program_id === null || usedKeys.has(g.key))
+    ? roadmap.groups.filter((g) => g.pr_program_id === null || usedKeys.has(g.key))
     : roadmap.groups;
 
   return (

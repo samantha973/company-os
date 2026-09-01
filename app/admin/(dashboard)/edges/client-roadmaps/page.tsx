@@ -19,7 +19,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Client Roadmaps",
-  description: "Per-client AI Program roadmap: items, priorities and client proposals.",
+  description: "Per-client PR Program roadmap: items, priorities and client proposals.",
 };
 
 const CLIENT_STAGES = ["customer", "evangelist"];
@@ -59,7 +59,7 @@ export default async function ClientBacklogPage({ searchParams }: { searchParams
       groupsQuery,
       companyOs.from("client_roadmap_overview").select("body").eq("company_id", selected.id).maybeSingle(),
       listDocumentsForCompanies([selected.id]),
-      companyOs.from("ai_programs").select("id, name").eq("company_id", selected.id).order("created_at", { ascending: false }),
+      companyOs.from("pr_programs").select("id, name").eq("company_id", selected.id).order("created_at", { ascending: false }),
     ]);
     const items = (data ?? []) as unknown as BacklogItem[];
     const groups = (groupRows ?? []) as unknown as RoadmapGroup[];
@@ -140,7 +140,7 @@ export default async function ClientBacklogPage({ searchParams }: { searchParams
       <PageHead
         eyebrow="Edges"
         title="Client Roadmaps"
-        sub="Each client's AI Program roadmap: what they see in their portal. Open one to shape its groups, edit items, set priorities, and review their proposals."
+        sub="Each client's PR Program roadmap: what they see in their portal. Open one to shape its groups, edit items, set priorities, and review their proposals."
       />
 
       <div className="admin-card" style={{ padding: 0, overflow: "hidden" }}>

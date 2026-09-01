@@ -4811,7 +4811,7 @@ a.ideas-share-card:hover {
 .admin-cal-legend { display: flex; gap: 8px; margin-top: 10px; }
 .admin-cal-legend .admin-cal-chip { display: inline-block; }
 
-/* ─── Client Hub home: Human Tokens band + AI Program cards ─── */
+/* ─── Client Hub home: Human Tokens band + PR Program cards ─── */
 /* Section header row above a band on the hub home. */
 .hub-band-head {
   display: flex;
@@ -4827,7 +4827,7 @@ a.ideas-share-card:hover {
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   margin-bottom: 20px;
 }
-/* One AI Program card (a link to the program view). Hover affordance mirrors
+/* One PR Program card (a link to the program view). Hover affordance mirrors
    a.mp-kpi so the card reads as clickable. */
 .hub-program-card {
   display: flex;

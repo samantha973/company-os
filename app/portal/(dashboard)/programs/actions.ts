@@ -9,9 +9,9 @@ import {
   recordProgramDocument,
   signedDocumentDownload,
   type Result,
-} from "@/lib/portal/ai-programs";
+} from "@/lib/portal/pr-programs";
 
-// Client-portal actions for AI Programs. requirePortalMember() gates identity;
+// Client-portal actions for PR Programs. requirePortalMember() gates identity;
 // every *ForActor helper re-checks company ownership before writing (no trust in
 // client-supplied ids).
 

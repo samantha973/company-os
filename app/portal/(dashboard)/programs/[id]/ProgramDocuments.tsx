@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { downloadDocumentAction } from "../actions";
 import { deleteOwnDocumentAction } from "../../documents/actions";
-import type { PortalProgramDocument } from "@/lib/portal/ai-programs";
+import type { PortalProgramDocument } from "@/lib/portal/pr-programs";
 
 function formatBytes(n: number | null): string {
   if (n == null) return "";

@@ -13,7 +13,7 @@ import {
 } from "@/lib/client-documents";
 
 // Admin-side client documents: upload for any company (optionally tagged to one
-// of its AI Programs), download, and delete ANY document. Gated by
+// of its PR Programs), download, and delete ANY document. Gated by
 // requireAdmin() throughout; the client portal's uploader-only delete rule does
 // not apply here — Edge8 operates the whole surface.
 
@@ -30,7 +30,7 @@ export async function adminSignedDocumentUpload(input: {
   // A tagged upload must tag a program that actually belongs to this company.
   if (input.programId) {
     const { data } = await companyOs
-      .from("ai_programs")
+      .from("pr_programs")
       .select("id")
       .eq("id", input.programId)
       .eq("company_id", input.companyId)

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 // Client hub tab nav. Active state from the pathname: exact match for
-// Overview, prefix match for the subroutes. With AI Programs present, the
+// Overview, prefix match for the subroutes. With PR Programs present, the
 // Work Board and Roadmap tabs are labeled company-wide (program boards and
 // roadmaps live in their program view), and dropCompanyWide removes them
 // under the same guarded rule as the admin hub home; the routes themselves

@@ -13,7 +13,7 @@ export function BriefViewer({ html, title }: { html: string; title: string }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${title.replace(/[^a-zA-Z0-9._-]+/g, "_") || "ai-program-brief"}.html`;
+    a.download = `${title.replace(/[^a-zA-Z0-9._-]+/g, "_") || "pr-program-brief"}.html`;
     document.body.appendChild(a);
     a.click();
     a.remove();

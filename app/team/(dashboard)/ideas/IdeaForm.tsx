@@ -36,7 +36,7 @@ const STEPS: Step[] = [
     d: "Discover",
     title: "Discover the data it needs",
     teach:
-      "What information would AI need to do this job well — and where does it live right now? Documents, spreadsheets, systems, someone's head? This is where most AI programs hit their first real obstacle, so naming the gaps now is worth everything it costs.",
+      "What information would AI need to do this job well — and where does it live right now? Documents, spreadsheets, systems, someone's head? This is where most PR programs hit their first real obstacle, so naming the gaps now is worth everything it costs.",
     placeholder:
       "e.g. Resumes (in Supabase storage), the job description (in the ATS), our screening criteria (currently in Hoa's head, not written down anywhere)…",
   },

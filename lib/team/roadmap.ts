@@ -25,14 +25,14 @@ export type TeamRoadmapItemInput = {
   today_state?: string;
   build_desc?: string;
   status?: BacklogStatus;
-  // Tag the new item to one of the company's own AI Programs (validated on
+  // Tag the new item to one of the company's own PR Programs (validated on
   // create); omitted/null = company-wide. Create-only: re-tagging existing
   // items stays admin-only, so it is not part of the patch whitelist.
-  ai_program_id?: string | null;
+  pr_program_id?: string | null;
 };
 
 // Editable-by-team fields only. Anything else in a patch is dropped.
-export type TeamRoadmapItemPatch = Partial<Omit<TeamRoadmapItemInput, "ai_program_id">>;
+export type TeamRoadmapItemPatch = Partial<Omit<TeamRoadmapItemInput, "pr_program_id">>;
 
 function cleanString(v: string | undefined): string | null | undefined {
   if (v === undefined) return undefined;
@@ -68,14 +68,14 @@ export async function createRoadmapItemForActor(
   if (input.status && !BACKLOG_STATUSES.includes(input.status)) {
     return { ok: false, error: "Invalid status." };
   }
-  if (input.ai_program_id) {
+  if (input.pr_program_id) {
     const { data: program } = await companyOs
-      .from("ai_programs")
+      .from("pr_programs")
       .select("id")
-      .eq("id", input.ai_program_id)
+      .eq("id", input.pr_program_id)
       .eq("company_id", companyId)
       .maybeSingle();
-    if (!program) return { ok: false, error: "Invalid AI Program." };
+    if (!program) return { ok: false, error: "Invalid PR Program." };
   }
   const email = await getActorEmail(actor);
 
@@ -90,7 +90,7 @@ export async function createRoadmapItemForActor(
     build_desc: cleanString(input.build_desc) ?? null,
     status: input.status ?? "accepted",
     sort_order: 999,
-    ai_program_id: input.ai_program_id ?? null,
+    pr_program_id: input.pr_program_id ?? null,
   };
   const { data, error } = await companyOs.from(TABLE).insert(row).select("id").single();
   if (error) return { ok: false, error: error.message };

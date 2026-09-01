@@ -299,7 +299,7 @@ export function BacklogPortalView({
                       className="cbp-btn"
                       disabled={pending || !pTitle.trim()}
                       onClick={() => run(
-                        () => proposeMyItem({ companyId, groupKey: g.key, title: pTitle, note: pNote, priority: pPriority, aiProgramId: programId }),
+                        () => proposeMyItem({ companyId, groupKey: g.key, title: pTitle, note: pNote, priority: pPriority, prProgramId: programId }),
                         () => { setProposeGroup(null); setPTitle(""); setPNote(""); setPPriority("next"); setPHint(null); },
                       )}
                     >

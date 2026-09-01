@@ -10,7 +10,7 @@ export const metadata = { title: "Client Documents" };
 // The Documents tab: the client's vault (same files as /portal/documents).
 // Upload for any assigned team member; delete only what you uploaded. With AI
 // Programs present, untagged documents only; program documents live in their
-// AI Program view.
+// PR Program view.
 
 export default async function TeamClientDocumentsTab({ params }: { params: { companyId: string } }) {
   const actor = await requireTeamMember();

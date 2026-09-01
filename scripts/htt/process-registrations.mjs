@@ -7,8 +7,8 @@
  * branch, verifies the git committer matches the request's `github_login`,
  * then applies the registration idempotently via the Supabase service role:
  *
- *   tracker clients   -> company_os.companies (upsert by name; is_ai_program true)
- *   tracker projects  -> company_os.ai_programs (one per repo) + htt.repos (1:1)
+ *   tracker clients   -> company_os.companies (upsert by name; is_pr_program true)
+ *   tracker projects  -> company_os.pr_programs (one per repo) + htt.repos (1:1)
  *   client_identities -> htt.client_identities (repo-scoped excludes)
  *   contributor_aliases -> company_os.person_git_emails (source 'discovered')
  *
@@ -73,21 +73,21 @@ export async function applyRegistration(req, supabase) {
   {
     const { data: existing } = await companyOs
       .from('companies')
-      .select('id, is_ai_program')
+      .select('id, is_pr_program')
       .eq('name', req.client.name)
       .maybeSingle();
 
     if (existing) {
       companyId = existing.id;
       notes.push(`company exists: ${req.client.name} (${companyId})`);
-      if (!existing.is_ai_program) {
-        await companyOs.from('companies').update({ is_ai_program: true }).eq('id', companyId);
-        notes.push('company flagged is_ai_program');
+      if (!existing.is_pr_program) {
+        await companyOs.from('companies').update({ is_pr_program: true }).eq('id', companyId);
+        notes.push('company flagged is_pr_program');
       }
     } else {
       const { data: inserted, error } = await companyOs
         .from('companies')
-        .insert({ name: req.client.name, is_ai_program: true })
+        .insert({ name: req.client.name, is_pr_program: true })
         .select('id')
         .single();
       if (error) throw new Error(`insert company failed: ${error.message}`);
@@ -96,7 +96,7 @@ export async function applyRegistration(req, supabase) {
     }
   }
 
-  // 2. Upsert the repo. Spine: 1 repo = 1 AI Program = 1 htt.repos row.
+  // 2. Upsert the repo. Spine: 1 repo = 1 PR Program = 1 htt.repos row.
   //    If a htt.repos row already exists for this github_repo: no-op.
   let repoId;
   {
@@ -112,7 +112,7 @@ export async function applyRegistration(req, supabase) {
     }
 
     const { data: program, error: progErr } = await companyOs
-      .from('ai_programs')
+      .from('pr_programs')
       .insert({
         company_id: companyId,
         name: req.project_name,
@@ -123,13 +123,13 @@ export async function applyRegistration(req, supabase) {
       })
       .select('id')
       .single();
-    if (progErr) throw new Error(`insert ai_program failed: ${progErr.message}`);
-    notes.push(`ai_program created: ${req.project_name} (${program.id})`);
+    if (progErr) throw new Error(`insert pr_program failed: ${progErr.message}`);
+    notes.push(`pr_program created: ${req.project_name} (${program.id})`);
 
     const { data: inserted, error } = await htt
       .from('repos')
       .insert({
-        ai_program_id: program.id,
+        pr_program_id: program.id,
         company_id: companyId,
         name: req.project_name,
         slug: slugify(req.project_name),

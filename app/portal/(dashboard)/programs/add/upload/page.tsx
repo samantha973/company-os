@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Upload documents",
-  description: "Start an AI program by uploading your documents.",
+  description: "Start a PR Program by uploading your documents.",
 };
 
 export default async function UploadProgramPage() {

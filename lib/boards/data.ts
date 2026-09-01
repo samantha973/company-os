@@ -148,7 +148,7 @@ export async function listBoards(): Promise<BoardListItem[]> {
 export type ManageOptions = {
   team: BoardPerson[];
   clients: { id: string; name: string }[];
-  // All AI Programs with their owning company, so the board settings picker
+  // All PR Programs with their owning company, so the board settings picker
   // can offer the ones belonging to the selected client.
   programs: { id: string; name: string; company_id: string }[];
 };
@@ -165,7 +165,7 @@ export async function listBoardManageOptions(): Promise<ManageOptions> {
       .in("lifecycle_stage", ["customer", "evangelist"])
       .is("archived_at", null)
       .order("name"),
-    companyOs.from("ai_programs").select("id, name, company_id").order("name"),
+    companyOs.from("pr_programs").select("id, name, company_id").order("name"),
   ]);
 
   type PersonEmbed = { id: string; display_name: string | null; full_name: string | null; email: string };
@@ -180,9 +180,9 @@ export async function listBoardManageOptions(): Promise<ManageOptions> {
   team.sort((a, b) => a.name.localeCompare(b.name));
   const clients = (coRes.data ?? []) as { id: string; name: string }[];
   // Surface a failed programs fetch rather than silently offering an empty
-  // picker (the settings drawer hides the AI Program select when this is []).
+  // picker (the settings drawer hides the PR Program select when this is []).
   if (progRes.error) {
-    console.error("listBoardManageOptions: ai_programs fetch failed:", progRes.error.message);
+    console.error("listBoardManageOptions: pr_programs fetch failed:", progRes.error.message);
   }
   const programs = (progRes.data ?? []) as { id: string; name: string; company_id: string }[];
   return { team, clients, programs };
@@ -310,8 +310,8 @@ export async function getBoardBySlug(slug: string): Promise<BoardDetail | null> 
       board.client_company_id
         ? companyOs.from("companies").select("name").eq("id", board.client_company_id).maybeSingle()
         : Promise.resolve({ data: null as { name: string } | null }),
-      board.ai_program_id
-        ? companyOs.from("ai_programs").select("name").eq("id", board.ai_program_id).maybeSingle()
+      board.pr_program_id
+        ? companyOs.from("pr_programs").select("name").eq("id", board.pr_program_id).maybeSingle()
         : Promise.resolve({ data: null as { name: string } | null }),
       board.client_company_id
         ? companyOs

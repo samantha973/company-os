@@ -41,7 +41,7 @@ function fmtHours(n: number): string {
   return n.toLocaleString(undefined, { maximumFractionDigits: 1 });
 }
 
-// The AI Program view (Client Hub by AI Program, PR 1): one program = one
+// The PR Program view (Client Hub by PR Program, PR 1): one program = one
 // repo = one roadmap = one token view = its work boards, plus tagged documents
 // and pull requests. Data comes from lib/hub/program.ts; a program with no htt
 // repo shows real zero states, never fake numbers.
@@ -60,7 +60,7 @@ export default async function ProgramDetailPage({
   const [detail, { data: companyRow }, { data: programRows }, { data: overviewRow }] = await Promise.all([
     getProgramDetail(params.id, params.programId, { page: prPageParam, search: prSearch }),
     companyOs.from("companies").select("id, name").eq("id", params.id).maybeSingle(),
-    companyOs.from("ai_programs").select("id, name").eq("company_id", params.id).order("created_at", { ascending: false }),
+    companyOs.from("pr_programs").select("id, name").eq("company_id", params.id).order("created_at", { ascending: false }),
     companyOs.from("client_roadmap_overview").select("body").eq("company_id", params.id).maybeSingle(),
   ]);
   const company = companyRow as { id: string; name: string | null } | null;

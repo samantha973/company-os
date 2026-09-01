@@ -28,8 +28,8 @@ if (existing.length) {
 const [strategy] = await sql`
   insert into company_os.strategies (year, title, body_md) values (
     2026,
-    'Own the staffing renewal base, make AI Programs the growth engine, and prove a company can run half human, half AI, then teach it.',
-    ${'## Diagnosis\nTwo real business lines: Staffing (renewal-driven, anniversary calendar) and AI Programs (deal-driven, thought-leadership fed). The constraint is leadership capacity, not demand.\n\n## Guiding policy\nRun the company on Eight Edges: every goal cascades to an executor, human or agent; every key result carries a casting decision; agents keep the rhythm so goals cannot fade.\n\n## Coherent actions\n1. Renewals become a system (48h proposals, agent-run CRM writes).\n2. AI Programs growth via published thought leadership and a pipeline that never depends on memory.\n3. Dogfood Eight Edges, then teach it through Leadership in the AI Era.'}
+    'Own the staffing renewal base, make PR Programs the growth engine, and prove a company can run half human, half AI, then teach it.',
+    ${'## Diagnosis\nTwo real business lines: Staffing (renewal-driven, anniversary calendar) and PR Programs (deal-driven, thought-leadership fed). The constraint is leadership capacity, not demand.\n\n## Guiding policy\nRun the company on Eight Edges: every goal cascades to an executor, human or agent; every key result carries a casting decision; agents keep the rhythm so goals cannot fade.\n\n## Coherent actions\n1. Renewals become a system (48h proposals, agent-run CRM writes).\n2. PR Programs growth via published thought leadership and a pipeline that never depends on memory.\n3. Dogfood Eight Edges, then teach it through Leadership in the AI Era.'}
   ) returning id`;
 const SID = strategy.id;
 
@@ -54,8 +54,8 @@ const kr11 = await kr(o1, { title: 'Renew 4 of 4 staffing contracts (Unlock, On 
 const kr12 = await kr(o1, { title: 'Staffing revenue from $34k to $42k MRR', target: 42000, current: 37500, unit: 'usd', mix: 'blended', agent: 'email-marketer' }, 2);
 await kr(o1, { title: 'Renewal proposal live within 48h of trigger date', target: 100, current: 100, unit: '%', mix: 'ai', agent: 'developer' }, 3);
 
-const o2 = await objective({ level: 'company', line: 'edge8', title: 'Make AI Programs the growth engine', sort: 2 });
-const kr21 = await kr(o2, { title: 'Close 6 new AI Program deals', target: 6, current: 3, unit: 'deals', mix: 'human' }, 1);
+const o2 = await objective({ level: 'company', line: 'edge8', title: 'Make PR Programs the growth engine', sort: 2 });
+const kr21 = await kr(o2, { title: 'Close 6 new PR Program deals', target: 6, current: 3, unit: 'deals', mix: 'human' }, 1);
 const kr22 = await kr(o2, { title: 'Transcript-to-proposal median under 10 minutes', target: 10, current: 8, unit: 'min', dir: 'down', mix: 'ai', agent: 'developer' }, 2);
 const kr23 = await kr(o2, { title: '2 keynotes or workshops booked per month', target: 2, current: 1.5, unit: 'per_month', mix: 'blended', agent: 'writer', status: 'at_risk' }, 3);
 
@@ -94,7 +94,7 @@ async function readings(metricId, v1, v2, by) {
 
 const m1 = await metric({ name: 'Staffing MRR', office: 'revenue', formula: 'sum of active staffing contracts per month', target: 42000, source: 'agent', detail: 'company_os.deals', kr: kr12 });
 await readings(m1, 36700, 37500, 'seed');
-const m2 = await metric({ name: 'Open AI Program deals', office: 'revenue', formula: "count(deals, status=open, category='AI Program')", target: 8, source: 'agent', detail: 'company_os.deals', kr: kr21 });
+const m2 = await metric({ name: 'Open PR Program deals', office: 'revenue', formula: "count(deals, status=open, category='PR Program')", target: 8, source: 'agent', detail: 'company_os.deals', kr: kr21 });
 await readings(m2, 5, 5, 'seed');
 const m3 = await metric({ name: 'Transcript to proposal', office: 'revenue', formula: 'median minutes per playbook run', target: 10, dir: 'down', source: 'agent', detail: 'playbook log', agent: 'developer', kr: kr22 });
 await readings(m3, 9, 8, 'seed');

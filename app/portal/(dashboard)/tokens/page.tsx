@@ -88,10 +88,10 @@ export default async function PortalTokensPage({ searchParams }: { searchParams:
       </div>
 
       <div className="admin-card admin-section-card" style={{ marginBottom: 16 }}>
-        <h2 className="admin-card-title" style={{ marginBottom: 10 }}>By AI Program</h2>
+        <h2 className="admin-card-title" style={{ marginBottom: 10 }}>By PR Program</h2>
         {usage.programs.length === 0 ? (
           <div className="admin-empty">
-            No tracked delivery yet. Once your AI Programs are underway, delivered hours and AI
+            No tracked delivery yet. Once your PR Programs are underway, delivered hours and AI
             leverage appear here per program. Your token balance is a company-wide pool shared
             across programs.
           </div>
@@ -100,7 +100,7 @@ export default async function PortalTokensPage({ searchParams }: { searchParams:
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>AI Program</th>
+                  <th>PR Program</th>
                   <th style={{ textAlign: "right" }}>Delivered hours</th>
                   <th style={{ textAlign: "right" }}>AI tokens</th>
                   <th style={{ textAlign: "right" }}>AI leverage</th>

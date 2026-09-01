@@ -11,7 +11,7 @@ import {
 } from "@/app/admin/(dashboard)/revenue/companies/documents-actions";
 
 // Documents tab on the company 360: upload (optionally tagged to one of the
-// company's AI Programs), download, delete any. Admin counterpart of the
+// company's PR Programs), download, delete any. Admin counterpart of the
 // portal's DocumentsView; same direct-to-storage upload.
 
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -145,7 +145,7 @@ export function CompanyDocuments({
             value={programId}
             onChange={(e) => setProgramId(e.target.value)}
             style={{ maxWidth: 320 }}
-            aria-label="Tag uploads to an AI Program (optional)"
+            aria-label="Tag uploads to a PR Program (optional)"
           >
             <option value="">No program tag</option>
             {programs.map((p) => (

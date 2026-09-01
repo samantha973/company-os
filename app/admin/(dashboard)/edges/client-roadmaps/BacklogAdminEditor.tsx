@@ -90,7 +90,7 @@ type GroupDraft = { step_label: string; title: string; intro: string };
 function itemToDraft(it: BacklogItem): Draft {
   return {
     group_key: it.group_key,
-    ai_program_id: it.ai_program_id,
+    pr_program_id: it.pr_program_id,
     title: it.title,
     who: it.who ?? "",
     today_state: it.today_state ?? "",
@@ -106,7 +106,7 @@ function itemToDraft(it: BacklogItem): Draft {
 function draftToInput(d: Draft): BacklogItemInput {
   return {
     group_key: d.group_key ?? "",
-    ai_program_id: d.ai_program_id ?? null,
+    pr_program_id: d.pr_program_id ?? null,
     title: d.title ?? "",
     who: d.who,
     today_state: d.today_state,
@@ -134,7 +134,7 @@ export function BacklogAdminEditor({
   showArchived: boolean;
   // Item ids that have a live (non-archived) board card linked to them.
   liveCardItemIds?: Set<string>;
-  // This company's AI Programs; when non-empty, items can be tagged to one.
+  // This company's PR Programs; when non-empty, items can be tagged to one.
   programs?: { id: string; name: string }[];
   // When set (the per-program view), new items and new groups are created
   // tagged to this program instead of company-wide, so they stay visible in
@@ -172,7 +172,7 @@ export function BacklogAdminEditor({
   const orphans = items.filter((i) => !knownKeys.has(i.group_key));
 
   function groupInput(d: GroupDraft): RoadmapGroupInput {
-    return { step_label: d.step_label, title: d.title, intro: d.intro, ai_program_id: defaultProgramId ?? null };
+    return { step_label: d.step_label, title: d.title, intro: d.intro, pr_program_id: defaultProgramId ?? null };
   }
 
   const programName = new Map(programs.map((p) => [p.id, p.name]));
@@ -210,8 +210,8 @@ export function BacklogAdminEditor({
           {it.build_desc && <div><span className="k">Build: </span>{it.build_desc}</div>}
           <div className="cbe-chips">
             {(it.needs ?? []).map((n) => <span key={n} className="cbe-chip">{n}</span>)}
-            {it.ai_program_id && programName.has(it.ai_program_id) && (
-              <span className="cbe-chip tok">{programName.get(it.ai_program_id)}</span>
+            {it.pr_program_id && programName.has(it.pr_program_id) && (
+              <span className="cbe-chip tok">{programName.get(it.pr_program_id)}</span>
             )}
             {liveCardItemIds?.has(it.id) && <span className="cbe-chip tok">on a board</span>}
             {tok && <span className="cbe-chip tok">est. {tok} Human Tokens</span>}
@@ -244,10 +244,10 @@ export function BacklogAdminEditor({
             </div>
             {programs.length > 0 && (
               <div>
-                <label>AI Program</label>
+                <label>PR Program</label>
                 <select
-                  value={d.ai_program_id ?? ""}
-                  onChange={(e) => setD({ ai_program_id: e.target.value || null })}
+                  value={d.pr_program_id ?? ""}
+                  onChange={(e) => setD({ pr_program_id: e.target.value || null })}
                 >
                   <option value="">Company-wide</option>
                   {programs.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -412,7 +412,7 @@ export function BacklogAdminEditor({
             </div>
           </div>
         ) : (
-          <button type="button" className="cbe-link cbe-add" onClick={() => { setAddGroup(g.key); setAddDraft({ edge8_priority: "next", ai_program_id: defaultProgramId ?? null }); }}>
+          <button type="button" className="cbe-link cbe-add" onClick={() => { setAddGroup(g.key); setAddDraft({ edge8_priority: "next", pr_program_id: defaultProgramId ?? null }); }}>
             + Add item to {g.step_label || g.title}
           </button>
         ))}
