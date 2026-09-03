@@ -28,6 +28,7 @@ export function HubTabs({
       ];
   const tabs = [
     { href: "", label: "Overview" },
+    { href: "/plan", label: "90-Day Plan" },
     ...companyWideTabs,
     { href: "/documents", label: "Documents" },
     { href: "/coverage", label: "Coverage" },

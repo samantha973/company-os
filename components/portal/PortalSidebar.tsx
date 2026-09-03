@@ -18,6 +18,7 @@ export type PortalEntitlements = {
   meetings: boolean;
   board: boolean;
   roadmap: boolean;
+  plan: boolean;
   users: boolean;
   companyProfile: boolean;
 };
@@ -43,6 +44,8 @@ const NAV: NavGroup[] = [
       // overview + program cards); /portal/programs redirects here, so this is
       // the single entry point. Membership is the entitlement.
       { label: "PR Programs", href: "/portal/hub", ico: "\u21c9", built: true },
+      // The published 90-day plan; appears once the team publishes one.
+      { label: "90-Day Plan", href: "/portal/plan", ico: "\u25a3", built: true, entitlementKey: "plan" },
       // Requests has no entitlement key on purpose: being a portal member IS the
       // entitlement to ask for work; all data inside is company-scoped anyway.
       { label: "Requests", href: "/portal/requests", ico: "\u270e", built: true },

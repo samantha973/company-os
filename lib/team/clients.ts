@@ -37,6 +37,7 @@ import {
   type ProgramDetail,
   type ProgramSummary,
 } from "@/lib/hub/program";
+import { getPlanTab, type PlanTab } from "@/lib/hub/plan";
 
 export type ClientCompany = { id: string; name: string; roleTitle: string | null };
 
@@ -249,6 +250,26 @@ export async function getHubTabFlags(companyId: string): Promise<HubTabFlags> {
     hasPrograms,
     dropCompanyWide: hasPrograms && taggedCount > 0 && untaggedBoards === 0 && untaggedItems === 0,
   };
+}
+
+// The 90-Day Plan tab for an assigned client: the company's (single) program,
+// its plans, and the meetings the plan can be keyed off. Null when the company
+// is not in the actor's assignment set.
+export async function getPlanTabForActor(
+  actor: TeamActor,
+  companyId: string,
+  planId?: string | null,
+): Promise<{ program: ProgramSummary; tab: PlanTab; meetings: AdminMeetingRow[] } | null> {
+  const companies = await actorCompanyIds(actor);
+  if (!companies.has(companyId)) return null;
+  const programs = await listProgramSummaries(companyId);
+  const program = programs[0];
+  if (!program) return null;
+  const [tab, meetings] = await Promise.all([
+    getPlanTab(companyId, program.id, { planId }),
+    getMeetingsForCompany(companyId),
+  ]);
+  return { program, tab, meetings };
 }
 
 export type HubOverview = { programs: ProgramSummary[] };

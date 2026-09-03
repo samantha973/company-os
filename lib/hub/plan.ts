@@ -4,7 +4,7 @@
 // lib/hub/program.ts: companyId in, never widen scope; the caller gates.
 
 import { companyOs } from "@/lib/supabase";
-import { BACKLOG_SELECT, type BacklogItem } from "@/lib/client-backlog";
+import { BACKLOG_SELECT, ROADMAP_GROUPS_SELECT, type BacklogItem, type RoadmapGroup } from "@/lib/client-backlog";
 
 export const PLAN_SELECT =
   "id, pr_program_id, company_id, quarter_label, starts_on, ends_on, planning_meeting_id, business_objective, comms_objective, approved_plan_md, signoff_date, published_at, created_by, created_at, updated_at";
@@ -108,6 +108,38 @@ export async function getPlanTargets(companyId: string, planId: string): Promise
     ...i,
     progress: byId.get(i.id) ?? { outcome_count: 0, task_count: 0, task_done_count: 0 },
   }));
+}
+
+export type PlanTab = {
+  plans: QuarterlyPlan[];
+  selected: QuarterlyPlan | null;
+  targets: PlanTarget[];
+  groups: RoadmapGroup[];
+};
+
+// Everything the 90-Day Plan tab renders for one program: every plan, the
+// selected one (by id, else the current quarter), its targets, and the
+// workstreams (the program's own plus company-wide ones).
+export async function getPlanTab(
+  companyId: string,
+  programId: string,
+  opts?: { planId?: string | null; publishedOnly?: boolean },
+): Promise<PlanTab> {
+  const [plans, { data: groupData }] = await Promise.all([
+    listPlans(companyId, programId, { publishedOnly: opts?.publishedOnly }),
+    companyOs
+      .from("client_roadmap_groups")
+      .select(ROADMAP_GROUPS_SELECT)
+      .eq("company_id", companyId)
+      .is("archived_at", null)
+      .order("sort_order", { ascending: true }),
+  ]);
+  const groups = ((groupData ?? []) as unknown as RoadmapGroup[]).filter(
+    (g) => g.pr_program_id === null || g.pr_program_id === programId,
+  );
+  const selected = (opts?.planId && plans.find((p) => p.id === opts.planId)) || pickCurrentPlan(plans);
+  const targets = selected ? await getPlanTargets(companyId, selected.id) : [];
+  return { plans, selected, targets, groups };
 }
 
 export type PlanSnapshot = {

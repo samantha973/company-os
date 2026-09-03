@@ -15,7 +15,19 @@ import { listDocumentsForCompanies } from "@/lib/client-documents";
 import { getCompanyHubTeam, getLiveCardItemIds } from "@/lib/admin/company-hub";
 import { fetchAll, listProgramSummaries, type ProgramSummary } from "@/lib/hub/program";
 import { listAssignablePeople } from "@/lib/admin/people-options";
+import { getPlanTab } from "@/lib/hub/plan";
+import { suggestNextQuarter } from "@/lib/pr/quarters";
+import { QuarterlyPlanPanel } from "@/components/hub/QuarterlyPlanPanel";
 import { setupProgramWorkspace, updateProgramEngagement } from "./program-actions";
+import {
+  adminArchiveTarget,
+  adminCreatePlan,
+  adminCreateTarget,
+  adminCreateWorkstream,
+  adminPublishPlan,
+  adminUpdatePlan,
+  adminUpdateTarget,
+} from "./plan-actions";
 import { BACKLOG_SELECT, ROADMAP_GROUPS_SELECT, type BacklogItem, type RoadmapGroup } from "@/lib/client-backlog";
 import { getAdminUser } from "@/lib/admin-auth";
 import { PageHead } from "@/components/admin/PageHead";
@@ -322,6 +334,43 @@ export default async function CompanyDetailPage({
     const viewerPersonId = (viewerRow.data as { id: string } | null)?.id ?? null;
 
     const programOptions: ProgramOption[] = programRowsFull.map((p) => ({ id: p.id, name: p.name }));
+
+    // The 90-Day Plan tab: one program per client, so the first program's
+    // plans. ?plan= switches quarters.
+    const planProgram = programRowsFull[0] ?? null;
+    const planTab = planProgram ? await getPlanTab(company.id, planProgram.id, { planId: firstParam(searchParams.plan) }) : null;
+    const planTabs: TabDef[] =
+      planProgram && planTab
+        ? [
+            {
+              key: "plan",
+              label: "90-Day Plan",
+              count: planTab.targets.length || undefined,
+              content: (
+                <QuarterlyPlanPanel
+                  programId={planProgram.id}
+                  plans={planTab.plans}
+                  selected={planTab.selected}
+                  targets={planTab.targets}
+                  groups={planTab.groups}
+                  meetings={meetings.map((m) => ({ id: m.id, title: m.title, date: m.meetingDate }))}
+                  meetingHref={(id) => `/admin/revenue/meetings/${id}`}
+                  planHref={(planId) => `/admin/revenue/companies/${company.id}?view=hub&plan=${planId}`}
+                  suggestNext={suggestNextQuarter(planTab.plans[0]?.ends_on ?? null)}
+                  actions={{
+                    createPlan: adminCreatePlan.bind(null, company.id),
+                    updatePlan: adminUpdatePlan.bind(null, company.id),
+                    publishPlan: adminPublishPlan.bind(null, company.id),
+                    createTarget: adminCreateTarget.bind(null, company.id),
+                    updateTarget: adminUpdateTarget.bind(null, company.id),
+                    archiveTarget: adminArchiveTarget.bind(null, company.id),
+                    createWorkstream: adminCreateWorkstream.bind(null, company.id),
+                  }}
+                />
+              ),
+            },
+          ]
+        : [];
     const hubInvoices = invoices.map((r) => ({
       id: r.id,
       docNumber: r.doc_number,
@@ -374,6 +423,7 @@ export default async function CompanyDetailPage({
         ];
 
     const tabs: TabDef[] = [
+      ...planTabs,
       ...companyWideTabs,
       {
         key: "documents",
@@ -469,7 +519,7 @@ export default async function CompanyDetailPage({
       )}
 
       <div className="admin-card admin-section-card">
-        <Tabs tabs={tabs} />
+        <Tabs tabs={tabs} initialKey={firstParam(searchParams.tab)} syncParam="tab" />
       </div>
     </div>
   );
