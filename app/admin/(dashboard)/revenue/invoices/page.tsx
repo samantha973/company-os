@@ -135,7 +135,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Sea
         sub={`${total.toLocaleString()} ${total === 1 ? "invoice" : "invoices"} · ${formatCents(outstandingCents)} outstanding · synced from QuickBooks`}
         action={<SyncButton />}
       />
-      {error && <div className="admin-alert admin-alert--err" style={{ marginBottom: 14 }}>{error}</div>}
+      {error && <div className="admin-alert admin-alert--err u-mb-4">{error}</div>}
       <InvoicesShelfProvider>
         <DataTable
           columns={columns}
