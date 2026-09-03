@@ -44,7 +44,7 @@ export default async function QuickBooksSettingsPage({ searchParams }: { searchP
       />
 
       {flash && (
-        <div className={`admin-alert ${flash.tone === "ok" ? "admin-alert--ok" : "admin-alert--err"}`} style={{ marginBottom: 14 }}>
+        <div className={`admin-alert ${flash.tone === "ok" ? "admin-alert--ok" : "admin-alert--err"} u-mb-4`}>
           {flash.text}
         </div>
       )}
@@ -52,11 +52,11 @@ export default async function QuickBooksSettingsPage({ searchParams }: { searchP
       {CONNECTIONS.map((conn, i) => {
         const status = statuses[i];
         return (
-          <div key={conn.entity} className="admin-card admin-section-card" style={{ marginBottom: 16 }}>
-            <h2 className="admin-card-title" style={{ marginBottom: 4 }}>
+          <div key={conn.entity} className="admin-card admin-section-card u-mb-4">
+            <h2 className="admin-card-title u-mb-1">
               {conn.label} {status.connected ? <Badge tone="ok">Connected</Badge> : <Badge tone="warn">Not connected</Badge>}
             </h2>
-            <p className="admin-page-sub" style={{ marginTop: 0, marginBottom: 10 }}>{conn.sub}</p>
+            <p className="admin-page-sub u-mt-0 u-mb-3">{conn.sub}</p>
             {status.connected ? (
               <dl className="admin-kv">
                 <dt>Realm</dt>
@@ -71,11 +71,11 @@ export default async function QuickBooksSettingsPage({ searchParams }: { searchP
                 <dd>{formatDate(status.refreshTokenExpiresAt)} (auto-renewed weekly)</dd>
               </dl>
             ) : (
-              <p className="admin-page-sub" style={{ margin: 0 }}>
+              <p className="admin-page-sub u-m-0">
                 Not connected. Click Connect and pick the {conn.label} company in Intuit&rsquo;s picker.
               </p>
             )}
-            <div style={{ marginTop: 14 }}>
+            <div className="u-mt-4">
               <a href={`/api/qbo/connect?entity=${conn.entity}`} className="admin-btn admin-btn--primary">
                 {status.connected ? "Reconnect" : "Connect QuickBooks"}
               </a>
@@ -85,8 +85,8 @@ export default async function QuickBooksSettingsPage({ searchParams }: { searchP
       })}
 
       <div className="admin-card admin-section-card">
-        <h2 className="admin-card-title" style={{ marginBottom: 10 }}>Setup notes</h2>
-        <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, display: "grid", gap: 6 }}>
+        <h2 className="admin-card-title u-mb-3">Setup notes</h2>
+        <ul className="u-list u-stack u-gap-2">
           <li>
             Create an app at developer.intuit.com (Accounting scope) for Talent Edge LLC and set
             <span className="admin-cell-mono"> QBO_CLIENT_ID</span>,

@@ -46,7 +46,7 @@ export function InvoicesTab({
       {invoices.length === 0 ? (
         <div className="admin-empty">No invoices synced yet.</div>
       ) : (
-        <div className="admin-table-wrap" style={{ marginBottom: 16 }}>
+        <div className="admin-table-wrap u-mb-4">
           <table className="admin-table">
             <thead>
               <tr>
@@ -89,7 +89,7 @@ export function InvoicesTab({
             onChange={(e) => setIds(e.target.value)}
             placeholder="e.g. 5, 205"
           />
-          <p className="admin-cell-muted" style={{ marginTop: 4 }}>
+          <p className="admin-cell-muted u-mt-1">
             Comma-separated. Feeds the next manual invoice backfill for this company.
           </p>
         </div>

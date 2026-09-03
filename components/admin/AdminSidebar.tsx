@@ -183,9 +183,8 @@ export function AdminSidebar({
     return (
       <span
         key={item.href}
-        className={cls}
+        className={`${cls} u-disabled`}
         aria-disabled
-        style={{ opacity: 0.4, cursor: "not-allowed" }}
         title="Coming in a later phase"
       >
         <span className="admin-nav-ico" aria-hidden>
