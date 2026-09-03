@@ -146,7 +146,7 @@ export function PortalSidebar({
 
       {navOpen && <div className="admin-scrim" onClick={() => setNavOpen(false)} />}
 
-      <nav className={`admin-sidebar portal-sidebar${navOpen ? " is-open" : ""}`} aria-label="Portal">
+      <nav className={`admin-sidebar admin-portal-sidebar${navOpen ? " is-open" : ""}`} aria-label="Portal">
         <div className="admin-brand">
           <span className="admin-brand-lead">{BRAND_PORTAL}</span>
           <span className="admin-brand-actions">
@@ -236,9 +236,8 @@ export function PortalSidebar({
                     ) : (
                       <span
                         key={item.href}
-                        className="admin-nav-link"
+                        className="admin-nav-link u-disabled"
                         aria-disabled
-                        style={{ opacity: 0.4, cursor: "not-allowed" }}
                         title="Coming soon"
                       >
                         <span className="admin-nav-ico" aria-hidden>

@@ -245,7 +245,7 @@ if (existsSync(ADMIN_CSS)) {
 
   // Ask the question per element rather than from a guessed candidate list: does
   // ANY other class on this element declare padding? A companion named
-  // .coach-section pads just as well as one with "card" in its name.
+  // .admin-coach-section pads just as well as one with "card" in its name.
   const padsCache = new Map();
   const pads = (cls) => {
     if (!padsCache.has(cls)) padsCache.set(cls, padsFor(cls));

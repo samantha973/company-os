@@ -123,7 +123,7 @@ export default async function TeamProgramDetailPage({
   ];
 
   return (
-    <div style={{ maxWidth: 1100 }}>
+    <div>
       <PageHead
         eyebrow={<Link href={hubHref}>← {company.name}</Link>}
         title={detail.name}

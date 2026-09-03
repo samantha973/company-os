@@ -205,20 +205,20 @@ export default async function TeamHome() {
       </div>
 
       {(clientSnippets.length > 0 || recentTasks.length > 0) && (
-        <div className="team-home-cols">
+        <div className="admin-team-home-cols">
           {clientSnippets.length > 0 && (
             <div>
               <h2 className="admin-section-label">Your clients</h2>
               {clientSnippets.map((s) => (
-                <div key={s.company.id} className="admin-card admin-section-card" style={{ marginBottom: 14 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 10 }}>
-                    <h3 className="admin-card-title" style={{ margin: 0 }}>
+                <div key={s.company.id} className="admin-card admin-section-card u-mb-4">
+                  <div className="u-row u-between u-mb-3">
+                    <h3 className="admin-card-title">
                       {s.company.name}
-                      <span className="admin-cell-muted" style={{ fontWeight: 400, fontSize: 12, marginLeft: 8 }}>
+                      <span className="admin-cell-muted u-ml-2 u-sm">
                         plan targets · next up
                       </span>
                     </h3>
-                    <Link href={`/team/clients/${s.company.id}`} className="admin-cell-muted" style={{ fontSize: 12 }}>
+                    <Link href={`/team/clients/${s.company.id}`} className="admin-cell-muted u-sm">
                       View all {s.total} →
                     </Link>
                   </div>
@@ -227,8 +227,7 @@ export default async function TeamHome() {
                       <Link
                         key={it.id}
                         href={`/team/clients/${s.company.id}`}
-                        className="admin-list-row"
-                        style={{ textDecoration: "none", color: "inherit" }}
+                        className="admin-list-row u-link-plain"
                       >
                         <div className="admin-list-main">
                           <div className="admin-list-title">
@@ -249,15 +248,15 @@ export default async function TeamHome() {
           {recentTasks.length > 0 && (
             <div>
               <h2 className="admin-section-label">Recent tasks</h2>
-              <div className="admin-card admin-section-card" style={{ marginBottom: 14 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 10 }}>
-                  <h3 className="admin-card-title" style={{ margin: 0 }}>
+              <div className="admin-card admin-section-card u-mb-4">
+                <div className="u-row u-between u-mb-3">
+                  <h3 className="admin-card-title">
                     Assigned to you
-                    <span className="admin-cell-muted" style={{ fontWeight: 400, fontSize: 12, marginLeft: 8 }}>
+                    <span className="admin-cell-muted u-ml-2 u-sm">
                       newest first
                     </span>
                   </h3>
-                  <Link href="/team/my-work-boards" className="admin-cell-muted" style={{ fontSize: 12 }}>
+                  <Link href="/team/my-work-boards" className="admin-cell-muted u-sm">
                     All my tasks →
                   </Link>
                 </div>
@@ -266,12 +265,11 @@ export default async function TeamHome() {
                     <Link
                       key={t.id}
                       href={`/team/boards/${t.boardSlug}`}
-                      className="admin-list-row"
-                      style={{ textDecoration: "none", color: "inherit" }}
+                      className="admin-list-row u-link-plain"
                     >
                       <div className="admin-list-main">
                         <div className="admin-list-title">{t.title}</div>
-                        <div className="admin-cell-muted" style={{ fontSize: 12 }}>
+                        <div className="admin-cell-muted u-sm">
                           {t.boardName}
                           {t.dueDate ? ` · due ${formatDate(t.dueDate)}` : ""}
                         </div>
@@ -291,13 +289,13 @@ export default async function TeamHome() {
       {myOpenRoles.length > 0 && (
         <>
           <h2 className="admin-section-label">You&rsquo;re hiring</h2>
-          <div className="admin-card admin-section-card" style={{ marginBottom: 14 }}>
+          <div className="admin-card admin-section-card u-mb-4">
             <div className="admin-list">
               {myOpenRoles.map((r) => (
                 <div key={r.id} className="admin-list-row">
                   <div className="admin-list-main">
                     <div className="admin-list-title">{r.title}</div>
-                    <div className="admin-cell-muted" style={{ fontSize: 12 }}>
+                    <div className="admin-cell-muted u-sm">
                       {r.location || "Location not set"}
                     </div>
                   </div>
@@ -328,17 +326,16 @@ export default async function TeamHome() {
         href="https://aiolabz.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="admin-card admin-section-card"
-        style={{ display: "flex", alignItems: "center", gap: 14, textDecoration: "none", color: "inherit", marginTop: 18 }}
+        className="admin-card admin-section-card u-row u-gap-4 u-mt-4 u-link-plain"
       >
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h2 className="admin-card-title" style={{ marginBottom: 4 }}>Get Certified</h2>
-          <p className="admin-page-sub" style={{ margin: 0 }}>
+        <div className="u-grow u-min-0">
+          <h2 className="admin-card-title u-mb-1">Get Certified</h2>
+          <p className="admin-page-sub u-m-0">
             Become a certified AI Officer on AIOlabz. Sign up with your company email and
             work through the challenge-based program.
           </p>
         </div>
-        <span className="admin-btn admin-btn--primary" style={{ flex: "none", pointerEvents: "none" }}>
+        <span className="admin-btn admin-btn--primary u-shrink-0 u-no-events">
           Start on AIOlabz →
         </span>
       </a>
@@ -354,9 +351,9 @@ export default async function TeamHome() {
       {/* Coming features state the ambition without competing with the live
           tools: one quiet row of pills instead of a second card grid. */}
       <h2 className="admin-section-label">On the way</h2>
-      <div className="team-soon-row">
+      <div className="admin-team-soon-row">
         {HUB_SOON.map((item) => (
-          <span key={item.title} className="team-soon-pill" title={item.sub}>
+          <span key={item.title} className="admin-team-soon-pill" title={item.sub}>
             <span aria-hidden>{item.ico}</span> {item.title}
           </span>
         ))}

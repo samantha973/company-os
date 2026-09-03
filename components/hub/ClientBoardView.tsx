@@ -50,7 +50,7 @@ export function ClientBoardView({
         return (
           <div className="admin-kanban-col" key={col.id}>
             <div className="admin-kanban-col-head">
-              <span className="admin-kanban-col-dot" style={{ background: accents[i] }} />
+              <span className="admin-kanban-col-dot" style={{ background: accents[i] }} /* layout-ok: column accent is a token var chosen at runtime */ />
               <span className="admin-kanban-col-label">{col.name}</span>
               <span className="admin-kanban-col-count">{colCards.length}</span>
             </div>

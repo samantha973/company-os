@@ -29,9 +29,9 @@ export default async function PortalInvoicesPage() {
       ) : (
         invoices.map((inv) => (
           <div className="admin-card admin-section-card" key={inv.id}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+            <div className="u-row u-between u-wrap">
               <div>
-                <h2 className="admin-card-title" style={{ marginBottom: 2 }}>
+                <h2 className="admin-card-title u-mb-1">
                   Invoice {inv.docNumber || inv.id.slice(0, 8)}
                 </h2>
                 <div className="admin-cell-muted">
@@ -39,8 +39,8 @@ export default async function PortalInvoicesPage() {
                   {inv.dueDate ? ` · due ${formatDate(inv.dueDate)}` : ""}
                 </div>
               </div>
-              <div style={{ textAlign: "right" }}>
-                <div className="admin-cell-mono" style={{ fontSize: 18 }}>
+              <div className="u-right">
+                <div className="admin-cell-mono u-xl">
                   {formatCents(inv.amountCents, inv.currency)}
                 </div>
                 <Badge tone={statusTone(inv.status)}>{humanize(inv.status)}</Badge>
@@ -48,7 +48,7 @@ export default async function PortalInvoicesPage() {
             </div>
 
             {inv.balanceCents > 0 && (
-              <p className="admin-page-sub" style={{ marginTop: 8 }}>
+              <p className="admin-page-sub u-mt-2">
                 {formatCents(inv.balanceCents, inv.currency)} outstanding
                 {inv.paymentLink && (
                   <>
@@ -62,29 +62,29 @@ export default async function PortalInvoicesPage() {
             )}
 
             {inv.lines.length > 0 && (
-              <details style={{ marginTop: 12 }}>
-                <summary className="admin-cell-muted" style={{ cursor: "pointer" }}>
+              <details className="u-mt-3">
+                <summary className="admin-cell-muted u-pointer">
                   Line items ({inv.lines.length})
                 </summary>
-                <div className="admin-table-wrap" style={{ marginTop: 8 }}>
+                <div className="admin-table-wrap u-mt-2">
                   <table className="admin-table">
                     <thead>
                       <tr>
                         <th>Description</th>
-                        <th style={{ textAlign: "right" }}>Qty</th>
-                        <th style={{ textAlign: "right" }}>Rate</th>
-                        <th style={{ textAlign: "right" }}>Amount</th>
+                        <th className="u-right">Qty</th>
+                        <th className="u-right">Rate</th>
+                        <th className="u-right">Amount</th>
                       </tr>
                     </thead>
                     <tbody>
                       {inv.lines.map((line, i) => (
                         <tr key={i}>
                           <td>{line.description || line.item_name || "—"}</td>
-                          <td style={{ textAlign: "right" }}>{line.quantity}</td>
-                          <td className="admin-cell-mono" style={{ textAlign: "right" }}>
+                          <td className="u-right">{line.quantity}</td>
+                          <td className="admin-cell-mono u-right">
                             {formatCents(Math.round(line.rate * 100), inv.currency)}
                           </td>
-                          <td className="admin-cell-mono" style={{ textAlign: "right" }}>
+                          <td className="admin-cell-mono u-right">
                             {formatCents(Math.round(line.amount * 100), inv.currency)}
                           </td>
                         </tr>

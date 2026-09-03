@@ -173,7 +173,7 @@ export function BoardsIndex({
                         aria-label={`Sort by ${c.label}`}
                       >
                         {c.label}
-                        <span className="team-dir-caret" aria-hidden>
+                        <span className="admin-team-dir-caret" aria-hidden>
                           {sortKey === c.key ? (sortAsc ? "▲" : "▼") : "↕"}
                         </span>
                       </button>
