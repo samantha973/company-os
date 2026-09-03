@@ -42,8 +42,8 @@ export default async function TeamClientPlanTab({
       targets={tab.targets}
       groups={tab.groups}
       meetings={meetings.map((m) => ({ id: m.id, title: m.title, date: m.meetingDate }))}
-      meetingHref={() => `/team/clients/${companyId}/meetings`}
-      planHref={(planId) => `/team/clients/${companyId}/plan?plan=${planId}`}
+      meetingHrefBase={`/team/clients/${companyId}/meetings`}
+      planHrefBase={`/team/clients/${companyId}/plan?plan=`}
       suggestNext={suggestNextQuarter(latestEnd)}
       actions={{
         createPlan: teamCreatePlan.bind(null, companyId),

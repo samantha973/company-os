@@ -309,8 +309,8 @@ export default async function CompanyDetailPage({
                   targets={planTab.targets}
                   groups={planTab.groups}
                   meetings={meetings.map((m) => ({ id: m.id, title: m.title, date: m.meetingDate }))}
-                  meetingHref={(id) => `/admin/revenue/meetings/${id}`}
-                  planHref={(planId) => `/admin/revenue/companies/${company.id}?view=hub&plan=${planId}`}
+                  meetingHrefBase="/admin/revenue/meetings/"
+                  planHrefBase={`/admin/revenue/companies/${company.id}?view=hub&tab=plan&plan=`}
                   suggestNext={suggestNextQuarter(planTab.plans[0]?.ends_on ?? null)}
                   actions={{
                     createPlan: adminCreatePlan.bind(null, company.id),
@@ -364,7 +364,7 @@ export default async function CompanyDetailPage({
                 programId={coverageTab.program.id}
                 rows={coverageTab.rows}
                 kind={coverageKind}
-                kindHref={(k) => `/admin/revenue/companies/${company.id}?view=hub&tab=coverage&kind=${k}`}
+                kindHrefBase={`/admin/revenue/companies/${company.id}?view=hub&tab=coverage&kind=`}
                 targets={coverageTab.targets}
                 tasks={coverageTab.tasks}
                 journalists={coverageTab.journalists}

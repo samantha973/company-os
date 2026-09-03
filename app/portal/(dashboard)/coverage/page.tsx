@@ -46,7 +46,7 @@ export default async function PortalCoveragePage({ searchParams }: { searchParam
     <div className="admin-content">
       <PageHead eyebrow="Client hub" title="Coverage" sub="Every piece we have secured for you, and the LinkedIn posts that went out." />
       <div className="admin-card admin-section-card">
-        <CoveragePanel programId={outcomes[0]?.programId ?? ""} rows={rows} kind={kind} kindHref={(k) => `/portal/coverage?kind=${k}`} />
+        <CoveragePanel programId={outcomes[0]?.programId ?? ""} rows={rows} kind={kind} kindHrefBase="/portal/coverage?kind=" />
       </div>
     </div>
   );

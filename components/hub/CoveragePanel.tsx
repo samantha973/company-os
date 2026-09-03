@@ -26,7 +26,7 @@ export function CoveragePanel({
   programId,
   rows,
   kind,
-  kindHref,
+  kindHrefBase,
   targets = [],
   tasks = [],
   journalists = [],
@@ -36,7 +36,7 @@ export function CoveragePanel({
   programId: string;
   rows: OutcomeRow[];
   kind: "coverage" | "linkedin";
-  kindHref: (kind: "coverage" | "linkedin") => string;
+  kindHrefBase: string; // prefix ending in "kind=" (client components cannot take callbacks from server pages)
   targets?: CoverageTargetOption[];
   tasks?: Option[];
   journalists?: MediaContactOption[];
@@ -82,7 +82,7 @@ export function CoveragePanel({
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", gap: 6 }}>
           {(["coverage", "linkedin"] as const).map((k) => (
-            <Link key={k} href={kindHref(k)} className="admin-chip" style={kind === k ? { borderColor: "var(--admin-accent)", color: "var(--admin-accent)", fontWeight: 600 } : undefined}>
+            <Link key={k} href={`${kindHrefBase}${k}`} className="admin-chip" style={kind === k ? { borderColor: "var(--admin-accent)", color: "var(--admin-accent)", fontWeight: 600 } : undefined}>
               {k === "coverage" ? "Coverage" : "LinkedIn posts"} · {counts[k]}
             </Link>
           ))}

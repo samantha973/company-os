@@ -27,7 +27,7 @@ export default async function PortalPlanPage({ searchParams }: { searchParams: S
           selected={tab.selected}
           targets={tab.targets}
           groups={tab.groups}
-          planHref={(planId) => `/portal/plan?plan=${planId}`}
+          planHrefBase="/portal/plan?plan="
           suggestNext={quarterFor(new Date())}
         />
       ) : (
