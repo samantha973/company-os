@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { companyOs } from "@/lib/supabase";
 import { byFirstName, personName, type NamedPerson } from "@/lib/people-name";
 
@@ -34,7 +35,7 @@ export function toOptions(rows: (PersonRow | null)[]): PersonOption[] {
     .sort((a, b) => byFirstName(a.name, b.name));
 }
 
-export async function listAssignablePeople(): Promise<PersonOption[]> {
+async function listAssignablePeopleImpl(): Promise<PersonOption[]> {
   const { data } = await companyOs
     .from("team_members")
     .select(`person:people!team_members_person_id_fkey(${PERSON_FIELDS})`)
@@ -55,3 +56,7 @@ export async function listPeopleNames(ids: string[]): Promise<Map<string, string
   const rows = (data ?? []) as unknown as PersonRow[];
   return new Map(rows.map((p) => [p.id, personName(p)]));
 }
+
+// Per-request memo (React cache): the hub page and its tab loaders ask for
+// this several times in one render; only the first call hits the database.
+export const listAssignablePeople = cache(listAssignablePeopleImpl);

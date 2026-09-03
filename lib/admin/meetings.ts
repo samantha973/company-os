@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { companyOs } from "@/lib/supabase";
 
 // Reads for the Client Meetings surface. A meeting is a client meeting when it
@@ -87,7 +88,7 @@ function mapRow(r: Row): AdminMeetingRow {
 
 // `prProgramId` narrows to meetings tagged to that program; omitted = all of
 // the company's meetings (today's behavior).
-export async function getMeetingsForCompany(
+async function getMeetingsForCompanyImpl(
   companyId: string,
   prProgramId?: string,
 ): Promise<AdminMeetingRow[]> {
@@ -216,3 +217,7 @@ export async function listCompanyOptions(): Promise<CompanyOption[]> {
     .filter((c) => c.name)
     .map((c) => ({ id: c.id, name: c.name as string }));
 }
+
+// Per-request memo (React cache): the hub page and its tab loaders ask for
+// this several times in one render; only the first call hits the database.
+export const getMeetingsForCompany = cache(getMeetingsForCompanyImpl);

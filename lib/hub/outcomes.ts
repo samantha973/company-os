@@ -1,3 +1,4 @@
+import { cache } from "react";
 // Outcome readers: earned coverage and LinkedIn posts are marketing_content
 // rows tagged to a program (docs/plans/2026-09-03-pr-hub-client-record.md,
 // M6). Same discipline as lib/hub/program.ts: companyId in, never widen
@@ -141,7 +142,7 @@ export async function listProgramTaskOptions(companyId: string, programId: strin
 export type MediaContactOption = { id: string; name: string; outlet: string | null };
 
 // People with persona=media, with the outlet they are a journalist at.
-export async function listMediaContacts(): Promise<MediaContactOption[]> {
+async function listMediaContactsImpl(): Promise<MediaContactOption[]> {
   const { data } = await companyOs
     .from("people")
     .select("id, display_name, preferred_name, full_name, email, person_companies(role, companies(name))")
@@ -159,3 +160,7 @@ export async function listMediaContacts(): Promise<MediaContactOption[]> {
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
 }
+
+// Per-request memo (React cache): the hub page and its tab loaders ask for
+// this several times in one render; only the first call hits the database.
+export const listMediaContacts = cache(listMediaContactsImpl);

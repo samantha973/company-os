@@ -1,3 +1,4 @@
+import { cache } from "react";
 // Shared, company-scoped loaders for the PR Program (the engagement record
 // on company_os.pr_programs) and everything that hangs off it: the derived
 // tallies in pr_program_stats, the current 90-day plan snapshot, boards,
@@ -130,7 +131,7 @@ type StatsRow = {
 
 const EMPTY_STATS: ProgramStats = { coverageCount: 0, linkedinPostCount: 0, lastFormalCatchup: null, awardsInFlight: 0 };
 
-export async function listProgramSummaries(companyId: string): Promise<ProgramSummary[]> {
+async function listProgramSummariesImpl(companyId: string): Promise<ProgramSummary[]> {
   const [{ data: programData }, { data: statsData }, boardRows, plans] = await Promise.all([
     companyOs
       .from("pr_programs")
@@ -272,3 +273,7 @@ export async function getProgramDetail(
     meetings,
   };
 }
+
+// Per-request memo (React cache): the hub page and its tab loaders ask for
+// this several times in one render; only the first call hits the database.
+export const listProgramSummaries = cache(listProgramSummariesImpl);
