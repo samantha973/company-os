@@ -132,6 +132,27 @@ export async function setupProgramWorkspaceCore(
     .maybeSingle();
   if (existing) return { ok: true, boardSlug: (existing as { slug: string }).slug };
 
+  // Boards created before the program model carry the company but no
+  // program. Adopt them rather than creating a second board beside them.
+  const { data: unlinked } = await companyOs
+    .from("boards")
+    .select("id, slug")
+    .eq("client_company_id", companyId)
+    .is("pr_program_id", null)
+    .eq("status", "active")
+    .is("archived_at", null)
+    .order("created_at", { ascending: true });
+  const orphans = (unlinked ?? []) as Array<{ id: string; slug: string }>;
+  if (orphans.length > 0) {
+    const ids = orphans.map((b) => b.id);
+    const { error: linkErr } = await companyOs.from("boards").update({ pr_program_id: programId }).in("id", ids);
+    if (linkErr) return { ok: false, error: linkErr.message };
+    for (const b of orphans) {
+      await recordAudit({ table: "boards", recordId: b.id, operation: "update", actor, newData: { pr_program_id: programId } });
+    }
+    return { ok: true, boardSlug: orphans[0].slug };
+  }
+
   const created = await createBoardRow({
     name: `${(program as { name: string }).name} — Work Board`,
     clientCompanyId: companyId,

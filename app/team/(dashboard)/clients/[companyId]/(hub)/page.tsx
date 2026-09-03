@@ -26,7 +26,6 @@ export default async function TeamClientHubOverview({ params }: { params: { comp
     <HubProgramsBand
       programs={overview.programs}
       audience="team"
-      programHref={(programId) => `/team/clients/${params.companyId}/programs/${programId}`}
       people={people}
       touchpoints={supporting?.touchpoints ?? []}
       actions={{

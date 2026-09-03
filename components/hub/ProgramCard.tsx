@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Badge, type BadgeTone } from "@/components/admin/Badge";
@@ -54,14 +53,12 @@ function Field({ label, internal, children }: { label: string; internal?: boolea
 export function ProgramCard({
   program,
   audience,
-  href,
   people = [],
   touchpoints = [],
   actions,
 }: {
   program: ProgramSummary;
   audience: "admin" | "team";
-  href: string;
   people?: PersonOption[];
   touchpoints?: TouchpointRow[];
   actions?: ProgramCardActions;
@@ -94,9 +91,7 @@ export function ProgramCard({
       <section className="admin-card admin-section-card">
         <div className="admin-hub-band-top">
           <div className="admin-hub-band-title">
-            <h2>
-              <Link href={href} className="u-link-plain">{p.name}</Link>
-            </h2>
+            <h2>{p.name}</h2>
             {actions ? (
               <EditableSelect
                 value={p.status}
@@ -137,10 +132,9 @@ export function ProgramCard({
                   })
                 }
               >
-                {pending ? "Setting up…" : "Set up Work Board"}
+                {pending ? "Setting up…" : p.unlinkedBoardCount > 0 ? "Link existing Work Board" : "Set up Work Board"}
               </button>
             )}
-            <Link href={href}>Open program →</Link>
           </div>
         </div>
         {setupError && <div className="admin-editable-note admin-editable-note--err u-mb-3">{setupError}</div>}
