@@ -766,7 +766,7 @@ function ReportPanel({ report }: { report: CampaignReport }) {
   const openRate = report.delivered > 0 ? `${Math.round((report.opened / report.delivered) * 100)}%` : "—";
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      <div className="mp-kpi-grid">
+      <div className="admin-kpi-grid">
         <MetricCard label="Assets live" value={String(report.assetsLive)} sub={`of ${report.assetsTotal} planned`} />
         <MetricCard label="Emails delivered" value={report.delivered.toLocaleString()} sub={`${report.broadcasts.length} broadcast${report.broadcasts.length === 1 ? "" : "s"}`} />
         <MetricCard label="Open rate" value={openRate} sub={`${report.opened.toLocaleString()} opened`} />

@@ -46,7 +46,7 @@ export function StrategyView({ parsed }: { parsed: ParsedStrategy }) {
         <div className="team-strat-grid">
           {statements.map((s) => (
             <div key={s.label} className="team-strat-card">
-              <span className="team-hub-ico" aria-hidden>
+              <span className="admin-hub-ico" aria-hidden>
                 {s.ico}
               </span>
               <span className="team-strat-card-label">{s.label}</span>
@@ -63,7 +63,7 @@ export function StrategyView({ parsed }: { parsed: ParsedStrategy }) {
             {lines.map((line, i) => (
               <div key={line.heading} className="team-strat-card">
                 <span className="team-strat-card-head">
-                  <span className="team-hub-ico" aria-hidden>
+                  <span className="admin-hub-ico" aria-hidden>
                     {LINE_ICONS[i % LINE_ICONS.length]}
                   </span>
                   <span className="team-strat-line-num">{String(i + 1).padStart(2, "0")}</span>

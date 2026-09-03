@@ -44,11 +44,11 @@ function Tile({
   attn?: boolean;
 }) {
   return (
-    <div className={`team-glance-cell${attn ? " coach-hero__cell--attn" : ""}`}>
-      <span className="team-glance-label">{label}</span>
-      <span className="team-glance-value">{value}</span>
+    <div className={`admin-glance-cell${attn ? " coach-hero__cell--attn" : ""}`}>
+      <span className="admin-glance-label">{label}</span>
+      <span className="admin-glance-value">{value}</span>
       {(note || badge) && (
-        <span className="team-glance-note coach-hero__note">
+        <span className="admin-glance-note coach-hero__note">
           {note}
           {badge && (
             <span className={`admin-badge${badgeTone === "muted" ? "" : ` admin-badge--${badgeTone}`}`}>{badge}</span>
@@ -82,7 +82,7 @@ export function MyCoachingHeader({ my }: { my: MyCoaching }) {
         </div>
       </div>
 
-      <div className="team-glance coach-hero__stats">
+      <div className="admin-glance coach-hero__stats">
         <Tile
           label="Next 1-1"
           value={my.nextOneOnOneOn ? fmtDate(my.nextOneOnOneOn) : "Not scheduled"}

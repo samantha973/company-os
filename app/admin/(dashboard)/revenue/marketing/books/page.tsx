@@ -34,7 +34,7 @@ export default async function BooksPage() {
       {books.length === 0 ? (
         <div className="admin-empty">No books imported yet.</div>
       ) : (
-        <div className="mp-kpi-grid">
+        <div className="admin-kpi-grid">
           {books.map((b) => (
             <Link
               key={b.id}

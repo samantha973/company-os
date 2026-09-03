@@ -100,12 +100,12 @@ const HUB_SOON: HubItem[] = [
 function HubCard({ item }: { item: HubItem }) {
   if (!item.href) return null;
   return (
-    <Link href={item.href} className="team-hub-card">
-      <span className="team-hub-ico" aria-hidden>
+    <Link href={item.href} className="admin-hub-card">
+      <span className="admin-hub-ico" aria-hidden>
         {item.ico}
       </span>
-      <span className="team-hub-title">{item.title}</span>
-      <span className="team-hub-sub">{item.sub}</span>
+      <span className="admin-hub-title">{item.title}</span>
+      <span className="admin-hub-sub">{item.sub}</span>
     </Link>
   );
 }
@@ -182,11 +182,11 @@ export default async function TeamHome() {
           greeting, then the personal facts, then the tools. */}
       <TeamCollage photos={collagePhotos} avatars={collagePeople} />
 
-      <div className="team-glance">
-        <div className="team-glance-cell">
-          <span className="team-glance-label">Next time off</span>
-          <span className="team-glance-value">{nextLeave ? formatDate(nextLeave.start_date) : "None scheduled"}</span>
-          <span className="team-glance-note">
+      <div className="admin-glance">
+        <div className="admin-glance-cell">
+          <span className="admin-glance-label">Next time off</span>
+          <span className="admin-glance-value">{nextLeave ? formatDate(nextLeave.start_date) : "None scheduled"}</span>
+          <span className="admin-glance-note">
             {nextLeave ? (
               `${humanize(nextLeave.leave_type)} · ${nextLeave.status}`
             ) : (
@@ -194,13 +194,13 @@ export default async function TeamHome() {
             )}
           </span>
         </div>
-        <div className="team-glance-cell">
-          <span className="team-glance-label">Manager</span>
-          <span className="team-glance-value">{profile?.managerName || "—"}</span>
+        <div className="admin-glance-cell">
+          <span className="admin-glance-label">Manager</span>
+          <span className="admin-glance-value">{profile?.managerName || "—"}</span>
         </div>
-        <div className="team-glance-cell">
-          <span className="team-glance-label brand-label">With {BRAND_SHORT} since</span>
-          <span className="team-glance-value">{profile?.start_date ? formatDate(profile.start_date) : "—"}</span>
+        <div className="admin-glance-cell">
+          <span className="admin-glance-label brand-label">With {BRAND_SHORT} since</span>
+          <span className="admin-glance-value">{profile?.start_date ? formatDate(profile.start_date) : "—"}</span>
         </div>
       </div>
 
@@ -318,7 +318,7 @@ export default async function TeamHome() {
       )}
 
       <h2 className="admin-section-label">Your workspace</h2>
-      <div className="team-hub-grid team-hub-grid--row">
+      <div className="admin-hub-grid admin-hub-grid--row">
         {HUB_LIVE.map((item) => (
           <HubCard key={item.title} item={item} />
         ))}

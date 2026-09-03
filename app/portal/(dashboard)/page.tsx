@@ -114,29 +114,29 @@ export default async function PortalHome() {
       />
 
       {hasGlance && (
-        <div className="team-glance" style={{ marginBottom: 16 }}>
-          <div className="team-glance-cell">
-            <span className="team-glance-label">90-Day Plan</span>
-            <span className="team-glance-value">{hasPlan ? "Published" : "Coming soon"}</span>
-            <span className="team-glance-note">
+        <div className="admin-glance" style={{ marginBottom: 16 }}>
+          <div className="admin-glance-cell">
+            <span className="admin-glance-label">90-Day Plan</span>
+            <span className="admin-glance-value">{hasPlan ? "Published" : "Coming soon"}</span>
+            <span className="admin-glance-note">
               {hasPlan ? <Link href="/portal/plan">Open →</Link> : "Published by your account team"}
             </span>
           </div>
-          <div className="team-glance-cell">
-            <span className="team-glance-label">Activity</span>
-            <span className="team-glance-value">
+          <div className="admin-glance-cell">
+            <span className="admin-glance-label">Activity</span>
+            <span className="admin-glance-value">
               {board ? `${openCards.length} in motion` : "Nothing yet"}
             </span>
-            <span className="team-glance-note">
+            <span className="admin-glance-note">
               {board ? <Link href="/portal/hub">Open →</Link> : "Set up by your account team"}
             </span>
           </div>
-          <div className="team-glance-cell">
-            <span className="team-glance-label">Documents</span>
-            <span className="team-glance-value">
+          <div className="admin-glance-cell">
+            <span className="admin-glance-label">Documents</span>
+            <span className="admin-glance-value">
               {documents.length === 0 ? "None yet" : `${documents.length} file${documents.length === 1 ? "" : "s"}`}
             </span>
-            <span className="team-glance-note">
+            <span className="admin-glance-note">
               <Link href="/portal/hub">{documents.length > 0 ? "Open →" : "Upload →"}</Link>
             </span>
           </div>
@@ -243,7 +243,7 @@ export default async function PortalHome() {
         </div>
       )}
 
-      <div className="mp-kpi-grid" style={{ marginBottom: 16 }}>
+      <div className="admin-kpi-grid" style={{ marginBottom: 16 }}>
         <MetricCard
           label="Open requests"
           value={openRequestCount}

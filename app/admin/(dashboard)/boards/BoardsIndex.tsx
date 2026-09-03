@@ -107,7 +107,7 @@ export function BoardsIndex({
           <span className="admin-cell-muted">No boards yet.</span>
         </div>
       ) : view === "cards" ? (
-        <div className="mp-kpi-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
+        <div className="admin-kpi-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
           {boards.map((b) => {
             const total = b.open_count + b.done_count;
             const pct = total > 0 ? Math.round((b.done_count / total) * 100) : 0;
@@ -139,14 +139,14 @@ export function BoardsIndex({
                     </span>
                     {total > 0 && <span>{pct}% done</span>}
                   </div>
-                  <div className="board-progress">
-                    <div className="board-progress-fill" style={{ width: `${pct}%` }} />
+                  <div className="admin-progress">
+                    <div className="admin-progress-fill" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
                 <div style={{ marginTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span className="board-avatar-stack">
                     {shown.map((name, i) => (
-                      <span key={`${name}-${i}`} className="sap-avatar" title={name}>
+                      <span key={`${name}-${i}`} className="admin-kanban-avatar" title={name}>
                         {initials(name)}
                       </span>
                     ))}
@@ -231,8 +231,8 @@ export function BoardsIndex({
                           <span className="admin-cell-muted">—</span>
                         ) : (
                           <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                            <span className="board-progress" style={{ width: 72, display: "inline-block" }}>
-                              <span className="board-progress-fill" style={{ width: `${pct}%`, display: "block" }} />
+                            <span className="admin-progress" style={{ width: 72, display: "inline-block" }}>
+                              <span className="admin-progress-fill" style={{ width: `${pct}%`, display: "block" }} />
                             </span>
                             <span className="admin-cell-mono">{pct}%</span>
                           </span>
@@ -241,7 +241,7 @@ export function BoardsIndex({
                       <td>
                         <span className="board-avatar-stack">
                           {shown.map((name, i) => (
-                            <span key={`${name}-${i}`} className="sap-avatar" title={name}>
+                            <span key={`${name}-${i}`} className="admin-kanban-avatar" title={name}>
                               {initials(name)}
                             </span>
                           ))}

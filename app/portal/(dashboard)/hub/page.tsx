@@ -80,7 +80,7 @@ export default async function PortalHubPage() {
         action={<Badge tone={statusTone(program.status)}>{humanize(program.status)}</Badge>}
       />
 
-      <div className="mp-kpi-grid" style={{ marginBottom: 16 }}>
+      <div className="admin-kpi-grid" style={{ marginBottom: 16 }}>
         <MetricCard label={plan?.selected ? "Coverage this quarter" : "Coverage"} value={coverageThisQuarter} sub={reach > 0 ? `est. reach ${fmtReach(reach)}` : `${coverage.length} total`} href="/portal/coverage" />
         <MetricCard label="LinkedIn posts" value={postTarget ? <>{postsThisQuarter} <span className="admin-cell-muted" style={{ fontSize: 15, fontWeight: 500 }}>of {postTarget}</span></> : postsThisQuarter} sub={plan?.selected ? "this quarter" : "published"} href="/portal/coverage?kind=linkedin" />
         <MetricCard
@@ -140,7 +140,7 @@ export default async function PortalHubPage() {
                             <td style={{ fontWeight: 600 }}>{t.title}</td>
                             <td>
                               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                                <div className="board-progress" style={{ flex: 1 }}><div className="board-progress-fill" style={{ width: `${pct}%` }} /></div>
+                                <div className="admin-progress" style={{ flex: 1 }}><div className="admin-progress-fill" style={{ width: `${pct}%` }} /></div>
                                 <span className="admin-cell-muted" style={{ fontVariantNumeric: "tabular-nums" }}>{q > 0 ? `${done} / ${q}` : done || ""}</span>
                               </div>
                             </td>
