@@ -1,5 +1,6 @@
 import { requireTeamMember } from "@/lib/team-auth";
 import { ChangePasswordForm } from "./ChangePasswordForm";
+import { BRAND_TEAM } from "@/lib/brand";
 
 // Lives in the un-gated (auth) group so nothing loops back here; the page still
 // gates itself, a session is required before a password can be set. Reached from
@@ -10,7 +11,7 @@ export default async function TeamChangePasswordPage() {
     <main className="admin-auth">
       <div className="admin-auth-card">
         <div className="admin-auth-brand">
-          8 Edges Team
+          {BRAND_TEAM}
         </div>
         <p className="admin-auth-sub">
           Choose a password for your account. You can always sign in with a link instead.

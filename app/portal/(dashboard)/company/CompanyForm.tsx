@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { SIZE_BANDS, type CompanyProfile, type CompanyProfileView } from "@/lib/portal/profile";
 import { saveCompanyProfile } from "./actions";
+import { BRAND_SHORT } from "@/lib/brand";
 
 const SIZE_LABEL: Record<string, string> = {
   "0-50": "Up to 50 people",
@@ -60,7 +61,7 @@ export function CompanyForm({ initial }: { initial: CompanyProfileView }) {
         <h2 className="admin-card-title">{initial.name}</h2>
         {(since || initial.clientTypes.length > 0) && (
           <p className="admin-page-sub" style={{ marginTop: 0 }}>
-            {since && `With Edge8 since ${since}.`}
+            {since && `With ${BRAND_SHORT} since ${since}.`}
             {initial.clientTypes.length > 0 && ` ${initial.clientTypes.join(" · ")}`}
           </p>
         )}

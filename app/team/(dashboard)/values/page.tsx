@@ -2,12 +2,13 @@ import { requireTeamMember } from "@/lib/team-auth";
 import { companyOs } from "@/lib/supabase";
 import { PageHead } from "@/components/admin/PageHead";
 import { CoreValuesGrid, type ValueRow } from "@/components/company/CoreValuesGrid";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Core Values",
-  description: "The six values Edge8 works by.",
+  description: `The six values ${BRAND_SHORT} works by.`,
 };
 
 // /team/values — the six core values, company-visible and read-only. Rows live

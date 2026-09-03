@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
+import { BRAND_PORTAL } from "@/lib/brand";
 
 // Interstitial for emailed portal sign-in links (invites and resent magic
 // links, minted in lib/admin/portal-invite.ts). The email links HERE with
@@ -58,7 +59,7 @@ export default function PortalVerify() {
     <main className="admin-auth">
       <div className="admin-auth-card">
         <div className="admin-auth-brand">
-          8 Edges Client Portal
+          {BRAND_PORTAL}
         </div>
         {state === "failed" ? (
           <>

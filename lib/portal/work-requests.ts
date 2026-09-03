@@ -28,6 +28,7 @@ import { workRequestPath } from "@/lib/admin/contractors";
 import { pingOps, sendWorkRequestEmail } from "@/lib/contractor-notify";
 import { recordAudit } from "@/lib/admin/audit";
 import { notifyOps } from "@/lib/lark";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export type PortalWorkRequest = {
   id: string;
@@ -333,7 +334,7 @@ export async function cancelWorkRequestForActor(
   const req = await loadOwnedRequest(actor, id);
   if (!req) return { ok: false, error: "Request not found." };
   if (!CLIENT_CANCELLABLE.includes(req.status)) {
-    return { ok: false, error: "Work is already underway — reply to your Edge8 contact to cancel this request." };
+    return { ok: false, error: `Work is already underway — reply to your ${BRAND_SHORT} contact to cancel this request.` };
   }
   const r = await applyCancel(req, decider(actor), note);
   if (r.ok) {

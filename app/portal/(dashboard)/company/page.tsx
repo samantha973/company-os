@@ -4,12 +4,13 @@ import { adminCompanyScope } from "@/lib/portal/roles";
 import { getCompanyProfile, type CompanyProfileView } from "@/lib/portal/profile";
 import { PageHead } from "@/components/admin/PageHead";
 import { CompanyForm } from "./CompanyForm";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Company Profile",
-  description: "Your company's details as Edge8 holds them.",
+  description: `Your company's details as ${BRAND_SHORT} holds them.`,
 };
 
 // Admin-only, same rule as Users: non-admins never see the nav item and a
@@ -31,7 +32,7 @@ export default async function CompanyProfilePage() {
       <PageHead
         eyebrow="Account"
         title="Company Profile"
-        sub="What Edge8 holds about your company. Changes here update your account record and the address we bill to."
+        sub={`What ${BRAND_SHORT} holds about your company. Changes here update your account record and the address we bill to.`}
       />
       {profiles.map((p) => (
         <CompanyForm key={p.companyId} initial={p} />

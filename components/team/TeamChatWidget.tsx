@@ -16,6 +16,7 @@ import {
   type LoadedConversation,
 } from "@/components/assistant/ConversationHistory";
 import { BotText } from "@/components/assistant/BotText";
+import { BRAND_SHORT, BRAND_TEAM } from "@/lib/brand";
 
 type DisplayItem =
   | { kind: "user"; text: string }
@@ -248,7 +249,7 @@ export function TeamChatWidget() {
           <aside className="admin-drawer chatw-panel" role="dialog" aria-label="Team assistant">
             <div className="admin-drawer-head">
               <div>
-                <div className="admin-drawer-eyebrow brand-label">8 Edges Team</div>
+                <div className="admin-drawer-eyebrow brand-label">{BRAND_TEAM}</div>
                 <h2 className="admin-drawer-title">Assistant</h2>
               </div>
               <div className="chatw-head-actions">
@@ -288,7 +289,7 @@ export function TeamChatWidget() {
                 <div className="chatw-msgs" ref={scrollRef}>
                   {items.length === 0 && (
                     <div className="chatw-empty">
-                      <p>Ask me anything about Edge8:</p>
+                      <p>Ask me anything about {BRAND_SHORT}:</p>
                       <ul>
                         <li>What&apos;s our time-off policy?</li>
                         <li>Who&apos;s out on vacation next week?</li>
@@ -341,7 +342,7 @@ export function TeamChatWidget() {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask about Edge8…"
+                    placeholder={`Ask about ${BRAND_SHORT}…`}
                     disabled={pending}
                     aria-label="Message the team assistant"
                   />

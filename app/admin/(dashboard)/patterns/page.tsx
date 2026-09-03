@@ -4,6 +4,7 @@ import { PageHead } from "@/components/admin/PageHead";
 import { Badge } from "@/components/admin/Badge";
 import { MetricCard } from "@/components/admin/MetricCard";
 import { PersonSelectDemo } from "./PersonSelectDemo";
+import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "Pattern library",
@@ -54,7 +55,7 @@ export default function PatternsPage() {
       <PageHead
         eyebrow="Design system"
         title="Pattern library"
-        sub="The living reference for the 8 Edges admin. Every token and component below renders the real admin.css classes, so this page tracks the system exactly."
+        sub={`The living reference for the ${BRAND} admin. Every token and component below renders the real admin.css classes, so this page tracks the system exactly.`}
         action={<button className="admin-btn admin-btn--primary" type="button">Primary action</button>}
       />
 
@@ -366,7 +367,7 @@ export default function PatternsPage() {
             <dt>Phone</dt>
             <dd>+84 90 123 4567</dd>
             <dt>Source</dt>
-            <dd>Edge8</dd>
+            <dd>{BRAND}</dd>
             <dt>Created</dt>
             <dd className="admin-cell-mono">2026-07-06</dd>
           </dl>

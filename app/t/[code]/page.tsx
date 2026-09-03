@@ -1,3 +1,4 @@
+import { BRAND_SHORT } from "@/lib/brand";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { companyOs } from "@/lib/supabase";
@@ -15,7 +16,7 @@ export const dynamic = "force-dynamic";
 // ticket needs — event, attendee name, status.
 
 export const metadata: Metadata = {
-  title: "Your ticket — Edge8",
+  title: `Your ticket — ${BRAND_SHORT}`,
   robots: { index: false },
 };
 

@@ -13,6 +13,7 @@ import { ViewToggle } from "@/components/admin/ViewToggle";
 import { TimeOffCalendar, type CalendarEntry } from "@/components/admin/TimeOffCalendar";
 import { formatDate, humanize } from "@/lib/admin/format";
 import { formatLeaveBalance, LEAVE_TYPE_LABEL, type LeaveType } from "@/lib/admin/time-off";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -102,7 +103,7 @@ export default async function PortalTimeOffPage() {
                     <td>
                       <span className="admin-cell-strong">{r.fullName || "Team member"}</span>
                     </td>
-                    <td>{r.approverName || "Edge8"}</td>
+                    <td>{r.approverName || BRAND_SHORT}</td>
                     <td>{r.team || muted}</td>
                     <td>{r.location || muted}</td>
                     <td>{r.leavePolicy || muted}</td>

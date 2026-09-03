@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
+import { BRAND_TEAM } from "@/lib/brand";
 
 // Landing page for the server-sent team-portal invite link. inviteToPortal()
 // mints the account with inviteUserByEmail (server-side), so Supabase returns
@@ -52,7 +53,7 @@ export default function TeamAuthCallback() {
     <main className="admin-auth">
       <div className="admin-auth-card">
         <div className="admin-auth-brand">
-          8 Edges Team
+          {BRAND_TEAM}
         </div>
         <p className="admin-auth-sub">
           {failed ? "That link was invalid or expired. Redirecting…" : "Signing you in…"}

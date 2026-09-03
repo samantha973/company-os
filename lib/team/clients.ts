@@ -5,6 +5,7 @@
 // spirit of lib/team/data.ts: a purpose-built, equally-scoped helper.
 
 import { companyOs } from "@/lib/supabase";
+import { BRAND_SHORT } from "@/lib/brand";
 import type { TeamActor } from "@/lib/team-auth";
 import {
   listDocumentsForCompanies,
@@ -404,7 +405,7 @@ export async function getClientTeamForActor(actor: TeamActor, companyId: string)
 
   const edge8 = assignments
     .filter((a) => a.client_visible)
-    .map((a) => ({ name: a.full_name || a.email || "Edge8", roleTitle: a.role_title || a.position_title }));
+    .map((a) => ({ name: a.full_name || a.email || BRAND_SHORT, roleTitle: a.role_title || a.position_title }));
 
   const rows = (peopleRows ?? []) as Array<{
     role: string | null;

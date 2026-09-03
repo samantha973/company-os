@@ -2,12 +2,13 @@ import { requireTeamMember } from "@/lib/team-auth";
 import { getDirectory } from "@/lib/team/data";
 import { PageHead } from "@/components/admin/PageHead";
 import { DirectoryTable } from "@/components/team/DirectoryTable";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Directory",
-  description: "Who's who at Edge8: roles, departments, and reporting lines.",
+  description: `Who's who at ${BRAND_SHORT}: roles, departments, and reporting lines.`,
 };
 
 // /team/directory — read-only, company-visible roster. getDirectory() returns a
@@ -20,7 +21,7 @@ export default async function TeamDirectoryPage() {
 
   return (
     <>
-      <PageHead eyebrow="Me" title="Directory" sub="Who's who at Edge8" />
+      <PageHead eyebrow="Me" title="Directory" sub={`Who's who at ${BRAND_SHORT}`} />
       {entries.length === 0 ? (
         <div className="admin-empty">No team members found.</div>
       ) : (

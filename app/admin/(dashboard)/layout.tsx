@@ -6,10 +6,11 @@ import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminChatWidget } from "@/components/admin/AdminChatWidget";
 import { isPrivilegedChatUser } from "@/lib/admin-chat/privileged";
 import "../admin.css";
+import { BRAND, PRODUCT } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: { template: "%s · 8 Edges", default: "8 Edges" },
-  description: "Edge8 Company OS — the internal admin for contacts, revenue, talent, and operations.",
+  title: { template: `%s · ${BRAND}`, default: BRAND },
+  description: `${BRAND} · built on ${PRODUCT}`,
   robots: { index: false, follow: false },
 };
 

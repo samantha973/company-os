@@ -20,6 +20,7 @@ import { supabase, companyOs } from "@/lib/supabase";
 import { PORTAL_STATUSES } from "@/lib/team-auth";
 import { siteOrigin, findAuthUserByEmail, bannedUntil } from "@/lib/admin/portal-invite";
 import { sendTransactionalEmail } from "@/lib/email";
+import { BRAND_TEAM } from "@/lib/brand";
 
 const SELF_SERVE_COOLDOWN_MS = 60_000;
 const lastSelfServeSend = new Map<string, number>();
@@ -78,10 +79,10 @@ export async function sendTeamSelfServeSignInLink(rawEmail: string): Promise<voi
 
   await sendTransactionalEmail({
     to: email,
-    subject: "Your 8 Edges Team sign-in link",
+    subject: `Your ${BRAND_TEAM} sign-in link`,
     html: `
-      <p>Here is your sign-in link for the 8 Edges Team workspace:</p>
-      <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:#04102D;color:#ffffff;text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Sign in to the 8 Edges Team workspace</a></p>
+      <p>Here is your sign-in link for the ${BRAND_TEAM} workspace:</p>
+      <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:#04102D;color:#ffffff;text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Sign in to the ${BRAND_TEAM} workspace</a></p>
       <p style="font-size:13px;color:#64748b;">The button takes you to a sign-in page. Press "Sign in" there and you're in. If the link expires, you can request a fresh one any time at <a href="${siteOrigin()}/team/login">${siteOrigin()}/team/login</a>.</p>
     `,
     logMeta: { source: "team_self_serve_link" },
@@ -109,9 +110,9 @@ export async function sendTeamSelfServePasswordReset(rawEmail: string): Promise<
 
   await sendTransactionalEmail({
     to: email,
-    subject: "Reset your 8 Edges Team password",
+    subject: `Reset your ${BRAND_TEAM} password`,
     html: `
-      <p>We received a request to reset the password on your 8 Edges Team workspace account.</p>
+      <p>We received a request to reset the password on your ${BRAND_TEAM} workspace account.</p>
       <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:#04102D;color:#ffffff;text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Choose a new password</a></p>
       <p style="font-size:13px;color:#64748b;">The button takes you to a page where you can set a new password. If you did not request this, you can safely ignore this email, and you can always sign in without a password at <a href="${siteOrigin()}/team/login">${siteOrigin()}/team/login</a>.</p>
     `,

@@ -14,6 +14,7 @@ import { supabase } from "@/lib/supabase";
 import { isAdminEmail } from "@/lib/admin-auth";
 import { siteOrigin, findAuthUserByEmail, bannedUntil } from "@/lib/admin/portal-invite";
 import { sendTransactionalEmail } from "@/lib/email";
+import { BRAND } from "@/lib/brand";
 
 const SELF_SERVE_COOLDOWN_MS = 60_000;
 const lastSelfServeSend = new Map<string, number>();
@@ -55,9 +56,9 @@ export async function sendAdminSelfServeSignInLink(rawEmail: string): Promise<vo
 
   await sendTransactionalEmail({
     to: email,
-    subject: "Your 8 Edges Company OS sign-in link",
+    subject: `Your ${BRAND} sign-in link`,
     html: `
-      <p>Here is your sign-in link for the 8 Edges Company OS:</p>
+      <p>Here is your sign-in link for ${BRAND}:</p>
       <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:#04102D;color:#ffffff;text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Sign in to the Company OS</a></p>
       <p style="font-size:13px;color:#64748b;">The button takes you to a sign-in page. Press "Sign in" there and you're in. If the link expires, you can request a fresh one any time at <a href="${siteOrigin()}/admin/login">${siteOrigin()}/admin/login</a>.</p>
     `,

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/app/admin/(dashboard)/actions";
+import { BRAND } from "@/lib/brand";
 
 // Nav is data-driven. `enabled: false` items render muted with a "soon" tag and
 // are not navigable — flip them to `true` (and build the route) as each phase
@@ -233,7 +234,7 @@ export function AdminSidebar({
         >
           ☰
         </button>
-        <strong>8 Edges</strong>
+        <strong>{BRAND}</strong>
       </div>
 
       {navOpen && <div className="admin-scrim" onClick={() => setNavOpen(false)} />}
@@ -241,7 +242,7 @@ export function AdminSidebar({
       <nav className={`admin-sidebar${navOpen ? " is-open" : ""}`} aria-label="Admin">
         <div className="admin-brand">
           <span className="admin-brand-lead">
-            8 Edges
+            {BRAND}
           </span>
           <span className="admin-brand-actions">
             <button

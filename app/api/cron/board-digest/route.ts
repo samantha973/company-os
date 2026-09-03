@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { companyOs } from "@/lib/supabase";
 import { sendTransactionalEmail } from "@/lib/email";
 import { getSiteOrigin } from "@/lib/site-origin";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -113,7 +114,7 @@ export async function GET(req: Request) {
     </div>`;
     const ok = await sendTransactionalEmail({
       to: person.email,
-      subject: `Your Edge8 boards: ${n} open task${n === 1 ? "" : "s"}`,
+      subject: `Your ${BRAND_SHORT} boards: ${n} open task${n === 1 ? "" : "s"}`,
       html,
       logMeta: { kind: "board-digest", count: n },
     });

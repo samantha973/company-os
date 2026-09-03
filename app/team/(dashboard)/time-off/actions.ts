@@ -14,6 +14,7 @@ import { formatDate } from "@/lib/admin/format";
 import { notifyOps } from "@/lib/lark";
 import { sendTransactionalEmail } from "@/lib/email";
 import { getSiteOrigin } from "@/lib/site-origin";
+import { BRAND_SHORT } from "@/lib/brand";
 
 // Own-service time-off actions for /team. Deliberately NOT a reuse of the
 // admin actions in app/admin/(dashboard)/operations/time-off/requests/actions.ts
@@ -125,8 +126,8 @@ export async function requestOwnTimeOff(input: {
         html: body({
           withReason: true,
           where: isClient
-            ? "It is waiting for your decision in the Edge8 client portal, under Time Off."
-            : "It is awaiting approval in the Edge8 admin under Operations &gt; Time Off.",
+            ? `It is waiting for your decision in the ${BRAND_SHORT} client hub, under Time Off.`
+            : `It is awaiting approval in the ${BRAND_SHORT} admin under Operations &gt; Time Off.`,
           link: isClient ? portalLink : "",
         }),
       });

@@ -15,6 +15,7 @@ import {
   type TeamMemberOption,
 } from "@/lib/admin/staff-assignments";
 import { Badge } from "@/components/admin/Badge";
+import { BRAND_SHORT } from "@/lib/brand";
 
 // "Assigned staff" card on the company 360 — who from Edge8 is dedicated to
 // this client, with add/end controls.
@@ -110,9 +111,9 @@ export function AssignedStaffCard({
                     value={a.client_manager_person_id ?? ""}
                     disabled={pending}
                     onChange={(e) => setClientManager(a.id, e.target.value)}
-                    title="Person at this client who approves this person's time off. Blank leaves it with their Edge8 manager."
+                    title={`Person at this client who approves this person's time off. Blank leaves it with their ${BRAND_SHORT} manager.`}
                   >
-                    <option value="">Edge8 manager</option>
+                    <option value="">{BRAND_SHORT} manager</option>
                     {clientContacts.map((c) => (
                       <option key={c.id} value={c.id}>{c.name}</option>
                     ))}

@@ -3,6 +3,7 @@ import { requirePortalMember } from "@/lib/portal-auth";
 import { getAssignedTeam, type PortalTeamMember } from "@/lib/portal/team";
 import { PageHead } from "@/components/admin/PageHead";
 import { formatDate } from "@/lib/admin/format";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -80,7 +81,7 @@ export default async function PortalTeamPage() {
 
   return (
     <>
-      <PageHead eyebrow="Client Portal" title="Team" sub="Your dedicated Edge8 team." />
+      <PageHead eyebrow="Client Portal" title="Team" sub={`Your dedicated ${BRAND_SHORT} team.`} />
 
       {team.length === 0 ? (
         <div className="admin-card admin-section-card">

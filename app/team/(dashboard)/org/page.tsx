@@ -2,12 +2,13 @@ import { requireTeamMember } from "@/lib/team-auth";
 import { getOrgChart, getOpenRoles } from "@/lib/team/data";
 import { PageHead } from "@/components/admin/PageHead";
 import { OrgChart } from "@/components/company/OrgChart";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Org Chart",
-  description: "How Edge8 fits together: the reporting tree, live from the directory.",
+  description: `How ${BRAND_SHORT} fits together: the reporting tree, live from the directory.`,
 };
 
 // /team/org — the reporting tree, read-only and company-visible like the

@@ -15,6 +15,7 @@ import {
   type LoadedConversation,
 } from "@/components/assistant/ConversationHistory";
 import { BotText } from "@/components/assistant/BotText";
+import { BRAND } from "@/lib/brand";
 
 type ApprovalStatus = "pending" | "approved" | "declined";
 
@@ -394,7 +395,7 @@ export function AdminChatWidget({ canWrite = false }: { canWrite?: boolean }) {
           <aside className="admin-drawer chatw-panel" role="dialog" aria-label="Admin assistant">
             <div className="admin-drawer-head">
               <div>
-                <div className="admin-drawer-eyebrow brand-label">8 Edges</div>
+                <div className="admin-drawer-eyebrow brand-label">{BRAND}</div>
                 <h2 className="admin-drawer-title">Assistant</h2>
               </div>
               <div className="chatw-head-actions">

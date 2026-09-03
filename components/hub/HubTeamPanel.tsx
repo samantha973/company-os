@@ -1,6 +1,7 @@
 import { Badge } from "@/components/admin/Badge";
 import type { HubTeam } from "@/lib/team/clients";
 import { humanize } from "@/lib/admin/format";
+import { BRAND_SHORT } from "@/lib/brand";
 
 // Client Hub team tab: both sides of the account, the Edge8 staff assigned to
 // the client (client-visible assignments only) and the client's own people.
@@ -9,7 +10,7 @@ export function HubTeamPanel({ team }: { team: HubTeam }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <section className="admin-card admin-section-card">
-        <h2 className="admin-card-title" style={{ marginBottom: 10 }}>Edge8 team</h2>
+        <h2 className="admin-card-title" style={{ marginBottom: 10 }}>{BRAND_SHORT} team</h2>
         {team.edge8.length === 0 ? (
           <div className="admin-empty">No staff assigned yet.</div>
         ) : (

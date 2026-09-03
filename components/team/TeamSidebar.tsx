@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/app/team/(dashboard)/actions";
 import type { TeamRole } from "@/lib/team-auth";
+import { BRAND_TEAM } from "@/lib/brand";
 
 // Lighter sibling of AdminSidebar: reuses the admin shell CSS but drops the brand
 // switcher and collapsible offices. Flat nav grouped My Work / Me / My Team / Company. Items
@@ -157,7 +158,7 @@ export function TeamSidebar({
         >
           ☰
         </button>
-        <strong>8 Edges Team</strong>
+        <strong>{BRAND_TEAM}</strong>
       </div>
 
       {navOpen && <div className="admin-scrim" onClick={() => setNavOpen(false)} />}
@@ -165,7 +166,7 @@ export function TeamSidebar({
       <nav className={`admin-sidebar${navOpen ? " is-open" : ""}`} aria-label="Team">
         <div className="admin-brand">
           <span className="admin-brand-lead">
-            8 Edges Team
+            {BRAND_TEAM}
           </span>
           <span className="admin-brand-actions">
             <button

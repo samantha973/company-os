@@ -12,10 +12,11 @@ import { hasPublishedAwards, hasPublishedCaseStudies } from "@/lib/portal/suppor
 import { PortalSidebar } from "@/components/portal/PortalSidebar";
 import { AssumeBanner } from "@/components/portal/AssumeBanner";
 import "../../admin/admin.css";
+import { BRAND_PORTAL, BRAND_SHORT } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: { template: "%s · 8 Edges Client Portal", default: "8 Edges Client Portal" },
-  description: "Your Edge8 client portal.",
+  title: { template: `%s · ${BRAND_PORTAL}`, default: BRAND_PORTAL },
+  description: `Your ${BRAND_SHORT} client hub.`,
   robots: { index: false, follow: false },
 };
 

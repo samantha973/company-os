@@ -114,14 +114,14 @@ export default async function TeamClientsPage({ searchParams }: { searchParams: 
       <PageHead
         eyebrow="Team"
         title="My Clients"
-        sub={`The clients you're assigned to. Open one to see their roadmap.`}
+        sub={`The clients you're assigned to. Open one to see their client hub.`}
       />
 
       {empty ? (
         <div className="admin-card admin-section-card" style={{ padding: 22 }}>
           <p className="admin-page-sub" style={{ margin: 0 }}>
             You&apos;re not assigned to any clients yet. When you&apos;re assigned to a client
-            account, it shows up here with their roadmap.
+            account, it shows up here with their client hub.
           </p>
         </div>
       ) : (
@@ -154,7 +154,7 @@ export default async function TeamClientsPage({ searchParams }: { searchParams: 
             <ClientCards
               rows={cardRows}
               detailBasePath={BASE_PATH}
-              subText={(r) => r.roleTitle || "View roadmap"}
+              subText={(r) => r.roleTitle || "View client hub"}
             />
           )}
           renderRow={(row, cells) => (

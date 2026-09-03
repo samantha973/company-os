@@ -14,6 +14,7 @@ import {
   startSending,
   updateBroadcast,
 } from "../actions";
+import { BRAND_SHORT } from "@/lib/brand";
 
 const PERSONA_CHOICES = [
   { value: "prospect", label: "Prospects" },
@@ -109,7 +110,7 @@ export function BroadcastEditor({
                 <option key={b.id} value={b.id}>{b.name}</option>
               ))}
             </select>
-            <div className="admin-hint">Which identity this send goes out as (Edge8, AI Officer Institute).</div>
+            <div className="admin-hint">Which identity this send goes out as ({BRAND_SHORT}, AI Officer Institute).</div>
             {activeProfile && (activeProfile.voiceMd || activeProfile.primaryCta || activeProfile.positioning) && (
               <details className="admin-card" style={{ padding: "10px 12px", marginTop: 8 }}>
                 <summary style={{ cursor: "pointer", fontWeight: 600 }}>
@@ -182,7 +183,7 @@ export function BroadcastEditor({
               onChange={(e) => setBodyMd(e.target.value)}
             />
             <div className="admin-hint">
-              Markdown: # headings, **bold**, *italic*, [links](https://…), and - lists. The Edge8
+              Markdown: # headings, **bold**, *italic*, [links](https://…), and - lists. The {BRAND_SHORT}
               wrapper, footer, and unsubscribe link are added automatically.
             </div>
           </div>
@@ -242,7 +243,7 @@ export function BroadcastEditor({
         <p className="admin-page-sub" style={{ marginTop: 4 }}>
           {campaign.brandName && campaign.brandName !== "Edge8"
             ? `This is a ${campaign.brandName} broadcast, so it reaches only ${campaign.brandName}'s brand audience.`
-            : "With no brand (or the Edge8 brand) set, this reaches the full house list. Pick a guest brand to scope the send to that brand's audience only."}
+            : `With no brand (or the ${BRAND_SHORT} brand) set, this reaches the full house list. Pick a guest brand to scope the send to that brand's audience only.`}
         </p>
         <div className="admin-form" style={{ marginTop: 12 }}>
           <div className="admin-field">

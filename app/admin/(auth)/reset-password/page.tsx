@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { ResetPasswordForm } from "./ResetPasswordForm";
+import { BRAND } from "@/lib/brand";
 
 // Where the password-recovery / invite email link lands. ResetPasswordForm
 // establishes the recovery session first (from the URL hash for server-sent
@@ -10,7 +11,7 @@ export default function ResetPasswordPage() {
     <main className="admin-auth">
       <div className="admin-auth-card">
         <div className="admin-auth-brand">
-          8 Edges
+          {BRAND}
         </div>
         <p className="admin-auth-sub">Set a new password.</p>
         <Suspense>

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { BRAND } from "@/lib/brand";
 
 // One-time guided welcome shown on /team when the actor hasn't finished it.
 // Purely presentational + a dismiss action; each step deep-links to the real
@@ -21,7 +22,7 @@ export function OnboardingWalkthrough({
   const steps: Step[] = [
     {
       ico: "◈",
-      title: `Welcome to 8 Edges, ${name}`,
+      title: `Welcome to ${BRAND}, ${name}`,
       body: "This is your workspace — time off, your profile, the team, and the ideas that shape what we build. Two minutes and you're set up.",
     },
     {

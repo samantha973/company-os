@@ -1,5 +1,6 @@
 import { requirePortalMember } from "@/lib/portal-auth";
 import { ChangePasswordForm } from "./ChangePasswordForm";
+import { BRAND_PORTAL } from "@/lib/brand";
 
 // Lives in the un-gated (auth) group so the (dashboard) layout's
 // must-change-password redirect cannot loop back here; the page still gates
@@ -10,7 +11,7 @@ export default async function PortalChangePasswordPage() {
     <main className="admin-auth">
       <div className="admin-auth-card">
         <div className="admin-auth-brand">
-          8 Edges Client Portal
+          {BRAND_PORTAL}
         </div>
         <p className="admin-auth-sub">
           Choose a new password for your account to continue.

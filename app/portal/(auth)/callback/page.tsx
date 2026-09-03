@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
+import { BRAND_PORTAL } from "@/lib/brand";
 
 // Landing page for the server-sent client-portal invite link. invitePortalMember()
 // mints the account with inviteUserByEmail (server-side), so Supabase returns
@@ -52,7 +53,7 @@ export default function PortalAuthCallback() {
     <main className="admin-auth">
       <div className="admin-auth-card">
         <div className="admin-auth-brand">
-          8 Edges Client Portal
+          {BRAND_PORTAL}
         </div>
         <p className="admin-auth-sub">
           {failed ? "That link was invalid or expired. Redirecting…" : "Signing you in…"}

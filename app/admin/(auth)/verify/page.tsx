@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
+import { BRAND } from "@/lib/brand";
 
 // Interstitial for emailed admin sign-in links (self-serve links from
 // lib/admin/signin-link.ts). The email links HERE with ?token_hash=…&type=…
@@ -55,7 +56,7 @@ export default function AdminVerify() {
     <main className="admin-auth">
       <div className="admin-auth-card">
         <div className="admin-auth-brand">
-          8 Edges
+          {BRAND}
         </div>
         {state === "failed" ? (
           <>

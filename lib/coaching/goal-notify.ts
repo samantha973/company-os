@@ -8,6 +8,7 @@ import { getManagerContact } from "@/lib/team/data";
 import { sendTransactionalEmail } from "@/lib/email";
 import { notifyOps } from "@/lib/lark";
 import type { CoachingGoal } from "./data";
+import { BRAND_TEAM } from "@/lib/brand";
 
 // Where the notice goes when the member has no manager on file (or the manager
 // has no email). Never drop the notice: an unmanaged member's goals are exactly
@@ -111,7 +112,7 @@ export function notifyGoalChange(
           ${
             action === "deleted"
               ? "<p>The goal has been removed from their list.</p>"
-              : "<p>See it in the 8 Edges Team workspace under My Team &gt; Coaching, and talk it through in your next 1-1.</p>"
+              : `<p>See it in the ${BRAND_TEAM} workspace under My Team &gt; Coaching, and talk it through in your next 1-1.</p>`
           }
         `,
         logMeta: { source: "team-fast-goals", action },

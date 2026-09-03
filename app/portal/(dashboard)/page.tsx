@@ -15,6 +15,7 @@ import { formatCents, formatDate, humanize } from "@/lib/admin/format";
 import { formatHours } from "@/lib/admin/contractors";
 
 import { PRIORITY_LABEL as TASK_LABEL, PRIORITY_TONE as TASK_TONE } from "@/lib/boards/types";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -236,7 +237,7 @@ export default async function PortalHome() {
           {inProgress.length > 0 && (
             <p className="admin-page-sub" style={{ marginTop: 12, marginBottom: 0 }}>
               {inProgress.length} more {inProgress.length === 1 ? "request is" : "requests are"} in
-              progress with Edge8. <Link href="/portal/requests">View all</Link>
+              progress with {BRAND_SHORT}. <Link href="/portal/requests">View all</Link>
             </p>
           )}
         </div>

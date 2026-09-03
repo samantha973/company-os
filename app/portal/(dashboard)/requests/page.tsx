@@ -15,12 +15,13 @@ import {
   type WorkRequestStatus,
 } from "@/lib/admin/contractors";
 import { GeneralRequest } from "./GeneralRequest";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Requests",
-  description: "Request work from your Edge8 team.",
+  description: `Request work from your ${BRAND_SHORT} team.`,
 };
 
 // Statuses waiting on the CLIENT float a call-to-action.
@@ -50,7 +51,7 @@ export default async function PortalRequestsPage() {
         <div className="admin-card admin-section-card" style={{ display: "flex", flexDirection: "column" }}>
           <h2 className="admin-card-title" style={{ marginBottom: 8 }}>General request</h2>
           <p className="admin-page-sub" style={{ margin: 0, minHeight: 40 }}>
-            Not sure who you need? Describe it and the Edge8 team will pick it up.
+            Not sure who you need? Describe it and the {BRAND_SHORT} team will pick it up.
           </p>
           <div style={{ marginTop: "auto", paddingTop: 16 }}>
             <GeneralRequest />

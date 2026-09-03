@@ -5,6 +5,7 @@ import { MetricCard } from "@/components/admin/MetricCard";
 import { Badge, statusTone } from "@/components/admin/Badge";
 import { formatCents, humanize } from "@/lib/admin/format";
 import { Redeem } from "./Redeem";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -28,8 +29,8 @@ export default async function PortalReferralsPage() {
         <div className="admin-card admin-section-card" style={{ marginBottom: 16 }}>
           <h2 className="admin-card-title" style={{ marginBottom: 10 }}>How it works</h2>
           <p className="admin-page-sub" style={{ margin: 0 }}>
-            Know a company that could use Edge8? Refer them, and when their first engagement pays, you choose
-            how to take your commission: <strong>20% as work credit</strong> toward your own Edge8 work, or{" "}
+            Know a company that could use {BRAND_SHORT}? Refer them, and when their first engagement pays, you choose
+            how to take your commission: <strong>20% as work credit</strong> toward your own {BRAND_SHORT} work, or{" "}
             <strong>10% as cash</strong>. You'll get a personal referral code and track everything right here.
           </p>
           <div style={{ marginTop: 14 }}>
@@ -55,8 +56,8 @@ export default async function PortalReferralsPage() {
 
       <div className="admin-card admin-section-card" style={{ marginBottom: 16 }}>
         <p className="admin-page-sub" style={{ margin: 0 }}>
-          Thanks for referring people to Edge8. For each referral that pays, you choose how to take your
-          commission: <strong>20% as work credit</strong> toward your own Edge8 work, or <strong>10% as cash</strong>.
+          Thanks for referring people to {BRAND_SHORT}. For each referral that pays, you choose how to take your
+          commission: <strong>20% as work credit</strong> toward your own {BRAND_SHORT} work, or <strong>10% as cash</strong>.
         </p>
       </div>
 
