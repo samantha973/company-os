@@ -1,3 +1,4 @@
+import { cache } from "react";
 // 90-day plan readers. A plan is a company_os.pr_quarterly_plans row; its
 // targets are client_backlog_items with quarterly_plan_id set; progress per
 // target comes from the pr_target_progress view. Same discipline as
@@ -54,7 +55,7 @@ export function pickCurrentPlan(plans: QuarterlyPlan[], today = new Date()): Qua
   return [...plans].sort((a, b) => (a.starts_on < b.starts_on ? 1 : -1))[0] ?? null;
 }
 
-export async function listPlans(
+async function listPlansImpl(
   companyId: string,
   programId: string,
   opts?: { publishedOnly?: boolean },
@@ -126,7 +127,7 @@ export async function getPlanTab(
   opts?: { planId?: string | null; publishedOnly?: boolean },
 ): Promise<PlanTab> {
   const [plans, { data: groupData }] = await Promise.all([
-    listPlans(companyId, programId, { publishedOnly: opts?.publishedOnly }),
+    (opts?.publishedOnly ? listPlans(companyId, programId, { publishedOnly: true }) : listPlans(companyId, programId)),
     companyOs
       .from("client_roadmap_groups")
       .select(ROADMAP_GROUPS_SELECT)
@@ -205,3 +206,7 @@ export async function getCurrentPlanSnapshots(
   }
   return out;
 }
+
+// Per-request memo (React cache): the hub page and its tab loaders ask for
+// this several times in one render; only the first call hits the database.
+export const listPlans = cache(listPlansImpl);

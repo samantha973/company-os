@@ -1,3 +1,4 @@
+import { cache } from "react";
 // Shared core for client documents (company_os.program_documents + the private
 // program-documents bucket). Documents belong to a client COMPANY; tagging to an
 // PR Program is optional (docs/plans/2026-08-11-client-portal-improvements.md).
@@ -112,7 +113,7 @@ function mapRows(rows: DocRow[], names: Map<string, string>): ClientDocument[] {
 
 // Every document for the given companies, newest first. companyIds MUST come
 // from the caller's own scope (see module header).
-export async function listDocumentsForCompanies(companyIds: string[]): Promise<ClientDocument[]> {
+async function listDocumentsForCompaniesImpl(companyIds: string[]): Promise<ClientDocument[]> {
   if (companyIds.length === 0) return [];
   const { data } = await companyOs
     .from("program_documents")
@@ -261,3 +262,7 @@ export async function deleteDocumentRow(row: { id: string; storagePath: string |
   if (error) return { ok: false, error: "Could not delete the document record." };
   return { ok: true };
 }
+
+// Per-request memo (React cache): the hub page and its tab loaders ask for
+// this several times in one render; only the first call hits the database.
+export const listDocumentsForCompanies = cache(listDocumentsForCompaniesImpl);

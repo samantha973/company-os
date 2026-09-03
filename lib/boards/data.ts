@@ -296,7 +296,7 @@ export async function getBoardBySlug(slug: string): Promise<BoardDetail | null> 
   // ~5 serial round trips, so a phone opening its daily board (this function is
   // reused by /admin, /team, and /portal) paid that latency stacked on a
   // force-dynamic page. Empty-id cases resolve to an empty result without a query.
-  const [peopleRes, commitmentsRes, backlogLabelRes, clientCoRes, programRes, clientBacklogRes, roadmapGroupsRes, logsRes, commentsRes] =
+  const [peopleRes, commitmentsRes, backlogLabelRes, clientCoRes, programRes, clientBacklogRes, roadmapGroupsRes, logsRes, commentsRes, archRes] =
     await Promise.all([
       personIds.length
         ? companyOs.from("people").select("id, display_name, full_name, email").in("id", personIds)
@@ -344,6 +344,16 @@ export async function getBoardBySlug(slug: string): Promise<BoardDetail | null> 
             .in("task_id", taskIds)
             .order("created_at", { ascending: true })
         : Promise.resolve({ data: [] as { id: string; task_id: string; author_label: string; body: string; created_at: string }[] }),
+      // Archived top-level cards, for the "Archived" view + restore. Depends
+      // only on the board, so it rides in this round rather than a third.
+      companyOs
+        .from("tasks")
+        .select("id, title, board_column_id, archived_at, archived_by")
+        .eq("board_id", board.id)
+        .is("parent_task_id", null)
+        .not("archived_at", "is", null)
+        .order("archived_at", { ascending: false })
+        .limit(200),
     ]);
 
   const nameById = new Map((peopleRes.data ?? []).map((p) => [p.id, personName(p)]));
@@ -393,18 +403,9 @@ export async function getBoardBySlug(slug: string): Promise<BoardDetail | null> 
     .map((id) => ({ id, name: nameById.get(id) ?? "Unknown" }))
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  // Archived top-level cards, for the "Archived" view + restore.
   const columnName = new Map(columns.map((c) => [c.id, c.name]));
-  const { data: arch } = await companyOs
-    .from("tasks")
-    .select("id, title, board_column_id, archived_at, archived_by")
-    .eq("board_id", board.id)
-    .is("parent_task_id", null)
-    .not("archived_at", "is", null)
-    .order("archived_at", { ascending: false })
-    .limit(200);
   const archivedCards: ArchivedCard[] = (
-    (arch ?? []) as {
+    (archRes.data ?? []) as {
       id: string;
       title: string;
       board_column_id: string | null;
