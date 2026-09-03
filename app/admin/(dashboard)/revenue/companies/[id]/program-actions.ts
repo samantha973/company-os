@@ -11,6 +11,7 @@ import {
 
 function refresh(companyId: string, programId: string) {
   revalidatePath(`/admin/revenue/companies/${companyId}`);
+  revalidatePath(`/admin/clients/${companyId}`);
   revalidatePath(`/admin/revenue/companies/${companyId}/programs/${programId}`);
   revalidatePath(`/team/clients/${companyId}`);
   revalidatePath("/portal/hub");

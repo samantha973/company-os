@@ -7,6 +7,7 @@ import * as core from "@/lib/hub/supporting-actions";
 
 function refresh(companyId: string) {
   revalidatePath(`/admin/revenue/companies/${companyId}`);
+  revalidatePath(`/admin/clients/${companyId}`);
   revalidatePath(`/team/clients/${companyId}`, "layout");
   revalidatePath("/portal/hub");
   revalidatePath("/portal/awards");
