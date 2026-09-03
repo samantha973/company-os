@@ -38,6 +38,7 @@ import {
   type ProgramSummary,
 } from "@/lib/hub/program";
 import { getPlanTab, type PlanTab } from "@/lib/hub/plan";
+import { getCoverageTab, type CoverageTab } from "@/lib/hub/coverage-tab";
 
 export type ClientCompany = { id: string; name: string; roleTitle: string | null };
 
@@ -313,50 +314,17 @@ export async function getClientDocumentsForActor(
   return listDocumentsForCompanies([companyId]);
 }
 
-// A media-coverage row for the client hub, read from company_os.marketing_content
-// filtered to this company. Read-only for v1 (seeded from the account sheet).
-export type CoverageRow = {
-  id: string;
-  date: string | null; // publish_date
-  outlet: string | null;
-  headline: string;
-  url: string | null; // outbound link to the coverage
-  channel: string;
-  reach: number | null;
-};
-
-// Coverage for an assigned client, newest first. Same authorization rule as the
-// other hub reads; null when the company is not in the actor's assignment set.
-export async function getClientCoverageForActor(
+// The Coverage tab for an assigned client: every outcome on the company's
+// program, plus the option lists the editors need (plan targets, board cards,
+// media contacts, documents for clips). Null when the company is not in the
+// actor's assignment set.
+export async function getCoverageTabForActor(
   actor: TeamActor,
   companyId: string,
-): Promise<CoverageRow[] | null> {
+): Promise<CoverageTab | null> {
   const companies = await actorCompanyIds(actor);
   if (!companies.has(companyId)) return null;
-  const { data } = await companyOs
-    .from("marketing_content")
-    .select("id, title, outlet, channel, reach, publish_date, posted_url, created_at")
-    .eq("company_id", companyId)
-    .order("publish_date", { ascending: false, nullsFirst: false })
-    .order("created_at", { ascending: false });
-  const rows = (data ?? []) as Array<{
-    id: string;
-    title: string;
-    outlet: string | null;
-    channel: string;
-    reach: number | null;
-    publish_date: string | null;
-    posted_url: string | null;
-  }>;
-  return rows.map((r) => ({
-    id: r.id,
-    date: r.publish_date,
-    outlet: r.outlet,
-    headline: r.title,
-    url: r.posted_url,
-    channel: r.channel,
-    reach: r.reach,
-  }));
+  return getCoverageTab(companyId);
 }
 
 // Meetings for an assigned client. Team members are internal Edge8 staff, so

@@ -19,6 +19,9 @@ import { getPlanTab } from "@/lib/hub/plan";
 import { suggestNextQuarter } from "@/lib/pr/quarters";
 import { QuarterlyPlanPanel } from "@/components/hub/QuarterlyPlanPanel";
 import { setupProgramWorkspace, updateProgramEngagement } from "./program-actions";
+import { getCoverageTab } from "@/lib/hub/coverage-tab";
+import { CoveragePanel } from "@/components/hub/CoveragePanel";
+import { adminCreateOutcome, adminPublishOutcome, adminRemoveOutcome, adminUpdateOutcome } from "./outcome-actions";
 import {
   adminArchiveTarget,
   adminCreatePlan,
@@ -422,9 +425,40 @@ export default async function CompanyDetailPage({
           },
         ];
 
+    const coverageTab = planProgram ? await getCoverageTab(company.id) : null;
+    const coverageKind = firstParam(searchParams.kind) === "linkedin" ? "linkedin" : "coverage";
+    const coverageTabs: TabDef[] = coverageTab
+      ? [
+          {
+            key: "coverage",
+            label: "Coverage",
+            count: coverageTab.rows.length || undefined,
+            content: (
+              <CoveragePanel
+                programId={coverageTab.program.id}
+                rows={coverageTab.rows}
+                kind={coverageKind}
+                kindHref={(k) => `/admin/revenue/companies/${company.id}?view=hub&tab=coverage&kind=${k}`}
+                targets={coverageTab.targets}
+                tasks={coverageTab.tasks}
+                journalists={coverageTab.journalists}
+                documents={coverageTab.documents}
+                actions={{
+                  create: adminCreateOutcome.bind(null, company.id),
+                  update: adminUpdateOutcome.bind(null, company.id),
+                  publish: adminPublishOutcome.bind(null, company.id),
+                  remove: adminRemoveOutcome.bind(null, company.id),
+                }}
+              />
+            ),
+          },
+        ]
+      : [];
+
     const tabs: TabDef[] = [
       ...planTabs,
       ...companyWideTabs,
+      ...coverageTabs,
       {
         key: "documents",
         label: "Documents",

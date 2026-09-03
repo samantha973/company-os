@@ -1,81 +1,46 @@
 import { notFound } from "next/navigation";
 import { requireTeamMember } from "@/lib/team-auth";
-import { getClientCoverageForActor } from "@/lib/team/clients";
+import { getCoverageTabForActor } from "@/lib/team/clients";
+import { CoveragePanel } from "@/components/hub/CoveragePanel";
+import { firstParam, type SearchParamsObj } from "@/lib/admin/url";
+import { teamCreateOutcome, teamPublishOutcome, teamRemoveOutcome, teamUpdateOutcome } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Client Coverage" };
 
-function formatDay(iso: string | null): string {
-  if (!iso) return "";
-  return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-}
-
-function formatReach(n: number | null): string {
-  if (n == null) return "";
-  return n.toLocaleString("en-GB");
-}
-
-const CHANNEL_LABEL: Record<string, string> = {
-  earned: "Earned",
-  online: "Online",
-  syndication: "Syndication",
-  podcast: "Podcast",
-  speaking: "Speaking",
-  linkedin: "LinkedIn",
-  blog: "Blog",
-  email: "Email",
-  facebook: "Facebook",
-  other: "Other",
-};
-
-// The Coverage tab: this client's secured media coverage, read from
-// marketing_content. Read-only for v1 (seeded from the account sheet); the
-// portal-facing coverage view is deferred until it has been seen internally.
-export default async function TeamClientCoverageTab({ params }: { params: { companyId: string } }) {
+// The Coverage tab: earned coverage and LinkedIn posts for the program,
+// editable by the account team and linked to the plan targets they count
+// toward. Published rows are what the client sees.
+export default async function TeamClientCoverageTab({
+  params,
+  searchParams,
+}: {
+  params: { companyId: string };
+  searchParams: SearchParamsObj;
+}) {
   const actor = await requireTeamMember();
-  const coverage = await getClientCoverageForActor(actor, params.companyId);
-  if (coverage === null) notFound();
+  const data = await getCoverageTabForActor(actor, params.companyId);
+  if (!data) notFound();
+  const kind = firstParam(searchParams.kind) === "linkedin" ? "linkedin" : "coverage";
+  const companyId = params.companyId;
 
   return (
-    <section className="admin-card admin-section-card">
-      <h2 className="admin-card-title" style={{ marginBottom: 10 }}>
-        Media coverage{coverage.length > 0 && ` · ${coverage.length}`}
-      </h2>
-      {coverage.length === 0 ? (
-        <div className="admin-empty">No coverage recorded yet.</div>
-      ) : (
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Outlet</th>
-                <th>Headline</th>
-                <th>Format</th>
-                <th style={{ textAlign: "right" }}>Reach</th>
-              </tr>
-            </thead>
-            <tbody>
-              {coverage.map((c) => (
-                <tr key={c.id}>
-                  <td style={{ whiteSpace: "nowrap" }}>{formatDay(c.date)}</td>
-                  <td>{c.outlet}</td>
-                  <td>
-                    {c.url ? (
-                      <a href={c.url} target="_blank" rel="noopener noreferrer">{c.headline}</a>
-                    ) : (
-                      c.headline
-                    )}
-                  </td>
-                  <td>{CHANNEL_LABEL[c.channel] ?? c.channel}</td>
-                  <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>{formatReach(c.reach)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </section>
+    <CoveragePanel
+      programId={data.program.id}
+      rows={data.rows}
+      kind={kind}
+      kindHref={(k) => `/team/clients/${companyId}/coverage?kind=${k}`}
+      targets={data.targets}
+      tasks={data.tasks}
+      journalists={data.journalists}
+      documents={data.documents}
+      actions={{
+        create: teamCreateOutcome.bind(null, companyId),
+        update: teamUpdateOutcome.bind(null, companyId),
+        publish: teamPublishOutcome.bind(null, companyId),
+        remove: teamRemoveOutcome.bind(null, companyId),
+      }}
+    />
   );
 }

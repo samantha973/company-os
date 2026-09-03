@@ -12,7 +12,23 @@ import {
 // Marketing calendar reads. The page is tiny (one team's content plan), so this
 // lists every entry and the views filter client-side — no paging needed.
 
-export type CalendarChannel = "blog" | "email" | "linkedin" | "facebook";
+// Owned channels plus the earned-coverage set the PR Hub records against a
+// client (supabase/pr-hub/07-marketing-content.sql). Client rows carry
+// company_id and are excluded from the agency's own calendar (listEntries).
+export type CalendarChannel =
+  | "blog"
+  | "email"
+  | "linkedin"
+  | "facebook"
+  | "earned"
+  | "online"
+  | "print"
+  | "tv"
+  | "radio"
+  | "podcast"
+  | "syndication"
+  | "speaking"
+  | "other";
 export type CalendarStatus =
   | "idea"
   | "drafted"
@@ -39,6 +55,15 @@ export const CHANNELS: { id: CalendarChannel; label: string; accent: string }[] 
   { id: "email", label: "Email", accent: "var(--admin-accent)" },
   { id: "linkedin", label: "LinkedIn", accent: "#0a66c2" },
   { id: "facebook", label: "Facebook", accent: "#1877f2" },
+  { id: "earned", label: "Earned", accent: "#0f766e" },
+  { id: "online", label: "Online", accent: "#0f766e" },
+  { id: "print", label: "Print", accent: "#6b7194" },
+  { id: "tv", label: "TV", accent: "#b45309" },
+  { id: "radio", label: "Radio", accent: "#b45309" },
+  { id: "podcast", label: "Podcast", accent: "#7c3aed" },
+  { id: "syndication", label: "Syndication", accent: "#6b7194" },
+  { id: "speaking", label: "Speaking", accent: "#b03571" },
+  { id: "other", label: "Other", accent: "#9ca3af" },
 ];
 
 export const STATUS_LABEL: Record<CalendarStatus, string> = Object.fromEntries(
@@ -168,6 +193,9 @@ export async function listEntries(): Promise<{ rows: CalendarEntryRow[]; error?:
   const { data, error } = await companyOs
     .from("marketing_content")
     .select(ENTRY_SELECT)
+    // The agency's own content plan; client outcomes (company_id set) live in
+    // the client hubs.
+    .is("company_id", null)
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: true });
   if (error) return { rows: [], error: error.message };
