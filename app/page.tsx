@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { DM_Sans, Playfair_Display } from 'next/font/google'
 import styles from './home.module.css'
+import { AuthHashForwarder } from '@/components/auth/AuthHashForwarder'
 
 const dmSans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '700'], variable: '--font-dm-sans' })
 const playfair = Playfair_Display({ subsets: ['latin'], style: ['italic'], variable: '--font-playfair' })
@@ -19,6 +20,7 @@ function ArrowIcon({ stroke = '#2EDBBB' }: { stroke?: string }) {
 export default function HomePage() {
   return (
     <main className={`${styles.page} ${dmSans.variable} ${playfair.variable}`}>
+      <AuthHashForwarder />
       {/* ═══ HEADER ═══ */}
       <header className={styles.header}>
         <div className={styles.brand}>
