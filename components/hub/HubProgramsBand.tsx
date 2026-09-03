@@ -24,7 +24,7 @@ export function HubProgramsBand({
 }) {
   if (programs.length === 0) {
     return (
-      <div className="admin-card admin-section-card" style={{ marginBottom: 20 }}>
+      <div className="admin-card admin-section-card u-mb-5">
         <div className="admin-empty">No PR Program yet. Created from the client portal or by the account team.</div>
       </div>
     );

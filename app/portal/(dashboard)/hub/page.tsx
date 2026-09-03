@@ -42,10 +42,10 @@ export default async function PortalHubPage() {
       <div className="admin-content">
         <PageHead eyebrow="Client hub" title="Your PR programme" />
         <div className="admin-card admin-section-card">
-          <h2 className="admin-card-title" style={{ marginBottom: 8 }}>No PR programme yet</h2>
-          <p className="admin-page-sub" style={{ margin: 0 }}>This is where your plan, activity and coverage will live once the programme starts.</p>
+          <h2 className="admin-card-title u-mb-2">No PR programme yet</h2>
+          <p className="admin-page-sub u-m-0">This is where your plan, activity and coverage will live once the programme starts.</p>
           {canCreate && (
-            <div style={{ marginTop: 16 }}>
+            <div className="u-mt-4">
               <Link href="/portal/programs/add" className="admin-btn admin-btn--primary">Add PR Program</Link>
             </div>
           )}
@@ -80,22 +80,22 @@ export default async function PortalHubPage() {
         action={<Badge tone={statusTone(program.status)}>{humanize(program.status)}</Badge>}
       />
 
-      <div className="mp-kpi-grid" style={{ marginBottom: 16 }}>
+      <div className="admin-kpi-grid u-mb-4">
         <MetricCard label={plan?.selected ? "Coverage this quarter" : "Coverage"} value={coverageThisQuarter} sub={reach > 0 ? `est. reach ${fmtReach(reach)}` : `${coverage.length} total`} href="/portal/coverage" />
-        <MetricCard label="LinkedIn posts" value={postTarget ? <>{postsThisQuarter} <span className="admin-cell-muted" style={{ fontSize: 15, fontWeight: 500 }}>of {postTarget}</span></> : postsThisQuarter} sub={plan?.selected ? "this quarter" : "published"} href="/portal/coverage?kind=linkedin" />
+        <MetricCard label="LinkedIn posts" value={postTarget ? <>{postsThisQuarter} <span className="admin-kpi-of">of {postTarget}</span></> : postsThisQuarter} sub={plan?.selected ? "this quarter" : "published"} href="/portal/coverage?kind=linkedin" />
         <MetricCard
           label="Plan targets"
-          value={plan ? <>{onTrack} <span className="admin-cell-muted" style={{ fontSize: 15, fontWeight: 500 }}>of {targets.length} on track</span></> : "—"}
+          value={plan ? <>{onTrack} <span className="admin-kpi-of">of {targets.length} on track</span></> : "—"}
           sub={plan ? (targets.length - onTrack > 0 ? `${targets.length - onTrack} behind — see below` : "all on plan") : "plan not published yet"}
           href={plan ? "/portal/plan" : undefined}
         />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.6fr) minmax(0, 1fr)", gap: 16, alignItems: "start" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div className="admin-cols-main-aside">
+        <div className="admin-panel">
           {waitingCards.length > 0 && (
             <section className="admin-card admin-section-card admin-card--attention">
-              <h2 className="admin-card-title" style={{ marginBottom: 10 }}>Waiting on you</h2>
+              <h2 className="admin-card-title u-mb-3">Waiting on you</h2>
               <div className="admin-list">
                 {waitingCards.map((c) => (
                   <div className="admin-list-row" key={c.id}>
@@ -113,23 +113,23 @@ export default async function PortalHubPage() {
           )}
 
           <section className="admin-card admin-section-card">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-              <h2 className="admin-card-title" style={{ margin: 0 }}>{plan?.selected ? `${plan.selected.quarter_label} plan` : "90-Day Plan"}</h2>
-              {plan && <Link href="/portal/plan" className="admin-cell-muted" style={{ fontSize: 12 }}>Full plan →</Link>}
+            <div className="admin-card-head">
+              <h2 className="admin-card-title">{plan?.selected ? `${plan.selected.quarter_label} plan` : "90-Day Plan"}</h2>
+              {plan && <Link href="/portal/plan" className="admin-cell-muted u-sm">Full plan →</Link>}
             </div>
             {!plan?.selected ? (
               <div className="admin-empty">Your 90-day plan will appear here once it is published.</div>
             ) : (
               <>
                 {(plan.selected.business_objective || plan.selected.comms_objective) && (
-                  <p className="admin-page-sub" style={{ margin: "0 0 12px" }}>
-                    <b style={{ color: "var(--admin-ink)" }}>Objective:</b> {plan.selected.comms_objective ?? plan.selected.business_objective}
+                  <p className="admin-page-sub u-m-0 u-mb-3">
+                    <b className="u-ink">Objective:</b> {plan.selected.comms_objective ?? plan.selected.business_objective}
                     {plan.selected.signoff_date && ` Signed off ${formatDate(plan.selected.signoff_date)}.`}
                   </p>
                 )}
-                <div className="admin-table-wrap" style={{ boxShadow: "none" }}>
+                <div className="admin-table-wrap admin-table-wrap--flat">
                   <table className="admin-table">
-                    <thead><tr><th>Target</th><th style={{ width: 150 }}>Progress</th><th>Where it stands</th></tr></thead>
+                    <thead><tr><th>Target</th><th className="admin-th--md">Progress</th><th>Where it stands</th></tr></thead>
                     <tbody>
                       {targets.map((t) => {
                         const q = t.quantity_target ?? 0;
@@ -137,21 +137,21 @@ export default async function PortalHubPage() {
                         const pct = q > 0 ? Math.min(100, Math.round((done / q) * 100)) : targetDone(t) ? 100 : 0;
                         return (
                           <tr key={t.id}>
-                            <td style={{ fontWeight: 600 }}>{t.title}</td>
+                            <td className="u-strong">{t.title}</td>
                             <td>
-                              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                                <div className="board-progress" style={{ flex: 1 }}><div className="board-progress-fill" style={{ width: `${pct}%` }} /></div>
-                                <span className="admin-cell-muted" style={{ fontVariantNumeric: "tabular-nums" }}>{q > 0 ? `${done} / ${q}` : done || ""}</span>
+                              <div className="u-row">
+                                <div className="admin-progress u-grow"><div className="admin-progress-fill" style={{ width: `${pct}%` }} /* layout-ok: data-driven width */ /></div>
+                                <span className="admin-cell-muted u-tabular">{q > 0 ? `${done} / ${q}` : done || ""}</span>
                               </div>
                             </td>
                             <td>
                               {t.variance_reason || t.variance_note ? (
                                 <span>
-                                  {t.variance_reason && <strong style={{ color: "var(--admin-warn-ink)" }}>{VARIANCE_REASON_LABEL[t.variance_reason as VarianceReason] ?? humanize(t.variance_reason)}. </strong>}
+                                  {t.variance_reason && <strong className="u-warn">{VARIANCE_REASON_LABEL[t.variance_reason as VarianceReason] ?? humanize(t.variance_reason)}. </strong>}
                                   {t.variance_note}
                                 </span>
                               ) : targetDone(t) ? (
-                                <span style={{ color: "var(--admin-ok-ink)", fontWeight: 600 }}>Done</span>
+                                <span className="u-ok">Done</span>
                               ) : (
                                 <span className="admin-cell-muted">On track</span>
                               )}
@@ -168,11 +168,11 @@ export default async function PortalHubPage() {
           </section>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div className="admin-panel">
           <section className="admin-card admin-section-card">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-              <h2 className="admin-card-title" style={{ margin: 0 }}>Latest coverage</h2>
-              {coverage.length > 0 && <Link href="/portal/coverage" className="admin-cell-muted" style={{ fontSize: 12 }}>All {coverage.length} →</Link>}
+            <div className="admin-card-head">
+              <h2 className="admin-card-title">Latest coverage</h2>
+              {coverage.length > 0 && <Link href="/portal/coverage" className="admin-cell-muted u-sm">All {coverage.length} →</Link>}
             </div>
             {coverage.length === 0 ? (
               <div className="admin-empty">Nothing published yet.</div>
@@ -185,7 +185,7 @@ export default async function PortalHubPage() {
                       <div className="admin-list-sub">{o.url ? <a href={o.url} target="_blank" rel="noopener noreferrer">{o.title}</a> : o.title}</div>
                       <div className="admin-list-sub">{[COVERAGE_CHANNEL_LABEL[o.channel as keyof typeof COVERAGE_CHANNEL_LABEL] ?? o.channel, o.reach ? `reach ${fmtReach(o.reach)}` : null].filter(Boolean).join(" · ")}</div>
                     </div>
-                    <div className="admin-list-aside"><span className="admin-cell-muted" style={{ fontSize: 12, whiteSpace: "nowrap" }}>{formatDate(o.publishDate)}</span></div>
+                    <div className="admin-list-aside"><span className="admin-cell-muted u-sm u-nowrap">{formatDate(o.publishDate)}</span></div>
                   </div>
                 ))}
               </div>
@@ -193,9 +193,9 @@ export default async function PortalHubPage() {
           </section>
 
           <section className="admin-card admin-section-card">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-              <h2 className="admin-card-title" style={{ margin: 0 }}>What we&apos;re working on</h2>
-              {board && <Link href={`/portal/programs/${program.id}?tab=board`} className="admin-cell-muted" style={{ fontSize: 12 }}>Activity →</Link>}
+            <div className="admin-card-head">
+              <h2 className="admin-card-title">What we&apos;re working on</h2>
+              {board && <Link href={`/portal/programs/${program.id}?tab=board`} className="admin-cell-muted u-sm">Activity →</Link>}
             </div>
             {openCards.length === 0 ? (
               <div className="admin-empty">Nothing in motion right now.</div>
@@ -214,21 +214,21 @@ export default async function PortalHubPage() {
           </section>
 
           <section className="admin-card admin-section-card">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-              <h2 className="admin-card-title" style={{ margin: 0 }}>Meetings</h2>
-              {publishedMeetings.length > 0 && <Link href={`/portal/programs/${program.id}?tab=meetings`} className="admin-cell-muted" style={{ fontSize: 12 }}>All →</Link>}
+            <div className="admin-card-head">
+              <h2 className="admin-card-title">Meetings</h2>
+              {publishedMeetings.length > 0 && <Link href={`/portal/programs/${program.id}?tab=meetings`} className="admin-cell-muted u-sm">All →</Link>}
             </div>
             {publishedMeetings.length === 0 ? (
               <div className="admin-empty">No meeting notes published yet.</div>
             ) : (
               <div className="admin-list">
                 {publishedMeetings.map((m) => (
-                  <Link key={m.id} href={`/portal/meetings/${m.id}`} className="admin-list-row" style={{ textDecoration: "none", color: "inherit" }}>
+                  <Link key={m.id} href={`/portal/meetings/${m.id}`} className="admin-list-row">
                     <div className="admin-list-main">
                       <div className="admin-list-title">{m.title ?? "Meeting"}</div>
                       <div className="admin-list-sub">{m.summary ? "Summary" : "Notes"}</div>
                     </div>
-                    <div className="admin-list-aside"><span className="admin-cell-muted" style={{ fontSize: 12, whiteSpace: "nowrap" }}>{formatDate(m.meetingDate)}</span></div>
+                    <div className="admin-list-aside"><span className="admin-cell-muted u-sm u-nowrap">{formatDate(m.meetingDate)}</span></div>
                   </Link>
                 ))}
               </div>

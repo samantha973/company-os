@@ -32,7 +32,7 @@ const HEALTH_TONE: Record<ProgramHealth, BadgeTone> = { green: "ok", amber: "war
 
 function Lock() {
   return (
-    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-label="internal only" style={{ verticalAlign: "-1px" }}>
+    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-label="internal only" className="admin-icon-inline">
       <rect x="3" y="7" width="10" height="7" rx="1.5" />
       <path d="M5 7V5a3 3 0 0 1 6 0v2" />
     </svg>
@@ -41,12 +41,12 @@ function Lock() {
 
 function Field({ label, internal, children }: { label: string; internal?: boolean; children: React.ReactNode }) {
   return (
-    <div className="hub-field">
-      <div className="hub-field-label">
+    <div className="admin-hub-field">
+      <div className="admin-hub-field-label">
         {label}
         {internal && <Lock />}
       </div>
-      <div className="hub-field-value">{children}</div>
+      <div className="admin-hub-field-value">{children}</div>
     </div>
   );
 }
@@ -90,12 +90,12 @@ export function ProgramCard({
   const behind = plan ? plan.targetsTotal - plan.targetsOnTrack : 0;
 
   return (
-    <div className="hub-band hub-inline">
+    <div className="admin-hub-band admin-hub-inline">
       <section className="admin-card admin-section-card">
-        <div className="hub-band-top">
-          <div className="hub-band-title">
+        <div className="admin-hub-band-top">
+          <div className="admin-hub-band-title">
             <h2>
-              <Link href={href} style={{ color: "inherit", textDecoration: "none" }}>{p.name}</Link>
+              <Link href={href} className="u-link-plain">{p.name}</Link>
             </h2>
             {actions ? (
               <EditableSelect
@@ -120,9 +120,9 @@ export function ProgramCard({
             ) : (
               p.health && <Badge tone={HEALTH_TONE[p.health]} dot>{PROGRAM_HEALTH_LABEL[p.health]}</Badge>
             )}
-            <span className="hub-band-lock"><Lock /> internal</span>
+            <span className="admin-hub-band-lock"><Lock /> internal</span>
           </div>
-          <div className="hub-band-actions">
+          <div className="admin-hub-band-actions">
             {actions && p.boardCount === 0 && (
               <button
                 type="button"
@@ -143,9 +143,9 @@ export function ProgramCard({
             <Link href={href}>Open program →</Link>
           </div>
         </div>
-        {setupError && <div className="admin-editable-note admin-editable-note--err" style={{ marginBottom: 10 }}>{setupError}</div>}
+        {setupError && <div className="admin-editable-note admin-editable-note--err u-mb-3">{setupError}</div>}
 
-        <div className={`hub-fields${isAdmin ? "" : " hub-fields--5"}`}>
+        <div className={`admin-hub-fields${isAdmin ? "" : " admin-hub-fields--5"}`}>
           <Field label="Account lead">
             {actions ? <EditableSelect value={p.accountLead?.id ?? ""} options={peopleOptions} onSave={save("account_lead_id")} placeholder="Assign…" ariaLabel="Account lead" render={personLabel} /> : p.accountLead?.name ?? "—"}
           </Field>
@@ -173,29 +173,29 @@ export function ProgramCard({
         </div>
 
         {actions?.logTouchpoint && (
-          <div className="hub-band-foot">
+          <div className="admin-hub-band-foot">
             <LogTouchpoint programId={p.id} recent={touchpoints} action={actions.logTouchpoint} />
           </div>
         )}
       </section>
 
-      <div className="mp-kpi-grid hub-kpis">
-        <div className="mp-kpi">
-          <div className="mp-kpi-label">Coverage</div>
-          <div className="mp-kpi-val">{p.stats.coverageCount}</div>
-          <div className="mp-kpi-note">published pieces</div>
+      <div className="admin-kpi-grid admin-hub-kpis">
+        <div className="admin-kpi">
+          <div className="admin-kpi-label">Coverage</div>
+          <div className="admin-kpi-val">{p.stats.coverageCount}</div>
+          <div className="admin-kpi-note">published pieces</div>
         </div>
-        <div className="mp-kpi">
-          <div className="mp-kpi-label">LinkedIn posts</div>
-          <div className="mp-kpi-val">{p.stats.linkedinPostCount}</div>
-          <div className="mp-kpi-note">published</div>
+        <div className="admin-kpi">
+          <div className="admin-kpi-label">LinkedIn posts</div>
+          <div className="admin-kpi-val">{p.stats.linkedinPostCount}</div>
+          <div className="admin-kpi-note">published</div>
         </div>
-        <div className="mp-kpi">
-          <div className="mp-kpi-label">Targets on track</div>
-          <div className="mp-kpi-val">
-            {plan ? <>{plan.targetsOnTrack} <span className="hub-kpi-of">of {plan.targetsTotal}</span></> : <span className="hub-kpi-of">No plan yet</span>}
+        <div className="admin-kpi">
+          <div className="admin-kpi-label">Targets on track</div>
+          <div className="admin-kpi-val">
+            {plan ? <>{plan.targetsOnTrack} <span className="admin-kpi-of">of {plan.targetsTotal}</span></> : <span className="admin-kpi-of">No plan yet</span>}
           </div>
-          <div className={`mp-kpi-note${behind > 0 ? " hub-kpi-note--warn" : ""}`}>
+          <div className={`admin-kpi-note${behind > 0 ? " admin-kpi-note--warn" : ""}`}>
             {plan
               ? behind > 0
                 ? `${behind} with a variance`
@@ -203,10 +203,10 @@ export function ProgramCard({
               : "Start one on the 90-Day Plan tab"}
           </div>
         </div>
-        <div className="mp-kpi">
-          <div className="mp-kpi-label">Awards in flight</div>
-          <div className="mp-kpi-val">{p.stats.awardsInFlight}</div>
-          <div className="mp-kpi-note">agreed, submitted or shortlisted</div>
+        <div className="admin-kpi">
+          <div className="admin-kpi-label">Awards in flight</div>
+          <div className="admin-kpi-val">{p.stats.awardsInFlight}</div>
+          <div className="admin-kpi-note">agreed, submitted or shortlisted</div>
         </div>
       </div>
     </div>

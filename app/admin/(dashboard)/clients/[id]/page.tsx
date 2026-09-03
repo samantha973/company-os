@@ -298,7 +298,7 @@ export default async function ClientHubPage({
         title={name}
         sub={company.website_url || undefined}
         action={
-          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          <div className="u-row u-wrap">
             {company.archived_at && <Badge tone="neutral">Archived</Badge>}
             {company.priority && <Badge>{humanize(company.priority)} priority</Badge>}
             <Link href={`/admin/revenue/companies/${company.id}`} className="admin-btn admin-btn--sm">Company record →</Link>

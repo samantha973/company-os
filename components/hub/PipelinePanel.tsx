@@ -53,17 +53,17 @@ export function PipelinePanel({
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+    <div className="admin-panel">
       {error && <div className="admin-editable-note admin-editable-note--err">{error}</div>}
-      <div className="admin-table-wrap" style={{ boxShadow: "none" }}>
+      <div className="admin-table-wrap admin-table-wrap--flat">
         <table className="admin-table">
           <thead>
             <tr>
               <th>Idea</th>
-              <th style={{ width: 120 }}>Status</th>
-              <th style={{ width: 160 }}>Aimed at</th>
-              <th style={{ width: 110 }}>Reviewed</th>
-              {actions && <th style={{ width: 220 }}></th>}
+              <th className="admin-th--sm">Status</th>
+              <th className="admin-th--md">Aimed at</th>
+              <th className="admin-th--sm">Reviewed</th>
+              {actions && <th className="admin-th--lg"></th>}
             </tr>
           </thead>
           <tbody>
@@ -71,8 +71,8 @@ export function PipelinePanel({
             {rows.map((p) => (
               <tr key={p.id}>
                 <td>
-                  <div style={{ fontWeight: 600 }}>{actions ? <EditableText value={p.headline} onSave={save(p.id, "headline")} ariaLabel="Headline" /> : p.headline}</div>
-                  <div className="admin-cell-muted" style={{ fontSize: 12 }}>{actions ? <EditableTextarea value={p.description ?? ""} onSave={save(p.id, "description")} placeholder="what the story is…" ariaLabel="Description" rows={2} /> : p.description}</div>
+                  <div className="u-strong">{actions ? <EditableText value={p.headline} onSave={save(p.id, "headline")} ariaLabel="Headline" /> : p.headline}</div>
+                  <div className="admin-cell-muted u-sm">{actions ? <EditableTextarea value={p.description ?? ""} onSave={save(p.id, "description")} placeholder="what the story is…" ariaLabel="Description" rows={2} /> : p.description}</div>
                 </td>
                 <td>
                   {actions ? (
@@ -90,23 +90,23 @@ export function PipelinePanel({
                     p.targetQuarterLabel ?? "—"
                   )}
                 </td>
-                <td style={{ whiteSpace: "nowrap" }}>{formatDate(p.lastReviewedOn)}</td>
+                <td className="u-nowrap">{formatDate(p.lastReviewedOn)}</td>
                 {actions && (
                   <td>
                     {promote?.id === p.id ? (
-                      <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                      <div className="u-row u-wrap">
                         <select className="admin-select" value={promote.planId} onChange={(e) => setPromote({ ...promote, planId: e.target.value })}>
                           {plans.map((x) => <option key={x.id} value={x.id}>{x.label}</option>)}
                         </select>
                         <select className="admin-select" value={promote.groupKey} onChange={(e) => setPromote({ ...promote, groupKey: e.target.value })}>
                           {groups.map((g) => <option key={g.key} value={g.key}>{g.title}</option>)}
                         </select>
-                        <input className="admin-input" style={{ width: 70 }} type="number" min={0} placeholder="count" value={promote.qty} onChange={(e) => setPromote({ ...promote, qty: e.target.value })} />
+                        <input className="admin-input admin-input--w-xs" type="number" min={0} placeholder="count" value={promote.qty} onChange={(e) => setPromote({ ...promote, qty: e.target.value })} />
                         <button type="button" className="admin-btn admin-btn--sm admin-btn--primary" disabled={pending || !promote.planId || !promote.groupKey} onClick={() => run(() => actions.promotePipeline(p.id, { planId: promote.planId, groupKey: promote.groupKey, quantityTarget: promote.qty === "" ? null : Number(promote.qty) }), () => setPromote(null))}>Promote</button>
                         <button type="button" className="admin-btn admin-btn--sm" onClick={() => setPromote(null)}>Cancel</button>
                       </div>
                     ) : (
-                      <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
+                      <span className="u-row">
                         {!p.promotedBacklogItemId && plans.length > 0 && groups.length > 0 && (
                           <button type="button" className="admin-btn admin-btn--sm" disabled={pending} onClick={() => setPromote({ id: p.id, planId: p.targetQuarterPlanId ?? plans[0].id, groupKey: groups[0].key, qty: "" })}>Promote to plan</button>
                         )}
@@ -123,8 +123,8 @@ export function PipelinePanel({
 
       {actions && (
         <section className="admin-card admin-section-card">
-          <h3 className="admin-card-title" style={{ marginBottom: 10 }}>Log a news idea</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr auto", gap: 10, alignItems: "end" }}>
+          <h3 className="admin-card-title u-mb-3">Log a news idea</h3>
+          <div className="admin-form-row">
             <label className="admin-field"><span className="admin-cell-muted">Headline</span><input className="admin-input" value={draft.headline} onChange={(e) => setDraft({ ...draft, headline: e.target.value })} /></label>
             <label className="admin-field"><span className="admin-cell-muted">What the story is</span><input className="admin-input" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} /></label>
             <button type="button" className="admin-btn admin-btn--primary" disabled={pending || !draft.headline.trim()} onClick={() => run(() => actions.createPipeline(programId, draft), () => setDraft({ headline: "", description: "" }))}>Log</button>

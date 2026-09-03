@@ -117,7 +117,7 @@ export default async function ProgramDetailPage({
         title={detail.name}
         sub="Plan, coverage, awards and pipeline live on the Client Hub."
         action={
-          <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+          <span className="u-row u-wrap">
             <Badge tone={STATUS_TONE[detail.status]}>{detail.status}</Badge>
             <Link className="admin-btn admin-btn--sm" href={`${hubHref}?tab=plan`}>Open Client Hub →</Link>
           </span>

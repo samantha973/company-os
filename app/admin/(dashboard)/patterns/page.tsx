@@ -342,7 +342,7 @@ export default function PatternsPage() {
 
         {/* ─── KPI tiles ──────────────────────────────── */}
         <Section title="KPI tiles">
-          <div className="mp-kpi-grid" style={{ marginBottom: 0 }}>
+          <div className="admin-kpi-grid" style={{ marginBottom: 0 }}>
             <MetricCard label="Pipeline" value="$248,000" sub="18 open deals" />
             <MetricCard label="Won this month" value="$52,400" sub="+12% vs last" />
             <MetricCard label="Active contacts" value="1,204" sub="Company database" />
@@ -375,29 +375,29 @@ export default function PatternsPage() {
         {/* ─── Kanban card ────────────────────────────── */}
         <Section title="Kanban column &amp; card">
           <div style={{ maxWidth: 300 }}>
-            <div className="sap-col">
-              <div className="sap-col-head">
-                <span className="sap-col-dot" style={{ background: "var(--admin-accent)" }} />
-                <span className="sap-col-label">Discovery</span>
-                <span className="sap-col-count">2</span>
+            <div className="admin-kanban-col">
+              <div className="admin-kanban-col-head">
+                <span className="admin-kanban-col-dot" style={{ background: "var(--admin-accent)" }} />
+                <span className="admin-kanban-col-label">Discovery</span>
+                <span className="admin-kanban-col-count">2</span>
               </div>
-              <div className="sap-col-body">
-                <div className="sap-card">
-                  <div className="sap-card-title">Acme Co. — Pilot</div>
-                  <div className="sap-card-sub">Jane Doe</div>
-                  <div className="sap-card-meta">
+              <div className="admin-kanban-col-body">
+                <div className="admin-kanban-card">
+                  <div className="admin-kanban-card-title">Acme Co. — Pilot</div>
+                  <div className="admin-kanban-card-sub">Jane Doe</div>
+                  <div className="admin-kanban-card-meta">
                     <Badge tone="warn" dot>60%</Badge>
                     <span className="admin-cell-mono" style={{ fontSize: 12 }}>$48,000</span>
                   </div>
                 </div>
-                <div className="sap-card">
-                  <div className="sap-card-title">Globex — Retainer</div>
-                  <div className="sap-card-sub">Minh Tran</div>
+                <div className="admin-kanban-card">
+                  <div className="admin-kanban-card-title">Globex — Retainer</div>
+                  <div className="admin-kanban-card-sub">Minh Tran</div>
                 </div>
               </div>
-              <div className="sap-col-foot">
+              <div className="admin-kanban-col-foot">
                 Total
-                <span className="sap-card-sub">$51,200</span>
+                <span className="admin-kanban-card-sub">$51,200</span>
               </div>
             </div>
           </div>

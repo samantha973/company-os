@@ -1,4 +1,4 @@
-/* 8 Edges admin styles. Scoped under .admin-shell / .admin-auth / .admin-* / .sap-* / .mp-*
+/* 8 Edges admin styles. Scoped under .admin-shell / .admin-auth / .admin-* / .admin-kanban-* / .mp-*
    so nothing collides with the marketing site (globals.css). Loaded after
    globals.css by both admin route-group layouts.
 
@@ -409,7 +409,7 @@ a.admin-btn--danger:hover { color: var(--admin-err-ink); }
 @media (max-width: 900px) {
   .admin-summary-grid { grid-template-columns: 1fr; }
 }
-.admin-summary-grid .mp-kpi { min-width: 0; }
+.admin-summary-grid .admin-kpi { min-width: 0; }
 .admin-chart-card { padding: 16px 18px; min-width: 0; }
 
 /* ─── Section band divider ──────────────────────────────────────────────────
@@ -532,7 +532,7 @@ a.admin-pill:hover .admin-pill-val { color: var(--admin-accent); }
    pills drop to body font at a normal weight and let the value wrap. */
 .admin-pill--text { align-items: baseline; }
 .admin-pill--text .admin-pill-val { font-family: var(--font-body, inherit); font-weight: 500; font-size: 14px; line-height: 1.45; white-space: normal; }
-.admin-chart-card .mp-kpi-label { margin-bottom: 12px; }
+.admin-chart-card .admin-kpi-label { margin-bottom: 12px; }
 .admin-chart text { font-family: var(--font-body, inherit); }
 .admin-donut { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
 .admin-chart-legend {
@@ -558,7 +558,7 @@ a.admin-pill:hover .admin-pill-val { color: var(--admin-accent); }
   border-radius: var(--admin-radius);
   box-shadow: var(--admin-shadow);
 }
-.mp-kpi-grid {
+.admin-kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(212px, 1fr));
   gap: 16px;
@@ -566,15 +566,15 @@ a.admin-pill:hover .admin-pill-val { color: var(--admin-accent); }
 }
 /* Fixed 2-up variant for a small, known set of action cards (e.g. the portal
    Requests page's 4 options) rather than however many fit at the 212px floor. */
-.mp-kpi-grid--2up { grid-template-columns: repeat(2, 1fr); }
+.admin-kpi-grid--2up { grid-template-columns: repeat(2, 1fr); }
 @media (max-width: 640px) {
-  .mp-kpi-grid--2up { grid-template-columns: 1fr; }
+  .admin-kpi-grid--2up { grid-template-columns: 1fr; }
 }
 /* Marketing > Books: card link, badge row at the card foot, embedded reader. */
 .book-card-link { display: block; text-decoration: none; color: inherit; }
 .book-card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
 .book-reader-frame { display: block; width: 100%; height: 75vh; border: 0; }
-.mp-kpi {
+.admin-kpi {
   background: var(--admin-surface);
   border: 1px solid var(--admin-line);
   border-radius: var(--admin-radius);
@@ -586,10 +586,10 @@ a.admin-pill:hover .admin-pill-val { color: var(--admin-accent); }
   min-width: 0; /* grid items default to min-width:auto, which lets a long unbroken value (a one-word company name, an email) grow the box past its track instead of wrapping */
   transition: border-color var(--transition), transform var(--transition);
 }
-a.mp-kpi:hover { border-color: var(--admin-accent); transform: translateY(-1px); }
-.mp-kpi-label { font-size: 12px; color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.4px; }
-.mp-kpi-val { font-family: var(--font-display); font-weight: 600; font-size: 28px; margin-top: 6px; color: var(--admin-ink); overflow-wrap: anywhere; }
-.mp-kpi-note { font-size: 12px; color: var(--admin-muted); margin-top: 2px; overflow-wrap: anywhere; }
+a.admin-kpi:hover { border-color: var(--admin-accent); transform: translateY(-1px); }
+.admin-kpi-label { font-size: 12px; color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+.admin-kpi-val { font-family: var(--font-display); font-weight: 600; font-size: 28px; margin-top: 6px; color: var(--admin-ink); overflow-wrap: anywhere; }
+.admin-kpi-note { font-size: 12px; color: var(--admin-muted); margin-top: 2px; overflow-wrap: anywhere; }
 
 /* ─── Route loading skeleton (loading.tsx boundaries) ─────
    Instant feedback while force-dynamic pages render server-side; without it a
@@ -612,7 +612,7 @@ a.mp-kpi:hover { border-color: var(--admin-accent); transform: translateY(-1px);
 /* ─── Team portal glance strip ────────────────────────
    One quiet, hairline-divided card for the employee's personal facts. Values
    stay at body scale on purpose, this is a glance, not a dashboard KPI. */
-.team-glance {
+.admin-glance {
   display: flex;
   flex-wrap: wrap;
   background: var(--admin-surface);
@@ -621,7 +621,7 @@ a.mp-kpi:hover { border-color: var(--admin-accent); transform: translateY(-1px);
   box-shadow: var(--admin-shadow);
   margin-bottom: 8px;
 }
-.team-glance-cell {
+.admin-glance-cell {
   flex: 1 1 200px;
   min-width: 0;
   padding: 16px 22px;
@@ -629,21 +629,21 @@ a.mp-kpi:hover { border-color: var(--admin-accent); transform: translateY(-1px);
   flex-direction: column;
   gap: 3px;
 }
-.team-glance-cell + .team-glance-cell { border-left: 1px solid var(--admin-line-soft); }
-.team-glance-label {
+.admin-glance-cell + .admin-glance-cell { border-left: 1px solid var(--admin-line-soft); }
+.admin-glance-label {
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--admin-muted);
 }
-.team-glance-value { font-size: 15px; font-weight: 500; color: var(--admin-ink); overflow-wrap: anywhere; }
-.team-glance-note { font-size: 12px; color: var(--admin-muted); }
-.team-glance-note a { color: var(--admin-accent); text-decoration: none; }
-.team-glance-note a:hover { text-decoration: underline; text-underline-offset: 2px; }
+.admin-glance-value { font-size: 15px; font-weight: 500; color: var(--admin-ink); overflow-wrap: anywhere; }
+.admin-glance-note { font-size: 12px; color: var(--admin-muted); }
+.admin-glance-note a { color: var(--admin-accent); text-decoration: none; }
+.admin-glance-note a:hover { text-decoration: underline; text-underline-offset: 2px; }
 @media (max-width: 720px) {
-  .team-glance { flex-direction: column; }
-  .team-glance-cell + .team-glance-cell { border-left: 0; border-top: 1px solid var(--admin-line-soft); }
+  .admin-glance { flex-direction: column; }
+  .admin-glance-cell + .admin-glance-cell { border-left: 0; border-top: 1px solid var(--admin-line-soft); }
 }
 
 /* ─── Team home columns ───────────────────────────────
@@ -833,23 +833,23 @@ a.team-org-card:hover { border-color: var(--admin-accent); transform: translateY
    Card grid on /team home: every employee touchpoint, shipped or not. Live
    items are links; unshipped ones render muted with a "Soon" pill so the page
    shows the full destination from day one. */
-.team-hub-grid {
+.admin-hub-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(236px, 1fr));
   gap: 16px;
 }
 /* One-row variant (home "Your workspace"): all cards on a single row on desktop,
    smaller cards, wrapping to fewer columns on narrower screens. */
-.team-hub-grid--row {
+.admin-hub-grid--row {
   grid-template-columns: repeat(6, 1fr);
   gap: 12px;
 }
-.team-hub-grid--row .team-hub-card { padding: 13px 13px; gap: 6px; }
-.team-hub-grid--row .team-hub-title { font-size: 13px; }
-.team-hub-grid--row .team-hub-sub { font-size: 11px; }
-@media (max-width: 1100px) { .team-hub-grid--row { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 640px) { .team-hub-grid--row { grid-template-columns: repeat(2, 1fr); } }
-.team-hub-card {
+.admin-hub-grid--row .admin-hub-card { padding: 13px 13px; gap: 6px; }
+.admin-hub-grid--row .admin-hub-title { font-size: 13px; }
+.admin-hub-grid--row .admin-hub-sub { font-size: 11px; }
+@media (max-width: 1100px) { .admin-hub-grid--row { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 640px) { .admin-hub-grid--row { grid-template-columns: repeat(2, 1fr); } }
+.admin-hub-card {
   background: var(--admin-surface);
   border: 1px solid var(--admin-line);
   border-radius: var(--admin-radius);
@@ -863,8 +863,8 @@ a.team-org-card:hover { border-color: var(--admin-accent); transform: translateY
   color: inherit;
   transition: border-color var(--transition), transform var(--transition);
 }
-a.team-hub-card:hover { border-color: var(--admin-accent); transform: translateY(-1px); }
-.team-hub-ico {
+a.admin-hub-card:hover { border-color: var(--admin-accent); transform: translateY(-1px); }
+.admin-hub-ico {
   width: 32px; height: 32px;
   border-radius: 9px;
   background: var(--admin-accent-soft);
@@ -872,11 +872,11 @@ a.team-hub-card:hover { border-color: var(--admin-accent); transform: translateY
   display: grid; place-items: center;
   font-size: 15px;
 }
-.team-hub-title {
+.admin-hub-title {
   font-weight: 600; font-size: 14px; color: var(--admin-ink);
   display: flex; align-items: center; gap: 8px;
 }
-.team-hub-sub { font-size: 12px; color: var(--admin-muted); line-height: 1.5; }
+.admin-hub-sub { font-size: 12px; color: var(--admin-muted); line-height: 1.5; }
 /* Coming features: one quiet pill row (hover a pill for its description). */
 .team-soon-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .team-soon-pill {
@@ -893,7 +893,7 @@ a.team-hub-card:hover { border-color: var(--admin-accent); transform: translateY
    Distinct from .admin-card-title, which titles a single card. If a card already
    carries a title, it does not also need one of these directly above it. */
 .admin-section-label,
-.team-hub-heading {
+.admin-hub-heading {
   font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
   color: var(--admin-muted);
   margin: 26px 0 12px;
@@ -921,7 +921,7 @@ a.team-hub-card:hover { border-color: var(--admin-accent); transform: translateY
 .team-start-sub { font-size: 13px; color: var(--admin-muted); margin: 2px 0 0; }
 .ts-kicker { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--admin-accent); }
 .ts-kicker.light { color: var(--admin-sidebar-ink); }
-.team-start .team-hub-heading { margin: 20px 0 10px; }
+.team-start .admin-hub-heading { margin: 20px 0 10px; }
 
 /* Featured required reading */
 .ts-featured {
@@ -1075,7 +1075,7 @@ a.ts-btn.ghost:hover { color: var(--admin-sidebar-strong); }
   gap: 8px;
   min-width: 0;
 }
-.team-strat-card .team-hub-ico { margin-bottom: 2px; }
+.team-strat-card .admin-hub-ico { margin-bottom: 2px; }
 .team-strat-card-head { display: flex; align-items: center; justify-content: space-between; }
 .team-strat-card-label { font-weight: 600; font-size: 14px; color: var(--admin-ink); }
 .team-strat-card-body { font-size: 13px; color: var(--admin-ink-2); line-height: 1.6; }
@@ -1943,27 +1943,27 @@ a.team-collage-avatar:hover { box-shadow: 0 0 0 3px var(--admin-accent-soft), 0 
    Distinct from .idea-plan: an idea plan is a short AI-generated note, a plan
    document runs to hundreds of lines with tables and checklists, so it needs
    real heading hierarchy and separation to be readable rather than a wall. */
-.plan-doc { font-size: 14px; color: var(--admin-ink); line-height: 1.7; }
-.plan-doc > *:first-child { margin-top: 0; }
-.plan-doc h1 { font-size: 22px; font-weight: 650; margin: 0 0 6px; letter-spacing: -0.01em; }
-.plan-doc h2 { font-size: 18px; font-weight: 650; margin: 34px 0 10px; letter-spacing: -0.01em; }
-.plan-doc h3 { font-size: 15px; font-weight: 600; margin: 22px 0 8px; }
-.plan-doc h4 { font-size: 14px; font-weight: 600; margin: 16px 0 6px; color: var(--admin-muted); }
-.plan-doc p { margin: 0 0 12px; }
-.plan-doc ul, .plan-doc ol { margin: 0 0 14px 20px; padding: 0; }
-.plan-doc li { margin-bottom: 6px; }
-.plan-doc li > ul, .plan-doc li > ol { margin-top: 6px; }
-.plan-doc strong { font-weight: 650; }
-.plan-doc a { color: var(--admin-accent); text-decoration: underline; text-underline-offset: 2px; }
-.plan-doc blockquote { border-left: 3px solid var(--admin-line); margin: 0 0 14px; padding: 2px 14px; color: var(--admin-muted); }
-.plan-doc code { font-family: var(--admin-font-mono); font-size: 12px; background: var(--admin-tint); padding: 1px 5px; border-radius: 4px; }
+.admin-plan-doc { font-size: 14px; color: var(--admin-ink); line-height: 1.7; }
+.admin-plan-doc > *:first-child { margin-top: 0; }
+.admin-plan-doc h1 { font-size: 22px; font-weight: 650; margin: 0 0 6px; letter-spacing: -0.01em; }
+.admin-plan-doc h2 { font-size: 18px; font-weight: 650; margin: 34px 0 10px; letter-spacing: -0.01em; }
+.admin-plan-doc h3 { font-size: 15px; font-weight: 600; margin: 22px 0 8px; }
+.admin-plan-doc h4 { font-size: 14px; font-weight: 600; margin: 16px 0 6px; color: var(--admin-muted); }
+.admin-plan-doc p { margin: 0 0 12px; }
+.admin-plan-doc ul, .admin-plan-doc ol { margin: 0 0 14px 20px; padding: 0; }
+.admin-plan-doc li { margin-bottom: 6px; }
+.admin-plan-doc li > ul, .admin-plan-doc li > ol { margin-top: 6px; }
+.admin-plan-doc strong { font-weight: 650; }
+.admin-plan-doc a { color: var(--admin-accent); text-decoration: underline; text-underline-offset: 2px; }
+.admin-plan-doc blockquote { border-left: 3px solid var(--admin-line); margin: 0 0 14px; padding: 2px 14px; color: var(--admin-muted); }
+.admin-plan-doc code { font-family: var(--admin-font-mono); font-size: 12px; background: var(--admin-tint); padding: 1px 5px; border-radius: 4px; }
 
 /* `---` between sections is the document's own separator, so it carries the
    spacing; headings deliberately don't also draw a rule or they double up. */
-.plan-doc hr { border: 0; border-top: 1px solid var(--admin-line); margin: 32px 0; }
+.admin-plan-doc hr { border: 0; border-top: 1px solid var(--admin-line); margin: 32px 0; }
 
-.plan-doc table { width: 100%; border-collapse: collapse; margin: 0 0 16px; font-size: 13px; }
-.plan-doc thead th {
+.admin-plan-doc table { width: 100%; border-collapse: collapse; margin: 0 0 16px; font-size: 13px; }
+.admin-plan-doc thead th {
   text-align: left;
   font-weight: 600;
   font-size: 11px;
@@ -1973,16 +1973,16 @@ a.team-collage-avatar:hover { box-shadow: 0 0 0 3px var(--admin-accent-soft), 0 
   border-bottom: 1px solid var(--admin-line);
   padding: 0 12px 7px 0;
 }
-.plan-doc tbody td { border-bottom: 1px solid var(--admin-line); padding: 9px 12px 9px 0; vertical-align: top; }
-.plan-doc tbody tr:last-child td { border-bottom: 0; }
-.plan-doc th:last-child, .plan-doc td:last-child { padding-right: 0; }
+.admin-plan-doc tbody td { border-bottom: 1px solid var(--admin-line); padding: 9px 12px 9px 0; vertical-align: top; }
+.admin-plan-doc tbody tr:last-child td { border-bottom: 0; }
+.admin-plan-doc th:last-child, .admin-plan-doc td:last-child { padding-right: 0; }
 
 /* Task-list items carry their own checkbox, so drop the redundant bullet. */
-.plan-doc li:has(> input[type="checkbox"]) { list-style: none; margin-left: -20px; }
-.plan-doc input[type="checkbox"] { margin-right: 9px; vertical-align: baseline; accent-color: var(--admin-accent); }
+.admin-plan-doc li:has(> input[type="checkbox"]) { list-style: none; margin-left: -20px; }
+.admin-plan-doc input[type="checkbox"] { margin-right: 9px; vertical-align: baseline; accent-color: var(--admin-accent); }
 
 /* Wide tables scroll inside the card instead of pushing the page sideways. */
-.plan-doc { overflow-x: auto; }
+.admin-plan-doc { overflow-x: auto; }
 
 /* ─── Tabs ────────────────────────────────────────── */
 .admin-tabs {
@@ -2414,10 +2414,10 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
 .admin-section-card { padding: 18px 20px; }
 .admin-section-card + .admin-section-card { margin-top: 16px; }
 /* The stack-spacing rule above targets vertically stacked section cards. As
-   grid items (e.g. .mp-kpi-grid) they are adjacent siblings too, so the margin
+   grid items (e.g. .admin-kpi-grid) they are adjacent siblings too, so the margin
    leaks in and shifts every card after the first down and shorter. Grid gap
    handles spacing there, so zero it out. */
-.mp-kpi-grid .admin-section-card + .admin-section-card { margin-top: 0; }
+.admin-kpi-grid .admin-section-card + .admin-section-card { margin-top: 0; }
 .admin-list { display: flex; flex-direction: column; }
 .admin-list-row {
   display: flex;
@@ -2550,14 +2550,14 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
 .admin-auth .admin-btn--primary { width: 100%; justify-content: center; padding: 11px; }
 
 /* ─── Kanban ──────────────────────────────────────── */
-.sap-kanban {
+.admin-kanban {
   display: flex;
   gap: 14px;
   overflow-x: auto;
   padding-bottom: 12px;
   align-items: stretch;
 }
-.sap-col {
+.admin-kanban-col {
   /* Grow to share the row instead of leaving a dead gutter on wide screens. */
   flex: 1 1 268px;
   min-width: 252px;
@@ -2571,17 +2571,17 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
   flex-direction: column;
   max-height: calc(100vh - 210px);
 }
-.sap-col.is-over { background: var(--admin-accent-soft); border-color: var(--admin-accent); }
-.sap-col-head {
+.admin-kanban-col.is-over { background: var(--admin-accent-soft); border-color: var(--admin-accent); }
+.admin-kanban-col-head {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 12px 14px;
   border-bottom: 1px solid var(--admin-line-strong);
 }
-.sap-col-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--admin-muted); flex-shrink: 0; }
-.sap-col-label { font-weight: 600; font-size: 13px; }
-.sap-col-count {
+.admin-kanban-col-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--admin-muted); flex-shrink: 0; }
+.admin-kanban-col-label { font-weight: 600; font-size: 13px; }
+.admin-kanban-col-count {
   margin-left: auto;
   font-size: 12px;
   color: var(--admin-muted);
@@ -2589,7 +2589,7 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
   border-radius: 10px;
   padding: 1px 8px;
 }
-.sap-col-body {
+.admin-kanban-col-body {
   padding: 10px;
   overflow-y: auto;
   display: flex;
@@ -2598,7 +2598,7 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
   min-height: 120px;
   flex: 1;
 }
-.sap-col-foot {
+.admin-kanban-col-foot {
   display: flex;
   flex-direction: column;
   gap: 1px;
@@ -2608,11 +2608,11 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
   font-weight: 700;
   color: var(--admin-ink);
 }
-.sap-col-foot .sap-card-sub {
+.admin-kanban-col-foot .admin-kanban-card-sub {
   font-weight: 500;
   color: var(--admin-muted);
 }
-.sap-card {
+.admin-kanban-card {
   background: var(--admin-surface);
   border: 1px solid var(--admin-line);
   border-radius: 10px;
@@ -2621,24 +2621,24 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
   box-shadow: var(--admin-shadow);
   transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
 }
-.sap-card:hover {
+.admin-kanban-card:hover {
   border-color: var(--admin-accent);
   box-shadow: var(--admin-shadow-md);
   transform: translateY(-1px);
 }
-.sap-card.is-dragging { box-shadow: var(--admin-shadow-lg); border-color: var(--admin-accent); }
+.admin-kanban-card.is-dragging { box-shadow: var(--admin-shadow-lg); border-color: var(--admin-accent); }
 /* A card freshly assigned to the viewer: accent edge without a layout shift. */
-.sap-card.is-new { box-shadow: inset 3px 0 0 var(--admin-accent), var(--admin-shadow); }
-.sap-card.is-new:hover { box-shadow: inset 3px 0 0 var(--admin-accent), var(--admin-shadow-md); }
+.admin-kanban-card.is-new { box-shadow: inset 3px 0 0 var(--admin-accent), var(--admin-shadow); }
+.admin-kanban-card.is-new:hover { box-shadow: inset 3px 0 0 var(--admin-accent), var(--admin-shadow-md); }
 /* A toolbar select that is narrowing the board. */
 .admin-select.is-filtering {
   border-color: var(--admin-accent);
   background-color: var(--admin-accent-soft);
 }
-.sap-card-title { font-weight: 600; font-size: 13px; color: var(--admin-ink); }
-.sap-card-sub { font-size: 12px; color: var(--admin-muted); margin-top: 3px; }
-.sap-card-meta { display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-.sap-card-assignee {
+.admin-kanban-card-title { font-weight: 600; font-size: 13px; color: var(--admin-ink); }
+.admin-kanban-card-sub { font-size: 12px; color: var(--admin-muted); margin-top: 3px; }
+.admin-kanban-card-meta { display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.admin-kanban-card-assignee {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -2646,7 +2646,7 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
   color: var(--admin-ink-2);
   min-width: 0;
 }
-.sap-avatar {
+.admin-kanban-avatar {
   width: 20px;
   height: 20px;
   border-radius: var(--admin-radius-pill);
@@ -2660,7 +2660,7 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
   flex-shrink: 0;
 }
 /* Hint shown in a column with no cards so it doesn't read as broken. */
-.sap-col-empty {
+.admin-kanban-col-empty {
   border: 1px dashed var(--admin-line-strong);
   border-radius: 10px;
   padding: 18px 12px;
@@ -2669,7 +2669,7 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
   color: var(--admin-muted);
 }
 /* Ghost add-card control at the foot of a board column. */
-.sap-add-card {
+.admin-kanban-add {
   margin: 0 10px 10px;
   padding: 7px 10px;
   border: none;
@@ -2682,10 +2682,10 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
   cursor: pointer;
   transition: background var(--transition), color var(--transition);
 }
-.sap-add-card:hover { background: var(--admin-accent-soft); color: var(--admin-accent); }
+.admin-kanban-add:hover { background: var(--admin-accent-soft); color: var(--admin-accent); }
 /* Read-only card (client portal): no click affordance, no hover lift. */
-.sap-card--static { cursor: default; }
-.sap-card--static:hover {
+.admin-kanban-card--static { cursor: default; }
+.admin-kanban-card--static:hover {
   border-color: var(--admin-line);
   box-shadow: var(--admin-shadow);
   transform: none;
@@ -2700,19 +2700,19 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
   color: var(--admin-muted);
 }
 /* Thin done-vs-open progress track on a board card. */
-.board-progress {
+.admin-progress {
   height: 4px;
   border-radius: 2px;
   background: var(--admin-line-soft);
   overflow: hidden;
 }
-.board-progress-fill {
+.admin-progress-fill {
   height: 100%;
   border-radius: 2px;
   background: var(--admin-accent);
 }
 /* Role tag on cross-req boards, color + tint arrive inline per req. */
-.sap-role-tag {
+.admin-kanban-role-tag {
   font-size: 11px;
   font-weight: 600;
   padding: 2px 8px;
@@ -2724,8 +2724,8 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
 }
 /* Handoff accept/reject controls sit on a draggable card face, keep tap
    targets at the 44px WCAG 2.5.5 minimum so touch users can hit them. */
-.sap-card-handoff .admin-btn,
-.sap-card-handoff .admin-input { min-height: 44px; }
+.admin-kanban-card-handoff .admin-btn,
+.admin-kanban-card-handoff .admin-input { min-height: 44px; }
 
 /* ─── Lead queue (SDR workstation) ────────────────── */
 .lead-queue { display: flex; flex-direction: column; gap: 10px; }
@@ -2908,7 +2908,7 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
    a ~44px target. Reveal the hover-only controls, and grow the touch area of the
    daily-driver controls, mostly without changing their visual size (an invisible
    ::after overlay expands the hit area for the small icon buttons). This mirrors
-   the one place the codebase already did this: .sap-card-handoff .admin-btn. */
+   the one place the codebase already did this: .admin-kanban-card-handoff .admin-btn. */
 @media (pointer: coarse) {
   /* Hover-revealed controls are unreachable on touch: always show them. */
   .admin-editable-pencil,
@@ -3530,7 +3530,7 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
 
 /* ─── Coach profile header (identity + vitals + quick actions) ─────────
    Replaces the plain PageHead on /team/coaching/[profileId]. The vitals reuse
-   the .team-glance strip (a glance, not a KPI board); the action cluster is the
+   the .admin-glance strip (a glance, not a KPI board); the action cluster is the
    one client island. */
 .coach-hero { display: grid; gap: 14px; margin-bottom: 24px; }
 .coach-hero__back { justify-self: start; margin-bottom: 0; text-decoration: none; transition: color var(--transition); }
@@ -3553,7 +3553,7 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
 .coach-hero__role { font-size: 13px; color: var(--admin-muted); margin-top: 4px; }
 .coach-hero__stats { margin-bottom: 0; }
 /* Six vitals, so the cells run a touch denser than the default glance strip, all six sit on one row on desktop and wrap evenly (not 5 + 1 orphan) below. */
-.coach-hero__stats .team-glance-cell { flex-basis: 150px; padding: 14px 16px; }
+.coach-hero__stats .admin-glance-cell { flex-basis: 150px; padding: 14px 16px; }
 /* The next-1-1 vital carries a hairline accent rail so the eye lands there first. */
 .coach-hero__cell--attn { box-shadow: inset 3px 0 0 var(--admin-accent); }
 .coach-hero__note { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -4737,7 +4737,7 @@ a.ideas-share-card:hover {
 
 /* ─── Client Hub home: Human Tokens band + PR Program cards ─── */
 /* Section header row above a band on the hub home. */
-.hub-band-head {
+.admin-hub-band-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -4745,33 +4745,33 @@ a.ideas-share-card:hover {
   flex-wrap: wrap;
   margin-bottom: 10px;
 }
-.hub-band-head .admin-card-title { margin-bottom: 0; }
+.admin-hub-band-head .admin-card-title { margin-bottom: 0; }
 /* Program card grid: same auto-fill sizing as the boards index cards view. */
-.hub-programs-grid {
+.admin-hub-programs-grid {
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   margin-bottom: 20px;
 }
 /* One PR Program card (a link to the program view). Hover affordance mirrors
-   a.mp-kpi so the card reads as clickable. */
-.hub-program-card {
+   a.admin-kpi so the card reads as clickable. */
+.admin-hub-program-card {
   display: flex;
   flex-direction: column;
   gap: 0;
   text-decoration: none;
   transition: border-color var(--transition), transform var(--transition);
 }
-a.hub-program-card:hover {
+a.admin-hub-program-card:hover {
   border-color: var(--admin-accent);
   transform: translateY(-1px);
 }
-.hub-program-head {
+.admin-hub-program-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
 }
 /* Roadmap done/total labels above the progress track. */
-.hub-program-progressrow {
+.admin-hub-program-progressrow {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
@@ -4824,8 +4824,8 @@ a.hub-program-card:hover {
    text and label/value pairs, so the block-level .admin-editable default
    (Team roster shelf) is overridden here: they render as the value itself,
    with the hover affordance only. */
-.hub-inline .admin-editable-row { display: inline-flex; align-items: center; gap: 6px; width: auto; max-width: 100%; }
-.hub-inline .admin-editable {
+.admin-hub-inline .admin-editable-row { display: inline-flex; align-items: center; gap: 6px; width: auto; max-width: 100%; }
+.admin-hub-inline .admin-editable {
   display: inline-flex;
   align-items: center;
   width: auto;
@@ -4836,51 +4836,51 @@ a.hub-program-card:hover {
   color: inherit;
   white-space: nowrap;
 }
-.hub-inline .admin-editable-note { white-space: nowrap; }
-.hub-inline .admin-input, .hub-inline .admin-select { padding: 4px 8px; font-size: 13px; width: auto; min-width: 140px; }
-.hub-inline .admin-textarea { font-size: 13px; }
+.admin-hub-inline .admin-editable-note { white-space: nowrap; }
+.admin-hub-inline .admin-input, .admin-hub-inline .admin-select { padding: 4px 8px; font-size: 13px; width: auto; min-width: 140px; }
+.admin-hub-inline .admin-textarea { font-size: 13px; }
 
-.hub-band { margin-bottom: 16px; }
-.hub-band-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
-.hub-band-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.hub-band-title h2 { margin: 0; font-size: 15px; font-weight: 600; }
-.hub-band-lock { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--admin-muted); }
-.hub-band-actions { display: flex; gap: 8px; align-items: center; }
-.hub-fields { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
-.hub-fields--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-@media (max-width: 1100px) { .hub-fields, .hub-fields--5 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 640px) { .hub-fields, .hub-fields--5 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.hub-field { min-width: 0; }
-.hub-field-label { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
-.hub-field-value { font-weight: 600; font-size: 13px; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; }
-.hub-field-value .admin-editable-empty { font-weight: 400; }
-.hub-band > .admin-section-card { margin-bottom: 16px; }
-.hub-kpis { margin-bottom: 16px; }
-.hub-kpi-of { font-size: 15px; font-weight: 500; color: var(--admin-muted); }
-.hub-kpi-note--warn { color: var(--admin-warn-ink); }
-.hub-band-foot { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--admin-line-soft); }
+.admin-hub-band { margin-bottom: 16px; }
+.admin-hub-band-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.admin-hub-band-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.admin-hub-band-title h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.admin-hub-band-lock { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--admin-muted); }
+.admin-hub-band-actions { display: flex; gap: 8px; align-items: center; }
+.admin-hub-fields { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+.admin-hub-fields--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 1100px) { .admin-hub-fields, .admin-hub-fields--5 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .admin-hub-fields, .admin-hub-fields--5 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.admin-hub-field { min-width: 0; }
+.admin-hub-field-label { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+.admin-hub-field-value { font-weight: 600; font-size: 13px; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; }
+.admin-hub-field-value .admin-editable-empty { font-weight: 400; }
+.admin-hub-band > .admin-section-card { margin-bottom: 16px; }
+.admin-hub-kpis { margin-bottom: 16px; }
+.admin-kpi-of { font-size: 15px; font-weight: 500; color: var(--admin-muted); }
+.admin-kpi-note--warn { color: var(--admin-warn-ink); }
+.admin-hub-band-foot { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--admin-line-soft); }
 
-.plan-switch { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-.plan-switch-chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.plan-switch .admin-chip { font-size: 12px; padding: 4px 10px; }
-.plan-switch .admin-chip.is-active { border-color: var(--admin-accent); color: var(--admin-accent); font-weight: 600; }
-.plan-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
-.plan-head-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 15px; font-weight: 600; }
-.plan-head-title .plan-dates { font-weight: 500; color: var(--admin-ink-2); }
-.plan-head-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 6px; font-size: 12px; color: var(--admin-ink-2); }
-.plan-head-actions { display: flex; gap: 8px; align-items: center; }
-.plan-objectives { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
-@media (max-width: 800px) { .plan-objectives { grid-template-columns: 1fr; } }
-.plan-objective { border: 1px solid var(--admin-line-soft); border-radius: 8px; padding: 12px 14px; background: var(--admin-surface-2); }
-.plan-objective .hub-field-label { margin-bottom: 6px; }
-.plan-objective p { margin: 0; white-space: pre-wrap; line-height: 1.55; }
-.plan-objective .admin-editable-row, .plan-objective .admin-editable { display: block; width: 100%; margin: 0; padding: 0; white-space: pre-wrap; line-height: 1.55; text-align: left; }
-.plan-targets .admin-table th:first-child, .plan-targets .admin-table td:first-child { font-weight: 600; }
-.plan-progress { display: flex; align-items: center; gap: 10px; }
-.plan-progress .board-progress { flex: 1; }
-.plan-progress-n { font-variant-numeric: tabular-nums; color: var(--admin-ink-2); white-space: nowrap; min-width: 44px; }
-.plan-variance-reason { font-weight: 600; color: var(--admin-warn-ink); }
-.plan-add { display: grid; grid-template-columns: 180px 1fr 110px auto; gap: 10px; align-items: end; margin-top: 14px; }
+.admin-plan-switch { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.admin-plan-switch-chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.admin-plan-switch .admin-chip { font-size: 12px; padding: 4px 10px; }
+.admin-plan-switch .admin-chip.is-active { border-color: var(--admin-accent); color: var(--admin-accent); font-weight: 600; }
+.admin-plan-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.admin-plan-head-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 15px; font-weight: 600; }
+.admin-plan-head-title .admin-plan-dates { font-weight: 500; color: var(--admin-ink-2); }
+.admin-plan-head-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 6px; font-size: 12px; color: var(--admin-ink-2); }
+.admin-plan-head-actions { display: flex; gap: 8px; align-items: center; }
+.admin-plan-objectives { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+@media (max-width: 800px) { .admin-plan-objectives { grid-template-columns: 1fr; } }
+.admin-plan-objective { border: 1px solid var(--admin-line-soft); border-radius: 8px; padding: 12px 14px; background: var(--admin-surface-2); }
+.admin-plan-objective .admin-hub-field-label { margin-bottom: 6px; }
+.admin-plan-objective p { margin: 0; white-space: pre-wrap; line-height: 1.55; }
+.admin-plan-objective .admin-editable-row, .admin-plan-objective .admin-editable { display: block; width: 100%; margin: 0; padding: 0; white-space: pre-wrap; line-height: 1.55; text-align: left; }
+.admin-plan-targets .admin-table th:first-child, .admin-plan-targets .admin-table td:first-child { font-weight: 600; }
+.admin-plan-progress { display: flex; align-items: center; gap: 10px; }
+.admin-plan-progress .admin-progress { flex: 1; }
+.admin-plan-progress-n { font-variant-numeric: tabular-nums; color: var(--admin-ink-2); white-space: nowrap; min-width: 44px; }
+.admin-plan-variance-reason { font-weight: 600; color: var(--admin-warn-ink); }
+.admin-plan-add { display: grid; grid-template-columns: 180px 1fr 110px auto; gap: 10px; align-items: end; margin-top: 14px; }
 
 /* ─── Layout utilities ────────────────────────────────────────────────────
    The sanctioned replacement for inline `style={{ display:"flex", gap… }}`.
@@ -4924,3 +4924,50 @@ a.hub-program-card:hover {
 .u-center-text { text-align: center; }
 .u-tabular { font-variant-numeric: tabular-nums; }
 .u-label { font-size: var(--admin-text-sm); color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+
+/* ─── Panel composition ───────────────────────────────────────────────────
+   Small structural classes that recur across every record panel (hub tabs,
+   revenue, talent). They replace the inline flex/grid/margin styles that used
+   to carry this layout. */
+.admin-panel { display: flex; flex-direction: column; gap: var(--admin-space-4); }
+.admin-card-head { display: flex; justify-content: space-between; align-items: center; gap: var(--admin-space-3); margin-bottom: var(--admin-space-3); flex-wrap: wrap; }
+.admin-card-head .admin-card-title { margin: 0; }
+.admin-form-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.admin-form-row > .admin-field { flex: 1 1 150px; min-width: 0; }
+.admin-form-row > .admin-field--wide { flex: 2 1 260px; }
+.admin-form-row > .admin-btn { flex: 0 0 auto; }
+.admin-table-wrap--flat { box-shadow: none; }
+.admin-th--xs { width: 40px; }
+.admin-th--sm { width: 110px; }
+.admin-th--md { width: 160px; }
+.admin-th--lg { width: 200px; }
+.admin-cell-stack { display: flex; flex-direction: column; gap: 2px; }
+.admin-chip.is-active { border-color: var(--admin-accent); color: var(--admin-accent); font-weight: 600; }
+a.admin-list-row { text-decoration: none; color: inherit; }
+.admin-progress-fill.is-done { background: var(--admin-ok-ink); }
+.admin-input--w-xs { width: 70px; }
+.admin-input--w-sm { max-width: 220px; }
+.admin-kpi-of { font-size: var(--admin-text-lg); font-weight: 500; color: var(--admin-muted); }
+.admin-kpi-note--warn { color: var(--admin-warn-ink); }
+.admin-cols-main-aside { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: var(--admin-space-4); align-items: start; }
+@media (max-width: 960px) { .admin-cols-main-aside { grid-template-columns: 1fr; } }
+.u-m-0 { margin: 0; }
+.u-ink { color: var(--admin-ink); }
+.u-ok { color: var(--admin-ok-ink); font-weight: 600; }
+.u-warn { color: var(--admin-warn-ink); font-weight: 600; }
+.u-prewrap { white-space: pre-wrap; }
+.u-list { margin: 0; padding-left: 16px; }
+.admin-icon-inline { vertical-align: -1px; }
+.admin-list-aside--row { flex-direction: row; align-items: center; gap: var(--admin-space-2); }
+.admin-kanban-card-note { font-style: italic; margin-top: 2px; }
+.admin-row-divided { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--admin-line); }
+.admin-form-row > .u-w-full { flex-basis: 100%; }
+.u-link-plain { color: inherit; text-decoration: none; }
+.u-ml-2 { margin-left: var(--admin-space-2); }
+.u-err { color: var(--admin-err-ink); }
+.admin-form-row > .admin-input, .admin-form-row > .admin-select { flex: 1 1 150px; min-width: 0; }
+.admin-form-row > .admin-input.u-grow { flex: 2 1 240px; }
+
+/* BoardView */
+/* Sprint summary link on the Sprints tab: a block-level .admin-card with the compact card padding. */
+.admin-board-sprint { display: block; padding: var(--admin-space-3) var(--admin-space-4); }

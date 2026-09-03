@@ -24,7 +24,7 @@ const NONDONE_ACCENTS = [STAGE_NEUTRAL, STAGE_LEAD, STAGE_PROPOSAL, STAGE_DISCOV
 
 function Lock() {
   return (
-    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden style={{ verticalAlign: "-1px" }}>
+    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden className="admin-icon-inline">
       <rect x="3" y="7" width="10" height="7" rx="1.5" />
       <path d="M5 7V5a3 3 0 0 1 6 0v2" />
     </svg>
@@ -44,28 +44,28 @@ export function ClientBoardView({
   const accents = board.columns.map((c) => (c.isDone ? STAGE_WON : NONDONE_ACCENTS[nd++ % NONDONE_ACCENTS.length]));
 
   return (
-    <div className="sap-kanban">
+    <div className="admin-kanban">
       {board.columns.map((col, i) => {
         const colCards = board.cards.filter((c) => c.columnId === col.id);
         return (
-          <div className="sap-col" key={col.id}>
-            <div className="sap-col-head">
-              <span className="sap-col-dot" style={{ background: accents[i] }} />
-              <span className="sap-col-label">{col.name}</span>
-              <span className="sap-col-count">{colCards.length}</span>
+          <div className="admin-kanban-col" key={col.id}>
+            <div className="admin-kanban-col-head">
+              <span className="admin-kanban-col-dot" style={{ background: accents[i] }} />
+              <span className="admin-kanban-col-label">{col.name}</span>
+              <span className="admin-kanban-col-count">{colCards.length}</span>
             </div>
-            <div className="sap-col-body">
+            <div className="admin-kanban-col-body">
               {colCards.map((c) => {
                 const isNew = !c.done && Date.now() - new Date(c.createdAt).getTime() < NEW_ASSIGNMENT_DAYS * 86400000;
                 const who = c.assigneeName ?? fallbackAssignee;
                 const mine = !!viewerPersonId && c.assigneeId === viewerPersonId;
                 return (
                   <div
-                    className="sap-card sap-card--static"
+                    className="admin-kanban-card admin-kanban-card--static"
                     key={c.id}
                     style={c.internal ? { boxShadow: "inset 3px 0 0 var(--admin-err-ink)" } : undefined}
                   >
-                    <div className="sap-card-meta">
+                    <div className="admin-kanban-card-meta">
                       {c.internal && (
                         <Badge tone="neutral">
                           <Lock /> Internal
@@ -75,18 +75,18 @@ export function ClientBoardView({
                       {isNew && <Badge tone="info">New</Badge>}
                       {mine && <Badge tone="ok">Mine</Badge>}
                     </div>
-                    <div className="sap-card-title">{c.title}</div>
+                    <div className="admin-kanban-card-title">{c.title}</div>
                     {c.statusNote && (
-                      <div className="sap-card-sub" style={{ fontStyle: "italic", marginTop: 2 }}>{c.statusNote}</div>
+                      <div className="admin-kanban-card-sub admin-kanban-card-note">{c.statusNote}</div>
                     )}
-                    <div className="sap-card-meta">
-                      <span className="sap-card-assignee">
-                        <span className="sap-avatar">{initials(who)}</span>
+                    <div className="admin-kanban-card-meta">
+                      <span className="admin-kanban-card-assignee">
+                        <span className="admin-kanban-avatar">{initials(who)}</span>
                         {who}
                       </span>
                       <Badge tone={PRIORITY_TONE[c.priority]}>{PRIORITY_LABEL[c.priority]}</Badge>
                       {c.dueDate && (
-                        <span className="sap-card-sub" style={{ marginLeft: "auto" }}>
+                        <span className="admin-kanban-card-sub u-ml-auto">
                           {formatDate(c.dueDate)}
                         </span>
                       )}
@@ -94,7 +94,7 @@ export function ClientBoardView({
                   </div>
                 );
               })}
-              {colCards.length === 0 && <div className="sap-col-empty">No cards</div>}
+              {colCards.length === 0 && <div className="admin-kanban-col-empty">No cards</div>}
             </div>
           </div>
         );

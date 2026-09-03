@@ -43,11 +43,11 @@ function Progress({ t }: { t: PlanTarget }) {
   const done = t.progress.outcome_count;
   const pct = target > 0 ? Math.min(100, Math.round((done / target) * 100)) : targetDone(t) ? 100 : 0;
   return (
-    <div className="plan-progress">
-      <div className="board-progress">
-        <div className="board-progress-fill" style={{ width: `${pct}%`, background: targetDone(t) ? "var(--admin-ok-ink)" : undefined }} />
+    <div className="admin-plan-progress">
+      <div className="admin-progress">
+        <div className={`admin-progress-fill${targetDone(t) ? " is-done" : ""}`} style={{ width: `${pct}%` }} /* layout-ok: data-driven width */ />
       </div>
-      <span className="plan-progress-n">
+      <span className="admin-plan-progress-n">
         {target > 0 ? `${done} / ${target}` : done > 0 ? `${done}` : "—"}
       </span>
     </div>
@@ -123,12 +123,12 @@ export function QuarterlyPlanPanel({
   const onTrack = targets.filter(targetOnTrack).length;
 
   return (
-    <div className="hub-inline" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div className="admin-hub-inline admin-panel">
       {error && <div className="admin-editable-note admin-editable-note--err">{error}</div>}
 
       {/* Plan switcher + new-quarter form */}
-      <div className="plan-switch">
-        <div className="plan-switch-chips">
+      <div className="admin-plan-switch">
+        <div className="admin-plan-switch-chips">
           {plans.map((p) => (
             <Link key={p.id} href={`${planHrefBase}${p.id}`} className={`admin-chip${selected?.id === p.id ? " is-active" : ""}`}>
               {p.quarter_label}
@@ -146,8 +146,8 @@ export function QuarterlyPlanPanel({
 
       {actions && showNew && (
         <section className="admin-card admin-section-card">
-          <h3 className="admin-card-title" style={{ marginBottom: 10 }}>Start a quarter</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 2fr auto", gap: 10, alignItems: "end" }}>
+          <h3 className="admin-card-title u-mb-3">Start a quarter</h3>
+          <div className="admin-form-row">
             <label className="admin-field"><span className="admin-cell-muted">Quarter</span><input className="admin-input" value={newPlan.quarter_label} onChange={(e) => setNewPlan({ ...newPlan, quarter_label: e.target.value })} /></label>
             <label className="admin-field"><span className="admin-cell-muted">Starts</span><input className="admin-input" type="date" value={newPlan.starts_on} onChange={(e) => setNewPlan({ ...newPlan, starts_on: e.target.value })} /></label>
             <label className="admin-field"><span className="admin-cell-muted">Ends</span><input className="admin-input" type="date" value={newPlan.ends_on} onChange={(e) => setNewPlan({ ...newPlan, ends_on: e.target.value })} /></label>
@@ -179,11 +179,11 @@ export function QuarterlyPlanPanel({
         <>
           {/* Header */}
           <section className="admin-card admin-section-card">
-            <div className="plan-head">
+            <div className="admin-plan-head">
               <div>
-                <div className="plan-head-title">
+                <div className="admin-plan-head-title">
                   <span>{actions ? <EditableText value={selected.quarter_label} onSave={savePlan("quarter_label")} ariaLabel="Quarter label" /> : selected.quarter_label}</span>
-                  <span className="plan-dates">
+                  <span className="admin-plan-dates">
                     ·{" "}
                     {actions ? (
                       <>
@@ -194,9 +194,9 @@ export function QuarterlyPlanPanel({
                     )}
                   </span>
                   {selected.published_at ? <Badge tone="ok">Published {formatDate(selected.published_at)}</Badge> : <Badge tone="neutral">Draft</Badge>}
-                  <span className="admin-cell-muted" style={{ fontWeight: 400 }}>{onTrack} of {targets.length} targets on track</span>
+                  <span className="admin-cell-muted">{onTrack} of {targets.length} targets on track</span>
                 </div>
-                <div className="plan-head-meta">
+                <div className="admin-plan-head-meta">
                   <span>Keyed off</span>
                   {actions ? (
                     <EditableSelect
@@ -217,7 +217,7 @@ export function QuarterlyPlanPanel({
                 </div>
               </div>
               {actions && (
-                <div className="plan-head-actions">
+                <div className="admin-plan-head-actions">
                   <button type="button" className={`admin-btn admin-btn--sm${selected.published_at ? "" : " admin-btn--primary"}`} disabled={pending} onClick={() => run(() => actions.publishPlan(selected.id, !selected.published_at))}>
                     {selected.published_at ? "Unpublish" : "Publish to client"}
                   </button>
@@ -225,21 +225,21 @@ export function QuarterlyPlanPanel({
               )}
             </div>
 
-            <div className="plan-objectives">
-              <div className="plan-objective">
-                <div className="hub-field-label">Business objective</div>
+            <div className="admin-plan-objectives">
+              <div className="admin-plan-objective">
+                <div className="admin-hub-field-label">Business objective</div>
                 {actions ? (
                   <EditableTextarea value={selected.business_objective ?? ""} onSave={savePlan("business_objective")} placeholder="What does the business need this quarter?" ariaLabel="Business objective" rows={3} />
                 ) : (
-                  <div style={{ whiteSpace: "pre-wrap" }}>{selected.business_objective ?? <span className="admin-cell-muted">—</span>}</div>
+                  <div className="u-prewrap">{selected.business_objective ?? <span className="admin-cell-muted">—</span>}</div>
                 )}
               </div>
-              <div className="plan-objective">
-                <div className="hub-field-label">Comms objective</div>
+              <div className="admin-plan-objective">
+                <div className="admin-hub-field-label">Comms objective</div>
                 {actions ? (
                   <EditableTextarea value={selected.comms_objective ?? ""} onSave={savePlan("comms_objective")} placeholder="What will comms deliver to serve it?" ariaLabel="Comms objective" rows={3} />
                 ) : (
-                  <div style={{ whiteSpace: "pre-wrap" }}>{selected.comms_objective ?? <span className="admin-cell-muted">—</span>}</div>
+                  <div className="u-prewrap">{selected.comms_objective ?? <span className="admin-cell-muted">—</span>}</div>
                 )}
               </div>
             </div>
@@ -247,22 +247,22 @@ export function QuarterlyPlanPanel({
 
           {/* Targets */}
           <section className="admin-card admin-section-card">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-              <h3 className="admin-card-title" style={{ margin: 0 }}>Targets</h3>
+            <div className="admin-card-head">
+              <h3 className="admin-card-title">Targets</h3>
             </div>
             {targets.length === 0 ? (
               <div className="admin-empty">No targets yet{actions ? " — add the first one below." : "."}</div>
             ) : (
-              <div className="admin-table-wrap plan-targets" style={{ boxShadow: "none" }}>
+              <div className="admin-table-wrap admin-plan-targets admin-table-wrap--flat">
                 <table className="admin-table">
                   <thead>
                     <tr>
-                      <th style={{ width: 170 }}>Workstream</th>
+                      <th className="admin-th--md">Workstream</th>
                       <th>Target</th>
-                      <th style={{ width: 200 }}>Progress</th>
-                      <th style={{ width: 110 }}>Status</th>
+                      <th className="admin-th--lg">Progress</th>
+                      <th className="admin-th--sm">Status</th>
                       <th>{actions ? "Variance" : "Where it stands"}</th>
-                      {actions && <th style={{ width: 40 }}></th>}
+                      {actions && <th className="admin-th--xs"></th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -271,7 +271,7 @@ export function QuarterlyPlanPanel({
                         const s = statusLabel(t);
                         return (
                           <tr key={t.id}>
-                            <td style={{ fontWeight: 600 }}>
+                            <td className="u-strong">
                               {actions ? (
                                 <EditableSelect value={t.group_key} options={orderedGroups.map((x) => ({ value: x.key, label: x.title }))} onSave={saveTarget(t.id, "group_key")} ariaLabel="Workstream" render={groupTitle} />
                               ) : (
@@ -281,7 +281,7 @@ export function QuarterlyPlanPanel({
                             <td>
                               {actions ? <EditableText value={t.title} onSave={saveTarget(t.id, "title")} ariaLabel="Target" /> : t.title}
                               {actions && (
-                                <div className="admin-cell-muted" style={{ fontSize: 12, marginTop: 2 }}>
+                                <div className="admin-cell-muted u-sm u-mt-1">
                                   Count to <EditableText value={t.quantity_target != null ? String(t.quantity_target) : ""} onSave={saveTarget(t.id, "quantity_target")} placeholder="set a number" ariaLabel="Quantity target" type="number" />
                                 </div>
                               )}
@@ -296,20 +296,20 @@ export function QuarterlyPlanPanel({
                             </td>
                             <td>
                               {actions ? (
-                                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                                <div className="admin-cell-stack">
                                   <EditableSelect
                                     value={t.variance_reason ?? ""}
                                     options={VARIANCE_REASONS.map((r) => ({ value: r, label: VARIANCE_REASON_LABEL[r] }))}
                                     onSave={saveTarget(t.id, "variance_reason")}
                                     placeholder="on plan"
                                     ariaLabel="Variance reason"
-                                    render={(v) => <span className="plan-variance-reason">{VARIANCE_REASON_LABEL[v as VarianceReason] ?? v}</span>}
+                                    render={(v) => <span className="admin-plan-variance-reason">{VARIANCE_REASON_LABEL[v as VarianceReason] ?? v}</span>}
                                   />
                                   <EditableTextarea value={t.variance_note ?? ""} onSave={saveTarget(t.id, "variance_note")} placeholder="what the client should know…" ariaLabel="Variance note" rows={2} />
                                 </div>
                               ) : t.variance_reason || t.variance_note ? (
                                 <span>
-                                  {t.variance_reason && <span className="plan-variance-reason">{VARIANCE_REASON_LABEL[t.variance_reason as VarianceReason] ?? humanize(t.variance_reason)} · </span>}
+                                  {t.variance_reason && <span className="admin-plan-variance-reason">{VARIANCE_REASON_LABEL[t.variance_reason as VarianceReason] ?? humanize(t.variance_reason)} · </span>}
                                   {t.variance_note}
                                 </span>
                               ) : (
@@ -331,7 +331,7 @@ export function QuarterlyPlanPanel({
             )}
 
             {actions && (
-              <div className="plan-add">
+              <div className="admin-plan-add">
                 <label className="admin-field">
                   <span className="admin-cell-muted">Workstream</span>
                   <select className="admin-select" value={newTarget.group_key} onChange={(e) => setNewTarget({ ...newTarget, group_key: e.target.value })}>
@@ -356,9 +356,9 @@ export function QuarterlyPlanPanel({
               </div>
             )}
             {actions && (
-              <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 12 }} className="admin-cell-muted">
-                <span style={{ fontSize: 12 }}>Need another workstream?</span>
-                <input className="admin-input" style={{ maxWidth: 220 }} placeholder="e.g. Podcasts" value={newWorkstream} onChange={(e) => setNewWorkstream(e.target.value)} />
+              <div className="admin-cell-muted u-row u-mt-3">
+                <span className="u-sm">Need another workstream?</span>
+                <input className="admin-input admin-input--w-sm" placeholder="e.g. Podcasts" value={newWorkstream} onChange={(e) => setNewWorkstream(e.target.value)} />
                 <button type="button" className="admin-btn admin-btn--sm" disabled={pending || !newWorkstream.trim()} onClick={() => run(() => actions.createWorkstream(programId, newWorkstream), () => setNewWorkstream(""))}>Add</button>
               </div>
             )}

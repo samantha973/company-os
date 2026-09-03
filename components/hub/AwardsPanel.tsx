@@ -63,21 +63,21 @@ export function AwardsPanel({
   const stageOptions = AWARD_STAGES.map((s) => ({ value: s, label: AWARD_STAGE_LABEL[s] }));
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+    <div className="admin-panel">
       {error && <div className="admin-editable-note admin-editable-note--err">{error}</div>}
-      <div className="admin-table-wrap" style={{ boxShadow: "none" }}>
+      <div className="admin-table-wrap admin-table-wrap--flat">
         <table className="admin-table">
           <thead>
             <tr>
               <th>Award</th>
-              <th style={{ width: 130 }}>Stage</th>
-              <th style={{ width: 110 }}>Entry closes</th>
-              <th style={{ width: 110 }}>Event</th>
-              {actions && <th style={{ width: 160 }}>Entry doc</th>}
-              {actions && showCost && <th style={{ width: 100 }}>Cost</th>}
+              <th className="admin-th--sm">Stage</th>
+              <th className="admin-th--sm">Entry closes</th>
+              <th className="admin-th--sm">Event</th>
+              {actions && <th className="admin-th--md">Entry doc</th>}
+              {actions && showCost && <th className="admin-th--sm">Cost</th>}
               <th>Outcome</th>
-              {actions && <th style={{ width: 150 }}>Client hub</th>}
-              {actions && <th style={{ width: 40 }}></th>}
+              {actions && <th className="admin-th--md">Client hub</th>}
+              {actions && <th className="admin-th--xs"></th>}
             </tr>
           </thead>
           <tbody>
@@ -87,8 +87,8 @@ export function AwardsPanel({
             {rows.map((a) => (
               <tr key={a.id}>
                 <td>
-                  <div style={{ fontWeight: 600 }}>{actions ? <EditableText value={a.awardName} onSave={save(a.id, "awardName")} ariaLabel="Award name" /> : a.awardName}</div>
-                  <div className="admin-cell-muted" style={{ fontSize: 12 }}>
+                  <div className="u-strong">{actions ? <EditableText value={a.awardName} onSave={save(a.id, "awardName")} ariaLabel="Award name" /> : a.awardName}</div>
+                  <div className="admin-cell-muted u-sm">
                     {actions ? <EditableText value={a.category ?? ""} onSave={save(a.id, "category")} placeholder="category…" ariaLabel="Category" /> : a.category}
                     {actions ? <> · <EditableLink value={a.website ?? ""} onSave={save(a.id, "website")} placeholder="website…" ariaLabel="Website" /></> : a.website ? <> · <a href={a.website} target="_blank" rel="noopener noreferrer">site ↗</a></> : null}
                   </div>
@@ -100,8 +100,8 @@ export function AwardsPanel({
                     <Badge tone={STAGE_TONE[a.stage as AwardStage] ?? "neutral"}>{AWARD_STAGE_LABEL[a.stage as AwardStage] ?? a.stage}</Badge>
                   )}
                 </td>
-                <td style={{ whiteSpace: "nowrap" }}>{actions ? <EditableDate value={a.entryClose ?? ""} onSave={save(a.id, "entryClose")} ariaLabel="Entry close" /> : formatDate(a.entryClose)}</td>
-                <td style={{ whiteSpace: "nowrap" }}>{actions ? <EditableDate value={a.eventDate ?? ""} onSave={save(a.id, "eventDate")} ariaLabel="Event date" /> : formatDate(a.eventDate)}</td>
+                <td className="u-nowrap">{actions ? <EditableDate value={a.entryClose ?? ""} onSave={save(a.id, "entryClose")} ariaLabel="Entry close" /> : formatDate(a.entryClose)}</td>
+                <td className="u-nowrap">{actions ? <EditableDate value={a.eventDate ?? ""} onSave={save(a.id, "eventDate")} ariaLabel="Event date" /> : formatDate(a.eventDate)}</td>
                 {actions && (
                   <td>
                     <EditableSelect value={a.submissionDocumentId ?? ""} options={documents.map((d) => ({ value: d.id, label: d.filename }))} onSave={save(a.id, "submissionDocumentId")} placeholder="—" ariaLabel="Submission document" render={(v) => documents.find((d) => d.id === v)?.filename ?? "—"} />
@@ -113,7 +113,7 @@ export function AwardsPanel({
                 <td>{actions ? <EditableTextarea value={a.outcomeNote ?? ""} onSave={save(a.id, "outcomeNote")} placeholder="outcome…" ariaLabel="Outcome" rows={2} /> : a.outcomeNote ?? <span className="admin-cell-muted">—</span>}</td>
                 {actions && (
                   <td>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <span className="u-row">
                       <Badge tone={a.publishedAt ? "ok" : "neutral"}>{a.publishedAt ? "Published" : "Draft"}</Badge>
                       <button type="button" className="admin-btn admin-btn--sm" disabled={pending} onClick={() => run(() => actions.publishAward(a.id, !a.publishedAt))}>{a.publishedAt ? "Unpublish" : "Publish"}</button>
                     </span>
@@ -128,8 +128,8 @@ export function AwardsPanel({
 
       {actions && (
         <section className="admin-card admin-section-card">
-          <h3 className="admin-card-title" style={{ marginBottom: 10 }}>Propose an award</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr auto", gap: 10, alignItems: "end" }}>
+          <h3 className="admin-card-title u-mb-3">Propose an award</h3>
+          <div className="admin-form-row">
             <label className="admin-field"><span className="admin-cell-muted">Award</span><input className="admin-input" value={draft.awardName} onChange={(e) => setDraft({ ...draft, awardName: e.target.value })} /></label>
             <label className="admin-field"><span className="admin-cell-muted">Category</span><input className="admin-input" value={draft.category} onChange={(e) => setDraft({ ...draft, category: e.target.value })} /></label>
             <label className="admin-field"><span className="admin-cell-muted">Website</span><input className="admin-input" placeholder="https://…" value={draft.website} onChange={(e) => setDraft({ ...draft, website: e.target.value })} /></label>

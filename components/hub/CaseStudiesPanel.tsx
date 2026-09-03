@@ -49,18 +49,18 @@ export function CaseStudiesPanel({
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+    <div className="admin-panel">
       {error && <div className="admin-editable-note admin-editable-note--err">{error}</div>}
-      <div className="admin-table-wrap" style={{ boxShadow: "none" }}>
+      <div className="admin-table-wrap admin-table-wrap--flat">
         <table className="admin-table">
           <thead>
             <tr>
               <th>Story</th>
-              {actions && <th style={{ width: 180 }}>Customer contact</th>}
-              <th style={{ width: 120 }}>Status</th>
+              {actions && <th className="admin-th--md">Customer contact</th>}
+              <th className="admin-th--sm">Status</th>
               <th>Used in</th>
-              {actions && <th style={{ width: 150 }}>Client hub</th>}
-              {actions && <th style={{ width: 40 }}></th>}
+              {actions && <th className="admin-th--md">Client hub</th>}
+              {actions && <th className="admin-th--xs"></th>}
             </tr>
           </thead>
           <tbody>
@@ -68,9 +68,9 @@ export function CaseStudiesPanel({
             {rows.map((c) => (
               <tr key={c.id}>
                 <td>
-                  <div style={{ fontWeight: 600 }}>{actions ? <EditableText value={c.title} onSave={save(c.id, "title")} ariaLabel="Title" /> : c.title}</div>
-                  <div className="admin-cell-muted" style={{ fontSize: 12 }}>{actions ? <EditableTextarea value={c.description ?? ""} onSave={save(c.id, "description")} placeholder="the story in a paragraph…" ariaLabel="Description" rows={2} collapsedHeight={40} /> : c.description}</div>
-                  {c.customerCompanyName && <div className="admin-cell-muted" style={{ fontSize: 12 }}>{c.customerCompanyName}</div>}
+                  <div className="u-strong">{actions ? <EditableText value={c.title} onSave={save(c.id, "title")} ariaLabel="Title" /> : c.title}</div>
+                  <div className="admin-cell-muted u-sm">{actions ? <EditableTextarea value={c.description ?? ""} onSave={save(c.id, "description")} placeholder="the story in a paragraph…" ariaLabel="Description" rows={2} collapsedHeight={40} /> : c.description}</div>
+                  {c.customerCompanyName && <div className="admin-cell-muted u-sm">{c.customerCompanyName}</div>}
                 </td>
                 {actions && (
                   <td>
@@ -88,7 +88,7 @@ export function CaseStudiesPanel({
                   {c.usedIn.length === 0 ? (
                     <span className="admin-cell-muted">Not used yet</span>
                   ) : (
-                    <ul style={{ margin: 0, paddingLeft: 16 }}>
+                    <ul className="u-list">
                       {c.usedIn.map((u) => (
                         <li key={u.id}>{u.outlet ? `${u.outlet} — ` : ""}{u.title}{u.publishDate ? ` (${formatDate(u.publishDate)})` : ""}</li>
                       ))}
@@ -97,7 +97,7 @@ export function CaseStudiesPanel({
                 </td>
                 {actions && (
                   <td>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <span className="u-row">
                       <Badge tone={c.publishedAt ? "ok" : "neutral"}>{c.publishedAt ? "Published" : "Draft"}</Badge>
                       <button type="button" className="admin-btn admin-btn--sm" disabled={pending} onClick={() => run(() => actions.publishCaseStudy(c.id, !c.publishedAt))}>{c.publishedAt ? "Unpublish" : "Publish"}</button>
                     </span>
@@ -112,8 +112,8 @@ export function CaseStudiesPanel({
 
       {actions && (
         <section className="admin-card admin-section-card">
-          <h3 className="admin-card-title" style={{ marginBottom: 10 }}>Propose a story</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr auto", gap: 10, alignItems: "end" }}>
+          <h3 className="admin-card-title u-mb-3">Propose a story</h3>
+          <div className="admin-form-row">
             <label className="admin-field"><span className="admin-cell-muted">Title</span><input className="admin-input" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} /></label>
             <label className="admin-field"><span className="admin-cell-muted">The story</span><input className="admin-input" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} /></label>
             <button type="button" className="admin-btn admin-btn--primary" disabled={pending || !draft.title.trim()} onClick={() => run(() => actions.createCaseStudy(programId, draft), () => setDraft({ title: "", description: "" }))}>Add</button>

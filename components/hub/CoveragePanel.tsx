@@ -78,9 +78,9 @@ export function CoveragePanel({
   const channelOptions = COVERAGE_CHANNELS.map((c) => ({ value: c, label: COVERAGE_CHANNEL_LABEL[c] }));
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-        <div style={{ display: "flex", gap: 6 }}>
+    <div className="admin-panel">
+      <div className="u-row u-wrap u-between">
+        <div className="u-row">
           {(["coverage", "linkedin"] as const).map((k) => (
             <Link key={k} href={`${kindHrefBase}${k}`} className="admin-chip" style={kind === k ? { borderColor: "var(--admin-accent)", color: "var(--admin-accent)", fontWeight: 600 } : undefined}>
               {k === "coverage" ? "Coverage" : "LinkedIn posts"} · {counts[k]}
@@ -88,28 +88,28 @@ export function CoveragePanel({
           ))}
         </div>
         {actions && (
-          <span className="admin-cell-muted" style={{ fontSize: 12 }}>
+          <span className="admin-cell-muted u-sm">
             Only published rows appear in the client hub and count toward targets.
           </span>
         )}
       </div>
       {error && <div className="admin-editable-note admin-editable-note--err">{error}</div>}
 
-      <div className="admin-table-wrap" style={{ boxShadow: "none" }}>
+      <div className="admin-table-wrap admin-table-wrap--flat">
         <table className="admin-table">
           <thead>
             <tr>
-              <th style={{ width: 110 }}>Date</th>
-              {kind === "coverage" ? <th style={{ width: 170 }}>Outlet</th> : null}
+              <th className="admin-th--sm">Date</th>
+              {kind === "coverage" ? <th className="admin-th--md">Outlet</th> : null}
               <th>{kind === "coverage" ? "Headline" : "Post"}</th>
-              {kind === "coverage" && <th style={{ width: 110 }}>Format</th>}
-              <th style={{ width: 100, textAlign: "right" }}>Reach</th>
-              <th style={{ width: 200 }}>Counts toward</th>
-              {actions && kind === "coverage" && <th style={{ width: 170 }}>Journalist</th>}
-              {actions && <th style={{ width: 170 }}>Earned by</th>}
-              {actions && kind === "coverage" && <th style={{ width: 150 }}>Clip</th>}
-              {actions && <th style={{ width: 150 }}>Client hub</th>}
-              {actions && <th style={{ width: 40 }}></th>}
+              {kind === "coverage" && <th className="admin-th--sm">Format</th>}
+              <th className="admin-th--sm u-right">Reach</th>
+              <th className="admin-th--lg">Counts toward</th>
+              {actions && kind === "coverage" && <th className="admin-th--md">Journalist</th>}
+              {actions && <th className="admin-th--md">Earned by</th>}
+              {actions && kind === "coverage" && <th className="admin-th--md">Clip</th>}
+              {actions && <th className="admin-th--md">Client hub</th>}
+              {actions && <th className="admin-th--xs"></th>}
             </tr>
           </thead>
           <tbody>
@@ -120,7 +120,7 @@ export function CoveragePanel({
             )}
             {visible.map((r) => (
               <tr key={r.id}>
-                <td style={{ whiteSpace: "nowrap" }}>
+                <td className="u-nowrap">
                   {actions ? <EditableDate value={r.publishDate ?? ""} onSave={save(r.id, "publishDate")} ariaLabel="Publish date" /> : formatDate(r.publishDate)}
                 </td>
                 {kind === "coverage" && (
@@ -128,7 +128,7 @@ export function CoveragePanel({
                 )}
                 <td>
                   {actions ? (
-                    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                    <div className="admin-cell-stack">
                       {kind === "coverage" ? (
                         <EditableText value={r.title} onSave={save(r.id, "title")} ariaLabel="Headline" />
                       ) : (
@@ -151,7 +151,7 @@ export function CoveragePanel({
                     )}
                   </td>
                 )}
-                <td style={{ textAlign: "right", whiteSpace: "nowrap" }}>
+                <td className="u-right u-nowrap">
                   {actions ? <EditableText value={r.reach != null ? String(r.reach) : ""} onSave={save(r.id, "reach")} placeholder="—" ariaLabel="Reach" type="number" render={(v) => fmtReach(v ? Number(v) : null)} /> : fmtReach(r.reach)}
                 </td>
                 <td>
@@ -178,7 +178,7 @@ export function CoveragePanel({
                 )}
                 {actions && (
                   <td>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <span className="u-row">
                       <Badge tone={r.publishedAt ? "ok" : "neutral"}>{r.publishedAt ? "Published" : "Draft"}</Badge>
                       <button type="button" className="admin-btn admin-btn--sm" disabled={pending} onClick={() => run(() => actions.publish(r.id, !r.publishedAt))}>
                         {r.publishedAt ? "Unpublish" : "Publish"}
@@ -199,8 +199,8 @@ export function CoveragePanel({
 
       {actions && (
         <section className="admin-card admin-section-card">
-          <h3 className="admin-card-title" style={{ marginBottom: 10 }}>{kind === "coverage" ? "Record coverage" : "Record a LinkedIn post"}</h3>
-          <div style={{ display: "grid", gridTemplateColumns: kind === "coverage" ? "1fr 2fr 1fr" : "3fr 1fr", gap: 10 }}>
+          <h3 className="admin-card-title u-mb-3">{kind === "coverage" ? "Record coverage" : "Record a LinkedIn post"}</h3>
+          <div className="admin-form-row">
             {kind === "coverage" && (
               <label className="admin-field"><span className="admin-cell-muted">Outlet</span><input className="admin-input" value={draft.outlet} onChange={(e) => setDraft({ ...draft, outlet: e.target.value })} /></label>
             )}
@@ -214,7 +214,7 @@ export function CoveragePanel({
             </label>
             <label className="admin-field"><span className="admin-cell-muted">Link</span><input className="admin-input" placeholder="https://…" value={draft.url} onChange={(e) => setDraft({ ...draft, url: e.target.value })} /></label>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: kind === "coverage" ? "1fr 1fr 1fr 2fr auto" : "1fr 1fr 2fr auto", gap: 10, alignItems: "end", marginTop: 10 }}>
+          <div className="admin-form-row u-mt-3">
             <label className="admin-field"><span className="admin-cell-muted">Date</span><input className="admin-input" type="date" value={draft.publishDate} onChange={(e) => setDraft({ ...draft, publishDate: e.target.value })} /></label>
             {kind === "coverage" && (
               <label className="admin-field">
