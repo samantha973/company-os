@@ -43,7 +43,7 @@ export default async function ProgramDetailPage({
 
   const companyName = company.name || "(no name)";
   const programOptions = (programRows ?? []) as ProgramOption[];
-  const hubHref = `/admin/revenue/companies/${company.id}?view=hub`;
+  const hubHref = `/admin/clients/${company.id}`;
 
   const tabs: TabDef[] = [
     {
@@ -119,7 +119,7 @@ export default async function ProgramDetailPage({
         action={
           <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
             <Badge tone={STATUS_TONE[detail.status]}>{detail.status}</Badge>
-            <Link className="admin-btn admin-btn--sm" href={`${hubHref}&tab=plan`}>Open Client Hub →</Link>
+            <Link className="admin-btn admin-btn--sm" href={`${hubHref}?tab=plan`}>Open Client Hub →</Link>
           </span>
         }
       />

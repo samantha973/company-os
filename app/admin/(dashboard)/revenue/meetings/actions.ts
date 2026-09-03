@@ -24,6 +24,7 @@ function refresh(companyId: string, meetingId?: string) {
   revalidatePath("/admin/revenue/meetings");
   if (meetingId) revalidatePath(`/admin/revenue/meetings/${meetingId}`);
   revalidatePath(`/admin/revenue/companies/${companyId}`);
+  revalidatePath(`/admin/clients/${companyId}`);
   revalidatePath("/portal/hub");
 }
 
