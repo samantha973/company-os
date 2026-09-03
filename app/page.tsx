@@ -8,7 +8,7 @@ const playfair = Playfair_Display({ subsets: ['latin'], style: ['italic'], varia
 
 const PUBLIC_SITE = 'https://theprhub.com.au'
 
-function ArrowIcon({ stroke = '#2EDBBB' }: { stroke?: string }) {
+function ArrowIcon({ stroke = 'var(--color-accent-mint-bright)' }: { stroke?: string }) {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <line x1="5" y1="12" x2="19" y2="12" />
@@ -51,15 +51,15 @@ export default function HomePage() {
         </p>
         <div className={styles.heroChips}>
           <span className={styles.heroChip}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2EDBBB" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-mint-bright)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
             <span>RLS-SECURED SUPABASE</span>
           </span>
           <span className={styles.heroChip}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2EDBBB" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-mint-bright)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
             <span>ONE ACCOUNT, ONE DOOR</span>
           </span>
           <span className={styles.heroChip}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2EDBBB" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent-mint-bright)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
             <span>CONFIDENTIAL BY DESIGN</span>
           </span>
         </div>
@@ -86,7 +86,7 @@ export default function HomePage() {
           <p className={styles.doorDesc}>For PR Hub publicists, writers and account managers. Your clients, coverage targets and day-to-day tools.</p>
           <Link href="/team" className={styles.btnOutline}>
             <span>ENTER TEAM WORKSPACE</span>
-            <ArrowIcon stroke="#000000" />
+            <ArrowIcon stroke="var(--color-primary-dark)" />
           </Link>
           <span className={styles.doorHelp}>
             Invited team members. <a href="mailto:hello@theprhub.com.au">Get help</a>

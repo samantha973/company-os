@@ -51,19 +51,19 @@ export const STATUSES: { id: CalendarStatus; label: string; accent: string }[] =
 // Channel accents are the platform's own identity color, used only as a chip
 // tint so a month grid is scannable by channel. Raw hex mirrors stageColors.
 export const CHANNELS: { id: CalendarChannel; label: string; accent: string }[] = [
-  { id: "blog", label: "Blog", accent: "#6b7194" },
+  { id: "blog", label: "Blog", accent: "var(--admin-muted)" },
   { id: "email", label: "Email", accent: "var(--admin-accent)" },
-  { id: "linkedin", label: "LinkedIn", accent: "#0a66c2" },
-  { id: "facebook", label: "Facebook", accent: "#1877f2" },
-  { id: "earned", label: "Earned", accent: "#0f766e" },
-  { id: "online", label: "Online", accent: "#0f766e" },
-  { id: "print", label: "Print", accent: "#6b7194" },
-  { id: "tv", label: "TV", accent: "#b45309" },
-  { id: "radio", label: "Radio", accent: "#b45309" },
-  { id: "podcast", label: "Podcast", accent: "#7c3aed" },
-  { id: "syndication", label: "Syndication", accent: "#6b7194" },
-  { id: "speaking", label: "Speaking", accent: "#b03571" },
-  { id: "other", label: "Other", accent: "#9ca3af" },
+  { id: "linkedin", label: "LinkedIn", accent: "var(--admin-chart-3)" },
+  { id: "facebook", label: "Facebook", accent: "var(--admin-chart-6)" },
+  { id: "earned", label: "Earned", accent: "var(--admin-ok-strong)" },
+  { id: "online", label: "Online", accent: "var(--admin-ok-strong)" },
+  { id: "print", label: "Print", accent: "var(--admin-muted)" },
+  { id: "tv", label: "TV", accent: "var(--admin-warn-strong)" },
+  { id: "radio", label: "Radio", accent: "var(--admin-warn-strong)" },
+  { id: "podcast", label: "Podcast", accent: "var(--admin-chart-3)" },
+  { id: "syndication", label: "Syndication", accent: "var(--admin-muted)" },
+  { id: "speaking", label: "Speaking", accent: "var(--admin-pink-ink)" },
+  { id: "other", label: "Other", accent: "var(--admin-muted)" },
 ];
 
 export const STATUS_LABEL: Record<CalendarStatus, string> = Object.fromEntries(
