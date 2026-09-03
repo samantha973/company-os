@@ -1,4 +1,4 @@
-# Design System for Edge8
+# Design System for The PR Hub (8 Edges Company OS)
 
 ## 1. Visual Theme & Atmosphere
 
