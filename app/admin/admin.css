@@ -4340,14 +4340,14 @@ a.ideas-share-card:hover {
 /* ---- Interview loop (admin req page + /team/hiring) ---------------------- */
 /* One row per interview in the loop, numbered in running order. Resting cards
    stay flat per Foundations; the number chip carries the only accent. */
-.loop-step {
+.admin-loop-step {
   display: flex;
   align-items: flex-start;
   gap: 12px;
   padding: 12px 0;
   border-top: 1px solid var(--admin-line);
 }
-.loop-step-num {
+.admin-loop-step-num {
   flex: none;
   width: 24px;
   height: 24px;
@@ -4360,16 +4360,16 @@ a.ideas-share-card:hover {
   align-items: center;
   justify-content: center;
 }
-.loop-step-body { flex: 1 1 auto; min-width: 0; display: grid; gap: 6px; }
-.loop-step-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; font-size: 14px; }
-.loop-step-people { display: flex; gap: 6px; flex-wrap: wrap; font-size: 13px; }
-.loop-step-actions { display: flex; gap: 6px; flex-wrap: wrap; flex: none; }
-.loop-step-actions .admin-btn { padding: 4px 10px; font-size: 12px; }
+.admin-loop-step-body { flex: 1 1 auto; min-width: 0; display: grid; gap: 6px; }
+.admin-loop-step-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; font-size: 14px; }
+.admin-loop-step-people { display: flex; gap: 6px; flex-wrap: wrap; font-size: 13px; }
+.admin-loop-step-actions { display: flex; gap: 6px; flex-wrap: wrap; flex: none; }
+.admin-loop-step-actions .admin-btn { padding: 4px 10px; font-size: 12px; }
 
 /* Read-only variant on /team/hiring: no controls, tighter. */
-.loop-step--read { padding: 8px 0; }
-.loop-step--read .loop-step-num { background: var(--admin-muted-bg); color: var(--admin-muted-ink); }
-.loop-step-booked { font-size: 13px; display: grid; gap: 3px; }
+.admin-loop-step--read { padding: 8px 0; }
+.admin-loop-step--read .admin-loop-step-num { background: var(--admin-muted-bg); color: var(--admin-muted-ink); }
+.admin-loop-step-booked { font-size: 13px; display: grid; gap: 3px; }
 
 /* ─── Hiring (manager view) ─────────────────────────
    Treatment layered on the OS shell for /team/hiring and the interview kit.
@@ -4378,7 +4378,7 @@ a.ideas-share-card:hover {
 
 /* Day strip: one booked interview the manager sits on. A left rail carries the
    state colour so the day reads at a glance; the time sits in a tinted tile. */
-.hire-slot {
+.admin-hire-slot {
   display: flex;
   align-items: center;
   gap: 14px;
@@ -4389,13 +4389,13 @@ a.ideas-share-card:hover {
   background: var(--admin-surface);
   transition: border-color var(--transition), box-shadow var(--transition);
 }
-.hire-slot + .hire-slot { margin-top: 8px; }
-.hire-slot:hover { box-shadow: var(--admin-shadow); border-color: var(--admin-muted); }
-.hire-slot--due { border-left-color: var(--admin-warn-ink); }
-.hire-slot--now { border-left-color: var(--admin-accent); }
-.hire-slot--next { border-left-color: var(--admin-accent); }
-.hire-slot--done { border-left-color: var(--admin-ok-ink); }
-.hire-slot-time {
+.admin-hire-slot + .admin-hire-slot { margin-top: 8px; }
+.admin-hire-slot:hover { box-shadow: var(--admin-shadow); border-color: var(--admin-muted); }
+.admin-hire-slot--due { border-left-color: var(--admin-warn-ink); }
+.admin-hire-slot--now { border-left-color: var(--admin-accent); }
+.admin-hire-slot--next { border-left-color: var(--admin-accent); }
+.admin-hire-slot--done { border-left-color: var(--admin-ok-ink); }
+.admin-hire-slot-time {
   flex: 0 0 auto;
   min-width: 54px;
   padding: 7px 10px;
@@ -4407,15 +4407,15 @@ a.ideas-share-card:hover {
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
-.hire-slot-body { flex: 1 1 auto; min-width: 0; }
-.hire-slot-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.hire-slot-name { font-weight: 600; font-size: 14px; }
-.hire-slot-meta { font-size: 13px; color: var(--admin-muted); margin-top: 3px; }
-.hire-slot-cta { margin-left: auto; flex: none; }
+.admin-hire-slot-body { flex: 1 1 auto; min-width: 0; }
+.admin-hire-slot-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.admin-hire-slot-name { font-weight: 600; font-size: 14px; }
+.admin-hire-slot-meta { font-size: 13px; color: var(--admin-muted); margin-top: 3px; }
+.admin-hire-slot-cta { margin-left: auto; flex: none; }
 
 /* Scorecard rubric: criterion rows read as one grouped table, not a stack of
    loose fields. Label, a compact score select, then the evidence note. */
-.hire-criteria {
+.admin-hire-criteria {
   display: flex;
   flex-direction: column;
   margin: 4px 0 2px;
@@ -4423,36 +4423,36 @@ a.ideas-share-card:hover {
   border-radius: 12px;
   overflow: hidden;
 }
-.hire-criterion {
+.admin-hire-criterion {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
   border-top: 1px solid var(--admin-line);
 }
-.hire-criterion:first-child { border-top: 0; }
-.hire-criterion-label { flex: 0 0 150px; font-weight: 500; font-size: 14px; color: var(--admin-ink); }
-.hire-criterion-score { flex: 0 0 68px; }
-.hire-criterion-note { flex: 1 1 auto; min-width: 0; }
+.admin-hire-criterion:first-child { border-top: 0; }
+.admin-hire-criterion-label { flex: 0 0 150px; font-weight: 500; font-size: 14px; color: var(--admin-ink); }
+.admin-hire-criterion-score { flex: 0 0 68px; }
+.admin-hire-criterion-note { flex: 1 1 auto; min-width: 0; }
 
 /* Panel seats: the other scorecards, revealed side by side once you submit.
    The AI panelist's card is softly tinted so it reads as the machine voice. */
-.hire-seat {
+.admin-hire-seat {
   padding: 14px 16px;
   border: 1px solid var(--admin-line);
   border-radius: 12px;
   background: var(--admin-surface);
 }
-.hire-seat--ai { background: var(--admin-info-bg); border-color: transparent; }
-.hire-seat-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.hire-seat-name { font-weight: 600; font-size: 14px; }
-.hire-seat-chips { display: inline-flex; gap: 6px; flex: none; }
-.hire-seat-body { margin-top: 8px; line-height: 1.6; }
+.admin-hire-seat--ai { background: var(--admin-info-bg); border-color: transparent; }
+.admin-hire-seat-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.admin-hire-seat-name { font-weight: 600; font-size: 14px; }
+.admin-hire-seat-chips { display: inline-flex; gap: 6px; flex: none; }
+.admin-hire-seat-body { margin-top: 8px; line-height: 1.6; }
 
 @media (max-width: 640px) {
-  .hire-criterion { flex-wrap: wrap; }
-  .hire-criterion-label { flex-basis: 100%; }
-  .hire-criterion-note { flex-basis: 100%; }
+  .admin-hire-criterion { flex-wrap: wrap; }
+  .admin-hire-criterion-label { flex-basis: 100%; }
+  .admin-hire-criterion-note { flex-basis: 100%; }
 }
 
 /* ─── Application detail: decision-first workspace ──────────────────────────
@@ -5058,3 +5058,46 @@ a.admin-list-row { text-decoration: none; color: inherit; }
 .u-caps { text-transform: capitalize; }
 .u-hidden-input { display: none; }
 .admin-campaign-progress-fill.is-done { background: var(--admin-ok-ink); }
+.u-list-plain { list-style: none; margin: 0; padding: 0; }
+.u-pl-3 { padding-left: var(--admin-space-3); }
+.u-pl-4 { padding-left: 18px; }
+.u-mr-2 { margin-right: var(--admin-space-2); }
+.u-mr-auto { margin-right: auto; }
+.u-p-1 { padding: 4px 8px; }
+.u-py-1 { padding-top: 2px; padding-bottom: 2px; }
+.u-py-3 { padding-top: var(--admin-space-3); padding-bottom: var(--admin-space-3); }
+.u-pb-3 { padding-bottom: var(--admin-space-3); }
+.u-w-120 { width: 120px; }
+.u-w-200 { width: 200px; }
+.u-max-0 { max-width: 90px; }
+.u-max-7 { max-width: 720px; }
+.admin-meter--thin { height: 6px; margin-top: 0; }
+.admin-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--admin-ink); flex-shrink: 0; display: inline-block; }
+/* ─── Talent / Operations / Boards components ──────────────────────────── */
+.u-link-strong { color: var(--admin-accent); text-decoration: none; font-weight: 600; }
+.u-accent { color: var(--admin-accent); }
+.u-py-4 { padding-top: var(--admin-space-4); padding-bottom: var(--admin-space-4); }
+.u-my-5 { margin-top: var(--admin-space-5); margin-bottom: var(--admin-space-5); }
+.u-grid-2-fixed { display: grid; grid-template-columns: 1fr 1fr 90px; gap: var(--admin-space-3); }
+.admin-avatar-img { border-radius: 50%; object-fit: cover; }
+.admin-avatar-initials { border-radius: 50%; background: var(--admin-tint); display: inline-flex; align-items: center; justify-content: center; font-size: var(--admin-text-sm); font-weight: 600; flex-shrink: 0; }
+.admin-kr-index { color: var(--admin-faint); font-weight: 700; font-size: 10px; margin-right: 7px; }
+.admin-h-sm { font-size: var(--admin-text-base); font-weight: 700; margin: 14px 0 4px; color: var(--admin-ink); }
+.admin-h-md { font-weight: 700; font-size: 17px; letter-spacing: -0.01em; }
+.admin-agenda-row { display: grid; grid-template-columns: 180px 1fr; gap: var(--admin-space-4); padding: 12px 0; border-top: 1px solid var(--admin-line); }
+.admin-divider-row { border-top: 1px solid var(--admin-line); padding: 8px 0; }
+.admin-hr { border: 0; border-top: 1px solid var(--admin-line); margin: 4px 0; }
+.admin-star-btn { font-size: 22px; }
+.admin-star-btn--sm { font-size: 16px; }
+.admin-badge-inverse { font-size: var(--admin-text-xs); font-weight: 700; color: var(--admin-bg); background: var(--admin-ink); border-radius: var(--admin-radius-xs); padding: 1px 7px; }
+.admin-tag-xs { font-size: 10px; font-weight: 700; letter-spacing: .04em; padding: 2px 7px; border-radius: var(--admin-radius-pill); background: var(--admin-muted-bg); color: var(--admin-muted-ink); }
+.admin-tag-xs--accent { background: var(--admin-accent-soft); color: var(--admin-accent); }
+.admin-tag-xs--warn { background: var(--admin-warn-bg); color: var(--admin-warn-ink); }
+.admin-score-btn { width: 28px; height: 28px; border-radius: var(--admin-radius-xs); border: 1px solid var(--admin-line-strong); background: transparent; color: var(--admin-ink); cursor: pointer; font-size: var(--admin-text-base); font-weight: 600; }
+.admin-score-btn.is-on { background: var(--admin-accent); color: var(--color-bg-primary); }
+.admin-scroll-xs { max-height: 160px; overflow: auto; }
+.admin-callout { background: var(--admin-accent-soft); border-radius: 10px; padding: 12px 14px; }
+.admin-num-xl { font-size: 22px; font-weight: 700; }
+.admin-td-inset { background: var(--admin-bg); }
+.admin-mono { font-family: var(--admin-font-mono); font-size: var(--admin-text-base); line-height: 1.6; }
+.admin-panel-soft { background: var(--admin-muted-bg); border-radius: var(--admin-radius-sm); padding: 8px 10px; }

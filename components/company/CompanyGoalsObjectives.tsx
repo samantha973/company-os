@@ -42,7 +42,7 @@ export function CompanyGoalsObjectives({
       {tree.length === 0 && <div className="admin-empty">{emptyLabel}</div>}
 
       {tree.map((o, oi) => (
-        <div key={o.id} className="admin-card" style={{ padding: 0, marginBottom: 14, overflow: "hidden" }}>
+        <div key={o.id} className="admin-card u-mb-4 u-p-0 u-clip">
           <div className="edges-ohead">
             <span className={`edges-ltag edges-ltag--${o.brand ?? "company"}`}>
               {BRAND_LABELS[o.brand ?? "company"]}
@@ -63,7 +63,7 @@ export function CompanyGoalsObjectives({
             <div key={kr.id} className="edges-kr">
               <div className="edges-kr-row">
                 <div className="edges-kr-title">
-                  <span style={{ color: "var(--admin-faint)", fontWeight: 750, fontSize: 10, marginRight: 7 }}>
+                  <span className="admin-kr-index">
                     KR{oi + 1}.{ki + 1}
                   </span>
                   {kr.title}
@@ -80,7 +80,7 @@ export function CompanyGoalsObjectives({
                 </span>
                 <span className="edges-prog">
                   <span className="edges-prog-bar">
-                    <i className={barClass(kr)} style={{ width: `${Math.min(100, progressPct(kr))}%` }} />
+                    <i className={barClass(kr)} style={{ width: `${Math.min(100, progressPct(kr))}%` }} /* layout-ok: data-driven width */ />
                   </span>
                   <span className="edges-prog-val">{fmtValue(kr)}</span>
                 </span>
