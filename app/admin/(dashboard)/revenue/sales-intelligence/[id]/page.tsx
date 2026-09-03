@@ -110,7 +110,7 @@ export default async function CallDetailPage({ params }: { params: { id: string 
           {coachingHtml && (
             <div className="u-mt-3">
               <div className="admin-shelf-heading u-mb-2">Coaching notes</div>
-              <div className="idea-plan" dangerouslySetInnerHTML={{ __html: coachingHtml }} />
+              <div className="admin-idea-plan" dangerouslySetInnerHTML={{ __html: coachingHtml }} />
             </div>
           )}
         </div>

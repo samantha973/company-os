@@ -164,7 +164,7 @@ export function ContentDetail({
                 coverUrl={selected?.url ?? null}
               />
             ) : (
-              <div className="idea-plan u-p-4" dangerouslySetInnerHTML={{ __html: html }} />
+              <div className="admin-idea-plan u-p-4" dangerouslySetInnerHTML={{ __html: html }} />
             )
           ) : (
             <div className="admin-empty u-m-4">

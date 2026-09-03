@@ -95,21 +95,21 @@ export function DirectoryTable({ entries }: { entries: DirectoryEntry[] }) {
           )}
         </div>
 
-        <select className="admin-select" style={{ width: "auto" }} value={dept} onChange={(e) => setDept(e.target.value)} aria-label="Filter by department">
+        <select className="admin-select u-w-auto" value={dept} onChange={(e) => setDept(e.target.value)} aria-label="Filter by department">
           <option value="">All departments</option>
           {deptOptions.map((d) => (
             <option key={d} value={d}>{d}</option>
           ))}
         </select>
 
-        <select className="admin-select" style={{ width: "auto" }} value={manager} onChange={(e) => setManager(e.target.value)} aria-label="Filter by manager">
+        <select className="admin-select u-w-auto" value={manager} onChange={(e) => setManager(e.target.value)} aria-label="Filter by manager">
           <option value="">All managers</option>
           {managerOptions.map((m) => (
             <option key={m} value={m}>{m}</option>
           ))}
         </select>
 
-        <span className="team-dir-count">
+        <span className="admin-team-dir-count">
           {rows.length} {rows.length === 1 ? "person" : "people"}{filtering ? ` of ${entries.length}` : ""}
         </span>
       </div>
@@ -123,7 +123,7 @@ export function DirectoryTable({ entries }: { entries: DirectoryEntry[] }) {
                   <th key={c.key}>
                     <button type="button" className="admin-th-sort" onClick={() => toggleSort(c.key)} aria-label={`Sort by ${c.label}`}>
                       {c.label}
-                      <span className="team-dir-caret" aria-hidden>
+                      <span className="admin-team-dir-caret" aria-hidden>
                         {sortKey === c.key ? (sortAsc ? "▲" : "▼") : "↕"}
                       </span>
                     </button>
@@ -134,7 +134,7 @@ export function DirectoryTable({ entries }: { entries: DirectoryEntry[] }) {
             <tbody>
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan={COLUMNS.length} className="admin-cell-muted" style={{ textAlign: "center", padding: "28px 16px" }}>
+                  <td colSpan={COLUMNS.length} className="admin-cell-muted admin-empty--tall u-center-text">
                     No one matches those filters.
                   </td>
                 </tr>
@@ -142,8 +142,8 @@ export function DirectoryTable({ entries }: { entries: DirectoryEntry[] }) {
                 rows.map((e) => (
                   <tr key={e.id}>
                     <td className="admin-cell-strong">
-                      <Link href={`/team/directory/${e.id}`} className="dir-name">
-                        <span className="dir-avatar" aria-hidden>
+                      <Link href={`/team/directory/${e.id}`} className="admin-dir-name">
+                        <span className="admin-dir-avatar" aria-hidden>
                           {e.avatarUrl ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={e.avatarUrl} alt="" loading="lazy" decoding="async" />

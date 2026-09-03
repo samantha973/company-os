@@ -296,8 +296,7 @@ export default async function PortalHome() {
               <Link
                 key={c.id}
                 href="/portal/hub"
-                className="admin-list-row"
-                style={{ textDecoration: "none", color: "inherit" }}
+                className="admin-list-row u-link-plain"
               >
                 <div className="admin-list-main">
                   <div className="admin-list-title">{c.title}</div>

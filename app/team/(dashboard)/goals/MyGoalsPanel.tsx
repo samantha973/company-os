@@ -228,7 +228,7 @@ export function MyGoalsPanel({
         />
       </div>
 
-      <div className="goals-grid">
+      <div className="admin-goals-grid">
         <div className="admin-field">
           <label className="admin-label" htmlFor="goal-unit">Measure (optional)</label>
           <input
@@ -327,12 +327,12 @@ export function MyGoalsPanel({
       )}
 
       {adding ? (
-        <div className="admin-card admin-section-card" style={{ marginBottom: 20 }}>
+        <div className="admin-card admin-section-card u-mb-5">
           <h2 className="admin-card-title">Add a FAST goal</h2>
           {goalForm}
         </div>
       ) : (
-        <div className="admin-form-actions" style={{ marginBottom: 20 }}>
+        <div className="admin-form-actions u-mb-5">
           <button className="admin-btn admin-btn--primary" onClick={openAdd} disabled={pending}>
             Add a goal
           </button>
@@ -349,7 +349,7 @@ export function MyGoalsPanel({
         const pct = progressPct(g);
         const measure = measureText(g);
         return (
-          <div key={g.id} className="admin-card admin-section-card goals-card">
+          <div key={g.id} className="admin-card admin-section-card admin-goals-card">
             {editingId === g.id ? (
               <>
                 <h2 className="admin-card-title">Edit goal</h2>
@@ -357,7 +357,7 @@ export function MyGoalsPanel({
               </>
             ) : (
               <>
-                <div className="goals-card-head">
+                <div className="admin-goals-card-head">
                   <strong>{g.title}</strong>
                   <span
                     className={`admin-badge ${
@@ -376,8 +376,8 @@ export function MyGoalsPanel({
                 {g.descriptionMarkdown && <p className="admin-cell-muted">{g.descriptionMarkdown}</p>}
                 {measure && <div className="admin-cell-muted">{measure}</div>}
                 {pct !== null && (
-                  <div className="goals-bar" aria-label={`${pct}% of target`}>
-                    <span style={{ width: `${pct}%` }} />
+                  <div className="admin-goals-bar" aria-label={`${pct}% of target`}>
+                    <span style={{ width: `${pct}%` }} /* layout-ok: data-driven width */ />
                   </div>
                 )}
                 {g.ladderLabel && (
