@@ -362,3 +362,33 @@ Contacts pages filtered by `persona='media'`.
 Settled: one Work Board per program, with the PR column ladder
 (planned → pitching → in progress → waiting → delivered). No per-program
 column customisation.
+
+## As built (3 Sep 2026)
+
+Where the build departed from the migration sketch above:
+
+- `program_plans` already had `quarter` and `signed_off_at` live; the
+  LinkedIn strategy uses those (no `signoff_date` column) plus `published_at`.
+- Workstream keys are the hyphenated ones the first client already carried
+  (`news-announcements`, `thought-leadership`, `newsjacking`,
+  `linkedin-authority`, `speaking`) plus `awards`; the seed function
+  `seed_pr_workstreams(program_id)` inserts them per program and skips keys
+  the company already has.
+- `pr_program_stats` also carries `awards_in_flight`; `pr_target_progress`
+  shipped now (not later) with outcome and board-card counts.
+- Coverage rows seeded from the account sheet had `status='published'` and
+  no `published_at`; `07-marketing-content.sql` backfills `published_at` so
+  they count. The marketing calendar (`listEntries`) now excludes rows with
+  `company_id` set — client outcomes live in the hubs, not the agency plan.
+- Outcomes never hard-delete: `status='skipped'` removes a row from view.
+- Case studies: no `location` / `story_type`. `used_in` is
+  `marketing_content.case_study_id`.
+- Roadmap UI removed end to end (team tab, portal page, admin
+  `edges/client-roadmaps`, roadmap-assist API); Human Token fields removed
+  from the board, sprint view and card editor (`tasks.human_tokens` stays in
+  the DB, unread).
+- Migration files: `supabase/pr-hub/02-…09-*.sql`, idempotent, applied to
+  `hfpjcqvszhpeeoueckcn`; `supabase/01-schema.sql` regenerated from live
+  (`pg_dump --schema-only --no-owner --quote-all-identifiers
+  --schema=company_os --schema=htt`, then the two `CREATE SCHEMA` lines
+  re-commented).

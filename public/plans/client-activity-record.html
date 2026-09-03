@@ -416,6 +416,19 @@ from company_os.pr_programs p;</code></pre>
   <li><code>location</code> / <code>story_type</code> enum values for case studies (carried over from v0.5, which listed them as “dropdown, values TBD”).</li>
 </ul>
 <p><strong>Settled:</strong> one Work Board per program, with the PR column ladder (planned → pitching → in progress → waiting → delivered). No per-program column customisation.</p>
+
+<h2>As built — 3 Sep 2026</h2>
+<p>Where the build departed from the sketch above.</p>
+<ul>
+  <li><code>program_plans</code> already had <code>quarter</code> and <code>signed_off_at</code> live; the LinkedIn strategy uses those (no <code>signoff_date</code>) plus <code>published_at</code>.</li>
+  <li>Workstream keys are the hyphenated ones the first client already carried (<code>news-announcements</code>, <code>thought-leadership</code>, <code>newsjacking</code>, <code>linkedin-authority</code>, <code>speaking</code>) plus <code>awards</code>; <code>seed_pr_workstreams(program_id)</code> inserts them per program and skips keys the company already has.</li>
+  <li><code>pr_program_stats</code> also carries <code>awards_in_flight</code>; <code>pr_target_progress</code> shipped now, with outcome and board-card counts.</li>
+  <li>Coverage seeded from the account sheet had <code>status='published'</code> and no <code>published_at</code>; <code>07-marketing-content.sql</code> backfills it so those rows count. The agency's marketing calendar now excludes rows with <code>company_id</code> set.</li>
+  <li>Outcomes never hard-delete: <code>status='skipped'</code> removes a row from view.</li>
+  <li>Case studies: no <code>location</code> / <code>story_type</code>. “Used in” is <code>marketing_content.case_study_id</code>.</li>
+  <li>Roadmap UI removed end to end; Human Token fields removed from the board, sprint view and card editor (<code>tasks.human_tokens</code> stays in the DB, unread).</li>
+  <li>Migrations: <code>supabase/pr-hub/02-…09-*.sql</code>, idempotent, applied to the live project; <code>supabase/01-schema.sql</code> regenerated from live.</li>
+</ul>
 </div>
 </body>
 </html>

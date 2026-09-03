@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
-\restrict cqXJ73dt0Qr7HbA24BUFRRY9ENvzwozpbfMEdaDocYuX3QVAAp8Ordaa34J7kWf
+\restrict SGwfNylPe3cyCJe0zxS0okh2UpWMShGuS0hb2HouCcFr084RrkTy1cmh1hDY8X8
 
--- Dumped from database version 15.8
--- Dumped by pg_dump version 18.6 (Homebrew)
+-- Dumped from database version 17.6
+-- Dumped by pg_dump version 18.6
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -424,6 +424,52 @@ $$;
 
 
 --
+-- Name: seed_pr_workstreams("uuid"); Type: FUNCTION; Schema: company_os; Owner: -
+--
+
+CREATE FUNCTION "company_os"."seed_pr_workstreams"("p_program_id" "uuid") RETURNS integer
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'company_os', 'extensions', 'pg_catalog'
+    AS $$
+declare
+  v_company uuid;
+  v_n integer := 0;
+  v_row record;
+begin
+  select company_id into v_company from company_os.pr_programs where id = p_program_id;
+  if v_company is null then
+    raise exception 'seed_pr_workstreams: unknown program %', p_program_id;
+  end if;
+
+  for v_row in
+    select * from (values
+      ('news-announcements', 'News Announcements', 1),
+      ('thought-leadership', 'Thought Leadership', 2),
+      ('newsjacking', 'Media Relations & Newsjacking', 3),
+      ('linkedin-authority', 'LinkedIn', 4),
+      ('speaking', 'Speaking', 5),
+      ('awards', 'Awards', 6)
+    ) as t(key, title, sort_order)
+  loop
+    insert into company_os.client_roadmap_groups (company_id, pr_program_id, key, title, sort_order)
+    values (v_company, p_program_id, v_row.key, v_row.title, v_row.sort_order)
+    on conflict (company_id, key) do nothing;
+    if found then v_n := v_n + 1; end if;
+  end loop;
+
+  return v_n;
+end;
+$$;
+
+
+--
+-- Name: FUNCTION "seed_pr_workstreams"("p_program_id" "uuid"); Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON FUNCTION "company_os"."seed_pr_workstreams"("p_program_id" "uuid") IS 'Inserts the standard PR workstreams (client_roadmap_groups) for a program; skips keys the company already has. Returns rows inserted.';
+
+
+--
 -- Name: set_amount_usd_cents(); Type: FUNCTION; Schema: company_os; Owner: -
 --
 
@@ -678,32 +724,6 @@ CREATE TABLE "company_os"."affiliates" (
 --
 
 COMMENT ON COLUMN "company_os"."affiliates"."company_id" IS 'The affiliate company when this is a company affiliate. person_id (kept) is the acting/portal contact. At least one of company_id/person_id is set.';
-
-
---
--- Name: pr_programs; Type: TABLE; Schema: company_os; Owner: -
---
-
-CREATE TABLE "company_os"."pr_programs" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "company_id" "uuid" NOT NULL,
-    "name" "text" NOT NULL,
-    "status" "text" DEFAULT 'draft'::"text" NOT NULL,
-    "created_by" "text",
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "repo_url" "text",
-    "github_repo" "extensions"."citext",
-    "github_repo_id" bigint,
-    CONSTRAINT "pr_programs_status_check" CHECK (("status" = ANY (ARRAY['draft'::"text", 'active'::"text", 'complete'::"text"])))
-);
-
-
---
--- Name: TABLE "pr_programs"; Type: COMMENT; Schema: company_os; Owner: -
---
-
-COMMENT ON TABLE "company_os"."pr_programs" IS 'Portal PR Programs: company-scoped client PR program records (draft/active/complete).';
 
 
 --
@@ -1151,11 +1171,44 @@ CREATE TABLE "company_os"."client_backlog_items" (
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "client_sort_order" integer,
     "pr_program_id" "uuid",
+    "quarterly_plan_id" "uuid",
+    "quantity_target" integer,
+    "variance_reason" "text",
+    "variance_note" "text",
     CONSTRAINT "client_backlog_items_client_priority_check" CHECK ((("client_priority" IS NULL) OR ("client_priority" = ANY (ARRAY['now'::"text", 'next'::"text", 'later'::"text", 'park'::"text"])))),
     CONSTRAINT "client_backlog_items_edge8_priority_check" CHECK (("edge8_priority" = ANY (ARRAY['now'::"text", 'next'::"text", 'later'::"text", 'park'::"text"]))),
     CONSTRAINT "client_backlog_items_source_check" CHECK (("source" = ANY (ARRAY['edge8'::"text", 'client'::"text"]))),
-    CONSTRAINT "client_backlog_items_status_check" CHECK (("status" = ANY (ARRAY['proposed'::"text", 'accepted'::"text", 'active'::"text", 'shipped'::"text", 'parked'::"text"])))
+    CONSTRAINT "client_backlog_items_status_check" CHECK (("status" = ANY (ARRAY['proposed'::"text", 'accepted'::"text", 'active'::"text", 'shipped'::"text", 'parked'::"text"]))),
+    CONSTRAINT "client_backlog_items_variance_reason_check" CHECK ((("variance_reason" IS NULL) OR ("variance_reason" = ANY (ARRAY['client_delayed'::"text", 'deal_not_finalised'::"text", 'reprioritised'::"text", 'external'::"text", 'other'::"text"]))))
 );
+
+
+--
+-- Name: COLUMN "client_backlog_items"."quarterly_plan_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."client_backlog_items"."quarterly_plan_id" IS 'The 90-day plan this target belongs to; null = not tied to a quarter.';
+
+
+--
+-- Name: COLUMN "client_backlog_items"."quantity_target"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."client_backlog_items"."quantity_target" IS 'Numeric target for the quarter (e.g. 10 for "10 posts/qtr"); progress is counted from linked marketing_content.';
+
+
+--
+-- Name: COLUMN "client_backlog_items"."variance_reason"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."client_backlog_items"."variance_reason" IS 'Why the target slipped, if it did. Valid values: [client_delayed, deal_not_finalised, reprioritised, external, other]';
+
+
+--
+-- Name: COLUMN "client_backlog_items"."variance_note"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."client_backlog_items"."variance_note" IS 'Client-facing explanation of the variance.';
 
 
 --
@@ -1311,7 +1364,7 @@ CREATE TABLE "company_os"."coaching_one_on_ones" (
     "minutes_token" "text",
     "transcript_source" "text",
     "meeting_id" "uuid",
-    CONSTRAINT "coaching_one_on_ones_mode_split" CHECK (((("mode_coach_pct" IS NULL) = ("mode_mentor_pct" IS NULL)) AND (("mode_mentor_pct" IS NULL) = ("mode_direct_pct" IS NULL)) AND (("mode_coach_pct" IS NULL) OR ((("mode_coach_pct" >= 0) AND ("mode_coach_pct" <= 100)) AND (("mode_mentor_pct" >= 0) AND ("mode_mentor_pct" <= 100)) AND (("mode_direct_pct" >= 0) AND ("mode_direct_pct" <= 100)) AND ((("mode_coach_pct" + "mode_mentor_pct") + "mode_direct_pct") = 100))))),
+    CONSTRAINT "coaching_one_on_ones_mode_split" CHECK (((("mode_coach_pct" IS NULL) = ("mode_mentor_pct" IS NULL)) AND (("mode_mentor_pct" IS NULL) = ("mode_direct_pct" IS NULL)) AND (("mode_coach_pct" IS NULL) OR (("mode_coach_pct" >= 0) AND ("mode_coach_pct" <= 100) AND (("mode_mentor_pct" >= 0) AND ("mode_mentor_pct" <= 100)) AND (("mode_direct_pct" >= 0) AND ("mode_direct_pct" <= 100)) AND ((("mode_coach_pct" + "mode_mentor_pct") + "mode_direct_pct") = 100))))),
     CONSTRAINT "coaching_one_on_ones_status_check" CHECK (("status" = ANY (ARRAY['scheduled'::"text", 'held'::"text", 'skipped'::"text"]))),
     CONSTRAINT "coaching_one_on_ones_transcript_source_check" CHECK (("transcript_source" = ANY (ARRAY['minutes_auto'::"text", 'minutes_link'::"text", 'manual'::"text"])))
 );
@@ -1411,10 +1464,34 @@ CREATE TABLE "company_os"."companies" (
     "website_url" "extensions"."citext",
     "client_types" "text"[] DEFAULT '{}'::"text"[] NOT NULL,
     "is_pr_program" boolean DEFAULT false NOT NULL,
+    "linkedin_url" "text",
+    "abn" "text",
+    "office_address" "text",
     CONSTRAINT "companies_industry_normalized_check" CHECK ((("industry_normalized" IS NULL) OR ("industry_normalized" = ANY (ARRAY['Technology & Software'::"text", 'Food & Beverage'::"text", 'Hospitality & Travel'::"text", 'Financial Services'::"text", 'Professional Services'::"text", 'Real Estate & Construction'::"text", 'Retail & Consumer Goods'::"text", 'Manufacturing'::"text", 'Healthcare & Wellness'::"text", 'Legal'::"text", 'Marketing & Media'::"text", 'Education'::"text", 'Logistics & Supply Chain'::"text", 'Energy'::"text", 'Other'::"text"])))),
     CONSTRAINT "companies_priority_check" CHECK ((("priority" IS NULL) OR ("priority" = ANY (ARRAY['low'::"text", 'medium'::"text", 'high'::"text"])))),
     CONSTRAINT "companies_size_band_check" CHECK ((("size_band" IS NULL) OR ("size_band" = ANY (ARRAY['0-50'::"text", '51-250'::"text", '251-5000'::"text", '5000+'::"text"]))))
 );
+
+
+--
+-- Name: COLUMN "companies"."linkedin_url"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."companies"."linkedin_url" IS 'Company LinkedIn page URL (PR Hub Key Facts).';
+
+
+--
+-- Name: COLUMN "companies"."abn"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."companies"."abn" IS 'Australian Business Number as printed on invoices and award entries.';
+
+
+--
+-- Name: COLUMN "companies"."office_address"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."companies"."office_address" IS 'Office address, free text, one line per line (PR Hub Key Facts).';
 
 
 --
@@ -1687,9 +1764,20 @@ CREATE TABLE "company_os"."people" (
     "marketing_consent_at" timestamp with time zone,
     "marketing_consent_source" "text",
     "github_login" "extensions"."citext",
+    "birthday" "date",
+    "key_topics" "text"[] DEFAULT '{}'::"text"[] NOT NULL,
+    "linkedin_handle" "text",
+    "credential_ref" "text",
     CONSTRAINT "people_marketing_consent_check" CHECK (("marketing_consent" = ANY (ARRAY['subscribed'::"text", 'unsubscribed'::"text", 'never_asked'::"text"]))),
-    CONSTRAINT "people_persona_check" CHECK ((("persona" IS NULL) OR ("persona" = ANY (ARRAY['vendor'::"text", 'prospect'::"text", 'client'::"text", 'job_seeker'::"text", 'employee'::"text", 'student'::"text"]))))
+    CONSTRAINT "people_persona_check" CHECK ((("persona" IS NULL) OR ("persona" = ANY (ARRAY['vendor'::"text", 'prospect'::"text", 'client'::"text", 'job_seeker'::"text", 'employee'::"text", 'student'::"text", 'media'::"text"]))))
 );
+
+
+--
+-- Name: COLUMN "people"."persona"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."people"."persona" IS 'CRM lifecycle tag; media = journalist/editor/producer. Valid values: [vendor, prospect, client, job_seeker, employee, student, media]';
 
 
 --
@@ -1697,6 +1785,34 @@ CREATE TABLE "company_os"."people" (
 --
 
 COMMENT ON COLUMN "company_os"."people"."display_name" IS 'Given name followed by family name, e.g. "Quan Le". Prefers the name the person goes by. Person pickers display and sort on this.';
+
+
+--
+-- Name: COLUMN "people"."birthday"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."people"."birthday" IS 'Birthday for client-relationship touchpoints (PR Hub Key Facts).';
+
+
+--
+-- Name: COLUMN "people"."key_topics"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."people"."key_topics" IS 'Topics a spokesperson can speak to; empty for non-spokespeople.';
+
+
+--
+-- Name: COLUMN "people"."linkedin_handle"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."people"."linkedin_handle" IS 'LinkedIn handle used when the agency posts on the person''s behalf.';
+
+
+--
+-- Name: COLUMN "people"."credential_ref"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."people"."credential_ref" IS 'Password-manager item reference (e.g. a 1Password item URL) for the person''s LinkedIn login. Never a password.';
 
 
 --
@@ -1854,29 +1970,29 @@ CREATE VIEW "company_os"."team_directory" AS
 --
 
 CREATE VIEW "company_os"."current_team_members" AS
- SELECT "team_directory"."id",
-    "team_directory"."person_id",
-    "team_directory"."full_name",
-    "team_directory"."email",
-    "team_directory"."auth_user_id",
-    "team_directory"."status",
-    "team_directory"."employee_number",
-    "team_directory"."employment_type",
-    "team_directory"."start_date",
-    "team_directory"."end_date",
-    "team_directory"."dayoff_employee_id",
-    "team_directory"."department_name",
-    "team_directory"."position_title",
-    "team_directory"."leave_policy_name",
-    "team_directory"."manager_name",
-    "team_directory"."team",
-    "team_directory"."location",
-    "team_directory"."leave_policy",
-    "team_directory"."work_schedule",
-    "team_directory"."used_days",
-    "team_directory"."total_days"
+ SELECT "id",
+    "person_id",
+    "full_name",
+    "email",
+    "auth_user_id",
+    "status",
+    "employee_number",
+    "employment_type",
+    "start_date",
+    "end_date",
+    "dayoff_employee_id",
+    "department_name",
+    "position_title",
+    "leave_policy_name",
+    "manager_name",
+    "team",
+    "location",
+    "leave_policy",
+    "work_schedule",
+    "used_days",
+    "total_days"
    FROM "company_os"."team_directory"
-  WHERE ("team_directory"."status" = ANY (ARRAY['active'::"text", 'on_leave'::"text", 'notice'::"text"]));
+  WHERE ("status" = ANY (ARRAY['active'::"text", 'on_leave'::"text", 'notice'::"text"]));
 
 
 --
@@ -2508,8 +2624,22 @@ CREATE TABLE "company_os"."interactions" (
     "metadata" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     CONSTRAINT "interactions_check" CHECK ((("person_id" IS NOT NULL) OR ("company_id" IS NOT NULL) OR ("subject_id" IS NOT NULL))),
-    CONSTRAINT "interactions_kind_check" CHECK (("kind" = ANY (ARRAY['note'::"text", 'call'::"text", 'email'::"text", 'meeting'::"text", 'message'::"text", 'status_change'::"text", 'system'::"text"])))
+    CONSTRAINT "interactions_kind_check" CHECK (("kind" = ANY (ARRAY['note'::"text", 'call'::"text", 'email'::"text", 'meeting'::"text", 'message'::"text", 'status_change'::"text", 'system'::"text", 'lunch'::"text", 'gift'::"text", 'catchup'::"text"])))
 );
+
+
+--
+-- Name: COLUMN "interactions"."kind"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."interactions"."kind" IS 'What kind of touch. lunch/gift/catchup are PR client-relationship touchpoints. Valid values: [note, call, email, meeting, message, status_change, system, lunch, gift, catchup]';
+
+
+--
+-- Name: COLUMN "interactions"."subject_type"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."interactions"."subject_type" IS 'Polymorphic subject: deal, application, pr_program.';
 
 
 --
@@ -2861,10 +2991,89 @@ CREATE TABLE "company_os"."marketing_content" (
     "read_time" "text",
     "published_at" timestamp with time zone,
     "body_html" "text",
+    "company_id" "uuid",
+    "outlet" "text",
+    "reach" integer,
+    "pr_program_id" "uuid",
+    "task_id" "uuid",
+    "backlog_item_id" "uuid",
+    "journalist_person_id" "uuid",
+    "case_study_id" "uuid",
+    "media_asset_document_id" "uuid",
     CONSTRAINT "marketing_calendar_image_type_check" CHECK ((("image_type" IS NULL) OR ("image_type" = ANY (ARRAY['real'::"text", 'ai'::"text", 'mixed'::"text", 'none'::"text"])))),
-    CONSTRAINT "marketing_content_channel_check" CHECK (("channel" = ANY (ARRAY['blog'::"text", 'email'::"text", 'linkedin'::"text", 'facebook'::"text"]))),
+    CONSTRAINT "marketing_content_channel_check" CHECK (("channel" = ANY (ARRAY['blog'::"text", 'email'::"text", 'linkedin'::"text", 'facebook'::"text", 'earned'::"text", 'online'::"text", 'print'::"text", 'tv'::"text", 'radio'::"text", 'podcast'::"text", 'syndication'::"text", 'speaking'::"text", 'other'::"text"]))),
     CONSTRAINT "marketing_content_status_check" CHECK (("status" = ANY (ARRAY['idea'::"text", 'drafted'::"text", 'approved'::"text", 'scheduled'::"text", 'published'::"text", 'skipped'::"text"])))
 );
+
+
+--
+-- Name: COLUMN "marketing_content"."channel"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."marketing_content"."channel" IS 'Where the content ran. Owned channels: blog/email/linkedin/facebook. Earned coverage: earned/online/print/tv/radio/podcast/syndication/speaking/other. Valid values: [blog, email, linkedin, facebook, earned, online, print, tv, radio, podcast, syndication, speaking, other]';
+
+
+--
+-- Name: COLUMN "marketing_content"."company_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."marketing_content"."company_id" IS 'Client company this content belongs to; null = the agency''s own marketing.';
+
+
+--
+-- Name: COLUMN "marketing_content"."outlet"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."marketing_content"."outlet" IS 'Publication/outlet name for earned coverage.';
+
+
+--
+-- Name: COLUMN "marketing_content"."reach"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."marketing_content"."reach" IS 'Estimated audience reach for the placement.';
+
+
+--
+-- Name: COLUMN "marketing_content"."pr_program_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."marketing_content"."pr_program_id" IS 'PR program this outcome counts toward.';
+
+
+--
+-- Name: COLUMN "marketing_content"."task_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."marketing_content"."task_id" IS 'The board card (effort) that earned this outcome.';
+
+
+--
+-- Name: COLUMN "marketing_content"."backlog_item_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."marketing_content"."backlog_item_id" IS 'The 90-day plan target this outcome counts toward.';
+
+
+--
+-- Name: COLUMN "marketing_content"."journalist_person_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."marketing_content"."journalist_person_id" IS 'people.id (persona=media) of the journalist who ran it; internal-only.';
+
+
+--
+-- Name: COLUMN "marketing_content"."case_study_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."marketing_content"."case_study_id" IS 'pr_case_studies.id used in this piece, if any.';
+
+
+--
+-- Name: COLUMN "marketing_content"."media_asset_document_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."marketing_content"."media_asset_document_id" IS 'program_documents.id of a video/audio clip of the segment.';
 
 
 --
@@ -3257,8 +3466,15 @@ CREATE TABLE "company_os"."person_companies" (
     "end_date" "date",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "person_companies_role_check" CHECK (("role" = ANY (ARRAY['owner_founder'::"text", 'executive'::"text", 'employee'::"text", 'primary'::"text", 'secondary'::"text", 'board'::"text", 'advisor'::"text", 'other'::"text"])))
+    CONSTRAINT "person_companies_role_check" CHECK (("role" = ANY (ARRAY['owner_founder'::"text", 'executive'::"text", 'employee'::"text", 'primary'::"text", 'secondary'::"text", 'board'::"text", 'advisor'::"text", 'other'::"text", 'accounts'::"text", 'spokesperson'::"text", 'journalist'::"text"])))
 );
+
+
+--
+-- Name: COLUMN "person_companies"."role"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."person_companies"."role" IS 'Relationship to the company. Client contacts: primary/accounts/spokesperson. Media: journalist at an outlet. Valid values: [owner_founder, executive, employee, primary, secondary, board, advisor, other, accounts, spokesperson, journalist]';
 
 
 --
@@ -3370,6 +3586,702 @@ COMMENT ON COLUMN "company_os"."portal_members"."role" IS 'admin | contributor |
 
 
 --
+-- Name: pr_awards; Type: TABLE; Schema: company_os; Owner: -
+--
+
+CREATE TABLE "company_os"."pr_awards" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "pr_program_id" "uuid" NOT NULL,
+    "company_id" "uuid" NOT NULL,
+    "quarterly_plan_id" "uuid",
+    "stage" "text" DEFAULT 'proposed'::"text" NOT NULL,
+    "award_name" "text" NOT NULL,
+    "category" "text",
+    "website" "text",
+    "entry_close" "date",
+    "event_date" "date",
+    "submission_document_id" "uuid",
+    "cost_cents" integer,
+    "outcome_note" "text",
+    "published_at" timestamp with time zone,
+    "created_by" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "archived_at" timestamp with time zone,
+    "archived_by" "text",
+    CONSTRAINT "pr_awards_stage_check" CHECK (("stage" = ANY (ARRAY['proposed'::"text", 'agreed'::"text", 'submitted'::"text", 'shortlisted'::"text", 'won'::"text", 'lost'::"text", 'withdrawn'::"text"])))
+);
+
+
+--
+-- Name: TABLE "pr_awards"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON TABLE "company_os"."pr_awards" IS 'One row is one award entry for a program, from proposed through outcome. A single stage column replaces the v0.5 proposed/agreed lists.';
+
+
+--
+-- Name: COLUMN "pr_awards"."pr_program_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."pr_program_id" IS 'Program the entry belongs to.';
+
+
+--
+-- Name: COLUMN "pr_awards"."company_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."company_id" IS 'Denormalised client company for scope checks.';
+
+
+--
+-- Name: COLUMN "pr_awards"."quarterly_plan_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."quarterly_plan_id" IS 'The 90-day plan this entry was proposed in, if any.';
+
+
+--
+-- Name: COLUMN "pr_awards"."stage"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."stage" IS 'Where the entry stands. Valid values: [proposed, agreed, submitted, shortlisted, won, lost, withdrawn]';
+
+
+--
+-- Name: COLUMN "pr_awards"."award_name"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."award_name" IS 'Name of the award programme.';
+
+
+--
+-- Name: COLUMN "pr_awards"."category"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."category" IS 'Category entered.';
+
+
+--
+-- Name: COLUMN "pr_awards"."website"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."website" IS 'Award website URL.';
+
+
+--
+-- Name: COLUMN "pr_awards"."entry_close"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."entry_close" IS 'Entry deadline.';
+
+
+--
+-- Name: COLUMN "pr_awards"."event_date"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."event_date" IS 'Ceremony/announcement date.';
+
+
+--
+-- Name: COLUMN "pr_awards"."submission_document_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."submission_document_id" IS 'program_documents.id of the submitted entry.';
+
+
+--
+-- Name: COLUMN "pr_awards"."cost_cents"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."cost_cents" IS 'Internal-only entry cost in cents.';
+
+
+--
+-- Name: COLUMN "pr_awards"."outcome_note"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."outcome_note" IS 'Result detail once known.';
+
+
+--
+-- Name: COLUMN "pr_awards"."published_at"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."published_at" IS 'When shown in the client hub; null = internal draft.';
+
+
+--
+-- Name: COLUMN "pr_awards"."created_by"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."created_by" IS 'Email of the creator.';
+
+
+--
+-- Name: COLUMN "pr_awards"."archived_at"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."archived_at" IS 'Soft delete; null = live.';
+
+
+--
+-- Name: COLUMN "pr_awards"."archived_by"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_awards"."archived_by" IS 'Who archived it.';
+
+
+--
+-- Name: pr_case_studies; Type: TABLE; Schema: company_os; Owner: -
+--
+
+CREATE TABLE "company_os"."pr_case_studies" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "pr_program_id" "uuid" NOT NULL,
+    "company_id" "uuid" NOT NULL,
+    "title" "text" NOT NULL,
+    "customer_person_id" "uuid",
+    "customer_company_id" "uuid",
+    "description" "text",
+    "status" "text" DEFAULT 'proposed'::"text" NOT NULL,
+    "published_at" timestamp with time zone,
+    "created_by" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "archived_at" timestamp with time zone,
+    "archived_by" "text",
+    CONSTRAINT "pr_case_studies_status_check" CHECK (("status" = ANY (ARRAY['proposed'::"text", 'in_progress'::"text", 'approved'::"text", 'used'::"text"])))
+);
+
+
+--
+-- Name: TABLE "pr_case_studies"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON TABLE "company_os"."pr_case_studies" IS 'One row is a customer story the client can offer to media: who the customer is (a people row, never inline PII), what the story is, and whether it has been used. "Used in" = marketing_content rows with case_study_id set.';
+
+
+--
+-- Name: COLUMN "pr_case_studies"."pr_program_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_case_studies"."pr_program_id" IS 'Program the story belongs to.';
+
+
+--
+-- Name: COLUMN "pr_case_studies"."company_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_case_studies"."company_id" IS 'Denormalised client company for scope checks.';
+
+
+--
+-- Name: COLUMN "pr_case_studies"."title"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_case_studies"."title" IS 'Short working title for the story.';
+
+
+--
+-- Name: COLUMN "pr_case_studies"."customer_person_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_case_studies"."customer_person_id" IS 'people.id of the customer contact (PII lives on people, internal-only).';
+
+
+--
+-- Name: COLUMN "pr_case_studies"."customer_company_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_case_studies"."customer_company_id" IS 'companies.id of the customer organisation, if it has one.';
+
+
+--
+-- Name: COLUMN "pr_case_studies"."description"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_case_studies"."description" IS 'The story in a paragraph.';
+
+
+--
+-- Name: COLUMN "pr_case_studies"."status"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_case_studies"."status" IS 'Where the story stands. Valid values: [proposed, in_progress, approved, used]';
+
+
+--
+-- Name: COLUMN "pr_case_studies"."published_at"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_case_studies"."published_at" IS 'When shown in the client hub; null = internal draft.';
+
+
+--
+-- Name: COLUMN "pr_case_studies"."created_by"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_case_studies"."created_by" IS 'Email of the creator.';
+
+
+--
+-- Name: COLUMN "pr_case_studies"."archived_at"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_case_studies"."archived_at" IS 'Soft delete; null = live.';
+
+
+--
+-- Name: COLUMN "pr_case_studies"."archived_by"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_case_studies"."archived_by" IS 'Who archived it.';
+
+
+--
+-- Name: pr_news_pipeline; Type: TABLE; Schema: company_os; Owner: -
+--
+
+CREATE TABLE "company_os"."pr_news_pipeline" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "pr_program_id" "uuid" NOT NULL,
+    "company_id" "uuid" NOT NULL,
+    "headline" "text" NOT NULL,
+    "description" "text",
+    "status" "text" DEFAULT 'logged'::"text" NOT NULL,
+    "target_quarter_plan_id" "uuid",
+    "promoted_backlog_item_id" "uuid",
+    "last_reviewed_on" "date",
+    "published_at" timestamp with time zone,
+    "created_by" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "archived_at" timestamp with time zone,
+    "archived_by" "text",
+    CONSTRAINT "pr_news_pipeline_status_check" CHECK (("status" = ANY (ARRAY['logged'::"text", 'candidate'::"text", 'promoted'::"text", 'parked'::"text"])))
+);
+
+
+--
+-- Name: TABLE "pr_news_pipeline"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON TABLE "company_os"."pr_news_pipeline" IS 'One row is a news idea logged against a program before it becomes a plan target. Promote = create the client_backlog_items target and set promoted_backlog_item_id.';
+
+
+--
+-- Name: COLUMN "pr_news_pipeline"."pr_program_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_news_pipeline"."pr_program_id" IS 'Program the idea belongs to.';
+
+
+--
+-- Name: COLUMN "pr_news_pipeline"."company_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_news_pipeline"."company_id" IS 'Denormalised client company for scope checks.';
+
+
+--
+-- Name: COLUMN "pr_news_pipeline"."headline"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_news_pipeline"."headline" IS 'Working headline.';
+
+
+--
+-- Name: COLUMN "pr_news_pipeline"."description"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_news_pipeline"."description" IS 'What the story is and why it matters.';
+
+
+--
+-- Name: COLUMN "pr_news_pipeline"."status"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_news_pipeline"."status" IS 'Pipeline state. Valid values: [logged, candidate, promoted, parked]';
+
+
+--
+-- Name: COLUMN "pr_news_pipeline"."target_quarter_plan_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_news_pipeline"."target_quarter_plan_id" IS 'The 90-day plan the idea is aimed at.';
+
+
+--
+-- Name: COLUMN "pr_news_pipeline"."promoted_backlog_item_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_news_pipeline"."promoted_backlog_item_id" IS 'The plan target created when the idea was promoted.';
+
+
+--
+-- Name: COLUMN "pr_news_pipeline"."last_reviewed_on"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_news_pipeline"."last_reviewed_on" IS 'Last time the team looked at this idea.';
+
+
+--
+-- Name: COLUMN "pr_news_pipeline"."published_at"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_news_pipeline"."published_at" IS 'When shown in the client hub; null = internal draft.';
+
+
+--
+-- Name: COLUMN "pr_news_pipeline"."created_by"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_news_pipeline"."created_by" IS 'Email of the creator.';
+
+
+--
+-- Name: COLUMN "pr_news_pipeline"."archived_at"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_news_pipeline"."archived_at" IS 'Soft delete; null = live.';
+
+
+--
+-- Name: COLUMN "pr_news_pipeline"."archived_by"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_news_pipeline"."archived_by" IS 'Who archived it.';
+
+
+--
+-- Name: pr_programs; Type: TABLE; Schema: company_os; Owner: -
+--
+
+CREATE TABLE "company_os"."pr_programs" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "company_id" "uuid" NOT NULL,
+    "name" "text" NOT NULL,
+    "status" "text" DEFAULT 'draft'::"text" NOT NULL,
+    "created_by" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "repo_url" "text",
+    "github_repo" "extensions"."citext",
+    "github_repo_id" bigint,
+    "account_lead_id" "uuid",
+    "strategic_lead_id" "uuid",
+    "account_health" "text",
+    "contract_start" "date",
+    "contract_review" "date",
+    "engagement_fee_cents" integer,
+    "client_drive_folder" "text",
+    "internal_drive_folder" "text",
+    CONSTRAINT "pr_programs_account_health_check" CHECK ((("account_health" IS NULL) OR ("account_health" = ANY (ARRAY['green'::"text", 'amber'::"text", 'red'::"text"])))),
+    CONSTRAINT "pr_programs_status_check" CHECK (("status" = ANY (ARRAY['draft'::"text", 'active'::"text", 'paused'::"text", 'complete'::"text"])))
+);
+
+
+--
+-- Name: TABLE "pr_programs"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON TABLE "company_os"."pr_programs" IS 'PR Programs: one row per client retainer/engagement, company-scoped. Every PR table keys to this via pr_program_id.';
+
+
+--
+-- Name: COLUMN "pr_programs"."status"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_programs"."status" IS 'Engagement state. Valid values: [draft, active, paused, complete]';
+
+
+--
+-- Name: COLUMN "pr_programs"."account_lead_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_programs"."account_lead_id" IS 'people.id of the account lead (day-to-day owner).';
+
+
+--
+-- Name: COLUMN "pr_programs"."strategic_lead_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_programs"."strategic_lead_id" IS 'people.id of the strategic lead.';
+
+
+--
+-- Name: COLUMN "pr_programs"."account_health"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_programs"."account_health" IS 'Internal-only RAG health; never shown to the client. Valid values: [green, amber, red]';
+
+
+--
+-- Name: COLUMN "pr_programs"."contract_start"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_programs"."contract_start" IS 'Retainer start date.';
+
+
+--
+-- Name: COLUMN "pr_programs"."contract_review"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_programs"."contract_review" IS 'Next contract review/renewal date.';
+
+
+--
+-- Name: COLUMN "pr_programs"."engagement_fee_cents"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_programs"."engagement_fee_cents" IS 'Internal-only monthly fee in cents; never shown to the client or team hub.';
+
+
+--
+-- Name: COLUMN "pr_programs"."client_drive_folder"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_programs"."client_drive_folder" IS 'Shared drive folder URL the client can open.';
+
+
+--
+-- Name: COLUMN "pr_programs"."internal_drive_folder"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_programs"."internal_drive_folder" IS 'Internal-only drive folder URL.';
+
+
+--
+-- Name: pr_program_stats; Type: VIEW; Schema: company_os; Owner: -
+--
+
+CREATE VIEW "company_os"."pr_program_stats" AS
+ SELECT "id" AS "pr_program_id",
+    "company_id",
+    ( SELECT "count"(*) AS "count"
+           FROM "company_os"."marketing_content" "c"
+          WHERE (("c"."pr_program_id" = "p"."id") AND ("c"."channel" = 'linkedin'::"text") AND ("c"."published_at" IS NOT NULL))) AS "linkedin_post_count",
+    ( SELECT "count"(*) AS "count"
+           FROM "company_os"."marketing_content" "c"
+          WHERE (("c"."pr_program_id" = "p"."id") AND ("c"."channel" = ANY (ARRAY['earned'::"text", 'online'::"text", 'print'::"text", 'tv'::"text", 'radio'::"text", 'podcast'::"text", 'syndication'::"text", 'speaking'::"text", 'other'::"text"])) AND ("c"."published_at" IS NOT NULL))) AS "coverage_count",
+    ( SELECT "max"("i"."occurred_at") AS "max"
+           FROM "company_os"."interactions" "i"
+          WHERE (("i"."subject_type" = 'pr_program'::"text") AND ("i"."subject_id" = "p"."id") AND ("i"."kind" = ANY (ARRAY['meeting'::"text", 'lunch'::"text", 'catchup'::"text"])))) AS "last_formal_catchup",
+    ( SELECT "count"(*) AS "count"
+           FROM "company_os"."pr_awards" "a"
+          WHERE (("a"."pr_program_id" = "p"."id") AND ("a"."archived_at" IS NULL) AND ("a"."stage" = ANY (ARRAY['agreed'::"text", 'submitted'::"text", 'shortlisted'::"text"])))) AS "awards_in_flight"
+   FROM "company_os"."pr_programs" "p";
+
+
+--
+-- Name: VIEW "pr_program_stats"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON VIEW "company_os"."pr_program_stats" IS 'Derived per-program tallies for the hub band: published LinkedIn posts, published earned coverage, last formal catch-up, awards in flight. Read, never written.';
+
+
+--
+-- Name: pr_quarterly_plans; Type: TABLE; Schema: company_os; Owner: -
+--
+
+CREATE TABLE "company_os"."pr_quarterly_plans" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "pr_program_id" "uuid" NOT NULL,
+    "company_id" "uuid" NOT NULL,
+    "quarter_label" "text" NOT NULL,
+    "starts_on" "date" NOT NULL,
+    "ends_on" "date" NOT NULL,
+    "planning_meeting_id" "uuid",
+    "business_objective" "text",
+    "comms_objective" "text",
+    "approved_plan_md" "text",
+    "signoff_date" "date",
+    "published_at" timestamp with time zone,
+    "created_by" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "archived_at" timestamp with time zone,
+    "archived_by" "text",
+    CONSTRAINT "pr_quarterly_plans_dates_check" CHECK (("ends_on" >= "starts_on"))
+);
+
+
+--
+-- Name: TABLE "pr_quarterly_plans"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON TABLE "company_os"."pr_quarterly_plans" IS 'One row is a 90-day plan for one PR program: the agreed business and comms objectives for a quarter, keyed off the planning meeting. Targets are client_backlog_items with quarterly_plan_id set.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."pr_program_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."pr_program_id" IS 'The program this quarter belongs to.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."company_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."company_id" IS 'Denormalised client company for scope checks; always equals pr_programs.company_id.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."quarter_label"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."quarter_label" IS 'Display label, unique per program, e.g. Q2 FY27.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."starts_on"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."starts_on" IS 'First day of the quarter.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."ends_on"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."ends_on" IS 'Last day of the quarter.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."planning_meeting_id"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."planning_meeting_id" IS 'meetings.id of the quarterly planning session the plan was keyed off; the meeting row holds transcript, recording and summary.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."business_objective"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."business_objective" IS 'What the client business needs this quarter, in their words.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."comms_objective"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."comms_objective" IS 'What comms will deliver this quarter to serve the business objective.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."approved_plan_md"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."approved_plan_md" IS 'Optional longer approved plan, markdown.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."signoff_date"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."signoff_date" IS 'Date the client signed the plan off.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."published_at"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."published_at" IS 'When the plan was made visible in the client hub; null = internal draft.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."created_by"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."created_by" IS 'Email of the creator.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."archived_at"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."archived_at" IS 'Soft delete; null = live.';
+
+
+--
+-- Name: COLUMN "pr_quarterly_plans"."archived_by"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."pr_quarterly_plans"."archived_by" IS 'Who archived it.';
+
+
+--
+-- Name: tasks; Type: TABLE; Schema: company_os; Owner: -
+--
+
+CREATE TABLE "company_os"."tasks" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "title" "text" NOT NULL,
+    "description" "text",
+    "board_id" "uuid",
+    "board_column_id" "uuid",
+    "sprint_id" "uuid",
+    "position" double precision DEFAULT 0 NOT NULL,
+    "assignee_id" "uuid",
+    "created_by" "uuid",
+    "status" "text" DEFAULT 'open'::"text" NOT NULL,
+    "priority" "text" DEFAULT 'p3'::"text" NOT NULL,
+    "due_date" "date",
+    "completed_at" timestamp with time zone,
+    "internal" boolean DEFAULT false NOT NULL,
+    "subject_type" "text",
+    "subject_id" "uuid",
+    "metadata" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "archived_at" timestamp with time zone,
+    "archived_by" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "parent_task_id" "uuid",
+    "human_tokens" integer
+);
+
+
+--
+-- Name: COLUMN "tasks"."human_tokens"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."tasks"."human_tokens" IS 'Estimated effort in Human Tokens (1 token = 1 hour of skilled, leveraged work). Nullable; applies to cards and subtasks alike.';
+
+
+--
+-- Name: pr_target_progress; Type: VIEW; Schema: company_os; Owner: -
+--
+
+CREATE VIEW "company_os"."pr_target_progress" AS
+ SELECT "id" AS "backlog_item_id",
+    "quarterly_plan_id",
+    "pr_program_id",
+    "company_id",
+    "group_key",
+    "quantity_target",
+    ( SELECT "count"(*) AS "count"
+           FROM "company_os"."marketing_content" "c"
+          WHERE (("c"."backlog_item_id" = "b"."id") AND ("c"."published_at" IS NOT NULL))) AS "outcome_count",
+    ( SELECT "count"(*) AS "count"
+           FROM "company_os"."tasks" "t"
+          WHERE (("t"."subject_type" = 'client_backlog_item'::"text") AND ("t"."subject_id" = "b"."id") AND ("t"."archived_at" IS NULL))) AS "task_count",
+    ( SELECT "count"(*) AS "count"
+           FROM "company_os"."tasks" "t"
+          WHERE (("t"."subject_type" = 'client_backlog_item'::"text") AND ("t"."subject_id" = "b"."id") AND ("t"."archived_at" IS NULL) AND ("t"."completed_at" IS NOT NULL))) AS "task_done_count"
+   FROM "company_os"."client_backlog_items" "b"
+  WHERE ("archived_at" IS NULL);
+
+
+--
+-- Name: VIEW "pr_target_progress"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON VIEW "company_os"."pr_target_progress" IS 'Derived per-target progress for the 90-day plan: quantity_target vs. published outcomes linked to the target, plus board-card counts. The EOS scorecard row. Read, never written.';
+
+
+--
 -- Name: products; Type: TABLE; Schema: company_os; Owner: -
 --
 
@@ -3409,12 +4321,16 @@ CREATE TABLE "company_os"."products" (
 CREATE TABLE "company_os"."program_documents" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "pr_program_id" "uuid",
-    "storage_path" "text" NOT NULL,
+    "storage_path" "text",
     "filename" "text" NOT NULL,
     "size_bytes" bigint,
     "uploaded_by" "text",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "company_id" "uuid" NOT NULL
+    "company_id" "uuid" NOT NULL,
+    "external_url" "text",
+    "source" "text" DEFAULT 'upload'::"text" NOT NULL,
+    CONSTRAINT "program_documents_path_or_url_check" CHECK (((("storage_path" IS NOT NULL) AND ("external_url" IS NULL)) OR (("storage_path" IS NULL) AND ("external_url" IS NOT NULL)))),
+    CONSTRAINT "program_documents_source_check" CHECK (("source" = ANY (ARRAY['upload'::"text", 'link'::"text"])))
 );
 
 
@@ -3438,7 +4354,10 @@ CREATE TABLE "company_os"."program_plans" (
     "created_by" "text",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "program_plans_method_check" CHECK (("method" = ANY (ARRAY['upload'::"text", 'chat'::"text"])))
+    "quarter" "text",
+    "signed_off_at" "date",
+    "published_at" timestamp with time zone,
+    CONSTRAINT "program_plans_method_check" CHECK (("method" = ANY (ARRAY['upload'::"text", 'chat'::"text", 'linkedin_strategy'::"text"])))
 );
 
 
@@ -3446,7 +4365,21 @@ CREATE TABLE "company_os"."program_plans" (
 -- Name: TABLE "program_plans"; Type: COMMENT; Schema: company_os; Owner: -
 --
 
-COMMENT ON TABLE "company_os"."program_plans" IS 'Plans within an PR program: uploaded-doc markers or chatbot-produced 5Ds briefs (brief_html).';
+COMMENT ON TABLE "company_os"."program_plans" IS 'Plans within a PR program: uploaded-doc markers, chatbot-produced 5Ds briefs (brief_html), or the signed-off LinkedIn strategy (method=linkedin_strategy).';
+
+
+--
+-- Name: COLUMN "program_plans"."method"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."program_plans"."method" IS 'How the plan was produced. linkedin_strategy = the signed-off LinkedIn content strategy (pillars, post types, cadence in brief_html). Valid values: [upload, chat, linkedin_strategy]';
+
+
+--
+-- Name: COLUMN "program_plans"."published_at"; Type: COMMENT; Schema: company_os; Owner: -
+--
+
+COMMENT ON COLUMN "company_os"."program_plans"."published_at" IS 'When the plan was made visible in the client hub; null = internal draft.';
 
 
 --
@@ -3454,15 +4387,15 @@ COMMENT ON TABLE "company_os"."program_plans" IS 'Plans within an PR program: up
 --
 
 CREATE VIEW "company_os"."public_retreats" AS
- SELECT "pr"."cohort_slug" AS "id",
-    "pr"."cohort_slug",
-    COALESCE(NULLIF("btrim"("split_part"("min"("pr"."location"), ','::"text", 1)), ''::"text"), "initcap"("replace"("pr"."cohort_slug", '-'::"text", ' '::"text"))) AS "name",
-    "min"("pr"."location") AS "location",
-    "min"("pr"."date_start") AS "date_start",
-    "max"("pr"."date_end") AS "date_end",
-    "count"(DISTINCT "pr"."id") AS "tiers",
-    "bool_or"("pr"."active") AS "active",
-    "min"("pr"."amount_usd_cents") AS "from_usd_cents",
+ SELECT "cohort_slug" AS "id",
+    "cohort_slug",
+    COALESCE(NULLIF("btrim"("split_part"("min"("location"), ','::"text", 1)), ''::"text"), "initcap"("replace"("cohort_slug", '-'::"text", ' '::"text"))) AS "name",
+    "min"("location") AS "location",
+    "min"("date_start") AS "date_start",
+    "max"("date_end") AS "date_end",
+    "count"(DISTINCT "id") AS "tiers",
+    "bool_or"("active") AS "active",
+    "min"("amount_usd_cents") AS "from_usd_cents",
     ( SELECT COALESCE("sum"("o"."amount_usd_cents"), (0)::numeric) AS "coalesce"
            FROM (("company_os"."event_registrations" "r"
              JOIN "company_os"."products" "p2" ON (("p2"."id" = "r"."product_id")))
@@ -3477,8 +4410,8 @@ CREATE VIEW "company_os"."public_retreats" AS
              JOIN "company_os"."products" "p2" ON (("p2"."id" = "r"."product_id")))
           WHERE (("p2"."cohort_slug" = "pr"."cohort_slug") AND ("r"."status" = 'confirmed'::"text"))) AS "confirmed"
    FROM "company_os"."products" "pr"
-  WHERE (("pr"."type" = 'event'::"text") AND ("pr"."cohort_slug" IS NOT NULL))
-  GROUP BY "pr"."cohort_slug";
+  WHERE (("type" = 'event'::"text") AND ("cohort_slug" IS NOT NULL))
+  GROUP BY "cohort_slug";
 
 
 --
@@ -3844,44 +4777,6 @@ CREATE TABLE "company_os"."task_stage_log" (
 
 
 --
--- Name: tasks; Type: TABLE; Schema: company_os; Owner: -
---
-
-CREATE TABLE "company_os"."tasks" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "title" "text" NOT NULL,
-    "description" "text",
-    "board_id" "uuid",
-    "board_column_id" "uuid",
-    "sprint_id" "uuid",
-    "position" double precision DEFAULT 0 NOT NULL,
-    "assignee_id" "uuid",
-    "created_by" "uuid",
-    "status" "text" DEFAULT 'open'::"text" NOT NULL,
-    "priority" "text" DEFAULT 'p3'::"text" NOT NULL,
-    "due_date" "date",
-    "completed_at" timestamp with time zone,
-    "internal" boolean DEFAULT false NOT NULL,
-    "subject_type" "text",
-    "subject_id" "uuid",
-    "metadata" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
-    "archived_at" timestamp with time zone,
-    "archived_by" "text",
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "parent_task_id" "uuid",
-    "human_tokens" integer
-);
-
-
---
--- Name: COLUMN "tasks"."human_tokens"; Type: COMMENT; Schema: company_os; Owner: -
---
-
-COMMENT ON COLUMN "company_os"."tasks"."human_tokens" IS 'Estimated effort in Human Tokens (1 token = 1 hour of skilled, leveraged work). Nullable; applies to cards and subtasks alike.';
-
-
---
 -- Name: time_off; Type: TABLE; Schema: company_os; Owner: -
 --
 
@@ -4238,14 +5133,6 @@ ALTER TABLE ONLY "company_os"."affiliates"
 
 ALTER TABLE ONLY "company_os"."affiliates"
     ADD CONSTRAINT "affiliates_pkey" PRIMARY KEY ("id");
-
-
---
--- Name: pr_programs pr_programs_pkey; Type: CONSTRAINT; Schema: company_os; Owner: -
---
-
-ALTER TABLE ONLY "company_os"."pr_programs"
-    ADD CONSTRAINT "pr_programs_pkey" PRIMARY KEY ("id");
 
 
 --
@@ -5433,6 +6320,54 @@ ALTER TABLE ONLY "company_os"."positions"
 
 
 --
+-- Name: pr_awards pr_awards_pkey; Type: CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_awards"
+    ADD CONSTRAINT "pr_awards_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: pr_case_studies pr_case_studies_pkey; Type: CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_case_studies"
+    ADD CONSTRAINT "pr_case_studies_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: pr_news_pipeline pr_news_pipeline_pkey; Type: CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_news_pipeline"
+    ADD CONSTRAINT "pr_news_pipeline_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: pr_programs pr_programs_pkey; Type: CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_programs"
+    ADD CONSTRAINT "pr_programs_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: pr_quarterly_plans pr_quarterly_plans_pkey; Type: CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_quarterly_plans"
+    ADD CONSTRAINT "pr_quarterly_plans_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: pr_quarterly_plans pr_quarterly_plans_program_quarter_key; Type: CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_quarterly_plans"
+    ADD CONSTRAINT "pr_quarterly_plans_program_quarter_key" UNIQUE ("pr_program_id", "quarter_label");
+
+
+--
 -- Name: products products_pkey; Type: CONSTRAINT; Schema: company_os; Owner: -
 --
 
@@ -5817,19 +6752,19 @@ ALTER TABLE ONLY "htt"."pull_requests"
 
 
 --
--- Name: repos repos_pr_program_id_key; Type: CONSTRAINT; Schema: htt; Owner: -
---
-
-ALTER TABLE ONLY "htt"."repos"
-    ADD CONSTRAINT "repos_pr_program_id_key" UNIQUE ("pr_program_id");
-
-
---
 -- Name: repos repos_pkey; Type: CONSTRAINT; Schema: htt; Owner: -
 --
 
 ALTER TABLE ONLY "htt"."repos"
     ADD CONSTRAINT "repos_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: repos repos_pr_program_id_key; Type: CONSTRAINT; Schema: htt; Owner: -
+--
+
+ALTER TABLE ONLY "htt"."repos"
+    ADD CONSTRAINT "repos_pr_program_id_key" UNIQUE ("pr_program_id");
 
 
 --
@@ -5885,27 +6820,6 @@ CREATE INDEX "affiliates_company_id_idx" ON "company_os"."affiliates" USING "btr
 
 
 --
--- Name: pr_programs_company_idx; Type: INDEX; Schema: company_os; Owner: -
---
-
-CREATE INDEX "pr_programs_company_idx" ON "company_os"."pr_programs" USING "btree" ("company_id");
-
-
---
--- Name: pr_programs_github_repo_key; Type: INDEX; Schema: company_os; Owner: -
---
-
-CREATE UNIQUE INDEX "pr_programs_github_repo_key" ON "company_os"."pr_programs" USING "btree" ("github_repo") WHERE ("github_repo" IS NOT NULL);
-
-
---
--- Name: pr_programs_status_idx; Type: INDEX; Schema: company_os; Owner: -
---
-
-CREATE INDEX "pr_programs_status_idx" ON "company_os"."pr_programs" USING "btree" ("status");
-
-
---
 -- Name: applications_ai_rating_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
@@ -5948,17 +6862,17 @@ CREATE INDEX "board_members_person_idx" ON "company_os"."board_members" USING "b
 
 
 --
--- Name: boards_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
---
-
-CREATE INDEX "boards_pr_program_id_idx" ON "company_os"."boards" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
-
-
---
 -- Name: boards_client_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
 CREATE INDEX "boards_client_idx" ON "company_os"."boards" USING "btree" ("client_company_id");
+
+
+--
+-- Name: boards_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "boards_pr_program_id_idx" ON "company_os"."boards" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
 
 
 --
@@ -5973,13 +6887,6 @@ CREATE INDEX "call_transcripts_search_idx" ON "company_os"."call_transcripts" US
 --
 
 CREATE INDEX "call_transcripts_started_at_idx" ON "company_os"."call_transcripts" USING "btree" ("started_at" DESC);
-
-
---
--- Name: client_backlog_items_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
---
-
-CREATE INDEX "client_backlog_items_pr_program_id_idx" ON "company_os"."client_backlog_items" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
 
 
 --
@@ -6004,10 +6911,17 @@ CREATE UNIQUE INDEX "client_backlog_items_company_ref_key" ON "company_os"."clie
 
 
 --
--- Name: client_roadmap_groups_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
+-- Name: client_backlog_items_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
-CREATE INDEX "client_roadmap_groups_pr_program_id_idx" ON "company_os"."client_roadmap_groups" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
+CREATE INDEX "client_backlog_items_pr_program_id_idx" ON "company_os"."client_backlog_items" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
+
+
+--
+-- Name: client_backlog_items_quarterly_plan_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "client_backlog_items_quarterly_plan_idx" ON "company_os"."client_backlog_items" USING "btree" ("quarterly_plan_id") WHERE ("quarterly_plan_id" IS NOT NULL);
 
 
 --
@@ -6015,6 +6929,13 @@ CREATE INDEX "client_roadmap_groups_pr_program_id_idx" ON "company_os"."client_r
 --
 
 CREATE INDEX "client_roadmap_groups_company_idx" ON "company_os"."client_roadmap_groups" USING "btree" ("company_id", "sort_order");
+
+
+--
+-- Name: client_roadmap_groups_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "client_roadmap_groups_pr_program_id_idx" ON "company_os"."client_roadmap_groups" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
 
 
 --
@@ -7089,6 +8010,13 @@ CREATE INDEX "marketing_campaigns_pillar_idx" ON "company_os"."marketing_campaig
 
 
 --
+-- Name: marketing_content_backlog_item_id_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "marketing_content_backlog_item_id_idx" ON "company_os"."marketing_content" USING "btree" ("backlog_item_id") WHERE ("backlog_item_id" IS NOT NULL);
+
+
+--
 -- Name: marketing_content_blog_slug_key; Type: INDEX; Schema: company_os; Owner: -
 --
 
@@ -7117,10 +8045,24 @@ CREATE INDEX "marketing_content_campaign_idx" ON "company_os"."marketing_content
 
 
 --
+-- Name: marketing_content_company_id_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "marketing_content_company_id_idx" ON "company_os"."marketing_content" USING "btree" ("company_id") WHERE ("company_id" IS NOT NULL);
+
+
+--
 -- Name: marketing_content_pillar_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
 CREATE INDEX "marketing_content_pillar_idx" ON "company_os"."marketing_content" USING "btree" ("pillar_id");
+
+
+--
+-- Name: marketing_content_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "marketing_content_pr_program_id_idx" ON "company_os"."marketing_content" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
 
 
 --
@@ -7145,13 +8087,6 @@ CREATE UNIQUE INDEX "marketing_pillars_brand_name_idx" ON "company_os"."marketin
 
 
 --
--- Name: meetings_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
---
-
-CREATE INDEX "meetings_pr_program_id_idx" ON "company_os"."meetings" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
-
-
---
 -- Name: meetings_notes_company_idx; Type: INDEX; Schema: company_os; Owner: -
 --
 
@@ -7163,6 +8098,13 @@ CREATE INDEX "meetings_notes_company_idx" ON "company_os"."meetings" USING "btre
 --
 
 CREATE INDEX "meetings_notes_published_idx" ON "company_os"."meetings" USING "btree" ("published_at") WHERE ("source" = 'notes'::"text");
+
+
+--
+-- Name: meetings_pr_program_id_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "meetings_pr_program_id_idx" ON "company_os"."meetings" USING "btree" ("pr_program_id") WHERE ("pr_program_id" IS NOT NULL);
 
 
 --
@@ -7240,6 +8182,83 @@ CREATE UNIQUE INDEX "portal_members_person_company_key" ON "company_os"."portal_
 --
 
 CREATE UNIQUE INDEX "portal_members_person_only_key" ON "company_os"."portal_members" USING "btree" ("person_id") WHERE ("company_id" IS NULL);
+
+
+--
+-- Name: pr_awards_company_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "pr_awards_company_idx" ON "company_os"."pr_awards" USING "btree" ("company_id");
+
+
+--
+-- Name: pr_awards_program_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "pr_awards_program_idx" ON "company_os"."pr_awards" USING "btree" ("pr_program_id");
+
+
+--
+-- Name: pr_case_studies_company_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "pr_case_studies_company_idx" ON "company_os"."pr_case_studies" USING "btree" ("company_id");
+
+
+--
+-- Name: pr_case_studies_program_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "pr_case_studies_program_idx" ON "company_os"."pr_case_studies" USING "btree" ("pr_program_id");
+
+
+--
+-- Name: pr_news_pipeline_company_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "pr_news_pipeline_company_idx" ON "company_os"."pr_news_pipeline" USING "btree" ("company_id");
+
+
+--
+-- Name: pr_news_pipeline_program_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "pr_news_pipeline_program_idx" ON "company_os"."pr_news_pipeline" USING "btree" ("pr_program_id");
+
+
+--
+-- Name: pr_programs_company_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "pr_programs_company_idx" ON "company_os"."pr_programs" USING "btree" ("company_id");
+
+
+--
+-- Name: pr_programs_github_repo_key; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE UNIQUE INDEX "pr_programs_github_repo_key" ON "company_os"."pr_programs" USING "btree" ("github_repo") WHERE ("github_repo" IS NOT NULL);
+
+
+--
+-- Name: pr_programs_status_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "pr_programs_status_idx" ON "company_os"."pr_programs" USING "btree" ("status");
+
+
+--
+-- Name: pr_quarterly_plans_company_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "pr_quarterly_plans_company_idx" ON "company_os"."pr_quarterly_plans" USING "btree" ("company_id");
+
+
+--
+-- Name: pr_quarterly_plans_program_idx; Type: INDEX; Schema: company_os; Owner: -
+--
+
+CREATE INDEX "pr_quarterly_plans_program_idx" ON "company_os"."pr_quarterly_plans" USING "btree" ("pr_program_id");
 
 
 --
@@ -8095,14 +9114,6 @@ ALTER TABLE ONLY "company_os"."affiliates"
 
 
 --
--- Name: pr_programs pr_programs_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
---
-
-ALTER TABLE ONLY "company_os"."pr_programs"
-    ADD CONSTRAINT "pr_programs_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company_os"."companies"("id");
-
-
---
 -- Name: application_stage_log application_stage_log_application_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
@@ -8247,14 +9258,6 @@ ALTER TABLE ONLY "company_os"."board_members"
 
 
 --
--- Name: boards boards_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
---
-
-ALTER TABLE ONLY "company_os"."boards"
-    ADD CONSTRAINT "boards_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
-
-
---
 -- Name: boards boards_client_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
@@ -8268,6 +9271,14 @@ ALTER TABLE ONLY "company_os"."boards"
 
 ALTER TABLE ONLY "company_os"."boards"
     ADD CONSTRAINT "boards_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "company_os"."people"("id");
+
+
+--
+-- Name: boards boards_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."boards"
+    ADD CONSTRAINT "boards_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
 
 
 --
@@ -8383,14 +9394,6 @@ ALTER TABLE ONLY "company_os"."candidates"
 
 
 --
--- Name: client_backlog_items client_backlog_items_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
---
-
-ALTER TABLE ONLY "company_os"."client_backlog_items"
-    ADD CONSTRAINT "client_backlog_items_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
-
-
---
 -- Name: client_backlog_items client_backlog_items_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
@@ -8399,11 +9402,19 @@ ALTER TABLE ONLY "company_os"."client_backlog_items"
 
 
 --
--- Name: client_roadmap_groups client_roadmap_groups_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+-- Name: client_backlog_items client_backlog_items_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
-ALTER TABLE ONLY "company_os"."client_roadmap_groups"
-    ADD CONSTRAINT "client_roadmap_groups_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
+ALTER TABLE ONLY "company_os"."client_backlog_items"
+    ADD CONSTRAINT "client_backlog_items_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: client_backlog_items client_backlog_items_quarterly_plan_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."client_backlog_items"
+    ADD CONSTRAINT "client_backlog_items_quarterly_plan_id_fkey" FOREIGN KEY ("quarterly_plan_id") REFERENCES "company_os"."pr_quarterly_plans"("id") ON DELETE SET NULL;
 
 
 --
@@ -8415,11 +9426,11 @@ ALTER TABLE ONLY "company_os"."client_roadmap_groups"
 
 
 --
--- Name: client_roadmap_overview client_roadmap_overview_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+-- Name: client_roadmap_groups client_roadmap_groups_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
-ALTER TABLE ONLY "company_os"."client_roadmap_overview"
-    ADD CONSTRAINT "client_roadmap_overview_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
+ALTER TABLE ONLY "company_os"."client_roadmap_groups"
+    ADD CONSTRAINT "client_roadmap_groups_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
 
 
 --
@@ -8428,6 +9439,14 @@ ALTER TABLE ONLY "company_os"."client_roadmap_overview"
 
 ALTER TABLE ONLY "company_os"."client_roadmap_overview"
     ADD CONSTRAINT "client_roadmap_overview_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company_os"."companies"("id") ON DELETE CASCADE;
+
+
+--
+-- Name: client_roadmap_overview client_roadmap_overview_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."client_roadmap_overview"
+    ADD CONSTRAINT "client_roadmap_overview_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
 
 
 --
@@ -9359,6 +10378,62 @@ ALTER TABLE ONLY "company_os"."marketing_campaigns"
 
 
 --
+-- Name: marketing_content marketing_content_backlog_item_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."marketing_content"
+    ADD CONSTRAINT "marketing_content_backlog_item_id_fkey" FOREIGN KEY ("backlog_item_id") REFERENCES "company_os"."client_backlog_items"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: marketing_content marketing_content_case_study_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."marketing_content"
+    ADD CONSTRAINT "marketing_content_case_study_id_fkey" FOREIGN KEY ("case_study_id") REFERENCES "company_os"."pr_case_studies"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: marketing_content marketing_content_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."marketing_content"
+    ADD CONSTRAINT "marketing_content_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company_os"."companies"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: marketing_content marketing_content_journalist_person_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."marketing_content"
+    ADD CONSTRAINT "marketing_content_journalist_person_id_fkey" FOREIGN KEY ("journalist_person_id") REFERENCES "company_os"."people"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: marketing_content marketing_content_media_asset_document_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."marketing_content"
+    ADD CONSTRAINT "marketing_content_media_asset_document_id_fkey" FOREIGN KEY ("media_asset_document_id") REFERENCES "company_os"."program_documents"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: marketing_content marketing_content_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."marketing_content"
+    ADD CONSTRAINT "marketing_content_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: marketing_content marketing_content_task_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."marketing_content"
+    ADD CONSTRAINT "marketing_content_task_id_fkey" FOREIGN KEY ("task_id") REFERENCES "company_os"."tasks"("id") ON DELETE SET NULL;
+
+
+--
 -- Name: marketing_pillars marketing_pillars_brand_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
@@ -9407,14 +10482,6 @@ ALTER TABLE ONLY "company_os"."meeting_participants"
 
 
 --
--- Name: meetings meetings_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
---
-
-ALTER TABLE ONLY "company_os"."meetings"
-    ADD CONSTRAINT "meetings_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
-
-
---
 -- Name: meetings meetings_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
@@ -9428,6 +10495,14 @@ ALTER TABLE ONLY "company_os"."meetings"
 
 ALTER TABLE ONLY "company_os"."meetings"
     ADD CONSTRAINT "meetings_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "company_os"."people"("id");
+
+
+--
+-- Name: meetings meetings_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."meetings"
+    ADD CONSTRAINT "meetings_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
 
 
 --
@@ -9687,6 +10762,150 @@ ALTER TABLE ONLY "company_os"."positions"
 
 
 --
+-- Name: pr_awards pr_awards_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_awards"
+    ADD CONSTRAINT "pr_awards_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company_os"."companies"("id") ON DELETE CASCADE;
+
+
+--
+-- Name: pr_awards pr_awards_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_awards"
+    ADD CONSTRAINT "pr_awards_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE CASCADE;
+
+
+--
+-- Name: pr_awards pr_awards_quarterly_plan_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_awards"
+    ADD CONSTRAINT "pr_awards_quarterly_plan_id_fkey" FOREIGN KEY ("quarterly_plan_id") REFERENCES "company_os"."pr_quarterly_plans"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: pr_awards pr_awards_submission_document_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_awards"
+    ADD CONSTRAINT "pr_awards_submission_document_id_fkey" FOREIGN KEY ("submission_document_id") REFERENCES "company_os"."program_documents"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: pr_case_studies pr_case_studies_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_case_studies"
+    ADD CONSTRAINT "pr_case_studies_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company_os"."companies"("id") ON DELETE CASCADE;
+
+
+--
+-- Name: pr_case_studies pr_case_studies_customer_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_case_studies"
+    ADD CONSTRAINT "pr_case_studies_customer_company_id_fkey" FOREIGN KEY ("customer_company_id") REFERENCES "company_os"."companies"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: pr_case_studies pr_case_studies_customer_person_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_case_studies"
+    ADD CONSTRAINT "pr_case_studies_customer_person_id_fkey" FOREIGN KEY ("customer_person_id") REFERENCES "company_os"."people"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: pr_case_studies pr_case_studies_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_case_studies"
+    ADD CONSTRAINT "pr_case_studies_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE CASCADE;
+
+
+--
+-- Name: pr_news_pipeline pr_news_pipeline_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_news_pipeline"
+    ADD CONSTRAINT "pr_news_pipeline_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company_os"."companies"("id") ON DELETE CASCADE;
+
+
+--
+-- Name: pr_news_pipeline pr_news_pipeline_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_news_pipeline"
+    ADD CONSTRAINT "pr_news_pipeline_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE CASCADE;
+
+
+--
+-- Name: pr_news_pipeline pr_news_pipeline_promoted_backlog_item_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_news_pipeline"
+    ADD CONSTRAINT "pr_news_pipeline_promoted_backlog_item_id_fkey" FOREIGN KEY ("promoted_backlog_item_id") REFERENCES "company_os"."client_backlog_items"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: pr_news_pipeline pr_news_pipeline_target_quarter_plan_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_news_pipeline"
+    ADD CONSTRAINT "pr_news_pipeline_target_quarter_plan_id_fkey" FOREIGN KEY ("target_quarter_plan_id") REFERENCES "company_os"."pr_quarterly_plans"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: pr_programs pr_programs_account_lead_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_programs"
+    ADD CONSTRAINT "pr_programs_account_lead_id_fkey" FOREIGN KEY ("account_lead_id") REFERENCES "company_os"."people"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: pr_programs pr_programs_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_programs"
+    ADD CONSTRAINT "pr_programs_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company_os"."companies"("id");
+
+
+--
+-- Name: pr_programs pr_programs_strategic_lead_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_programs"
+    ADD CONSTRAINT "pr_programs_strategic_lead_id_fkey" FOREIGN KEY ("strategic_lead_id") REFERENCES "company_os"."people"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: pr_quarterly_plans pr_quarterly_plans_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_quarterly_plans"
+    ADD CONSTRAINT "pr_quarterly_plans_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company_os"."companies"("id") ON DELETE CASCADE;
+
+
+--
+-- Name: pr_quarterly_plans pr_quarterly_plans_planning_meeting_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_quarterly_plans"
+    ADD CONSTRAINT "pr_quarterly_plans_planning_meeting_id_fkey" FOREIGN KEY ("planning_meeting_id") REFERENCES "company_os"."meetings"("id") ON DELETE SET NULL;
+
+
+--
+-- Name: pr_quarterly_plans pr_quarterly_plans_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."pr_quarterly_plans"
+    ADD CONSTRAINT "pr_quarterly_plans_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE CASCADE;
+
+
+--
 -- Name: products products_event_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
@@ -9703,19 +10922,19 @@ ALTER TABLE ONLY "company_os"."products"
 
 
 --
--- Name: program_documents program_documents_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
---
-
-ALTER TABLE ONLY "company_os"."program_documents"
-    ADD CONSTRAINT "program_documents_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
-
-
---
 -- Name: program_documents program_documents_company_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
 --
 
 ALTER TABLE ONLY "company_os"."program_documents"
     ADD CONSTRAINT "program_documents_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company_os"."companies"("id");
+
+
+--
+-- Name: program_documents program_documents_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: company_os; Owner: -
+--
+
+ALTER TABLE ONLY "company_os"."program_documents"
+    ADD CONSTRAINT "program_documents_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE SET NULL;
 
 
 --
@@ -10119,19 +11338,19 @@ ALTER TABLE ONLY "htt"."pull_requests"
 
 
 --
--- Name: repos repos_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: htt; Owner: -
---
-
-ALTER TABLE ONLY "htt"."repos"
-    ADD CONSTRAINT "repos_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE RESTRICT;
-
-
---
 -- Name: repos repos_company_id_fkey; Type: FK CONSTRAINT; Schema: htt; Owner: -
 --
 
 ALTER TABLE ONLY "htt"."repos"
     ADD CONSTRAINT "repos_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "company_os"."companies"("id") ON DELETE RESTRICT;
+
+
+--
+-- Name: repos repos_pr_program_id_fkey; Type: FK CONSTRAINT; Schema: htt; Owner: -
+--
+
+ALTER TABLE ONLY "htt"."repos"
+    ADD CONSTRAINT "repos_pr_program_id_fkey" FOREIGN KEY ("pr_program_id") REFERENCES "company_os"."pr_programs"("id") ON DELETE RESTRICT;
 
 
 --
@@ -10191,12 +11410,6 @@ ALTER TABLE "company_os"."affiliate_payouts" ENABLE ROW LEVEL SECURITY;
 --
 
 ALTER TABLE "company_os"."affiliates" ENABLE ROW LEVEL SECURITY;
-
---
--- Name: pr_programs; Type: ROW SECURITY; Schema: company_os; Owner: -
---
-
-ALTER TABLE "company_os"."pr_programs" ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: application_stage_log; Type: ROW SECURITY; Schema: company_os; Owner: -
@@ -12825,6 +14038,36 @@ ALTER TABLE "company_os"."portal_members" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "company_os"."positions" ENABLE ROW LEVEL SECURITY;
 
 --
+-- Name: pr_awards; Type: ROW SECURITY; Schema: company_os; Owner: -
+--
+
+ALTER TABLE "company_os"."pr_awards" ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: pr_case_studies; Type: ROW SECURITY; Schema: company_os; Owner: -
+--
+
+ALTER TABLE "company_os"."pr_case_studies" ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: pr_news_pipeline; Type: ROW SECURITY; Schema: company_os; Owner: -
+--
+
+ALTER TABLE "company_os"."pr_news_pipeline" ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: pr_programs; Type: ROW SECURITY; Schema: company_os; Owner: -
+--
+
+ALTER TABLE "company_os"."pr_programs" ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: pr_quarterly_plans; Type: ROW SECURITY; Schema: company_os; Owner: -
+--
+
+ALTER TABLE "company_os"."pr_quarterly_plans" ENABLE ROW LEVEL SECURITY;
+
+--
 -- Name: products; Type: ROW SECURITY; Schema: company_os; Owner: -
 --
 
@@ -13475,15 +14718,6 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "company_os"."affiliates" TO "service
 GRANT SELECT ON TABLE "company_os"."affiliates" TO "chatbot_reader";
 GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."affiliates" TO "chatbot_writer";
 GRANT SELECT ON TABLE "company_os"."affiliates" TO "team_chatbot_reader";
-
-
---
--- Name: TABLE "pr_programs"; Type: ACL; Schema: company_os; Owner: -
---
-
-GRANT SELECT ON TABLE "company_os"."pr_programs" TO "chatbot_reader";
-GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."pr_programs" TO "chatbot_writer";
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "company_os"."pr_programs" TO "service_role";
 
 
 --
@@ -14611,6 +15845,79 @@ GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."portal_members" TO "chatbot_wr
 
 
 --
+-- Name: TABLE "pr_awards"; Type: ACL; Schema: company_os; Owner: -
+--
+
+GRANT SELECT ON TABLE "company_os"."pr_awards" TO "chatbot_reader";
+GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."pr_awards" TO "chatbot_writer";
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "company_os"."pr_awards" TO "service_role";
+
+
+--
+-- Name: TABLE "pr_case_studies"; Type: ACL; Schema: company_os; Owner: -
+--
+
+GRANT SELECT ON TABLE "company_os"."pr_case_studies" TO "chatbot_reader";
+GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."pr_case_studies" TO "chatbot_writer";
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "company_os"."pr_case_studies" TO "service_role";
+
+
+--
+-- Name: TABLE "pr_news_pipeline"; Type: ACL; Schema: company_os; Owner: -
+--
+
+GRANT SELECT ON TABLE "company_os"."pr_news_pipeline" TO "chatbot_reader";
+GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."pr_news_pipeline" TO "chatbot_writer";
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "company_os"."pr_news_pipeline" TO "service_role";
+
+
+--
+-- Name: TABLE "pr_programs"; Type: ACL; Schema: company_os; Owner: -
+--
+
+GRANT SELECT ON TABLE "company_os"."pr_programs" TO "chatbot_reader";
+GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."pr_programs" TO "chatbot_writer";
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "company_os"."pr_programs" TO "service_role";
+
+
+--
+-- Name: TABLE "pr_program_stats"; Type: ACL; Schema: company_os; Owner: -
+--
+
+GRANT SELECT ON TABLE "company_os"."pr_program_stats" TO "chatbot_reader";
+GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."pr_program_stats" TO "chatbot_writer";
+GRANT SELECT ON TABLE "company_os"."pr_program_stats" TO "service_role";
+
+
+--
+-- Name: TABLE "pr_quarterly_plans"; Type: ACL; Schema: company_os; Owner: -
+--
+
+GRANT SELECT ON TABLE "company_os"."pr_quarterly_plans" TO "chatbot_reader";
+GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."pr_quarterly_plans" TO "chatbot_writer";
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "company_os"."pr_quarterly_plans" TO "service_role";
+
+
+--
+-- Name: TABLE "tasks"; Type: ACL; Schema: company_os; Owner: -
+--
+
+GRANT SELECT ON TABLE "company_os"."tasks" TO "chatbot_reader";
+GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."tasks" TO "chatbot_writer";
+GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."tasks" TO "service_role";
+GRANT SELECT ON TABLE "company_os"."tasks" TO "supabase_read_only_user";
+
+
+--
+-- Name: TABLE "pr_target_progress"; Type: ACL; Schema: company_os; Owner: -
+--
+
+GRANT SELECT ON TABLE "company_os"."pr_target_progress" TO "chatbot_reader";
+GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."pr_target_progress" TO "chatbot_writer";
+GRANT SELECT ON TABLE "company_os"."pr_target_progress" TO "service_role";
+
+
+--
 -- Name: TABLE "products"; Type: ACL; Schema: company_os; Owner: -
 --
 
@@ -14824,16 +16131,6 @@ GRANT SELECT ON TABLE "company_os"."task_stage_log" TO "chatbot_reader";
 GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."task_stage_log" TO "chatbot_writer";
 GRANT SELECT,INSERT ON TABLE "company_os"."task_stage_log" TO "service_role";
 GRANT SELECT ON TABLE "company_os"."task_stage_log" TO "supabase_read_only_user";
-
-
---
--- Name: TABLE "tasks"; Type: ACL; Schema: company_os; Owner: -
---
-
-GRANT SELECT ON TABLE "company_os"."tasks" TO "chatbot_reader";
-GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."tasks" TO "chatbot_writer";
-GRANT SELECT,INSERT,UPDATE ON TABLE "company_os"."tasks" TO "service_role";
-GRANT SELECT ON TABLE "company_os"."tasks" TO "supabase_read_only_user";
 
 
 --
@@ -15081,5 +16378,5 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "company_os" GRANT SELECT
 -- PostgreSQL database dump complete
 --
 
-\unrestrict cqXJ73dt0Qr7HbA24BUFRRY9ENvzwozpbfMEdaDocYuX3QVAAp8Ordaa34J7kWf
+\unrestrict SGwfNylPe3cyCJe0zxS0okh2UpWMShGuS0hb2HouCcFr084RrkTy1cmh1hDY8X8
 
