@@ -2,14 +2,17 @@
 // Same discipline as the other lib/portal helpers: every read is scoped to the
 // actor's own companyScope and cross-company ids resolve to null (IDOR guard).
 //
-// CLIENT-SAFE HARD LINE: these loaders return program name + counts only. Repo
-// org/name and sync details never leave this module; the shapes below simply do
-// not carry them.
+// CLIENT-SAFE HARD LINE: these loaders return program name, status, the
+// published tallies and the PUBLISHED plan snapshot only. Health, fee, leads,
+// drive folders and internal notes never leave this module; the shapes below
+// simply do not carry them.
 
 import { companyOs } from "@/lib/supabase";
 import type { PortalActor } from "@/lib/portal-auth";
-import { listProgramSummaries, type ProgramStatus } from "@/lib/hub/program";
+import { listProgramSummaries, type ProgramStats, type ProgramStatus } from "@/lib/hub/program";
+import { getCurrentPlanSnapshots, type PlanSnapshot } from "@/lib/hub/plan";
 import type { ClientBoardColumn, ClientBoardCard } from "@/lib/boards/client-view";
+import { prMeta } from "@/lib/boards/types";
 
 export type PortalProgramSummary = {
   id: string;
@@ -19,9 +22,9 @@ export type PortalProgramSummary = {
   // One line derived from the program plan's 5Ds brief; null when no plan
   // brief exists yet.
   description: string | null;
-  roadmapDone: number;
-  roadmapTotal: number;
-  boardCount: number;
+  stats: Pick<ProgramStats, "coverageCount" | "linkedinPostCount">;
+  // The current PUBLISHED 90-day plan, or null while the team is drafting.
+  currentPlan: Pick<PlanSnapshot, "id" | "quarterLabel" | "startsOn" | "endsOn" | "targetsTotal" | "targetsOnTrack" | "targetsWithVariance"> | null;
 };
 
 // Strip a brief's HTML down to one readable line. Headings and short label
@@ -51,13 +54,16 @@ export function briefToOneLine(html: string): string | null {
 export async function listPortalProgramSummaries(actor: PortalActor): Promise<PortalProgramSummary[]> {
   if (actor.companyScope.length === 0) return [];
   const perCompany = await Promise.all(
-    actor.companyScope.map(async (companyId) => ({
-      companyId,
-      summaries: await listProgramSummaries(companyId),
-    })),
+    actor.companyScope.map(async (companyId) => {
+      const [summaries, publishedPlans] = await Promise.all([
+        listProgramSummaries(companyId),
+        getCurrentPlanSnapshots(companyId, { publishedOnly: true }),
+      ]);
+      return { companyId, summaries, publishedPlans };
+    }),
   );
-  const rows = perCompany.flatMap(({ companyId, summaries }) =>
-    summaries.map((s) => ({ companyId, s })),
+  const rows = perCompany.flatMap(({ companyId, summaries, publishedPlans }) =>
+    summaries.map((s) => ({ companyId, s, plan: publishedPlans.get(s.id) ?? null })),
   );
   if (rows.length === 0) return [];
 
@@ -74,15 +80,24 @@ export async function listPortalProgramSummaries(actor: PortalActor): Promise<Po
     if (!briefByProgram.has(p.pr_program_id)) briefByProgram.set(p.pr_program_id, p.brief_html);
   }
 
-  return rows.map(({ companyId, s }) => ({
+  return rows.map(({ companyId, s, plan }) => ({
     id: s.id,
     companyId,
     name: s.name,
     status: s.status,
     description: briefByProgram.has(s.id) ? briefToOneLine(briefByProgram.get(s.id) as string) : null,
-    roadmapDone: s.roadmapDone,
-    roadmapTotal: s.roadmapTotal,
-    boardCount: s.boardCount,
+    stats: { coverageCount: s.stats.coverageCount, linkedinPostCount: s.stats.linkedinPostCount },
+    currentPlan: plan
+      ? {
+          id: plan.id,
+          quarterLabel: plan.quarterLabel,
+          startsOn: plan.startsOn,
+          endsOn: plan.endsOn,
+          targetsTotal: plan.targetsTotal,
+          targetsOnTrack: plan.targetsOnTrack,
+          targetsWithVariance: plan.targetsWithVariance,
+        }
+      : null,
   }));
 }
 
@@ -140,7 +155,7 @@ export async function getBoardViewForActor(actor: PortalActor, boardId: string):
     companyOs.from("board_columns").select("id, name, is_done").eq("board_id", board.id).order("position"),
     companyOs
       .from("tasks")
-      .select("id, title, priority, due_date, status, board_column_id, assignee_id, sprint_id, created_at")
+      .select("id, title, priority, due_date, status, board_column_id, assignee_id, sprint_id, created_at, metadata")
       .eq("board_id", board.id)
       .eq("internal", false)
       .is("parent_task_id", null)
@@ -161,6 +176,7 @@ export async function getBoardViewForActor(actor: PortalActor, boardId: string):
     assignee_id: string | null;
     sprint_id: string | null;
     created_at: string;
+    metadata: Record<string, unknown> | null;
   }[];
 
   const personIds = [...new Set(tasks.map((t) => t.assignee_id).filter(Boolean) as string[])];
@@ -178,18 +194,25 @@ export async function getBoardViewForActor(actor: PortalActor, boardId: string):
   );
   const sprintById = new Map((sprintsRes.data ?? []).map((s) => [s.id, s.name]));
 
-  const cards: ClientBoardCard[] = tasks.map((t) => ({
-    id: t.id,
-    title: t.title,
-    priority: t.priority,
-    dueDate: t.due_date,
-    columnId: t.board_column_id,
-    done: t.status === "done",
-    assigneeId: t.assignee_id,
-    assigneeName: t.assignee_id ? nameById.get(t.assignee_id) ?? null : null,
-    sprintName: t.sprint_id ? sprintById.get(t.sprint_id) ?? null : null,
-    createdAt: t.created_at,
-  }));
+  const cards: ClientBoardCard[] = tasks.map((t) => {
+    const pr = prMeta(t);
+    return {
+      id: t.id,
+      title: t.title,
+      priority: t.priority,
+      dueDate: t.due_date,
+      columnId: t.board_column_id,
+      done: t.status === "done",
+      assigneeId: t.assignee_id,
+      assigneeName: t.assignee_id ? nameById.get(t.assignee_id) ?? null : null,
+      sprintName: t.sprint_id ? sprintById.get(t.sprint_id) ?? null : null,
+      createdAt: t.created_at,
+      prType: pr.type,
+      statusNote: pr.status_note,
+      link: pr.link,
+      internal: false,
+    };
+  });
 
   return { boardName: board.name, columns, cards };
 }

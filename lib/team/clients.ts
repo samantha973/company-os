@@ -5,6 +5,7 @@
 // spirit of lib/team/data.ts: a purpose-built, equally-scoped helper.
 
 import { companyOs } from "@/lib/supabase";
+import { BRAND_SHORT } from "@/lib/brand";
 import type { TeamActor } from "@/lib/team-auth";
 import {
   listDocumentsForCompanies,
@@ -32,12 +33,14 @@ import {
 } from "@/lib/client-backlog";
 import {
   fetchAll,
-  fetchProgramSummaryInputs,
   getProgramDetail,
   listProgramSummaries,
   type ProgramDetail,
   type ProgramSummary,
 } from "@/lib/hub/program";
+import { getPlanTab, type PlanTab } from "@/lib/hub/plan";
+import { getCoverageTab, type CoverageTab } from "@/lib/hub/coverage-tab";
+import { getSupportingTab, type SupportingTab } from "@/lib/hub/supporting-tab";
 
 export type ClientCompany = { id: string; name: string; roleTitle: string | null };
 
@@ -195,7 +198,7 @@ export async function getClientRoadmapSnippets(
 export async function getClientBoardViewForActor(
   actor: TeamActor,
   companyId: string,
-  opts?: { untaggedOnly?: boolean },
+  opts?: { untaggedOnly?: boolean; programId?: string; includeInternal?: boolean },
 ): Promise<ClientBoardView | null> {
   const companies = await actorCompanyIds(actor);
   if (!companies.has(companyId)) return null;
@@ -252,6 +255,34 @@ export async function getHubTabFlags(companyId: string): Promise<HubTabFlags> {
   };
 }
 
+// The 90-Day Plan tab for an assigned client: the company's (single) program,
+// its plans, and the meetings the plan can be keyed off. Null when the company
+// is not in the actor's assignment set.
+export async function getPlanTabForActor(
+  actor: TeamActor,
+  companyId: string,
+  planId?: string | null,
+): Promise<{ program: ProgramSummary; tab: PlanTab; meetings: AdminMeetingRow[] } | null> {
+  const companies = await actorCompanyIds(actor);
+  if (!companies.has(companyId)) return null;
+  const programs = await listProgramSummaries(companyId);
+  const program = programs[0];
+  if (!program) return null;
+  const [tab, meetings] = await Promise.all([
+    getPlanTab(companyId, program.id, { planId }),
+    getMeetingsForCompany(companyId),
+  ]);
+  return { program, tab, meetings };
+}
+
+// Awards / Pipeline / Case Studies for an assigned client. Null when the
+// company is not in the actor's assignment set.
+export async function getSupportingTabForActor(actor: TeamActor, companyId: string): Promise<SupportingTab | null> {
+  const companies = await actorCompanyIds(actor);
+  if (!companies.has(companyId)) return null;
+  return getSupportingTab(companyId);
+}
+
 export type HubOverview = { programs: ProgramSummary[] };
 
 // The hub Overview's top band for an assigned client: the PR Program summaries.
@@ -263,8 +294,7 @@ export async function getHubOverviewForActor(
   const companies = await actorCompanyIds(actor);
   if (!companies.has(companyId)) return null;
 
-  const inputs = await fetchProgramSummaryInputs(companyId);
-  const programs = await listProgramSummaries(companyId, inputs);
+  const programs = await listProgramSummaries(companyId);
   return { programs };
 }
 
@@ -294,50 +324,17 @@ export async function getClientDocumentsForActor(
   return listDocumentsForCompanies([companyId]);
 }
 
-// A media-coverage row for the client hub, read from company_os.marketing_content
-// filtered to this company. Read-only for v1 (seeded from the account sheet).
-export type CoverageRow = {
-  id: string;
-  date: string | null; // publish_date
-  outlet: string | null;
-  headline: string;
-  url: string | null; // outbound link to the coverage
-  channel: string;
-  reach: number | null;
-};
-
-// Coverage for an assigned client, newest first. Same authorization rule as the
-// other hub reads; null when the company is not in the actor's assignment set.
-export async function getClientCoverageForActor(
+// The Coverage tab for an assigned client: every outcome on the company's
+// program, plus the option lists the editors need (plan targets, board cards,
+// media contacts, documents for clips). Null when the company is not in the
+// actor's assignment set.
+export async function getCoverageTabForActor(
   actor: TeamActor,
   companyId: string,
-): Promise<CoverageRow[] | null> {
+): Promise<CoverageTab | null> {
   const companies = await actorCompanyIds(actor);
   if (!companies.has(companyId)) return null;
-  const { data } = await companyOs
-    .from("marketing_content")
-    .select("id, title, outlet, channel, reach, publish_date, posted_url, created_at")
-    .eq("company_id", companyId)
-    .order("publish_date", { ascending: false, nullsFirst: false })
-    .order("created_at", { ascending: false });
-  const rows = (data ?? []) as Array<{
-    id: string;
-    title: string;
-    outlet: string | null;
-    channel: string;
-    reach: number | null;
-    publish_date: string | null;
-    posted_url: string | null;
-  }>;
-  return rows.map((r) => ({
-    id: r.id,
-    date: r.publish_date,
-    outlet: r.outlet,
-    headline: r.title,
-    url: r.posted_url,
-    channel: r.channel,
-    reach: r.reach,
-  }));
+  return getCoverageTab(companyId);
 }
 
 // Meetings for an assigned client. Team members are internal Edge8 staff, so
@@ -408,7 +405,7 @@ export async function getClientTeamForActor(actor: TeamActor, companyId: string)
 
   const edge8 = assignments
     .filter((a) => a.client_visible)
-    .map((a) => ({ name: a.full_name || a.email || "Edge8", roleTitle: a.role_title || a.position_title }));
+    .map((a) => ({ name: a.full_name || a.email || BRAND_SHORT, roleTitle: a.role_title || a.position_title }));
 
   const rows = (peopleRows ?? []) as Array<{
     role: string | null;

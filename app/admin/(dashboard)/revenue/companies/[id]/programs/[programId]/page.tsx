@@ -2,15 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { companyOs } from "@/lib/supabase";
 import { getProgramDetail } from "@/lib/hub/program";
-import { getLiveCardItemIds } from "@/lib/admin/company-hub";
 import { PageHead } from "@/components/admin/PageHead";
 import { Badge, type BadgeTone } from "@/components/admin/Badge";
 import { Tabs, type TabDef } from "@/components/admin/Tabs";
 import { CompanyDocuments, type ProgramOption } from "@/components/admin/CompanyDocuments";
 import { MeetingsPanel } from "@/components/hub/MeetingsPanel";
 import { setMeetingPublished, setMeetingProgram } from "@/app/admin/(dashboard)/revenue/meetings/actions";
-import { BacklogAdminEditor } from "@/app/admin/(dashboard)/edges/client-roadmaps/BacklogAdminEditor";
-import { OverviewEditor } from "@/app/admin/(dashboard)/edges/client-roadmaps/OverviewEditor";
 import { firstParam, type SearchParamsObj } from "@/lib/admin/url";
 import type { ProgramStatus } from "@/lib/hub/program";
 
@@ -19,6 +16,7 @@ export const dynamic = "force-dynamic";
 const STATUS_TONE: Record<ProgramStatus, BadgeTone> = {
   draft: "neutral",
   active: "ok",
+  paused: "warn",
   complete: "info",
 };
 
@@ -26,9 +24,8 @@ function Empty({ text }: { text: string }) {
   return <div className="admin-empty">{text}</div>;
 }
 
-// The PR Program view (Client Hub by PR Program, PR 1): one program = one
-// roadmap = its work boards, plus tagged documents and meetings. Data comes
-// from lib/hub/program.ts.
+// The PR Program view: its boards, plus tagged documents and meetings. The
+// plan, coverage, awards and pipeline live on the company's Client Hub tabs.
 export default async function ProgramDetailPage({
   params,
   searchParams,
@@ -36,41 +33,19 @@ export default async function ProgramDetailPage({
   params: { id: string; programId: string };
   searchParams: SearchParamsObj;
 }) {
-  const [detail, { data: companyRow }, { data: programRows }, { data: overviewRow }] = await Promise.all([
+  const [detail, { data: companyRow }, { data: programRows }] = await Promise.all([
     getProgramDetail(params.id, params.programId),
     companyOs.from("companies").select("id, name").eq("id", params.id).maybeSingle(),
     companyOs.from("pr_programs").select("id, name").eq("company_id", params.id).order("created_at", { ascending: false }),
-    companyOs.from("client_roadmap_overview").select("body").eq("company_id", params.id).maybeSingle(),
   ]);
   const company = companyRow as { id: string; name: string | null } | null;
   if (!detail || !company) notFound();
 
   const companyName = company.name || "(no name)";
-  const overviewBody = (overviewRow as { body: string } | null)?.body ?? "";
   const programOptions = (programRows ?? []) as ProgramOption[];
-
-  const liveCardItemIds = await getLiveCardItemIds(detail.roadmapItems.map((i) => i.id));
+  const hubHref = `/admin/revenue/companies/${company.id}?view=hub`;
 
   const tabs: TabDef[] = [
-    {
-      key: "roadmap",
-      label: "Roadmap",
-      count: detail.roadmapItems.length,
-      content: (
-        <>
-          <OverviewEditor companyId={company.id} initialBody={overviewBody} />
-          <BacklogAdminEditor
-            companyId={company.id}
-            groups={detail.roadmapGroups}
-            items={detail.roadmapItems}
-            programs={programOptions}
-            showArchived={false}
-            liveCardItemIds={liveCardItemIds}
-            defaultProgramId={detail.id}
-          />
-        </>
-      ),
-    },
     {
       key: "boards",
       label: "Boards",
@@ -78,7 +53,7 @@ export default async function ProgramDetailPage({
       content: (
         <section className="admin-card admin-section-card">
           {detail.boards.length === 0 ? (
-            <Empty text="No active boards keyed to this program yet. Link one from Work Boards." />
+            <Empty text="No active boards keyed to this program yet. Use “Set up Work Board” on the Client Hub." />
           ) : (
             <div className="admin-list">
               {detail.boards.map((b) => (
@@ -138,13 +113,13 @@ export default async function ProgramDetailPage({
   return (
     <div>
       <PageHead
-        eyebrow={<Link href={`/admin/revenue/companies/${company.id}?view=hub`}>← {companyName}</Link>}
+        eyebrow={<Link href={hubHref}>← {companyName}</Link>}
         title={detail.name}
-        sub={detail.githubRepo ?? undefined}
+        sub="Plan, coverage, awards and pipeline live on the Client Hub."
         action={
-          <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>{/* layout-ok: mirrors the company 360 badge row verbatim */}
+          <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
             <Badge tone={STATUS_TONE[detail.status]}>{detail.status}</Badge>
-            {detail.githubRepo && <Badge tone="neutral">{detail.githubRepo}</Badge>}
+            <Link className="admin-btn admin-btn--sm" href={`${hubHref}&tab=plan`}>Open Client Hub →</Link>
           </span>
         }
       />

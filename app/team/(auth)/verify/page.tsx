@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
+import { BRAND_TEAM } from "@/lib/brand";
 
 // Interstitial for emailed team sign-in links (self-serve links from
 // lib/team/signin-link.ts and admin resends). The email links HERE with
@@ -59,7 +60,7 @@ export default function TeamVerify() {
     <main className="admin-auth">
       <div className="admin-auth-card">
         <div className="admin-auth-brand">
-          8 Edges Team
+          {BRAND_TEAM}
         </div>
         {state === "failed" ? (
           <>

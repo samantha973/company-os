@@ -2,23 +2,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { companyOs } from "@/lib/supabase";
 import { requireTeamMember } from "@/lib/team-auth";
-import {
-  getActorClientCompanies,
-  getActorEmail,
-  getProgramDetailForActor,
-} from "@/lib/team/clients";
+import { getActorClientCompanies, getActorEmail, getProgramDetailForActor } from "@/lib/team/clients";
 import { type ProgramStatus } from "@/lib/hub/program";
-import { ROADMAP_GROUPS_SELECT, type RoadmapGroup } from "@/lib/client-backlog";
 import { PageHead } from "@/components/admin/PageHead";
 import { Badge, type BadgeTone } from "@/components/admin/Badge";
 import { Tabs, type TabDef } from "@/components/admin/Tabs";
-import { BotText } from "@/components/assistant/BotText";
 import { MeetingsPanel, type ProgramOption } from "@/components/hub/MeetingsPanel";
 import { firstParam, type SearchParamsObj } from "@/lib/admin/url";
 import { ClientDocumentsList } from "../../(hub)/ClientDocumentsList";
-import { AddItemForm } from "../../(hub)/roadmap/AddItemForm";
-import { RoadmapItemCard } from "../../(hub)/roadmap/RoadmapItemCard";
-import { ROADMAP_STYLES } from "../../(hub)/roadmap/styles";
 import { publishMeeting, setMeetingProgram } from "../../(hub)/meetings/actions";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +19,7 @@ export const metadata = { title: "PR Program" };
 const STATUS_TONE: Record<ProgramStatus, BadgeTone> = {
   draft: "neutral",
   active: "ok",
+  paused: "warn",
   complete: "info",
 };
 
@@ -35,13 +27,11 @@ function Empty({ text }: { text: string }) {
   return <div className="admin-empty">{text}</div>;
 }
 
-// The team PR Program view, mirroring the admin program view (Roadmap / Boards
-// / Documents / Meetings) with team affordances: roadmap add/edit as the team
-// roadmap tab allows, boards linking to the team board routes, the team
-// publish/tag meeting actions, and the team documents list. Authorization
-// mirrors the hub layout: the company must be in the actor's active staff
-// assignments, and the program must belong to that company; either miss is a
-// 404.
+// The team PR Program view: its boards, tagged documents and meetings. The
+// plan, coverage, awards and pipeline live on the client hub tabs.
+// Authorization mirrors the hub layout: the company must be in the actor's
+// active staff assignments, and the program must belong to that company;
+// either miss is a 404.
 export default async function TeamProgramDetailPage({
   params,
   searchParams,
@@ -59,64 +49,15 @@ export default async function TeamProgramDetailPage({
   const company = companies.find((c) => c.id === params.companyId);
   if (!company || !detail) notFound();
 
-  // The company's programs (Meetings tag options) and its full group list
-  // (Add-item options: the program's own groups plus every company-wide one,
-  // so the first program item can land under a company-wide section too).
-  const [{ data: programRows }, { data: groupRows }, { data: overviewRow }] = await Promise.all([
-    companyOs.from("pr_programs").select("id, name").eq("company_id", params.companyId).order("created_at", { ascending: false }),
-    companyOs.from("client_roadmap_groups").select(ROADMAP_GROUPS_SELECT).eq("company_id", params.companyId).is("archived_at", null).order("sort_order", { ascending: true }),
-    companyOs.from("client_roadmap_overview").select("body").eq("company_id", params.companyId).maybeSingle(),
-  ]);
+  const { data: programRows } = await companyOs
+    .from("pr_programs")
+    .select("id, name")
+    .eq("company_id", params.companyId)
+    .order("created_at", { ascending: false });
   const programOptions = (programRows ?? []) as ProgramOption[];
-  const allGroups = (groupRows ?? []) as unknown as RoadmapGroup[];
-  const addableGroups = allGroups.filter((g) => g.pr_program_id === detail.id || g.pr_program_id === null);
-  const overview = ((overviewRow as { body: string } | null)?.body ?? "").trim() || null;
+  const hubHref = `/team/clients/${company.id}`;
 
   const tabs: TabDef[] = [
-    {
-      key: "roadmap",
-      label: "Roadmap",
-      count: detail.roadmapItems.length,
-      content: (
-        <div className="tcr">
-          <style dangerouslySetInnerHTML={{ __html: ROADMAP_STYLES }} />
-
-          {overview && (
-            <section className="admin-card admin-section-card" style={{ marginBottom: 18 }}>
-              <h2 className="admin-card-title" style={{ marginBottom: 8 }}>Overview</h2>
-              <div style={{ fontSize: 14, lineHeight: 1.65 }}>
-                <BotText text={overview} />
-              </div>
-            </section>
-          )}
-
-          <AddItemForm companyId={company.id} groups={addableGroups} programId={detail.id} />
-
-          {detail.roadmapItems.length === 0 ? (
-            <div className="admin-card admin-section-card" style={{ padding: 22 }}>
-              <p className="admin-page-sub" style={{ margin: 0 }}>No roadmap items on this program yet.</p>
-            </div>
-          ) : (
-            detail.roadmapGroups.map((g) => {
-              const groupItems = detail.roadmapItems.filter((i) => i.group_key === g.key);
-              if (groupItems.length === 0) return null;
-              return (
-                <div key={g.key} className="tcr-group">
-                  <div className="tcr-group-head">
-                    {g.step_label && <span className="tcr-step">{g.step_label}</span>}
-                    <span className="tcr-group-title">{g.title}</span>
-                  </div>
-                  {g.intro && <div className="tcr-group-intro">{g.intro}</div>}
-                  {groupItems.map((it) => (
-                    <RoadmapItemCard key={it.id} item={it} companyId={company.id} />
-                  ))}
-                </div>
-              );
-            })
-          )}
-        </div>
-      ),
-    },
     {
       key: "boards",
       label: "Boards",
@@ -184,13 +125,13 @@ export default async function TeamProgramDetailPage({
   return (
     <div style={{ maxWidth: 1100 }}>
       <PageHead
-        eyebrow={<Link href={`/team/clients/${company.id}`}>← {company.name}</Link>}
+        eyebrow={<Link href={hubHref}>← {company.name}</Link>}
         title={detail.name}
-        sub={detail.githubRepo ?? undefined}
+        sub="Plan, coverage, awards and pipeline live on the client hub tabs."
         action={
-          <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>{/* layout-ok: mirrors the admin program badge row verbatim */}
+          <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
             <Badge tone={STATUS_TONE[detail.status]}>{detail.status}</Badge>
-            {detail.githubRepo && <Badge tone="neutral">{detail.githubRepo}</Badge>}
+            <Link className="admin-btn admin-btn--sm" href={`${hubHref}/plan`}>90-Day Plan →</Link>
           </span>
         }
       />

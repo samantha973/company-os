@@ -22,7 +22,7 @@ const ROLE_LABEL: Record<string, string> = {
 
 const ROLE_HELP: Record<string, string> = {
   admin: "Everything, including invoices and user management.",
-  contributor: "Can propose roadmap items, upload documents, and create requests. No invoices.",
+  contributor: "Can upload documents and create requests. No invoices.",
   viewer: "Read-only access.",
 };
 

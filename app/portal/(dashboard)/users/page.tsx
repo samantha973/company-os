@@ -38,7 +38,7 @@ export default async function UsersPage() {
       <PageHead
         eyebrow="Client Portal"
         title="Users"
-        sub="Invite your team to the portal and control what each person can do. Admins manage everything, contributors add to the roadmap and upload documents, viewers read."
+        sub="Invite your team to the portal and control what each person can do. Admins manage everything, contributors upload documents and create requests, viewers read."
       />
       {sections.map((s) => (
         <UsersView key={s.companyId} companyId={s.companyId} companyName={s.companyName} users={s.users} />

@@ -6,14 +6,17 @@ import { hasInvoices } from "@/lib/portal/invoices";
 import { adminCompanyScope } from "@/lib/portal/roles";
 import { hasMeetings } from "@/lib/portal/meetings";
 import { hasBoard } from "@/lib/portal/boards";
-import { hasBacklog } from "@/lib/portal/backlog";
+import { hasPublishedPlan } from "@/lib/portal/plan";
+import { hasPublishedOutcomes } from "@/lib/portal/outcomes";
+import { hasPublishedAwards, hasPublishedCaseStudies } from "@/lib/portal/supporting";
 import { PortalSidebar } from "@/components/portal/PortalSidebar";
 import { AssumeBanner } from "@/components/portal/AssumeBanner";
 import "../../admin/admin.css";
+import { BRAND_PORTAL, BRAND_SHORT } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: { template: "%s · 8 Edges Client Portal", default: "8 Edges Client Portal" },
-  description: "Your Edge8 client portal.",
+  title: { template: `%s · ${BRAND_PORTAL}`, default: BRAND_PORTAL },
+  description: `Your ${BRAND_SHORT} client hub.`,
   robots: { index: false, follow: false },
 };
 
@@ -32,13 +35,16 @@ export default async function PortalDashboardLayout({
       : actor.memberships.map((m) => m.companyName).filter(Boolean).join(" · ") || null;
   // Time Off is visible iff Team is (same scope source: an active staff
   // assignment) — one lookup covers both, per the design doc's entitlement rules.
-  const [hasStaff, hasInvoicesResult, hasMeetingsResult, hasBoardResult, hasBacklogResult] =
+  const [hasStaff, hasInvoicesResult, hasMeetingsResult, hasBoardResult, hasPlanResult, hasCoverageResult, hasAwardsResult, hasCasesResult] =
     await Promise.all([
       hasAssignedStaff(actor),
       hasInvoices(actor),
       hasMeetings(actor),
       hasBoard(actor),
-      hasBacklog(actor),
+      hasPublishedPlan(actor),
+      hasPublishedOutcomes(actor),
+      hasPublishedAwards(actor),
+      hasPublishedCaseStudies(actor),
     ]);
   const entitlements = {
     team: hasStaff,
@@ -50,8 +56,10 @@ export default async function PortalDashboardLayout({
     companyProfile: adminCompanyScope(actor).length > 0,
     meetings: hasMeetingsResult,
     board: hasBoardResult,
-    // Roadmap appears in the nav once the company actually has one.
-    roadmap: hasBacklogResult,
+    plan: hasPlanResult,
+    coverage: hasCoverageResult,
+    awards: hasAwardsResult,
+    caseStudies: hasCasesResult,
   };
 
   return (

@@ -7,15 +7,12 @@ import {
   getBoardViewForActor,
   type PortalBoardView,
 } from "@/lib/portal/program-hub";
-import { getBacklogForActor, getGroupsForActor } from "@/lib/portal/backlog";
 import { getMeetingsForActor } from "@/lib/portal/meetings";
-import { isPortalAdmin, canContribute } from "@/lib/portal/roles";
 import { PageHead } from "@/components/admin/PageHead";
 import { Badge, statusTone } from "@/components/admin/Badge";
 import { Tabs, type TabDef } from "@/components/admin/Tabs";
 import { ClientBoardView } from "@/components/hub/ClientBoardView";
 import { MeetingsPanel } from "@/components/hub/MeetingsPanel";
-import { BacklogPortalView } from "../../roadmap/BacklogPortalView";
 import { formatDate, humanize } from "@/lib/admin/format";
 import { firstParam, type SearchParamsObj } from "@/lib/admin/url";
 import { BriefViewer } from "./BriefViewer";
@@ -25,16 +22,16 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "PR Program",
-  description: "Your PR program's overview, roadmap, work board, documents, and meetings.",
+  description: "Your PR program's activity, documents, and meetings.",
 };
 
 function Empty({ text }: { text: string }) {
   return <div className="admin-empty">{text}</div>;
 }
 
-// The client-facing PR Program workspace: one program's roadmap, work board,
-// documents, plan brief, and meetings, mirroring the admin program view with
-// client-safe fields only.
+// The client-facing PR Program workspace: the activity board, documents, plan
+// briefs, and meetings — client-safe fields only. The 90-day plan and coverage
+// have their own pages (/portal/plan, /portal/coverage).
 export default async function PrProgramDetailPage({
   params,
   searchParams,
@@ -47,22 +44,7 @@ export default async function PrProgramDetailPage({
   const program = await getProgramForActor(actor, params.id);
   if (!program) notFound();
 
-  const [allItems, allGroups, allMeetings, allBoards] = await Promise.all([
-    getBacklogForActor(actor),
-    getGroupsForActor(actor),
-    getMeetingsForActor(actor),
-    listHubBoardsForActor(actor),
-  ]);
-
-  // Roadmap: this program's items, under its own sections plus any
-  // company-wide section a program item still sits in (same rule as the hub).
-  const roadmapItems = allItems.filter((i) => i.pr_program_id === program.id);
-  const usedKeys = new Set(roadmapItems.map((i) => i.group_key));
-  const roadmapGroups = allGroups.filter(
-    (g) => g.pr_program_id === program.id || (g.pr_program_id === null && usedKeys.has(g.key)),
-  );
-  const canPrioritize = isPortalAdmin(actor, program.companyId);
-  const canPropose = canContribute(actor, program.companyId);
+  const [allMeetings, allBoards] = await Promise.all([getMeetingsForActor(actor), listHubBoardsForActor(actor)]);
 
   // Work board(s): the program's boards; ?board= picks one when several exist.
   const programBoards = allBoards.filter((b) => b.prProgramId === program.id);
@@ -73,9 +55,7 @@ export default async function PrProgramDetailPage({
     : null;
 
   // Meetings: this program's tagged meetings. Visibility is the lib's own
-  // rule (same as the hub): getMeetingsForActor returns published meetings,
-  // plus drafts of companies the actor manages, so client managers see this
-  // program's drafts here too and other members stay published-only.
+  // rule: published meetings, plus drafts of companies the actor manages.
   const meetings = allMeetings.filter((m) => m.prProgramId === program.id);
 
   // Plan briefs (guided 5Ds plans with saved HTML).
@@ -91,60 +71,8 @@ export default async function PrProgramDetailPage({
 
   const tabs: TabDef[] = [
     {
-      key: "overview",
-      label: "Overview",
-      content:
-        program.plans.length > 0 ? (
-          <section className="admin-card admin-section-card" style={{ maxWidth: 900 }}>
-            <h2 className="admin-card-title" style={{ marginBottom: 12 }}>Plan</h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              {program.plans.map((pl) => (
-                <div key={pl.id}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                    <strong>{pl.title}</strong>
-                    <Badge>{pl.method === "chat" ? "Guided plan" : "Documents"}</Badge>
-                    <span className="admin-cell-muted">{formatDate(pl.createdAt)}</span>
-                  </div>
-                  {pl.method === "chat" && briefs.has(pl.id) ? (
-                    <BriefViewer html={briefs.get(pl.id)!} title={pl.title} />
-                  ) : pl.method === "chat" ? (
-                    <div className="admin-cell-muted">This plan has no saved brief.</div>
-                  ) : (
-                    <div className="admin-cell-muted">See the Documents tab.</div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        ) : (
-          <section className="admin-card admin-section-card">
-            <Empty text="No plan for this program yet. Edge8 adds one as the program is scoped." />
-          </section>
-        ),
-    },
-    {
-      key: "roadmap",
-      label: "Roadmap",
-      count: roadmapItems.length,
-      content:
-        roadmapItems.length === 0 && roadmapGroups.length === 0 ? (
-          <section className="admin-card admin-section-card">
-            <Empty text="No roadmap items in this program yet. Edge8 adds them as the program is scoped." />
-          </section>
-        ) : (
-          <BacklogPortalView
-            items={roadmapItems}
-            groups={roadmapGroups}
-            companyId={program.companyId}
-            canPrioritize={canPrioritize}
-            canPropose={canPropose}
-            programId={program.id}
-          />
-        ),
-    },
-    {
       key: "board",
-      label: "Work Board",
+      label: "Activity",
       content: boardView ? (
         <>
           {programBoards.length > 1 && (
@@ -164,9 +92,41 @@ export default async function PrProgramDetailPage({
         </>
       ) : (
         <section className="admin-card admin-section-card">
-          <Empty text="No work board for this program yet." />
+          <Empty text="No activity board for this program yet." />
         </section>
       ),
+    },
+    {
+      key: "overview",
+      label: "Plan briefs",
+      content:
+        program.plans.length > 0 ? (
+          <section className="admin-card admin-section-card" style={{ maxWidth: 900 }}>
+            <h2 className="admin-card-title" style={{ marginBottom: 12 }}>Plan briefs</h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              {program.plans.map((pl) => (
+                <div key={pl.id}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                    <strong>{pl.title}</strong>
+                    <Badge>{pl.method === "chat" ? "Guided plan" : pl.method === "linkedin_strategy" ? "LinkedIn strategy" : "Documents"}</Badge>
+                    <span className="admin-cell-muted">{formatDate(pl.createdAt)}</span>
+                  </div>
+                  {pl.method === "chat" && briefs.has(pl.id) ? (
+                    <BriefViewer html={briefs.get(pl.id)!} title={pl.title} />
+                  ) : pl.method === "chat" ? (
+                    <div className="admin-cell-muted">This plan has no saved brief.</div>
+                  ) : (
+                    <div className="admin-cell-muted">See the Documents tab.</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : (
+          <section className="admin-card admin-section-card">
+            <Empty text="No plan brief for this program yet. Your 90-day plan lives under 90-Day Plan." />
+          </section>
+        ),
     },
     {
       key: "documents",
@@ -197,7 +157,7 @@ export default async function PrProgramDetailPage({
   return (
     <div className="admin-content">
       <PageHead
-        eyebrow={<Link href="/portal/hub">← PR Programs</Link>}
+        eyebrow={<Link href="/portal/hub">← Overview</Link>}
         title={program.name}
         sub={`Created ${formatDate(program.createdAt)}`}
         action={<Badge tone={statusTone(program.status)}>{humanize(program.status)}</Badge>}

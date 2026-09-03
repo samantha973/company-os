@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createAssignment, endAssignment, setAssignmentVisibility } from "@/app/admin/(dashboard)/talent/team/assignment-actions";
 import { ASSIGNMENT_ROLES, type AssignmentForTeamMember, type CompanyOption } from "@/lib/admin/staff-assignments";
 import { Badge } from "@/components/admin/Badge";
+import { BRAND_SHORT } from "@/lib/brand";
 
 // "Assignments" block on the team-member detail page — which clients this
 // person is dedicated to, with add/end controls.
@@ -81,7 +82,7 @@ export function AssignmentsBlock({
                 </div>
                 <div className="admin-list-sub">
                   Leave approved by{" "}
-                  {a.client_manager_name ? `${a.client_manager_name} (client)` : "their Edge8 manager"}
+                  {a.client_manager_name ? `${a.client_manager_name} (client)` : `their ${BRAND_SHORT} manager`}
                 </div>
               </div>
               <div className="admin-list-aside" style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>

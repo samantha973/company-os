@@ -26,8 +26,10 @@ import {
   assignedAt,
   daysInColumn,
   initials,
+  prMeta,
   type TaskPriority,
 } from "@/lib/boards/types";
+import { PR_TASK_TYPES, PR_TASK_TYPE_LABEL, type PrTaskType } from "@/lib/pr/enums";
 import type { BoardDetail, BoardCard, BoardPerson } from "@/lib/boards/data";
 import {
   createCard,
@@ -45,7 +47,6 @@ import {
   archiveBoard,
   addSubtask,
   toggleSubtask,
-  setTaskTokens,
   addComment,
   restoreCard,
 } from "./actions";
@@ -61,7 +62,10 @@ type Form = {
   priority: TaskPriority;
   assigneeId: string;
   dueDate: string;
-  humanTokens: string; // "" = not estimated
+  // PR Hub fields (metadata.pr): kind of effort, client-facing status note, link.
+  prType: string;
+  statusNote: string;
+  prLink: string;
   description: string;
   sprintId: string; // "" = no sprint
   origSprintId: string;
@@ -160,18 +164,6 @@ export function BoardView({
     setBanner(null);
     startSaving(async () => {
       const r = await toggleSubtask(id, done, slug);
-      if (!r.ok) return setBanner(r.error);
-      router.refresh();
-    });
-  }
-  // Saves a subtask's Human Tokens on blur; "" clears the estimate.
-  function saveSubTokens(id: string, raw: string, current: number | null) {
-    const next = raw.trim() === "" ? null : Number(raw);
-    if (next !== null && !Number.isFinite(next)) return;
-    if (next === current) return;
-    setBanner(null);
-    startSaving(async () => {
-      const r = await setTaskTokens(id, next, slug);
       if (!r.ok) return setBanner(r.error);
       router.refresh();
     });
@@ -294,7 +286,9 @@ export function BoardView({
       priority: c.priority,
       assigneeId: c.assignee_id ?? "",
       dueDate: c.due_date ?? "",
-      humanTokens: c.human_tokens == null ? "" : String(c.human_tokens),
+      prType: prMeta(c).type ?? "",
+      statusNote: prMeta(c).status_note ?? "",
+      prLink: prMeta(c).link ?? "",
       description: c.description ?? "",
       sprintId: c.sprint_id ?? "",
       origSprintId: c.sprint_id ?? "",
@@ -316,7 +310,9 @@ export function BoardView({
       priority: "p3",
       assigneeId: "",
       dueDate: "",
-      humanTokens: "",
+      prType: "",
+      statusNote: "",
+      prLink: "",
       description: "",
       sprintId: preset,
       origSprintId: "",
@@ -343,7 +339,7 @@ export function BoardView({
             priority: form.priority,
             assigneeId: form.assigneeId || null,
             dueDate: form.dueDate || null,
-            humanTokens: form.humanTokens === "" ? null : Number(form.humanTokens),
+            pr: isClientBoard ? { type: form.prType, status_note: form.statusNote, link: form.prLink } : undefined,
           },
           slug,
         );
@@ -360,7 +356,7 @@ export function BoardView({
           priority: form.priority,
           assigneeId: form.assigneeId || undefined,
           dueDate: form.dueDate || undefined,
-          humanTokens: form.humanTokens === "" ? undefined : Number(form.humanTokens),
+          pr: isClientBoard ? { type: form.prType, status_note: form.statusNote, link: form.prLink } : undefined,
           description: form.description || undefined,
           internal: isClientBoard ? form.internal : undefined,
         });
@@ -484,8 +480,6 @@ export function BoardView({
             .map((s) => {
               const inSprint = sourceCards.filter((c) => c.sprint_id === s.id);
               const doneCards = inSprint.filter((c) => c.status === "done");
-              const totalHT = inSprint.reduce((sum, c) => sum + (c.human_tokens ?? 0), 0);
-              const doneHT = doneCards.reduce((sum, c) => sum + (c.human_tokens ?? 0), 0);
               const pct = inSprint.length ? Math.round((doneCards.length / inSprint.length) * 100) : 0;
               return (
                 <Link
@@ -504,7 +498,6 @@ export function BoardView({
                     )}
                     <span className="admin-cell-muted" style={{ marginLeft: "auto", fontSize: 12 }}>
                       {doneCards.length}/{inSprint.length} cards
-                      {totalHT > 0 ? ` · ${doneHT}/${totalHT} HT` : ""}
                     </span>
                   </div>
                   {s.goal && (
@@ -645,7 +638,8 @@ export function BoardView({
                 {isNewForViewer(c) && <Badge tone="info">New</Badge>}
                 <Badge tone={PRIORITY_TONE[c.priority]}>{PRIORITY_LABEL[c.priority]}</Badge>
                 {c.subject_type === SUBJECT_COMMITMENT && <Badge tone="ok">Commitment</Badge>}
-                {c.subject_type === SUBJECT_BACKLOG_ITEM && <Badge tone="info">Roadmap</Badge>}
+                {c.subject_type === SUBJECT_BACKLOG_ITEM && <Badge tone="info">Target</Badge>}
+                {prMeta(c).type && <Badge tone="neutral">{PR_TASK_TYPE_LABEL[prMeta(c).type as PrTaskType] ?? prMeta(c).type}</Badge>}
                 {c.agent && <Badge tone="neutral">Agent</Badge>}
                 {c.sprint_id && c.sprint_id !== sprintFilter && sprintName.get(c.sprint_id) && (
                   <Badge tone="info">{sprintName.get(c.sprint_id)}</Badge>
@@ -670,7 +664,10 @@ export function BoardView({
                   </span>
                 )}
               </div>
-              {(c.subtasks.length > 0 || c.comments.length > 0 || c.human_tokens != null) && (
+              {prMeta(c).status_note && (
+                <div className="sap-card-sub" style={{ marginTop: 4, fontStyle: "italic" }}>{prMeta(c).status_note}</div>
+              )}
+              {(c.subtasks.length > 0 || c.comments.length > 0) && (
                 <div className="sap-card-sub" style={{ marginTop: 4, display: "flex", gap: 12 }}>
                   {c.subtasks.length > 0 && (
                     <span>
@@ -678,7 +675,6 @@ export function BoardView({
                     </span>
                   )}
                   {c.comments.length > 0 && <span>💬 {c.comments.length}</span>}
-                  {c.human_tokens != null && <span title="Human Tokens">⚡ {c.human_tokens} HT</span>}
                 </div>
               )}
               {aging && (
@@ -803,7 +799,7 @@ export function BoardView({
 
             {isClientBoard && form.subjectType !== SUBJECT_COMMITMENT && (
               <div className="admin-field">
-                <label className="admin-label">Roadmap item</label>
+                <label className="admin-label">Counts toward (plan target)</label>
                 <select
                   className="admin-select"
                   value={form.roadmapItemId}
@@ -865,18 +861,33 @@ export function BoardView({
               />
             </div>
 
-            <div className="admin-field">
-              <label className="admin-label">Human Tokens</label>
-              <input
-                className="admin-input"
-                type="number"
-                min={0}
-                step={1}
-                placeholder="Not estimated"
-                value={form.humanTokens}
-                onChange={(e) => setForm({ ...form, humanTokens: e.target.value })}
-              />
-            </div>
+            {isClientBoard && (
+              <>
+                <div className="admin-field">
+                  <label className="admin-label">Kind of work</label>
+                  <select className="admin-select" value={form.prType} onChange={(e) => setForm({ ...form, prType: e.target.value })}>
+                    <option value="">—</option>
+                    {PR_TASK_TYPES.map((t) => (
+                      <option key={t} value={t}>{PR_TASK_TYPE_LABEL[t]}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="admin-field">
+                  <label className="admin-label">Status note (the client sees this)</label>
+                  <textarea
+                    className="admin-textarea"
+                    rows={2}
+                    placeholder="One line on where it stands, e.g. Editor has the draft; follow-up Thursday."
+                    value={form.statusNote}
+                    onChange={(e) => setForm({ ...form, statusNote: e.target.value })}
+                  />
+                </div>
+                <div className="admin-field">
+                  <label className="admin-label">Link</label>
+                  <input className="admin-input" placeholder="https://…" value={form.prLink} onChange={(e) => setForm({ ...form, prLink: e.target.value })} />
+                </div>
+              </>
+            )}
 
             <div className="admin-field">
               <label className="admin-label">Description</label>
@@ -907,25 +918,6 @@ export function BoardView({
                     <span style={{ flex: 1, textDecoration: s.done ? "line-through" : undefined, color: s.done ? "var(--admin-muted)" : undefined }}>
                       {s.title}
                     </span>
-                    <input
-                      className="admin-input"
-                      type="number"
-                      min={0}
-                      step={1}
-                      placeholder="HT"
-                      title="Human Tokens"
-                      key={`${s.id}-${s.human_tokens ?? ""}`}
-                      defaultValue={s.human_tokens ?? ""}
-                      onBlur={(e) => saveSubTokens(s.id, e.target.value, s.human_tokens)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          (e.target as HTMLInputElement).blur();
-                        }
-                      }}
-                      disabled={saving}
-                      style={{ width: 64, flex: "none" }}
-                    />
                   </div>
                 ))}
                 <div style={{ display: "flex", gap: 8, marginTop: 6 }}>

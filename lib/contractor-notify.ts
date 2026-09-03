@@ -1,5 +1,6 @@
 import { sendTransactionalEmail } from "@/lib/email";
 import { notifyOps } from "@/lib/lark";
+import { BRAND_SHORT, BRAND_SIGNOFF } from "@/lib/brand";
 
 // All outbound messages for the contractor work-request workflow go through
 // this module so the transport can grow (Lark DM later) without touching the
@@ -33,12 +34,12 @@ export async function sendWorkRequestEmail(opts: {
 }): Promise<boolean> {
   const html = `
     <p>Hi ${firstName(opts.name)},</p>
-    <p>Edge8 has a new work request for you: <strong>${opts.title}</strong>.</p>
+    <p>${BRAND_SHORT} has a new work request for you: <strong>${opts.title}</strong>.</p>
     ${noteBlock(opts.brief)}
     <p>Open the link below to review the brief and send back your estimated hours and plan:</p>
     ${btn(opts.url, "Review & estimate")}
     <p style="margin-top:24px;">Reply to this email if anything is unclear.</p>
-    <p>Dave and the Edge8 team</p>
+    <p>${BRAND_SIGNOFF}</p>
   `.trim();
   return sendTransactionalEmail({
     to: opts.to,
@@ -100,7 +101,7 @@ export async function sendDecisionEmail(opts: {
     ${noteBlock(opts.note)}
     ${t.cta ? btn(opts.url, t.cta) : ""}
     <p style="margin-top:24px;">Reply to this email with any questions.</p>
-    <p>Dave and the Edge8 team</p>
+    <p>${BRAND_SIGNOFF}</p>
   `.trim();
   return sendTransactionalEmail({ to: opts.to, subject: t.subject, html, replyTo: "dave@edge8.co" });
 }
@@ -122,7 +123,7 @@ export async function sendPaymentEmail(opts: {
     <p>${body}</p>
     ${noteBlock(opts.note)}
     <p style="margin-top:24px;">Reply to this email with any questions.</p>
-    <p>Dave and the Edge8 team</p>
+    <p>${BRAND_SIGNOFF}</p>
   `.trim();
   return sendTransactionalEmail({
     to: opts.to,
@@ -153,7 +154,7 @@ export async function sendClientEstimateReadyEmail(opts: {
     <p>Review the plan and approve it in your portal to get the work started:</p>
     ${btn(opts.url, "Review estimate")}
     <p style="margin-top:24px;">Reply to this email if anything is unclear.</p>
-    <p>Dave and the Edge8 team</p>
+    <p>${BRAND_SIGNOFF}</p>
   `.trim();
   return sendTransactionalEmail({
     to: opts.to,
@@ -177,7 +178,7 @@ export async function sendClientWorkReadyEmail(opts: {
     <p>Review the result in your portal and accept it (or request a revision):</p>
     ${btn(opts.url, "Review work")}
     <p style="margin-top:24px;">Reply to this email if anything is unclear.</p>
-    <p>Dave and the Edge8 team</p>
+    <p>${BRAND_SIGNOFF}</p>
   `.trim();
   return sendTransactionalEmail({
     to: opts.to,

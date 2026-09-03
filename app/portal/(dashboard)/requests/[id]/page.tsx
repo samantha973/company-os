@@ -12,6 +12,7 @@ import {
   type WorkRequestStatus,
 } from "@/lib/admin/contractors";
 import { DecisionPanel } from "./DecisionPanel";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -105,7 +106,7 @@ export default async function PortalRequestDetailPage({ params }: { params: { id
                 <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
                   <strong>{EVENT_LABEL[e.type] ?? humanize(e.type)}</strong>
                   <span className="admin-cell-muted">
-                    {e.actorType === "client" ? "You" : e.actorType === "contractor" ? r.contractorName ?? "Contractor" : "Edge8"} ·{" "}
+                    {e.actorType === "client" ? "You" : e.actorType === "contractor" ? r.contractorName ?? "Contractor" : BRAND_SHORT} ·{" "}
                     {timeAgo(e.createdAt)}
                   </span>
                 </div>

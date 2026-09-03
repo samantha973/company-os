@@ -6,6 +6,7 @@ import { supabase, companyOs } from "@/lib/supabase";
 import { requireAdmin, isAdminEmail } from "@/lib/admin-auth";
 import { recordAudit } from "@/lib/admin/audit";
 import { getAffiliate360, generateAffiliateCode, WORK_CREDIT_RATE, CASH_RATE, type Affiliate360, type AffiliateIdentity } from "@/lib/admin/affiliates";
+import { BRAND_PORTAL } from "@/lib/brand";
 
 // Server actions for the affiliate program. Activation/deactivation is invoked
 // from the Companies shelf (per contact) and from the Affiliates shelf; the
@@ -239,8 +240,8 @@ export async function sendAffiliateInvite(personId: string): Promise<Result> {
     const { sendTransactionalEmail } = await import("@/lib/email");
     await sendTransactionalEmail({
       to: email,
-      subject: "Your 8 Edges Client Portal sign-in link",
-      html: `<p>Here is your sign-in link for the 8 Edges Client Portal:</p><p><a href="${data.properties.action_link}">Sign in</a></p>`,
+      subject: `Your ${BRAND_PORTAL} sign-in link`,
+      html: `<p>Here is your sign-in link for the ${BRAND_PORTAL}:</p><p><a href="${data.properties.action_link}">Sign in</a></p>`,
     });
     message = "Sign-in link sent (account already existed).";
   } else {

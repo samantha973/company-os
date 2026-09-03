@@ -5,24 +5,17 @@ import { getAssignedTimeOff, getLeaveDecisionQueue } from "@/lib/portal/time-off
 import { getInvoicesForActor } from "@/lib/portal/invoices";
 import { listWorkRequestsForActor } from "@/lib/portal/work-requests";
 import { getMyEvents } from "@/lib/portal/events";
-import { getRoadmapPreviewForActor } from "@/lib/portal/backlog";
 import { getBoardForClient } from "@/lib/portal/boards";
 import { listDocumentsForActor } from "@/lib/portal/documents";
+import { hasPublishedPlan } from "@/lib/portal/plan";
 import { PageHead } from "@/components/admin/PageHead";
 import { MetricCard } from "@/components/admin/MetricCard";
-import { Badge, type BadgeTone } from "@/components/admin/Badge";
-import { PRIORITY_LABEL, type BacklogPriority } from "@/lib/client-backlog";
+import { Badge } from "@/components/admin/Badge";
 import { formatCents, formatDate, humanize } from "@/lib/admin/format";
 import { formatHours } from "@/lib/admin/contractors";
 
 import { PRIORITY_LABEL as TASK_LABEL, PRIORITY_TONE as TASK_TONE } from "@/lib/boards/types";
-
-const PRIORITY_TONE: Record<BacklogPriority, BadgeTone> = {
-  now: "info",
-  next: "ok",
-  later: "neutral",
-  park: "warn",
-};
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -54,7 +47,7 @@ function eventRange(startsAt: string | null, endsAt: string | null): string {
 export default async function PortalHome() {
   const actor = await requirePortalMember();
 
-  const [team, timeOff, leaveDecisions, invoices, requests, events, roadmap, board, documents] =
+  const [team, timeOff, leaveDecisions, invoices, requests, events, hasPlan, board, documents] =
     await Promise.all([
       getAssignedTeam(actor),
       getAssignedTimeOff(actor),
@@ -62,7 +55,7 @@ export default async function PortalHome() {
       getInvoicesForActor(actor),
       listWorkRequestsForActor(actor),
       getMyEvents(actor),
-      getRoadmapPreviewForActor(actor, 3),
+      hasPublishedPlan(actor),
       getBoardForClient(actor),
       listDocumentsForActor(actor),
     ]);
@@ -110,7 +103,7 @@ export default async function PortalHome() {
   const openCards = (board?.cards ?? []).filter((c) => !c.done);
   const columnName = new Map((board?.columns ?? []).map((c) => [c.id, c.name]));
   const latestDocs = documents.slice(0, 3);
-  const hasGlance = roadmap.total > 0 || board !== null || documents.length > 0;
+  const hasGlance = hasPlan || board !== null || documents.length > 0;
 
   return (
     <>
@@ -123,21 +116,19 @@ export default async function PortalHome() {
       {hasGlance && (
         <div className="team-glance" style={{ marginBottom: 16 }}>
           <div className="team-glance-cell">
-            <span className="team-glance-label">Roadmap</span>
-            <span className="team-glance-value">
-              {roadmap.total > 0 ? `${roadmap.total} item${roadmap.total === 1 ? "" : "s"}` : "None yet"}
-            </span>
+            <span className="team-glance-label">90-Day Plan</span>
+            <span className="team-glance-value">{hasPlan ? "Published" : "Coming soon"}</span>
             <span className="team-glance-note">
-              {roadmap.total > 0 ? <Link href="/portal/hub">Open →</Link> : "Built with Edge8"}
+              {hasPlan ? <Link href="/portal/plan">Open →</Link> : "Published by your account team"}
             </span>
           </div>
           <div className="team-glance-cell">
-            <span className="team-glance-label">Work Board</span>
+            <span className="team-glance-label">Activity</span>
             <span className="team-glance-value">
-              {board ? `${openCards.length} open card${openCards.length === 1 ? "" : "s"}` : "No board yet"}
+              {board ? `${openCards.length} in motion` : "Nothing yet"}
             </span>
             <span className="team-glance-note">
-              {board ? <Link href="/portal/hub">Open →</Link> : "Set up by Edge8"}
+              {board ? <Link href="/portal/hub">Open →</Link> : "Set up by your account team"}
             </span>
           </div>
           <div className="team-glance-cell">
@@ -246,7 +237,7 @@ export default async function PortalHome() {
           {inProgress.length > 0 && (
             <p className="admin-page-sub" style={{ marginTop: 12, marginBottom: 0 }}>
               {inProgress.length} more {inProgress.length === 1 ? "request is" : "requests are"} in
-              progress with Edge8. <Link href="/portal/requests">View all</Link>
+              progress with {BRAND_SHORT}. <Link href="/portal/requests">View all</Link>
             </p>
           )}
         </div>
@@ -285,52 +276,8 @@ export default async function PortalHome() {
         )}
       </div>
 
-      {(roadmap.total > 0 || openCards.length > 0 || latestDocs.length > 0 || hasStaff || nextEvent) && (
+      {(openCards.length > 0 || latestDocs.length > 0 || hasStaff || nextEvent) && (
         <h2 className="admin-section-label">Your engagement</h2>
-      )}
-
-      {roadmap.total > 0 && (
-        <div className="admin-card admin-section-card" style={{ marginBottom: 16 }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "baseline",
-              gap: 8,
-              marginBottom: 10,
-            }}
-          >
-            <h2 className="admin-card-title" style={{ margin: 0 }}>
-              Roadmap
-              <span className="admin-cell-muted" style={{ fontWeight: 400, fontSize: 12, marginLeft: 8 }}>
-                next up
-              </span>
-            </h2>
-            <Link href="/portal/hub" className="admin-cell-muted" style={{ fontSize: 12 }}>
-              View all {roadmap.total} →
-            </Link>
-          </div>
-          <div className="admin-list">
-            {roadmap.items.map((it) => (
-              <Link
-                key={it.id}
-                href="/portal/hub"
-                className="admin-list-row"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <div className="admin-list-main">
-                  <div className="admin-list-title">
-                    {it.ref ? `${it.ref} · ` : ""}
-                    {it.title}
-                  </div>
-                </div>
-                <div className="admin-list-aside">
-                  <Badge tone={PRIORITY_TONE[it.priority]}>{PRIORITY_LABEL[it.priority]}</Badge>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
       )}
 
       {board && openCards.length > 0 && (

@@ -24,6 +24,7 @@ import { randomGalleryPhotos, collageAvatars } from "@/lib/gallery";
 import { getAllPublishedPosts } from "@/lib/blog";
 import { setOnboardingDone } from "./actions";
 import Link from "next/link";
+import { BRAND_SHORT } from "@/lib/brand";
 
 // The core teaching every new hire reads first; the rest of the "Start here"
 // panel is the newest posts by date.
@@ -69,13 +70,13 @@ const HUB_LIVE: HubItem[] = [
   },
   {
     title: "Team Directory",
-    sub: "Find anyone at Edge8 and who they report to.",
+    sub: `Find anyone at ${BRAND_SHORT} and who they report to.`,
     ico: "☷",
     href: "/team/directory",
   },
   {
     title: "Org Chart",
-    sub: "How Edge8 fits together — who reports to whom, at a glance.",
+    sub: `How ${BRAND_SHORT} fits together — who reports to whom, at a glance.`,
     ico: "⌥",
     href: "/team/org",
   },
@@ -88,7 +89,7 @@ const HUB_LIVE: HubItem[] = [
 ];
 
 const HUB_SOON: HubItem[] = [
-  { title: "Company Announcements", sub: "What's happening across Edge8, in one feed.", ico: "◈" },
+  { title: "Company Announcements", sub: `What's happening across ${BRAND_SHORT}, in one feed.`, ico: "◈" },
   { title: "HR Handbook", sub: "Policies, ways of working, and how we do things.", ico: "▤" },
   { title: "Health Insurance", sub: "Your coverage and how to make a claim.", ico: "♥" },
   { title: "1-1 Schedule", sub: "Your biweekly time with your manager, prepped and tracked.", ico: "◷" },
@@ -198,7 +199,7 @@ export default async function TeamHome() {
           <span className="team-glance-value">{profile?.managerName || "—"}</span>
         </div>
         <div className="team-glance-cell">
-          <span className="team-glance-label brand-label">With Edge8 since</span>
+          <span className="team-glance-label brand-label">With {BRAND_SHORT} since</span>
           <span className="team-glance-value">{profile?.start_date ? formatDate(profile.start_date) : "—"}</span>
         </div>
       </div>
@@ -214,7 +215,7 @@ export default async function TeamHome() {
                     <h3 className="admin-card-title" style={{ margin: 0 }}>
                       {s.company.name}
                       <span className="admin-cell-muted" style={{ fontWeight: 400, fontSize: 12, marginLeft: 8 }}>
-                        roadmap · next up
+                        plan targets · next up
                       </span>
                     </h3>
                     <Link href={`/team/clients/${s.company.id}`} className="admin-cell-muted" style={{ fontSize: 12 }}>
@@ -333,7 +334,7 @@ export default async function TeamHome() {
         <div style={{ flex: 1, minWidth: 0 }}>
           <h2 className="admin-card-title" style={{ marginBottom: 4 }}>Get Certified</h2>
           <p className="admin-page-sub" style={{ margin: 0 }}>
-            Become a certified AI Officer on AIOlabz. Sign up with your <b>@edge8.ai</b> email and
+            Become a certified AI Officer on AIOlabz. Sign up with your company email and
             work through the challenge-based program.
           </p>
         </div>

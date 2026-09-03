@@ -74,8 +74,12 @@ Columns:
 - created_at: Row creation time.
 - updated_at: Last modification time.
 - gender: Self-reported gender, shown on the team profile.
-- persona: Which kind of relationship this person is to Edge8. Valid values: [vendor, prospect, client, job_seeker, employee, student].
+- persona: Which kind of relationship this person is to the agency; `media` = journalist/editor/producer (a media contact is a `media` person joined to the outlet's company via `person_companies.role='journalist'`). Valid values: [vendor, prospect, client, job_seeker, employee, student, media].
 - linkedin_url: Link to the person's LinkedIn profile.
+- birthday: Birthday for client-relationship touchpoints (PR Hub Key Facts).
+- key_topics: Topics a spokesperson can speak to; empty for non-spokespeople.
+- linkedin_handle: LinkedIn handle used when the agency posts on the person's behalf.
+- credential_ref: Password-manager item reference (e.g. a 1Password item URL) for the person's LinkedIn login. Never a password.
 - city: City of residence, free text.
 - state_province: State or province of residence, free text.
 - metadata: JSONB escape hatch for experimental attributes; promote to real columns once stable.
@@ -120,7 +124,10 @@ Columns:
 - industry_normalized: Fixed-taxonomy industry used by charts and filters, check-constrained. Valid values: [Technology & Software, Food & Beverage, Hospitality & Travel, Financial Services, Professional Services, Real Estate & Construction, Retail & Consumer Goods, Manufacturing, Healthcare & Wellness, Legal, Marketing & Media, Education, Logistics & Supply Chain, Energy, Other].
 - website_url: Canonical bare host (citext) consolidated from the old domain+website pair; the CRM match/search key for companies.
 - client_types: Text array of relationship kinds an org can hold simultaneously; Edge8-internal, never exposed to the portal.
-- is_ai_program: Whether this org is in an AI program engagement (true means tracker on, at least one repo); set by the HTT registration pipeline.
+- is_pr_program: Whether this org has a PR program engagement (renamed from is_ai_program, supabase/pr-hub/01-rename.sql).
+- linkedin_url: Company LinkedIn page URL (PR Hub Key Facts).
+- abn: Australian Business Number as printed on invoices and award entries.
+- office_address: Office address, free text (PR Hub Key Facts).
 Evidence: rows 256 · reads 60,101 · inserts 256 (stamped 28 Aug 2026)
 
 ### company_os.team_members
@@ -426,7 +433,7 @@ Columns:
 - title: Title of the content piece.
 - brand_id: FK to brands; which identity (Edge8, AI Officer) the content publishes as.
 - pillar: Legacy free-text pillar label, superseded by `pillar_id` and left in place unwritten.
-- channel: Publishing channel for the piece. Valid values: [blog, email, linkedin, facebook].
+- channel: Where the content ran. Owned channels: blog/email/linkedin/facebook. Earned PR coverage: earned/online/print/tv/radio/podcast/syndication/speaking/other. Valid values: [blog, email, linkedin, facebook, earned, online, print, tv, radio, podcast, syndication, speaking, other].
 - status: Workflow state on the content kanban. Valid values: [idea, drafted, approved, scheduled, published, skipped].
 - publish_date: Planned publish date on the calendar.
 - parent_id: FK to marketing_content; the repurposing waterfall — a channel derivative points at its core asset (usually the blog post).
@@ -458,6 +465,15 @@ Columns:
 - read_time: Precomputed `N min read` label, set at publish.
 - published_at: When the blog post went live.
 - body_html: The authored email/content HTML, which references image-library images by URL; added alongside the marketing_calendar to marketing_content rename.
+- company_id: FK to companies; the PR client this content belongs to, null for the agency's own marketing.
+- outlet: Publication/outlet name for earned coverage.
+- reach: Estimated audience reach for the placement.
+- pr_program_id: FK to pr_programs; the program this outcome counts toward (`pr_program_stats`).
+- task_id: FK to tasks; the board card (effort) that earned this outcome.
+- backlog_item_id: FK to client_backlog_items; the 90-day plan target this outcome counts toward (`pr_target_progress`).
+- journalist_person_id: FK to people (persona=media); the journalist who ran it, internal-only.
+- case_study_id: FK to pr_case_studies; the customer story used in this piece, if any.
+- media_asset_document_id: FK to program_documents; a video/audio clip of the segment.
 Evidence: rows 107 · reads 15,218 · inserts 120 (stamped 28 Aug 2026)
 
 ### company_os.affiliates
@@ -543,14 +559,14 @@ Usage: relationship timelines on people, companies, and deals (430+ rows, growin
 Reuse: THE activity log. Any "log a touch" feature writes here with `kind`; never create per-channel activity tables.
 Columns:
 - id: Primary key.
-- kind: Type of touchpoint on the shared activity log; automatic `status_change` rows are hidden from note threads, and a `interactions_kind_check` constraint limits values. Kinds written by code: [note, call, email, system, status_change].
+- kind: Type of touchpoint on the shared activity log; automatic `status_change` rows are hidden from note threads. `lunch`/`gift`/`catchup` are PR client-relationship touchpoints logged against a program (`subject_type='pr_program'`); `pr_program_stats.last_formal_catchup` is the max over meeting/lunch/catchup. Valid values: [note, call, email, meeting, message, status_change, system, lunch, gift, catchup].
 - subject: Short title of the touchpoint, e.g. the email subject or "Unsubscribed from marketing email".
 - body: Full touchpoint content - note text, call summary, or the sent email HTML.
 - occurred_at: When the touchpoint actually happened (drives timeline ordering, distinct from row creation).
 - owner_id: FK to people; the team member who owns/logged the touchpoint (not populated by current code paths).
 - person_id: FK to people; puts the entry on that contact's 360 timeline.
 - company_id: FK to companies; copied from the deal so notes also land on the company timeline.
-- subject_type: Polymorphic scope of the entry paired with subject_id; `deal` for deal communications, `application` for ATS notes. Values seen in code: [deal, application].
+- subject_type: Polymorphic scope of the entry paired with subject_id; `deal` for deal communications, `application` for ATS notes, `pr_program` for PR client touchpoints. Values seen in code: [deal, application, pr_program].
 - subject_id: UUID of the scoped record named by subject_type (deal id or application id).
 - metadata: Free-form JSON side-car recording provenance, e.g. `{source: "deal_drawer"}`, author_email/author_name, or email to-address and format.
 - created_at: Row creation time.
@@ -657,8 +673,122 @@ Columns:
 - created_at: Row creation time.
 - updated_at: Last modification time.
 - client_sort_order: The client's dragged ordering within a group; the portal orders by `coalesce(client_sort_order, sort_order)` so un-reordered groups fall back to Edge8's order.
-- ai_program_id: FK to ai_programs; null means company-wide, set means the item belongs to one AI Program (HTT Phase 1, backfilled only for single-program companies).
+- pr_program_id: FK to pr_programs; null means company-wide, set means the item belongs to one PR Program.
+- quarterly_plan_id: FK to pr_quarterly_plans; the 90-day plan this target belongs to, null when not tied to a quarter.
+- quantity_target: Numeric target for the quarter (e.g. 10 for "10 posts/qtr"); progress is counted from linked `marketing_content` rows via the `pr_target_progress` view.
+- variance_reason: Why the target slipped, if it did. Valid values: [client_delayed, deal_not_finalised, reprioritised, external, other].
+- variance_note: Client-facing explanation of the variance.
 Evidence: rows 43 · reads 1,617 · inserts 43 (stamped 28 Aug 2026)
+
+### company_os.pr_quarterly_plans
+One row is: one 90-day plan for one PR program — the agreed business and comms objectives for a quarter, keyed off the planning meeting.
+Bucket: transactional · Client delivery & work
+Tier: 2 stage engine
+Status: active
+Origin: the 90-Day Plan tab (admin and team hubs); created 3 Sep 2026 (supabase/pr-hub/05-plan-layer.sql).
+Usage: admin/team hub plan tab; the portal reads only rows with `published_at` set.
+Reuse: the plan layer of the PR spine (Plan → Effort → Outcome). Targets are `client_backlog_items` with `quarterly_plan_id` set; workstreams are `client_roadmap_groups`; the transcript/summary live on the linked `meetings` row.
+Do not: store objectives or targets on `program_plans` (that is the LinkedIn strategy / 5Ds brief document); type counts into columns (use `pr_target_progress`).
+Columns:
+- id: Primary key.
+- pr_program_id: FK to pr_programs; the program this quarter belongs to.
+- company_id: FK to companies; denormalised client for scope checks, always equals `pr_programs.company_id`.
+- quarter_label: Display label, unique per program, e.g. `Q2 FY27`.
+- starts_on: First day of the quarter.
+- ends_on: Last day of the quarter.
+- planning_meeting_id: FK to meetings; the quarterly planning session the plan was keyed off (transcript, recording, summary live there).
+- business_objective: What the client business needs this quarter, in their words.
+- comms_objective: What comms will deliver this quarter to serve the business objective.
+- approved_plan_md: Optional longer approved plan, markdown.
+- signoff_date: Date the client signed the plan off.
+- published_at: When the plan was made visible in the client hub; null means internal draft.
+- created_by: Email of the creator.
+- created_at: Row creation time.
+- updated_at: Last modification time.
+- archived_at: Soft delete; null means live.
+- archived_by: Who archived it.
+Evidence: rows 0 (created 3 Sep 2026)
+
+### company_os.pr_awards
+One row is: one award entry for a PR program, from proposed through outcome.
+Bucket: transactional · Client delivery & work
+Tier: 2 stage engine
+Status: active
+Origin: the Awards tab (admin and team hubs); created 3 Sep 2026 (supabase/pr-hub/06-outcomes-supporting.sql).
+Usage: hub Awards tab; `pr_program_stats.awards_in_flight`; the portal reads only rows with `published_at` set.
+Reuse: a single `stage` column replaces the v0.5 proposed/agreed lists; the submitted entry document is a `program_documents` row.
+Columns:
+- id: Primary key.
+- pr_program_id: FK to pr_programs.
+- company_id: FK to companies; denormalised client for scope checks.
+- quarterly_plan_id: FK to pr_quarterly_plans; the plan the entry was proposed in, if any.
+- stage: Where the entry stands. Valid values: [proposed, agreed, submitted, shortlisted, won, lost, withdrawn].
+- award_name: Name of the award programme.
+- category: Category entered.
+- website: Award website URL.
+- entry_close: Entry deadline.
+- event_date: Ceremony/announcement date.
+- submission_document_id: FK to program_documents; the submitted entry.
+- cost_cents: Internal-only entry cost in cents.
+- outcome_note: Result detail once known.
+- published_at: When shown in the client hub; null means internal draft.
+- created_by: Email of the creator.
+- created_at: Row creation time.
+- updated_at: Last modification time.
+- archived_at: Soft delete; null means live.
+- archived_by: Who archived it.
+Evidence: rows 0 (created 3 Sep 2026)
+
+### company_os.pr_news_pipeline
+One row is: one news idea logged against a PR program before it becomes a plan target.
+Bucket: transactional · Client delivery & work
+Tier: 2 stage engine
+Status: active
+Origin: the Pipeline tab (admin and team hubs); created 3 Sep 2026 (supabase/pr-hub/06-outcomes-supporting.sql).
+Usage: hub Pipeline tab; the portal reads only rows with `published_at` set.
+Reuse: promote = create the `client_backlog_items` target and set `promoted_backlog_item_id`; never duplicate the idea onto the plan by hand.
+Columns:
+- id: Primary key.
+- pr_program_id: FK to pr_programs.
+- company_id: FK to companies; denormalised client for scope checks.
+- headline: Working headline.
+- description: What the story is and why it matters.
+- status: Pipeline state. Valid values: [logged, candidate, promoted, parked].
+- target_quarter_plan_id: FK to pr_quarterly_plans; the plan the idea is aimed at.
+- promoted_backlog_item_id: FK to client_backlog_items; the plan target created when the idea was promoted.
+- last_reviewed_on: Last time the team looked at this idea.
+- published_at: When shown in the client hub; null means internal draft.
+- created_by: Email of the creator.
+- created_at: Row creation time.
+- updated_at: Last modification time.
+- archived_at: Soft delete; null means live.
+- archived_by: Who archived it.
+Evidence: rows 0 (created 3 Sep 2026)
+
+### company_os.pr_case_studies
+One row is: one customer story a PR client can offer to media — who the customer is, what the story is, whether it has been used.
+Bucket: transactional · Client delivery & work
+Tier: 2 stage engine
+Status: active
+Origin: the Case Studies tab (admin and team hubs); created 3 Sep 2026 (supabase/pr-hub/06-outcomes-supporting.sql).
+Usage: hub Case Studies tab; coverage rows reference it via `marketing_content.case_study_id` ("used in"); the portal reads only rows with `published_at` set.
+Reuse: the customer is a `people` row (and optionally a `companies` row); never inline customer name/email/phone here.
+Columns:
+- id: Primary key.
+- pr_program_id: FK to pr_programs.
+- company_id: FK to companies; denormalised client for scope checks.
+- title: Short working title for the story.
+- customer_person_id: FK to people; the customer contact (PII lives on people, internal-only).
+- customer_company_id: FK to companies; the customer organisation, if it has one.
+- description: The story in a paragraph.
+- status: Where the story stands. Valid values: [proposed, in_progress, approved, used].
+- published_at: When shown in the client hub; null means internal draft.
+- created_by: Email of the creator.
+- created_at: Row creation time.
+- updated_at: Last modification time.
+- archived_at: Soft delete; null means live.
+- archived_by: Who archived it.
+Evidence: rows 0 (created 3 Sep 2026)
 
 ### company_os.meetings
 One row is: one meeting or meeting-note record — calendar meetings and folded-in notes distinguished by `source`.
@@ -697,7 +827,7 @@ Columns:
 - source_file_name: Original filename of the uploaded transcript, shown on the details page.
 - created_by: Email of the admin who created the row (text, not a FK).
 - archived_at: Soft-delete timestamp; null means the row is active.
-- ai_program_id: FK to ai_programs; optional AI Program tag scoping the meeting - null means company-wide (the default).
+- pr_program_id: FK to pr_programs; optional PR Program tag scoping the meeting - null means company-wide (the default). A 90-day plan points at its planning meeting via `pr_quarterly_plans.planning_meeting_id`.
 Evidence: rows 336 · reads 1,664 · inserts 386 (stamped 28 Aug 2026)
 
 ### company_os.sprints
@@ -1066,7 +1196,9 @@ Tier: 3 support
 Status: active
 Origin: CRM flows.
 Usage: 16,432 reads — contact lists and company pages.
-Reuse: person↔org relationships extend here; never put a company FK directly on `people`.
+Reuse: person↔org relationships extend here; never put a company FK directly on `people`. PR Hub: client contacts are `primary`/`accounts`/`spokesperson` rows on the client company; a journalist is a `journalist` row on the outlet's company (one person, many outlets/clients).
+Columns:
+- role: Relationship to the company. Client contacts: primary/accounts/spokesperson. Media: journalist at an outlet. Valid values: [owner_founder, executive, employee, primary, secondary, board, advisor, other, accounts, spokesperson, journalist].
 Evidence: rows 313 · reads 16,432 · inserts 318 (stamped 28 Aug 2026)
 
 ### company_os.candidates
@@ -1099,13 +1231,34 @@ Evidence: rows 23 · reads 6,396 · inserts 23 (stamped 28 Aug 2026)
 
 ### Master · Products, brand, assets
 
-### company_os.ai_programs
-One row is: one AI program engagement definition for a client.
+### company_os.pr_programs
+One row is: one PR program (client retainer/engagement), company-scoped; renamed from ai_programs (supabase/pr-hub/01-rename.sql).
 Bucket: master · Products & offerings
 Tier: 3 support
 Status: active
-Origin: program setup flows.
-Usage: 8 tables reference it; program surfaces (1,371 reads).
+Origin: program setup flows (portal add-program, admin); engagement fields edited on the hub program band.
+Usage: every PR table keys to it via `pr_program_id`; derived tallies come from the `pr_program_stats` view (published LinkedIn posts, published coverage, last formal catch-up, awards in flight) and per-target progress from `pr_target_progress`.
+Reuse: the anchor of the PR spine. One row per client retainer; a second engagement is a second row on the same company, never a new client entity.
+Do not: add count columns (use the views); expose `account_health`, `engagement_fee_cents` or `internal_drive_folder` to the portal.
+Columns:
+- id: Primary key.
+- company_id: FK to companies; the client.
+- name: Program name shown in the hub.
+- status: Engagement state. Valid values: [draft, active, paused, complete].
+- created_by: Email of the creator.
+- created_at: Row creation time.
+- updated_at: Last modification time.
+- repo_url: Legacy AI-program repo URL; unused by the PR Hub UI.
+- github_repo: Legacy AI-program GitHub repo (citext, unique); unused by the PR Hub UI.
+- github_repo_id: Legacy GitHub repo id; unused by the PR Hub UI.
+- account_lead_id: FK to people; the account lead (day-to-day owner).
+- strategic_lead_id: FK to people; the strategic lead.
+- account_health: Internal-only RAG health; never shown to the client. Valid values: [green, amber, red].
+- contract_start: Retainer start date.
+- contract_review: Next contract review/renewal date.
+- engagement_fee_cents: Internal-only monthly fee in cents; never shown to the client or team hub.
+- client_drive_folder: Shared drive folder URL the client can open.
+- internal_drive_folder: Internal-only drive folder URL.
 Evidence: rows 22 · reads 1,371 · inserts 24 (stamped 28 Aug 2026)
 
 ### company_os.talks
@@ -1723,12 +1876,12 @@ Usage: 6 tables reference it; OKR views (935 reads).
 Evidence: rows 20 · reads 935 · inserts 35 (stamped 28 Aug 2026)
 
 ### company_os.client_roadmap_groups
-One row is: one grouping on one client's roadmap.
+One row is: one workstream for one client (PR Hub) — the section a plan target sits under.
 Bucket: other · Plans & designs
 Tier: 3 support
 Status: active
-Origin: delivery planning.
-Usage: client roadmap rendering (956 reads).
+Origin: `company_os.seed_pr_workstreams(program_id)` on program create (keys: news-announcements, thought-leadership, newsjacking, linkedin-authority, speaking, awards); editable on the 90-Day Plan tab.
+Usage: 90-Day Plan tab and Work Board filters; `client_backlog_items.group_key` matches `key`.
 Evidence: rows 7 · reads 956 · inserts 7 (stamped 28 Aug 2026)
 
 ### company_os.client_roadmap_overview
@@ -1741,12 +1894,18 @@ Usage: client roadmap rendering.
 Evidence: rows 2 · reads 385 · inserts 2 (stamped 28 Aug 2026)
 
 ### company_os.program_plans
-One row is: one AI program's plan document record.
+One row is: one plan document on a PR program — an uploaded-doc marker, a chatbot 5Ds brief, or the signed-off LinkedIn strategy (`method='linkedin_strategy'`, pillars/post types/cadence in `brief_html`).
 Bucket: other · Plans & designs
 Tier: 3 support
 Status: active
-Origin: program setup.
-Usage: program surfaces.
+Origin: program setup; LinkedIn strategy from the hub.
+Usage: program surfaces; the portal reads only rows with `published_at` set.
+Do not: put 90-day objectives or targets here (`pr_quarterly_plans` / `client_backlog_items`).
+Columns:
+- method: How the plan was produced. Valid values: [upload, chat, linkedin_strategy].
+- quarter: Quarter label the document applies to, if any.
+- signed_off_at: Date the client signed the document off.
+- published_at: When shown in the client hub; null means internal draft.
 Evidence: rows 1 · reads 142 · inserts 1 (stamped 28 Aug 2026)
 
 ### htt.project_goals

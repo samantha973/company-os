@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut, endAssumeSession } from "@/app/portal/(dashboard)/actions";
+import { BRAND_PORTAL, BRAND_SHORT } from "@/lib/brand";
 
 // Client-portal sibling of TeamSidebar: same admin shell CSS, flat nav. A nav
 // item renders live only when its module has BOTH shipped (`built`) and the
@@ -17,7 +18,10 @@ export type PortalEntitlements = {
   invoices: boolean;
   meetings: boolean;
   board: boolean;
-  roadmap: boolean;
+  plan: boolean;
+  coverage: boolean;
+  awards: boolean;
+  caseStudies: boolean;
   users: boolean;
   companyProfile: boolean;
 };
@@ -37,23 +41,25 @@ const NAV: NavGroup[] = [
     items: [{ label: "Overview", href: "/portal", ico: "\u25c8", built: true }],
   },
   {
-    label: "Delivery",
+    label: "Your PR programme",
     items: [
       // PR Programs leads: /portal/hub is the one PR Programs hub (company
       // overview + program cards); /portal/programs redirects here, so this is
       // the single entry point. Membership is the entitlement.
       { label: "PR Programs", href: "/portal/hub", ico: "\u21c9", built: true },
-      // Requests has no entitlement key on purpose: being a portal member IS the
-      // entitlement to ask for work; all data inside is company-scoped anyway.
-      { label: "Requests", href: "/portal/requests", ico: "\u270e", built: true },
+      // The published 90-day plan; appears once the team publishes one.
+      { label: "90-Day Plan", href: "/portal/plan", ico: "\u25a3", built: true, entitlementKey: "plan" },
+      { label: "Coverage", href: "/portal/coverage", ico: "\u25a4", built: true, entitlementKey: "coverage" },
+      { label: "Awards", href: "/portal/awards", ico: "\u2605", built: true, entitlementKey: "awards" },
+      { label: "Case Studies", href: "/portal/case-studies", ico: "\u275d", built: true, entitlementKey: "caseStudies" },
     ],
   },
   {
     label: "People",
     items: [
-      // "Edge8 Team" not "Team": this is the Edge8 staff assigned to the client,
+      // "Your PR Hub team" not "Team": this is the agency staff assigned to the client,
       // not the client's own portal users (that's Account \u2192 Users).
-      { label: "Edge8 Team", href: "/portal/team", ico: "\u2637", built: true, entitlementKey: "team" },
+      { label: `Your ${BRAND_SHORT} team`, href: "/portal/team", ico: "\u2637", built: true, entitlementKey: "team" },
       { label: "Time Off", href: "/portal/time-off", ico: "\u263c", built: true, entitlementKey: "timeOff" },
     ],
   },
@@ -68,11 +74,6 @@ const NAV: NavGroup[] = [
       { label: "Invoices", href: "/portal/invoices", ico: "\u25a4", built: true, entitlementKey: "invoices" },
       // Users: portal admins manage their own company's users (PR 3).
       { label: "Users", href: "/portal/users", ico: "\u265f", built: true, entitlementKey: "users" },
-      // My Events lists upcoming public events too, so it's always worth
-      // opening; Referrals pitches the program to non-affiliates. Neither is
-      // entitlement-gated.
-      { label: "My Events", href: "/portal/events", ico: "\u25a6", built: true },
-      { label: "Referrals", href: "/portal/referrals", ico: "%", built: true },
     ],
   },
 ];
@@ -140,14 +141,14 @@ export function PortalSidebar({
         >
           ☰
         </button>
-        <strong>8 Edges Client Portal</strong>
+        <strong>{BRAND_PORTAL}</strong>
       </div>
 
       {navOpen && <div className="admin-scrim" onClick={() => setNavOpen(false)} />}
 
       <nav className={`admin-sidebar portal-sidebar${navOpen ? " is-open" : ""}`} aria-label="Portal">
         <div className="admin-brand">
-          <span className="admin-brand-lead">8 Edges Client Portal</span>
+          <span className="admin-brand-lead">{BRAND_PORTAL}</span>
           <span className="admin-brand-actions">
             <button
               type="button"

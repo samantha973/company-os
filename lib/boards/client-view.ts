@@ -1,15 +1,17 @@
 // The client-visible slice of a company's task board, shared by the client
 // portal (/portal/board) and the team client hub (/team/clients/[id]/board) so
-// both always render the same thing. PRIVACY HARD LINE: only non-internal,
-// non-archived cards for the given companies are returned, and the select
-// lists explicit safe columns only.
+// both always render the same thing. PRIVACY HARD LINE: by default only
+// non-internal, non-archived cards for the given companies are returned, and
+// the select lists explicit safe columns only. `includeInternal` is for the
+// TEAM surface only (staff see locked cards with a lock chip); the portal
+// never passes it.
 //
 // Auth-agnostic on purpose (same contract as lib/client-documents.ts): the
 // companyIds MUST come from the caller's own scope — portal companyScope or
 // the team actor's active staff assignments.
 
 import { companyOs } from "@/lib/supabase";
-import { type TaskPriority } from "@/lib/boards/types";
+import { prMeta, type TaskPriority } from "@/lib/boards/types";
 
 export type ClientBoardColumn = { id: string; name: string; isDone: boolean };
 export type ClientBoardCard = {
@@ -23,6 +25,12 @@ export type ClientBoardCard = {
   assigneeName: string | null;
   sprintName: string | null;
   createdAt: string;
+  // PR Hub (tasks.metadata.pr): kind of effort and the client-facing status note.
+  prType: string | null;
+  statusNote: string | null;
+  link: string | null;
+  // Always false on the portal; true only when the TEAM asked for internal cards.
+  internal: boolean;
 };
 export type ClientBoardView = {
   boardId: string;
@@ -46,7 +54,7 @@ export async function hasClientBoard(companyIds: string[]): Promise<boolean> {
 
 export async function getClientBoardView(
   companyIds: string[],
-  opts?: { untaggedOnly?: boolean },
+  opts?: { untaggedOnly?: boolean; programId?: string; includeInternal?: boolean },
 ): Promise<ClientBoardView | null> {
   if (companyIds.length === 0) return null;
   let boardQb = companyOs
@@ -55,23 +63,25 @@ export async function getClientBoardView(
     .in("client_company_id", companyIds)
     .eq("status", "active")
     .is("archived_at", null);
-  // untaggedOnly: company-wide boards only (pr_program_id null); program-tagged
-  // boards render in their PR Program view instead.
-  if (opts?.untaggedOnly) boardQb = boardQb.is("pr_program_id", null);
+  // untaggedOnly: company-wide boards only (pr_program_id null); programId:
+  // that program's board.
+  if (opts?.programId) boardQb = boardQb.eq("pr_program_id", opts.programId);
+  else if (opts?.untaggedOnly) boardQb = boardQb.is("pr_program_id", null);
   const { data: boardRow } = await boardQb.order("sort_order").limit(1).maybeSingle();
   if (!boardRow) return null;
   const board = boardRow as { id: string; slug: string; name: string };
 
+  let tasksQb = companyOs
+    .from("tasks")
+    .select("id, title, priority, due_date, status, board_column_id, assignee_id, sprint_id, created_at, internal, metadata")
+    .eq("board_id", board.id)
+    .is("parent_task_id", null)
+    .is("archived_at", null);
+  if (!opts?.includeInternal) tasksQb = tasksQb.eq("internal", false);
+
   const [colsRes, tasksRes] = await Promise.all([
     companyOs.from("board_columns").select("id, name, is_done").eq("board_id", board.id).order("position"),
-    companyOs
-      .from("tasks")
-      .select("id, title, priority, due_date, status, board_column_id, assignee_id, sprint_id, created_at")
-      .eq("board_id", board.id)
-      .eq("internal", false)
-      .is("parent_task_id", null)
-      .is("archived_at", null)
-      .order("position"),
+    tasksQb.order("position"),
   ]);
 
   const columns = ((colsRes.data ?? []) as { id: string; name: string; is_done: boolean }[]).map((c) => ({
@@ -89,6 +99,8 @@ export async function getClientBoardView(
     assignee_id: string | null;
     sprint_id: string | null;
     created_at: string;
+    internal: boolean;
+    metadata: Record<string, unknown> | null;
   }[];
 
   const personIds = [...new Set(tasks.map((t) => t.assignee_id).filter(Boolean) as string[])];
@@ -106,18 +118,25 @@ export async function getClientBoardView(
   );
   const sprintById = new Map((sprintsRes.data ?? []).map((s) => [s.id, s.name]));
 
-  const cards: ClientBoardCard[] = tasks.map((t) => ({
-    id: t.id,
-    title: t.title,
-    priority: t.priority,
-    dueDate: t.due_date,
-    columnId: t.board_column_id,
-    done: t.status === "done",
-    assigneeId: t.assignee_id,
-    assigneeName: t.assignee_id ? nameById.get(t.assignee_id) ?? null : null,
-    sprintName: t.sprint_id ? sprintById.get(t.sprint_id) ?? null : null,
-    createdAt: t.created_at,
-  }));
+  const cards: ClientBoardCard[] = tasks.map((t) => {
+    const pr = prMeta(t);
+    return {
+      id: t.id,
+      title: t.title,
+      priority: t.priority,
+      dueDate: t.due_date,
+      columnId: t.board_column_id,
+      done: t.status === "done",
+      assigneeId: t.assignee_id,
+      assigneeName: t.assignee_id ? nameById.get(t.assignee_id) ?? null : null,
+      sprintName: t.sprint_id ? sprintById.get(t.sprint_id) ?? null : null,
+      createdAt: t.created_at,
+      prType: pr.type,
+      statusNote: pr.status_note,
+      link: pr.link,
+      internal: !!t.internal,
+    };
+  });
 
   return { boardId: board.id, boardSlug: board.slug, boardName: board.name, columns, cards };
 }

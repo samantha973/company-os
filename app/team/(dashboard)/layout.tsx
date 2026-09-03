@@ -6,10 +6,11 @@ import { isHiringManager } from "@/lib/team/hiring";
 import { TeamSidebar } from "@/components/team/TeamSidebar";
 import { TeamChatWidget } from "@/components/team/TeamChatWidget";
 import "../../admin/admin.css";
+import { BRAND_SHORT, BRAND_TEAM } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: { template: "%s · 8 Edges Team", default: "8 Edges Team" },
-  description: "Your Edge8 team workspace.",
+  title: { template: `%s · ${BRAND_TEAM}`, default: BRAND_TEAM },
+  description: `Your ${BRAND_SHORT} team workspace.`,
   robots: { index: false, follow: false },
 };
 

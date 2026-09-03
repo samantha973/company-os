@@ -113,6 +113,11 @@ export type BacklogItem = {
   status: BacklogStatus;
   sort_order: number;
   client_sort_order: number | null;
+  // PR Hub plan-target fields (supabase/pr-hub/05-plan-layer.sql).
+  quarterly_plan_id: string | null;
+  quantity_target: number | null;
+  variance_reason: string | null;
+  variance_note: string | null;
   archived_at: string | null;
   created_at: string;
   updated_at: string;
@@ -121,7 +126,8 @@ export type BacklogItem = {
 export const BACKLOG_SELECT =
   "id, company_id, pr_program_id, group_key, ref, title, who, today_state, build_desc, needs, " +
   "token_low, token_high, edge8_priority, client_priority, client_note, source, " +
-  "status, sort_order, client_sort_order, archived_at, created_at, updated_at";
+  "status, sort_order, client_sort_order, quarterly_plan_id, quantity_target, variance_reason, variance_note, " +
+  "archived_at, created_at, updated_at";
 
 // The order an item sits at in the client's view: their dragged order when set,
 // otherwise Edge8's sort_order.

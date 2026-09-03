@@ -12,6 +12,7 @@ const PERSONA_OPTIONS = [
   { value: "job_seeker", label: "Job seeker" },
   { value: "prospect", label: "Prospect" },
   { value: "client", label: "Client" },
+  { value: "media", label: "Media (journalist / editor / producer)" },
   { value: "employee", label: "Employee" },
 ];
 

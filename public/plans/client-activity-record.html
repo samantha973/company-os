@@ -5,671 +5,430 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
-<title>Client Record Schema</title>
+<title>PR Hub Client Record</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-
 <style>
   :root{
-    --ground:#f7f5f1;--surface:#ffffff;--surface-2:#f1eee8;--border:#e2ddd3;--border-strong:#cfc9bc;
-    --ink:#1f2530;--muted:#6a6c72;--faint:#8f9096;
-    --accent:#0f766e;--accent-soft:#d7ece9;
-    --fk:#b45309;--fk-soft:#f4e6d3;
-    --derived:#7c3aed;--derived-soft:#ece1fb;
-    --plat:#2563eb;--plat-soft:#dbe6fe;
-    --internal:#b91c1c;--internal-soft:#f7dede;
-    --client:#0f766e;--client-soft:#d7ece9;
-    --shadow:0 1px 2px rgba(31,37,48,.05),0 8px 24px rgba(31,37,48,.06);
+    --ground:#ffffff;--surface-2:#f6f5f2;--border:#e4e1da;--border-strong:#cfcbc1;
+    --ink:#1f2530;--muted:#666a72;--faint:#9a9da3;
+    --reuse:#0f766e;--reuse-soft:#e2f1ee;
+    --extend:#b45309;--extend-soft:#f8ead8;
+    --new:#4338ca;--new-soft:#e6e4fa;
+    --internal:#b91c1c;--internal-soft:#f8e1e1;
+    --code-bg:#f3f2ee;
   }
-  :root:not([data-theme="light"]){
-    @media (prefers-color-scheme: dark){
-      --ground:#14171c;--surface:#1b1f26;--surface-2:#22272f;--border:#2c323b;--border-strong:#3a424d;
-      --ink:#e8eaed;--muted:#a2a6ad;--faint:#787d85;
-      --accent:#2dd4bf;--accent-soft:#123531;--fk:#f59e0b;--fk-soft:#3a2c12;
-      --derived:#c4a6fb;--derived-soft:#2c2440;--plat:#60a5fa;--plat-soft:#16233f;
-      --internal:#f87171;--internal-soft:#3a1f1f;--client:#2dd4bf;--client-soft:#123531;
-      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
-    }
-  }
-  :root[data-theme="dark"]{
-    --ground:#14171c;--surface:#1b1f26;--surface-2:#22272f;--border:#2c323b;--border-strong:#3a424d;
-    --ink:#e8eaed;--muted:#a2a6ad;--faint:#787d85;
-    --accent:#2dd4bf;--accent-soft:#123531;--fk:#f59e0b;--fk-soft:#3a2c12;
-    --derived:#c4a6fb;--derived-soft:#2c2440;--plat:#60a5fa;--plat-soft:#16233f;
-    --internal:#f87171;--internal-soft:#3a1f1f;--client:#2dd4bf;--client-soft:#123531;
-    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
-  }
-
   *{box-sizing:border-box}
-  body{background:var(--ground);color:var(--ink);
+  body{background:var(--ground);color:var(--ink);margin:0;
     font-family:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    line-height:1.6;margin:0;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1120px;margin:0 auto;padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px)}
+    font-size:15.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:clamp(28px,5vw,64px) clamp(18px,4vw,40px) 96px}
+  a{color:var(--reuse)}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--new);outline-offset:2px}
 
   header.masthead{border-bottom:1px solid var(--border);padding-bottom:28px;margin-bottom:40px}
   .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.16em;
-    text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 14px}
-  h1{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:clamp(30px,5vw,46px);
-    line-height:1.03;letter-spacing:-.02em;margin:0 0 16px;text-wrap:balance}
-  .lede{font-size:clamp(16px,2.2vw,18px);color:var(--muted);max-width:68ch;margin:0}
-  .meta-row{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:22px;
-    font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--faint)}
-  .meta-row b{color:var(--ink);font-weight:600}
+    text-transform:uppercase;color:var(--reuse);font-weight:600;margin:0 0 14px}
+  h1{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:clamp(30px,5vw,44px);
+    line-height:1.05;letter-spacing:-.02em;margin:0 0 14px;text-wrap:balance}
+  .lede{font-size:18px;color:var(--muted);max-width:62ch;margin:0 0 22px}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 22px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted)}
+  .meta b{color:var(--ink);font-weight:500}
 
-  h2{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:clamp(21px,3vw,27px);
-    letter-spacing:-.015em;margin:0 0 6px;text-wrap:balance}
-  .section{margin-top:56px}
-  .section-intro{color:var(--muted);max-width:70ch;margin:0 0 26px}
+  h2{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:26px;letter-spacing:-.015em;
+    line-height:1.15;margin:56px 0 14px;text-wrap:balance}
+  h3{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:19px;margin:34px 0 8px;letter-spacing:-.01em}
+  h3 code{font-size:17px}
+  p{margin:0 0 14px;max-width:70ch}
+  ul,ol{margin:0 0 16px;padding-left:22px;max-width:70ch}
+  li{margin:4px 0}
+  code{font-family:"IBM Plex Mono",monospace;font-size:.9em;background:var(--code-bg);padding:1px 5px;border-radius:3px}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:6px;padding:14px 16px;
+    overflow-x:auto;margin:10px 0 18px;font-size:13px;line-height:1.55}
+  pre code{background:none;padding:0;font-size:inherit}
+  .cm{color:var(--muted)}
 
-  /* plugs-in */
-  .plugs{display:grid;gap:16px}
-  @media(min-width:720px){.plugs{grid-template-columns:1fr 1fr}}
-  .plug{border-radius:14px;padding:20px 22px;border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow)}
-  .plug.reuse{border-color:var(--plat)}
-  .plug.build{border-color:var(--accent)}
-  .plug .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
-    text-transform:uppercase;font-weight:700;margin-bottom:10px;display:block}
-  .plug.reuse .k{color:var(--plat)}
-  .plug.build .k{color:var(--accent)}
-  .plug h3{font-family:"Bricolage Grotesque",sans-serif;font-size:17px;margin:0 0 10px}
-  .plug ul{margin:0;padding-left:0;list-style:none}
-  .plug li{font-size:13.5px;color:var(--muted);padding:4px 0;border-bottom:1px dashed var(--border)}
-  .plug li:last-child{border-bottom:0}
-  .plug li b{color:var(--ink);font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:600}
-  .callout{margin-top:16px;padding:14px 18px;background:var(--surface-2);border-radius:12px;
-    font-size:13.5px;color:var(--muted)}
-  .callout b{color:var(--ink)}
-  .security{display:flex;gap:16px;align-items:flex-start;margin-top:14px;padding:16px 18px;
-    background:var(--internal-soft);border:1px solid var(--internal);border-radius:12px}
-  .security .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;
-    text-transform:uppercase;color:var(--internal);font-weight:700;white-space:nowrap;padding-top:2px}
-  .security p{margin:0;font-size:13.5px;color:var(--ink)}
-  .security b{font-weight:600}
+  .decisions{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0 8px}
+  .decision{border:1px solid var(--border);border-radius:8px;padding:16px 18px}
+  .decision .k{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+  .decision .v{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:18px;margin:0 0 6px;line-height:1.2}
+  .decision p{font-size:14px;color:var(--muted);margin:0}
+  @media (max-width:720px){.decisions{grid-template-columns:1fr}}
 
-  /* spine */
-  .spine{display:grid;gap:12px;margin:0 0 14px}
-  @media(min-width:720px){.spine{grid-template-columns:repeat(3,1fr)}}
-  .spine .step{background:var(--surface);border:1px solid var(--border);border-radius:12px;
-    padding:16px 18px;box-shadow:var(--shadow)}
-  .spine .step .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--accent);font-weight:600}
-  .spine .step h4{font-family:"Bricolage Grotesque",sans-serif;margin:6px 0 6px;font-size:17px}
-  .spine .step p{margin:0;font-size:13px;color:var(--muted)}
-  .spine .step code{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink);
-    background:var(--surface-2);padding:1px 5px;border-radius:4px}
-  .why-note{display:flex;gap:16px;align-items:flex-start;margin-top:14px;padding:16px 18px;
-    background:var(--fk-soft);border:1px solid var(--fk);border-radius:12px}
-  .why-note .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--fk);font-weight:700;white-space:nowrap;padding-top:2px}
-  .why-note p{margin:0;font-size:13.5px;color:var(--ink)}
-  .why-note b{font-weight:600}
+  .tablewrap{overflow-x:auto;margin:14px 0 22px;border:1px solid var(--border);border-radius:8px}
+  table{border-collapse:collapse;width:100%;font-size:14.5px}
+  th{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;text-align:left;padding:10px 14px;background:var(--surface-2);border-bottom:1px solid var(--border)}
+  td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  td.layer{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);white-space:nowrap}
+  td code{white-space:nowrap}
 
-  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;background:var(--surface);
-    border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:22px}
-  .legend .li{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
-  .chip{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;
-    padding:2px 7px;border-radius:5px;letter-spacing:.04em}
-  .chip.pk{background:var(--accent-soft);color:var(--accent)}
-  .chip.fk{background:var(--fk-soft);color:var(--fk)}
-  .chip.dv{background:var(--derived-soft);color:var(--derived)}
-  .chip.plat{background:var(--plat-soft);color:var(--plat)}
-  .chip.new{background:var(--accent-soft);color:var(--accent)}
+  .tag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:600;letter-spacing:.06em;
+    text-transform:uppercase;padding:2px 8px;border-radius:4px;white-space:nowrap}
+  .tag.reuse{color:var(--reuse);background:var(--reuse-soft)}
+  .tag.extend{color:var(--extend);background:var(--extend-soft)}
+  .tag.new{color:var(--new);background:var(--new-soft)}
+  .tag.internal{color:var(--internal);background:var(--internal-soft)}
 
-  .diagram-card{background:#fdfdfc;color:#1f2530;border:1px solid var(--border-strong);
-    border-radius:16px;padding:14px;box-shadow:var(--shadow);overflow-x:auto}
-  .diagram-card pre.mermaid{margin:0;min-width:800px;text-align:center}
-  .diagram-note{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--faint);
-    margin:12px 2px 0;text-align:center}
+  .callout{border-left:3px solid var(--extend);background:var(--extend-soft);padding:12px 16px;border-radius:0 6px 6px 0;margin:16px 0 22px;max-width:76ch}
+  .callout.new{border-color:var(--new);background:var(--new-soft)}
+  .callout p{margin:0}
+  .callout p+p{margin-top:8px}
 
-  .decisions{display:grid;gap:16px}
-  @media(min-width:720px){.decisions{grid-template-columns:1fr 1fr}}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
-    padding:22px;box-shadow:var(--shadow)}
-  .card .num{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;
-    color:var(--accent);letter-spacing:.06em}
-  .card h3{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:18px;
-    margin:6px 0 10px;letter-spacing:-.01em}
-  .card p{margin:0 0 10px;font-size:14.5px;color:var(--muted)}
-  .card p:last-child{margin-bottom:0}
-  .card code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:var(--surface-2);
-    padding:1px 6px;border-radius:4px;color:var(--ink)}
+  .mig{border-top:1px solid var(--border);padding-top:6px;margin-top:28px}
+  .mig h3{margin-top:22px}
+  .mig h3 .n{font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:13px;color:var(--muted);margin-right:10px;letter-spacing:.08em}
 
-  .tables{display:grid;gap:18px}
-  @media(min-width:760px){.tables{grid-template-columns:1fr 1fr}}
-  .tbl{background:var(--surface);border:1px solid var(--border);border-radius:14px;
-    overflow:hidden;box-shadow:var(--shadow)}
-  .tbl.span2{grid-column:1/-1}
-  .tbl.platform{border-color:var(--plat);border-style:dashed}
-  .tbl-head{display:flex;align-items:center;justify-content:space-between;gap:10px;
-    padding:13px 18px;border-bottom:1px solid var(--border);background:var(--surface-2)}
-  .tbl-head .name{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:15px;color:var(--ink)}
-  .tbl-head .right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-  .tbl-head .role{font-size:11.5px;color:var(--faint);text-align:right;max-width:22ch}
-  .vis{font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:600;padding:2px 7px;
-    border-radius:20px;letter-spacing:.05em;white-space:nowrap}
-  .vis.cl{background:var(--client-soft);color:var(--client)}
-  .vis.in{background:var(--internal-soft);color:var(--internal)}
-  .vis.mx{background:var(--surface);color:var(--muted);border:1px solid var(--border-strong)}
-  .vis.plat{background:var(--plat-soft);color:var(--plat)}
-  .tbl ul{list-style:none;margin:0;padding:8px 0}
-  .tbl li{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
-    padding:5px 18px;font-size:13px}
-  .tbl li .fname{font-family:"IBM Plex Mono",monospace;color:var(--ink)}
-  .tbl li .fname .t{color:var(--faint);font-size:11.5px}
-  .tag{font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;padding:1px 6px;
-    border-radius:4px;letter-spacing:.03em;white-space:nowrap}
-  .tag.pk{background:var(--accent-soft);color:var(--accent)}
-  .tag.fk{background:var(--fk-soft);color:var(--fk)}
-  .tag.dv{background:var(--derived-soft);color:var(--derived)}
-  .tag.en{background:var(--surface-2);color:var(--muted);border:1px solid var(--border)}
+  ol.build{counter-reset:step;list-style:none;padding:0;max-width:76ch}
+  ol.build li{counter-increment:step;display:grid;grid-template-columns:44px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);margin:0}
+  ol.build li::before{content:counter(step,decimal-leading-zero);font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:22px;color:var(--new);line-height:1.1}
+  ol.build .verify{display:block;font-size:14px;color:var(--muted);margin-top:4px}
+  ol.build .verify b{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--reuse);font-weight:600;margin-right:6px}
 
-  footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--border);
-    color:var(--faint);font-size:13px}
-  footer b{color:var(--muted)}
-  footer ul{margin:10px 0 0;padding-left:18px}
-  footer li{margin-bottom:6px}
-  footer code{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted)}
-  a{color:var(--accent);text-underline-offset:2px}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 6px}
 </style>
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({ startOnLoad: true, securityLevel: 'loose' });
-</script>
 </head>
 <body>
+
 <div class="wrap">
+<header class="masthead">
+  <p class="eyebrow">PR Hub · Company OS · Plan v1.0</p>
+  <h1>PR Hub Client Record on the existing Client Hub</h1>
+  <p class="lede">Supersedes the v0.5 Client Record Schema. Same three-layer spine — Plan → Effort → Outcome — rebased onto the tables that already exist. Four new tables, not twelve.</p>
+  <div class="meta">
+    <span>Date <b>3 Sep 2026</b></span>
+    <span>Audience <b>Dave + Claude</b></span>
+    <span>Repo file <b>docs/plans/2026-09-03-pr-hub-client-record.md</b></span>
+    <span>Replaces <b>/plans/client-activity-record.html</b></span>
+  </div>
+</header>
 
-  <header class="masthead">
-    <p class="eyebrow">The PR Hub · Data Model for 8 Edges Company OS · v0.5 draft</p>
-    <h1>Client Activity Record — Database Framework</h1>
-    <p class="lede">The PR-specific data model to build <em>into</em> the existing 8 Edges Company OS — hanging off the <b>Company</b> that's already there, living under a <b>PR Program</b>, and using the platform's <b>Internal / Client Hub</b> switch for visibility. Field names are suggestions; the shape, the relationships, and what plugs into what are the point.</p>
-    <div class="meta-row">
-      <span><b>Anchors onto:</b> Company → PR Program</span>
-      <span><b>Visibility:</b> the Internal / Client Hub toggle</span>
-      <span><b>Golden rule:</b> no credentials stored, ever</span>
-    </div>
-  </header>
-
-  <!-- ===== PLUGS INTO ===== -->
-  <section>
-    <h2>How this plugs into Company OS</h2>
-    <p class="section-intro">You already have the right containers — Company, Contacts, PR Programs, and the Internal / Client Hub toggle. We don't rebuild those; the PR activity model attaches to them. The current placeholder tabs (Work Board, Roadmap, Documents, Meetings, Invoices) are <em>not</em> what we're modelling to.</p>
-    <div class="plugs">
-      <div class="plug reuse">
-        <span class="k">◇ Reuse what's already there</span>
-        <h3>Platform primitives — don't rebuild</h3>
-        <ul>
-          <li><b>company</b> — the client org (EM Advisory). Everything keys back to it.</li>
-          <li><b>pr_program</b> — the engagement ("PR Retainer"). The PR account home lives here.</li>
-          <li><b>contact</b> — the client's people, already a platform entity.</li>
-          <li><b>Internal / Client Hub</b> — the built-in visibility switch = our client-facing flag.</li>
-        </ul>
-      </div>
-      <div class="plug build">
-        <span class="k">+ Build the PR domain</span>
-        <h3>New tables the developer adds</h3>
-        <ul>
-          <li><b>quarterly_plan · plan_target</b> — the agreed 90-day plan</li>
-          <li><b>workstream · activity</b> — the categories and the daily log</li>
-          <li><b>media_coverage · linkedin_post · award</b> — earned outcomes + tallies</li>
-          <li><b>linkedin_strategy · news_pipeline · media_contact · touchpoint</b></li>
-        </ul>
-      </div>
-    </div>
-    <p class="callout"><b>The key alignment:</b> there is no separate “client” table. One <b>PR Program per client account</b> is the anchor — it belongs to a Company, and every PR table below hangs off <code>program_id</code>. That means client #2 is a new Program on its Company, not a rebuild.</p>
-    <div class="security">
-      <span class="k">⚠ Security — non-negotiable</span>
-      <p>The old Key Facts sheet stores <b>LinkedIn login passwords in plain text</b>. The database must <b>never</b> hold a password. We keep the <code>linkedin_handle</code> and login email so the team knows which account, but the credential itself lives in a password manager (1Password) — the record holds at most a <code>credential_ref</code> pointer, never the secret. Same rule for any client login.</p>
-    </div>
-  </section>
-
-  <!-- ===== SPINE ===== -->
-  <section class="section">
-    <h2>The spine: Plan → Effort → Outcome</h2>
-    <p class="section-intro">Almost everything the team does has three layers. Naming them keeps the record honest — you can always ask “did what we <em>agreed</em> turn into work, and did that work turn into <em>results</em>?”</p>
-    <div class="spine">
-      <div class="step">
-        <span class="k">1 · Plan</span>
-        <h4>What the client agreed</h4>
-        <p>The 90-day <b>business + communication objectives</b> (the drift yardstick), the plan and its targets, awards proposed, LinkedIn strategy. <code>quarterly_plan</code>, <code>plan_target</code></p>
-      </div>
-      <div class="step">
-        <span class="k">2 · Effort</span>
-        <h4>What the team is doing</h4>
-        <p>The daily log of individual activities under each workstream. This is the account team's scorecard. <code>activity</code></p>
-      </div>
-      <div class="step">
-        <span class="k">3 · Outcome</span>
-        <h4>What we got</h4>
-        <p>The earned results, kept forever — coverage, posts, awards won. These feed the live home-page tallies. <code>media_coverage</code>, <code>linkedin_post</code>, <code>award</code></p>
-      </div>
-    </div>
-    <div class="why-note">
-      <span class="k">+ the why</span>
-      <p>When <b>plan ≠ did</b> — something agreed didn't happen in the timeframe — the record captures a <b>reason</b> (a dropdown) and a note, so the story is always “the deal took longer than the client expected”, never a silent gap that reads as a missed delivery.</p>
-    </div>
-  </section>
-
-  <!-- ===== DIAGRAM ===== -->
-  <section class="section">
-    <h2>Entity relationship diagram</h2>
-    <p class="section-intro">Blue dashed boxes already exist in Company OS. Solid boxes are the PR tables to build. Everything hangs off <b>pr_program</b>, which belongs to a <b>company</b>.</p>
-
-    <div class="legend">
-      <span class="li"><span class="chip pk">PK</span> primary key</span>
-      <span class="li"><span class="chip fk">FK</span> foreign key</span>
-      <span class="li"><span class="chip dv">∑</span> auto-calculated</span>
-      <span class="li"><span class="chip plat">PLATFORM</span> already exists</span>
-      <span class="li"><span class="chip new">BUILD</span> new PR table</span>
-    </div>
-
-    <div class="diagram-card">
-<pre class="mermaid">
-%%{init: {'theme':'base','themeVariables':{
-  'fontFamily':'IBM Plex Mono, monospace',
-  'primaryColor':'#ffffff',
-  'primaryBorderColor':'#0f766e',
-  'primaryTextColor':'#1f2530',
-  'lineColor':'#b45309',
-  'tertiaryColor':'#f1eee8'
-}}}%%
-erDiagram
-    COMPANY ||--o{ PR_PROGRAM : "engages for"
-    COMPANY ||--o{ CONTACT : "has"
-    PR_PROGRAM ||--o{ QUARTERLY_PLAN : "has each quarter"
-    PR_PROGRAM ||--o{ ACTIVITY : "logs"
-    PR_PROGRAM ||--o{ AWARD : "pursues"
-    PR_PROGRAM ||--o{ LINKEDIN_STRATEGY : "has"
-    PR_PROGRAM ||--o{ LINKEDIN_POST : "publishes"
-    PR_PROGRAM ||--o{ MEDIA_COVERAGE : "earns"
-    PR_PROGRAM ||--o{ MEDIA_CONTACT : "keeps db of"
-    PR_PROGRAM ||--o{ NEWS_PIPELINE : "plans ahead"
-    PR_PROGRAM ||--o{ CASE_STUDY : "sources"
-    PR_PROGRAM ||--o{ TOUCHPOINT : "logs"
-    QUARTERLY_PLAN ||--o{ PLAN_TARGET : "sets"
-    WORKSTREAM ||--o{ PLAN_TARGET : "categorises"
-    WORKSTREAM ||--o{ ACTIVITY : "categorises"
-    QUARTERLY_PLAN ||--o{ ACTIVITY : "contains"
-    ACTIVITY |o--o{ MEDIA_COVERAGE : "may produce"
-    NEWS_PIPELINE }o--o| QUARTERLY_PLAN : "promotes into"
-
-    COMPANY {
-      uuid company_id PK
-      string name
-      string abn
-      string office_address
-      string website
-      string linkedin_url
-    }
-    PR_PROGRAM {
-      uuid program_id PK
-      uuid company_id FK
-      string account_lead
-      enum status
-      enum account_health "internal"
-      date contract_start
-      date contract_review
-      money engagement_fee "internal"
-      date last_formal_catchup "derived"
-      url client_drive_folder
-      url internal_drive_folder "internal"
-      int linkedin_post_count "derived"
-      int coverage_count "derived"
-    }
-    CONTACT {
-      uuid contact_id PK
-      uuid company_id FK
-      enum contact_type
-      string name
-      string title
-      string email
-      date birthday
-      text key_topics "spokespeople"
-      string linkedin_handle
-    }
-    QUARTERLY_PLAN {
-      uuid plan_id PK
-      uuid program_id FK
-      string quarter_label
-      text business_objective
-      text comms_objective
-      text approved_plan
-      date signoff_date
-    }
-    WORKSTREAM {
-      uuid workstream_id PK
-      string name
-    }
-    PLAN_TARGET {
-      uuid target_id PK
-      uuid plan_id FK
-      uuid workstream_id FK
-      string target_desc
-      int quantity_target
-    }
-    ACTIVITY {
-      uuid activity_id PK
-      uuid program_id FK
-      uuid workstream_id FK
-      uuid plan_id FK
-      string title
-      enum status
-      enum variance_reason "the why"
-      bool in_client_hub
-    }
-    AWARD {
-      uuid award_id PK
-      uuid program_id FK
-      enum stage
-      string award_name
-      date entry_close
-      string outcome
-    }
-    LINKEDIN_STRATEGY {
-      uuid strategy_id PK
-      uuid program_id FK
-      text content_pillars
-      date signoff_date
-    }
-    LINKEDIN_POST {
-      uuid post_id PK
-      uuid program_id FK
-      date posted_on
-      string link
-    }
-    MEDIA_COVERAGE {
-      uuid coverage_id PK
-      uuid program_id FK
-      date published_on
-      string outlet
-      string headline
-      file media_asset
-    }
-    MEDIA_CONTACT {
-      uuid mc_id PK
-      uuid program_id FK
-      string name
-      string outlet
-      bool worked_with_before
-    }
-    NEWS_PIPELINE {
-      uuid pipeline_id PK
-      uuid program_id FK
-      string headline
-      enum status
-      string target_quarter
-    }
-    CASE_STUDY {
-      uuid case_study_id PK
-      uuid program_id FK
-      string customer_name
-      enum location
-      enum story_type
-      enum status
-      text used_in
-    }
-    TOUCHPOINT {
-      uuid touchpoint_id PK
-      uuid program_id FK
-      date occurred_on
-      enum type
-    }
-</pre>
-    </div>
-    <p class="diagram-note">Diagram scrolls sideways on narrow screens · full field lists below</p>
-  </section>
-
-  <!-- ===== DECISIONS ===== -->
-  <section class="section">
-    <h2>Seven decisions baked into this shape</h2>
-    <p class="section-intro">The choices that stop this becoming another sheet that rots.</p>
-    <div class="decisions">
-
-      <div class="card">
-        <span class="num">01 / ANCHOR</span>
-        <h3>One PR Program per client, not a new “client” table</h3>
-        <p>The account home lives on <code>pr_program</code>, which belongs to the existing <code>company</code>. Every PR table keys to <code>program_id</code>. Adding client #2 is a new Program on its Company — copy-paste, not a rebuild.</p>
-      </div>
-
-      <div class="card">
-        <span class="num">02 / THE SPINE</span>
-        <h3>Plan, Effort and Outcome are separate layers</h3>
-        <p>Kept apart, they answer the question you care about: is agreed work turning into activity, and activity into results? Mixing them into one “status” cell is what made the old sheets unreadable.</p>
-      </div>
-
-      <div class="card">
-        <span class="num">03 / PATTERN</span>
-        <h3>“Proposed vs actual” is one table, not two</h3>
-        <p>Awards use one <code>stage</code> field (<code>proposed → agreed → submitted → outcome</code>) — the two on-screen lists are filtered views. LinkedIn splits into a <code>strategy</code> (plan) and <code>post</code> (record).</p>
-      </div>
-
-      <div class="card">
-        <span class="num">04 / AUTOMATION</span>
-        <h3>Everything countable is calculated live</h3>
-        <p>Home-page tallies for LinkedIn posts and media coverage are <code>COUNT()</code> rollups — real-time, never typed. The same engine builds the account team's <b>EOS scorecard</b> from the activity log. No monthly admin.</p>
-      </div>
-
-      <div class="card">
-        <span class="num">05 / VISIBILITY</span>
-        <h3>Uses the Internal / Client Hub toggle you already have</h3>
-        <p>Rows and tables map to your built-in switch. Client Hub shows: plan, coverage, LinkedIn, their Drive folder. Internal only: <b>account health</b>, the <b>media contacts database</b>, newsjacking, internal Drive, owners and notes.</p>
-      </div>
-
-      <div class="card">
-        <span class="num">06 / THE UPDATE LOOP</span>
-        <h3>One append-only log the team touches daily</h3>
-        <p><code>activity</code> is where each item is logged under its workstream — a news announcement, a reactive pitch, a newsjack, speaking photos. Adding rows (by hand or by AI from a transcript) is the habit that survives.</p>
-      </div>
-
-      <div class="card">
-        <span class="num">07 / THE WHY</span>
-        <h3>Every gap has a reason, and it's never “we didn't deliver”</h3>
-        <p><code>variance_reason</code> (a dropdown) plus a note record why something slipped — <em>client delayed, deal not finalised, reprioritised</em>. The <code>status</code> vocabulary is client-friendly, so the Client Hub always reads a clean state with an honest explanation.</p>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ===== TABLE REFERENCE ===== -->
-  <section class="section">
-    <h2>Full table reference</h2>
-    <p class="section-intro">The pill marks who can reach each table. Dashed blue = already exists in Company OS (extend it, don't recreate).</p>
-
-    <div class="tables">
-
-      <div class="tbl platform span2">
-        <div class="tbl-head"><span class="name">company</span><div class="right"><span class="role">the client org — already exists, add the ABN/address fields</span><span class="vis plat">PLATFORM</span></div></div>
-        <ul>
-          <li><span class="fname">company_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">name · website · industry · size · country · priority · added <span class="t">existing fields</span></span><span></span></li>
-          <li><span class="fname">abn · office_address · linkedin_url <span class="t">add these to company</span></span><span></span></li>
-        </ul>
-      </div>
-
-      <div class="tbl span2">
-        <div class="tbl-head"><span class="name">pr_program</span><div class="right"><span class="role">the engagement / retainer · the PR account home · one per client</span><span class="vis mx">MIXED</span></div></div>
-        <ul>
-          <li><span class="fname">program_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">company_id <span class="t">uuid → the existing company</span></span><span class="tag fk">FK</span></li>
-          <li><span class="fname">name <span class="t">“PR Retainer”</span> · status <span class="t">active · paused</span></span><span class="tag en">enum</span></li>
-          <li><span class="fname">account_lead <span class="t">TPH lead</span> · strategic_lead</span><span></span></li>
-          <li><span class="fname">account_health <span class="t">green · amber · red — internal only</span></span><span class="tag en">enum</span></li>
-          <li><span class="fname">contract_start · contract_review <span class="t">date</span></span><span></span></li>
-          <li><span class="fname">engagement_fee <span class="t">money — internal only</span></span><span></span></li>
-          <li><span class="fname">wip_cadence · next_planning_date · priority_audiences</span><span></span></li>
-          <li><span class="fname">last_formal_catchup <span class="t">= MAX(touchpoint.occurred_on)</span></span><span class="tag dv">∑ derived</span></li>
-          <li><span class="fname">primary_document_links <span class="t">key links</span></span><span></span></li>
-          <li><span class="fname">client_drive_folder <span class="t">url — Client Hub can open</span></span><span></span></li>
-          <li><span class="fname">internal_drive_folder <span class="t">url — internal only</span></span><span></span></li>
-          <li><span class="fname">linkedin_post_count <span class="t">= COUNT(linkedin_post), real-time</span></span><span class="tag dv">∑ derived</span></li>
-          <li><span class="fname">coverage_count <span class="t">= COUNT(media_coverage), real-time</span></span><span class="tag dv">∑ derived</span></li>
-        </ul>
-      </div>
-
-      <div class="tbl">
-        <div class="tbl-head"><span class="name">quarterly_plan</span><div class="right"><span class="vis cl">CLIENT HUB</span></div></div>
-        <ul>
-          <li><span class="fname">plan_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">program_id <span class="t">uuid</span></span><span class="tag fk">FK</span></li>
-          <li><span class="fname">quarter_label · start · end</span><span></span></li>
-          <li><span class="fname">business_objective <span class="t">current 90 days — the drift yardstick</span></span><span></span></li>
-          <li><span class="fname">comms_objective <span class="t">current 90 days</span></span><span></span></li>
-          <li><span class="fname">approved_plan <span class="t">text</span></span><span></span></li>
-          <li><span class="fname">signoff_date <span class="t">date</span></span><span></span></li>
-        </ul>
-      </div>
-
-      <div class="tbl">
-        <div class="tbl-head"><span class="name">plan_target</span><div class="right"><span class="vis cl">CLIENT HUB</span></div></div>
-        <ul>
-          <li><span class="fname">target_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">plan_id · workstream_id</span><span class="tag fk">FK ×2</span></li>
-          <li><span class="fname">target_desc <span class="t">“10 posts/qtr”</span></span><span></span></li>
-          <li><span class="fname">quantity_target · owner · status</span><span></span></li>
-        </ul>
-      </div>
-
-      <div class="tbl">
-        <div class="tbl-head"><span class="name">workstream</span><div class="right"><span class="vis mx">LOOKUP</span></div></div>
-        <ul>
-          <li><span class="fname">workstream_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">name <span class="t">News Announcements · Thought Leadership · Media Relations / Newsjacking · LinkedIn · Awards · Speaking</span></span><span></span></li>
-        </ul>
-      </div>
-
-      <div class="tbl">
-        <div class="tbl-head"><span class="name">activity</span><div class="right"><span class="role">daily log · feeds EOS scorecard</span><span class="vis mx">PER-ROW</span></div></div>
-        <ul>
-          <li><span class="fname">activity_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">program_id · workstream_id · plan_id</span><span class="tag fk">FK ×3</span></li>
-          <li><span class="fname">title <span class="t">“launch of new fund”</span> · description · owner · date · link</span><span></span></li>
-          <li><span class="fname">type <span class="t">announcement · proactive pitch · reactive · newsjack</span></span><span class="tag en">enum</span></li>
-          <li><span class="fname">status <span class="t">planned · pitching · in progress · waiting on client · waiting on external · delivered · not proceeding</span></span><span class="tag en">enum</span></li>
-          <li><span class="fname">status_note <span class="t">current-status detail, client-facing</span></span><span></span></li>
-          <li><span class="fname">variance_reason <span class="t">why plan ≠ did (dropdown) + variance_note</span></span><span class="tag en">enum</span></li>
-          <li><span class="fname">in_client_hub <span class="t">bool — shows this row in the Client Hub</span></span><span></span></li>
-        </ul>
-      </div>
-
-      <div class="tbl">
-        <div class="tbl-head"><span class="name">media_coverage</span><div class="right"><span class="role">earned results · feeds tally</span><span class="vis cl">CLIENT HUB</span></div></div>
-        <ul>
-          <li><span class="fname">coverage_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">program_id · activity_id <span class="t">(nullable)</span></span><span class="tag fk">FK</span></li>
-          <li><span class="fname">published_on <span class="t">date</span></span><span></span></li>
-          <li><span class="fname">outlet · headline · link</span><span></span></li>
-          <li><span class="fname">coverage_type <span class="t">online · print · tv · radio · podcast</span></span><span class="tag en">enum</span></li>
-          <li><span class="fname">media_asset <span class="t">uploaded video / audio file</span></span><span></span></li>
-        </ul>
-      </div>
-
-      <div class="tbl">
-        <div class="tbl-head"><span class="name">award</span><div class="right"><span class="role">proposed → entered → outcome</span><span class="vis cl">CLIENT HUB</span></div></div>
-        <ul>
-          <li><span class="fname">award_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">program_id <span class="t">uuid</span></span><span class="tag fk">FK</span></li>
-          <li><span class="fname">stage <span class="t">proposed · agreed · submitted · outcome</span></span><span class="tag en">enum</span></li>
-          <li><span class="fname">award_name · category · website</span><span></span></li>
-          <li><span class="fname">entry_close · event_date <span class="t">date</span></span><span></span></li>
-          <li><span class="fname">submission_link · outcome · cost</span><span></span></li>
-        </ul>
-      </div>
-
-      <div class="tbl">
-        <div class="tbl-head"><span class="name">linkedin_strategy</span><div class="right"><span class="vis cl">CLIENT HUB</span></div></div>
-        <ul>
-          <li><span class="fname">strategy_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">program_id <span class="t">uuid</span></span><span class="tag fk">FK</span></li>
-          <li><span class="fname">content_pillars · recommended_post_types · cadence</span><span></span></li>
-          <li><span class="fname">signoff_date <span class="t">date</span></span><span></span></li>
-        </ul>
-      </div>
-
-      <div class="tbl">
-        <div class="tbl-head"><span class="name">linkedin_post</span><div class="right"><span class="role">feeds home tally</span><span class="vis cl">CLIENT HUB</span></div></div>
-        <ul>
-          <li><span class="fname">post_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">program_id <span class="t">uuid</span></span><span class="tag fk">FK</span></li>
-          <li><span class="fname">posted_on <span class="t">date</span></span><span></span></li>
-          <li><span class="fname">copy · post_type · link · has_image</span><span></span></li>
-        </ul>
-      </div>
-
-      <div class="tbl">
-        <div class="tbl-head"><span class="name">news_pipeline</span><div class="right"><span class="role">forward log of ideas</span><span class="vis cl">CLIENT HUB</span></div></div>
-        <ul>
-          <li><span class="fname">pipeline_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">program_id <span class="t">uuid</span></span><span class="tag fk">FK</span></li>
-          <li><span class="fname">headline · description</span><span></span></li>
-          <li><span class="fname">status <span class="t">logged · candidate · promoted · parked</span></span><span class="tag en">enum</span></li>
-          <li><span class="fname">target_quarter · last_reviewed</span><span></span></li>
-        </ul>
-      </div>
-
-      <div class="tbl">
-        <div class="tbl-head"><span class="name">case_study</span><div class="right"><span class="role">client's customers for media · client can see, PII stays careful</span><span class="vis mx">MIXED</span></div></div>
-        <ul>
-          <li><span class="fname">case_study_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">program_id <span class="t">uuid</span></span><span class="tag fk">FK</span></li>
-          <li><span class="fname">customer_name · description</span><span></span></li>
-          <li><span class="fname">customer_email · customer_phone <span class="t">PII — keep internal</span></span><span></span></li>
-          <li><span class="fname">location <span class="t">dropdown — values TBD</span></span><span class="tag en">enum</span></li>
-          <li><span class="fname">story_type <span class="t">dropdown — success-story type, values TBD</span></span><span class="tag en">enum</span></li>
-          <li><span class="fname">status <span class="t">proposed · in progress · approved · used</span></span><span class="tag en">enum</span></li>
-          <li><span class="fname">used_in <span class="t">where reused — coverage / links</span></span><span></span></li>
-        </ul>
-      </div>
-
-      <div class="tbl">
-        <div class="tbl-head"><span class="name">media_contact</span><div class="right"><span class="role">the media database, per program</span><span class="vis in">INTERNAL</span></div></div>
-        <ul>
-          <li><span class="fname">mc_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">program_id <span class="t">uuid</span></span><span class="tag fk">FK</span></li>
-          <li><span class="fname">name · outlet · email · phone</span><span></span></li>
-          <li><span class="fname">worked_with_before <span class="t">bool</span> · stories_run</span><span></span></li>
-        </ul>
-      </div>
-
-      <div class="tbl platform">
-        <div class="tbl-head"><span class="name">contact</span><div class="right"><span class="role">client people + spokespeople — extend existing</span><span class="vis plat">PLATFORM</span></div></div>
-        <ul>
-          <li><span class="fname">contact_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">company_id <span class="t">uuid</span></span><span class="tag fk">FK</span></li>
-          <li><span class="fname">contact_type <span class="t">client · accounts · spokesperson</span></span><span class="tag en">enum</span></li>
-          <li><span class="fname">name · title · role · email · phone · birthday</span><span></span></li>
-          <li><span class="fname">key_topics <span class="t">for spokespeople</span></span><span></span></li>
-          <li><span class="fname">linkedin_handle <span class="t">+ credential_ref → password manager, never a password</span></span><span></span></li>
-        </ul>
-      </div>
-
-      <div class="tbl">
-        <div class="tbl-head"><span class="name">touchpoint</span><div class="right"><span class="role">relationship log · “last lunch”</span><span class="vis in">INTERNAL</span></div></div>
-        <ul>
-          <li><span class="fname">touchpoint_id <span class="t">uuid</span></span><span class="tag pk">PK</span></li>
-          <li><span class="fname">program_id <span class="t">uuid</span></span><span class="tag fk">FK</span></li>
-          <li><span class="fname">occurred_on <span class="t">date</span> · type <span class="t">lunch · call · gift · meeting</span></span><span class="tag en">enum</span></li>
-          <li><span class="fname">notes · logged_by</span><span></span></li>
-        </ul>
-      </div>
-
-    </div>
-  </section>
-
-  <footer>
-    <p><b>Notes for the developer</b></p>
-    <ul>
-      <li><b>Anchor everything to the existing Company.</b> No new “client” entity — a <code>pr_program</code> row per client account, <code>company_id</code> FK. All PR tables key to <code>program_id</code>.</li>
-      <li><b>Reuse the Internal / Client Hub toggle for visibility.</b> The Client Hub role sees only Client-Hub tables and rows where <code>in_client_hub = true</code>. Never expose media_contact, touchpoint, account_health, or internal_drive_folder to a client.</li>
-      <li><b>Tallies and the EOS scorecard are views, not columns.</b> <code>coverage_count</code>, <code>linkedin_post_count</code>, and account-team metrics are computed queries/materialised views — nobody edits a number.</li>
-      <li><b>File uploads</b> (TV/radio segments) go to object storage; the DB stores the URL, not the file.</li>
-      <li><b>No credentials, ever.</b> Client access is via the platform login; passwords live in a password manager.</li>
-      <li><b>Open question, not blocking:</b> media contacts are per-program as requested — if a journalist covers several clients this could later become shared. Flagging, not deciding.</li>
-    </ul>
-    <p style="margin-top:16px"><b>v0.5</b> — added the full Key Facts field set, 90-day business + comms objectives, the case-study tracker, and the no-passwords rule for LinkedIn logins. Send more any time and I'll grow the diagram in place.</p>
-  </footer>
-
+<h2>Three decisions taken today</h2>
+<div class="decisions">
+  <div class="decision"><p class="k">01 · Effort</p><p class="v">Activity = <code>tasks</code></p><p>No separate activity table. The client Work Board is the effort log.</p></div>
+  <div class="decision"><p class="k">02 · Outcome</p><p class="v">Coverage &amp; posts = <code>marketing_content</code></p><p>Extended. 90-day targets link to content rows so tallies are counts, not typed.</p></div>
+  <div class="decision"><p class="k">03 · Contacts</p><p class="v">Media contacts = <code>people</code></p><p>New persona <code>media</code>; the outlet is a company row via <code>person_companies</code>.</p></div>
 </div>
 
+<h2>The spine, mapped to real tables</h2>
+<div class="legend">
+  <span class="tag reuse">reuse</span><span class="tag extend">extend</span><span class="tag new">new</span><span class="tag internal">internal only</span>
+</div>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Layer</th><th>v0.5 concept</th><th>Table</th><th>Verdict</th></tr></thead>
+<tbody>
+<tr><td class="layer">anchor</td><td>client</td><td><code>companies</code></td><td><span class="tag extend">extend</span></td></tr>
+<tr><td class="layer">anchor</td><td>engagement / retainer</td><td><code>pr_programs</code></td><td><span class="tag extend">extend</span></td></tr>
+<tr><td class="layer">anchor</td><td>contact</td><td><code>people</code> + <code>person_companies</code></td><td><span class="tag extend">extend</span></td></tr>
+<tr><td class="layer">plan</td><td>quarterly_plan</td><td><code>pr_quarterly_plans</code></td><td><span class="tag new">new</span></td></tr>
+<tr><td class="layer">plan</td><td>workstream</td><td><code>client_roadmap_groups</code></td><td><span class="tag reuse">reuse</span> seed six rows</td></tr>
+<tr><td class="layer">plan</td><td>plan_target</td><td><code>client_backlog_items</code></td><td><span class="tag extend">extend</span></td></tr>
+<tr><td class="layer">plan</td><td>linkedin_strategy</td><td><code>program_plans</code> · <code>method='linkedin_strategy'</code></td><td><span class="tag extend">extend</span></td></tr>
+<tr><td class="layer">effort</td><td>activity</td><td><code>tasks</code> · <code>metadata.pr</code></td><td><span class="tag reuse">reuse</span></td></tr>
+<tr><td class="layer">outcome</td><td>media_coverage, linkedin_post</td><td><code>marketing_content</code></td><td><span class="tag extend">extend</span></td></tr>
+<tr><td class="layer">outcome</td><td>award</td><td><code>pr_awards</code></td><td><span class="tag new">new</span></td></tr>
+<tr><td class="layer">supporting</td><td>news_pipeline</td><td><code>pr_news_pipeline</code></td><td><span class="tag new">new</span></td></tr>
+<tr><td class="layer">supporting</td><td>case_study</td><td><code>pr_case_studies</code></td><td><span class="tag new">new</span></td></tr>
+<tr><td class="layer">supporting</td><td>touchpoint</td><td><code>interactions</code></td><td><span class="tag extend">extend</span> <span class="tag internal">internal only</span></td></tr>
+<tr><td class="layer">supporting</td><td>media_contact</td><td><code>people</code> · <code>persona='media'</code></td><td><span class="tag extend">extend</span> <span class="tag internal">internal only</span></td></tr>
+<tr><td class="layer">derived</td><td>post/coverage counts, last catch-up, scorecard</td><td><code>pr_program_stats</code> view</td><td><span class="tag new">new</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<h2>Visibility — one rule, stated once</h2>
+<p>There is no <code>in_client_hub</code> toggle in the platform. The admin “Internal / Client Hub” switch is a <code>?view=</code> URL param on the company page. Visibility is enforced by <em>which loader reads the row</em>: <code>lib/admin/*</code> sees everything, <code>lib/team/*</code> is assigned staff and sees everything, <code>lib/portal/*</code> is the client and filters.</p>
+<p>Per-row client visibility uses the flags that exist; new tables copy the <code>meetings</code> convention.</p>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Table</th><th>Flag</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>tasks</code></td><td><code>internal boolean</code></td><td>true = never leaves <code>/team</code></td></tr>
+<tr><td><code>meetings</code></td><td><code>published_at timestamptz</code></td><td>null = internal draft</td></tr>
+<tr><td><code>staff_assignments</code></td><td><code>client_visible boolean</code></td><td></td></tr>
+<tr><td><code>marketing_content</code></td><td><code>published_at</code> (exists)</td><td><span class="tag reuse">reuse</span> client sees only published</td></tr>
+<tr><td><code>pr_awards</code>, <code>pr_news_pipeline</code>, <code>pr_case_studies</code>, <code>pr_quarterly_plans</code></td><td><code>published_at timestamptz</code></td><td><span class="tag new">new</span> same convention</td></tr>
+</tbody>
+</table>
+</div>
+<p>Internal-only <em>columns</em> — <code>engagement_fee</code>, <code>account_health</code>, <code>internal_drive_folder</code>, case-study PII — are simply never in a <code>lib/portal/*</code> select. <code>interactions</code> and media-persona <code>people</code> have no portal reader at all.</p>
+
+<h2>Migrations</h2>
+<div class="callout">
+  <p><strong>Write these against the live DB, not the dump.</strong> <code>supabase/01-schema.sql</code> is stale: <code>marketing_content.company_id / outlet / reach</code> and <code>program_documents.source / external_url</code> exist live but not in the file. Take a fresh <code>pg_dump --schema-only</code> first.</p>
+</div>
+
+<section class="mig">
+<h3><span class="n">M1</span><code>companies</code></h3>
+<pre><code>alter table company_os.companies
+  add column linkedin_url text,
+  add column abn text,
+  add column office_address text;</code></pre>
+<p><code>website_url</code>, <code>industry_normalized</code>, <code>size_band</code>, <code>country</code>, <code>priority</code> already exist.</p>
+</section>
+
+<section class="mig">
+<h3><span class="n">M2</span><code>pr_programs</code></h3>
+<pre><code>alter table company_os.pr_programs
+  add column account_lead_id   uuid references company_os.people(id),
+  add column strategic_lead_id uuid references company_os.people(id),
+  add column account_health    text check (account_health in ('green','amber','red')),
+  add column contract_start    date,
+  add column contract_review   date,
+  add column engagement_fee_cents integer,
+  add column client_drive_folder   text,
+  add column internal_drive_folder text;
+
+<span class="cm">-- status gains 'paused'</span>
+alter table company_os.pr_programs drop constraint pr_programs_status_check;
+alter table company_os.pr_programs add constraint pr_programs_status_check
+  check (status in ('draft','active','paused','complete'));</code></pre>
+<p>Leave <code>repo_url</code> / <code>github_repo*</code> in place (other code reads them); hide them from the PR UI. <code>last_formal_catchup</code>, <code>coverage_count</code>, <code>linkedin_post_count</code> are <strong>views, not columns</strong> — see M8.</p>
+</section>
+
+<section class="mig">
+<h3><span class="n">M3</span><code>people</code> / <code>person_companies</code></h3>
+<pre><code>alter table company_os.people drop constraint people_persona_check;
+alter table company_os.people add constraint people_persona_check
+  check (persona is null or persona in
+    ('vendor','prospect','client','job_seeker','employee','student','media'));
+
+alter table company_os.people
+  add column birthday        date,
+  add column key_topics      text[] not null default '{}',  <span class="cm">-- spokesperson topics</span>
+  add column linkedin_handle text,
+  add column credential_ref  text;                            <span class="cm">-- 1Password item ref. Never a secret.</span>
+
+alter table company_os.person_companies drop constraint person_companies_role_check;
+alter table company_os.person_companies add constraint person_companies_role_check
+  check (role in ('owner_founder','executive','employee','primary','secondary',
+                  'board','advisor','other','accounts','spokesperson','journalist'));</code></pre>
+<ul>
+  <li>Client contact = <code>person_companies(company_id = client, role = primary | accounts | spokesperson)</code>.</li>
+  <li>Media contact = <code>people.persona = 'media'</code> + <code>person_companies(company_id = outlet, role = 'journalist', title = beat)</code>.</li>
+  <li>A journalist who covers several clients is one <code>people</code> row. The v0.5 open question closes for free — the join is already many-to-many.</li>
+  <li><code>worked_with_before</code> / <code>stories_run</code> derive from <code>marketing_content</code> rows that reference the journalist (M6).</li>
+</ul>
+</section>
+
+<section class="mig">
+<h3><span class="n">M4</span>Plan layer</h3>
+<p><strong><code>pr_quarterly_plans</code></strong> <span class="tag new">new</span></p>
+<pre><code>create table company_os.pr_quarterly_plans (
+  id                 uuid primary key default gen_random_uuid(),
+  pr_program_id      uuid not null references company_os.pr_programs(id),
+  company_id         uuid not null references company_os.companies(id),
+  quarter_label      text not null,            <span class="cm">-- 'Q4 FY26'</span>
+  starts_on          date not null,
+  ends_on            date not null,
+  planning_meeting_id uuid references company_os.meetings(id), <span class="cm">-- the meeting the plan is keyed off</span>
+  business_objective text,
+  comms_objective    text,
+  approved_plan_md   text,
+  signoff_date       date,
+  published_at       timestamptz,
+  created_by         text,
+  created_at         timestamptz not null default now(),
+  updated_at         timestamptz not null default now(),
+  archived_at        timestamptz, archived_by text,
+  unique (pr_program_id, quarter_label)
+);</code></pre>
+<p>The transcript lives on the meeting, not the plan: <code>meetings</code> already has <code>transcript_url</code>, <code>recording_url</code>, <code>minutes_url</code>, <code>summary</code>, the AI-summary status and <code>published_at</code>. The 90-day planning session is logged as a <code>meetings</code> row (Lark or upload, as today) and the plan row points at it. Objectives and targets can be drafted from that transcript by the existing meeting-extract path (<code>lib/meeting-extract.ts</code>).</p>
+
+<p><strong><code>client_roadmap_groups</code> = workstreams.</strong> No schema change. Seed per program with <code>key</code> → <code>news_announcements</code>, <code>thought_leadership</code>, <code>media_relations</code>, <code>linkedin</code>, <code>awards</code>, <code>speaking</code>; <code>title</code> is the display name.</p>
+
+<p><strong><code>client_backlog_items</code> = plan targets.</strong></p>
+<pre><code>alter table company_os.client_backlog_items
+  add column quarterly_plan_id uuid references company_os.pr_quarterly_plans(id),
+  add column quantity_target   integer,        <span class="cm">-- "10 posts/qtr" -> 10</span>
+  add column variance_reason   text check (variance_reason in
+    ('client_delayed','deal_not_finalised','reprioritised','external','other')),
+  add column variance_note     text;</code></pre>
+<p><code>group_key</code> → workstream; <code>status</code> (proposed / accepted / active / shipped / parked) already fits; <code>edge8_priority</code> / <code>client_priority</code> already give now / next / later. Variance lives on the <em>target</em> — the thing that slipped — while <code>tasks</code> carry the day-to-day status note.</p>
+
+<p><strong>LinkedIn strategy = <code>program_plans</code>.</strong></p>
+<pre><code>alter table company_os.program_plans drop constraint program_plans_method_check;
+alter table company_os.program_plans add constraint program_plans_method_check
+  check (method in ('upload','chat','linkedin_strategy'));
+alter table company_os.program_plans
+  add column signoff_date  date,
+  add column published_at  timestamptz;</code></pre>
+<p>Content pillars, post types and cadence are sections of <code>brief_html</code>. If they need to be structured later they become <code>marketing_pillars</code> rows keyed to the program — not now.</p>
+</section>
+
+<section class="mig">
+<h3><span class="n">M5</span>Effort layer — <code>tasks</code></h3>
+<p>No columns. PR-specific fields go in <code>tasks.metadata</code> (jsonb, exists):</p>
+<pre><code>{
+  "pr": {
+    "type": "announcement | proactive_pitch | reactive | newsjack | speaking",
+    "status_note": "client-facing one-liner",
+    "link": "https://…"
+  }
+}</code></pre>
+<ul>
+  <li>Link to the plan: <code>subject_type = 'client_backlog_item'</code>, <code>subject_id = &lt;target&gt;</code> — the pattern <code>lib/admin/company-hub.ts</code> already uses.</li>
+  <li>Client visibility: <code>internal</code> boolean, exists.</li>
+  <li>Board columns model the status ladder: planned → pitching → in progress → waiting on client → waiting on external → done. “Not proceeding” = archived, with a variance on the target.</li>
+  <li>Owner = <code>assignee_id</code>; dates = <code>due_date</code> / <code>completed_at</code>.</li>
+</ul>
+</section>
+
+<section class="mig">
+<h3><span class="n">M6</span>Outcome layer — <code>marketing_content</code></h3>
+<pre><code>alter table company_os.marketing_content
+  add column pr_program_id           uuid references company_os.pr_programs(id),
+  add column task_id                 uuid references company_os.tasks(id),                <span class="cm">-- the effort that earned it</span>
+  add column backlog_item_id         uuid references company_os.client_backlog_items(id), <span class="cm">-- the target it counts toward</span>
+  add column journalist_person_id    uuid references company_os.people(id),
+  add column case_study_id           uuid references company_os.pr_case_studies(id),
+  add column media_asset_document_id uuid references company_os.program_documents(id);
+<span class="cm">-- company_id, outlet, reach, posted_url, publish_date, published_at exist live.</span>
+
+alter table company_os.marketing_content drop constraint marketing_content_channel_check;
+alter table company_os.marketing_content add constraint marketing_content_channel_check
+  check (channel in ('blog','email','linkedin','facebook',
+                     'earned','online','print','tv','radio','podcast','syndication','speaking','other'));</code></pre>
+<ul>
+  <li>Coverage = any row with <code>company_id</code> and a channel in the earned set.</li>
+  <li>LinkedIn post = <code>channel = 'linkedin'</code>; <code>copy_md</code>, <code>social_style</code>, <code>image_url</code> already cover copy / post type / has image.</li>
+  <li>Video or audio of a segment = a <code>program_documents</code> row (bucket exists), pointed to by <code>media_asset_document_id</code>.</li>
+  <li>The Coverage tab (<code>lib/team/clients.ts</code>) already reads this table; it only needs <code>pr_program_id</code> in its filter.</li>
+</ul>
+
+<p><strong><code>pr_awards</code></strong> <span class="tag new">new</span></p>
+<pre><code>create table company_os.pr_awards (
+  id                     uuid primary key default gen_random_uuid(),
+  pr_program_id          uuid not null references company_os.pr_programs(id),
+  company_id             uuid not null references company_os.companies(id),
+  quarterly_plan_id      uuid references company_os.pr_quarterly_plans(id),
+  stage                  text not null default 'proposed'
+    check (stage in ('proposed','agreed','submitted','won','shortlisted','lost','withdrawn')),
+  award_name             text not null,
+  category               text,
+  website                text,
+  entry_close            date,
+  event_date             date,
+  submission_document_id uuid references company_os.program_documents(id),
+  cost_cents             integer,
+  outcome_note           text,
+  published_at           timestamptz,
+  created_at             timestamptz not null default now(),
+  updated_at             timestamptz not null default now(),
+  archived_at            timestamptz, archived_by text
+);</code></pre>
+<p>Single <code>stage</code> field replaces the proposed / agreed lists — kept from v0.5.</p>
+</section>
+
+<section class="mig">
+<h3><span class="n">M7</span>Supporting</h3>
+<p><strong><code>pr_news_pipeline</code></strong> <span class="tag new">new</span></p>
+<pre><code>create table company_os.pr_news_pipeline (
+  id                       uuid primary key default gen_random_uuid(),
+  pr_program_id            uuid not null references company_os.pr_programs(id),
+  company_id               uuid not null references company_os.companies(id),
+  headline                 text not null,
+  description              text,
+  status                   text not null default 'logged'
+    check (status in ('logged','candidate','promoted','parked')),
+  target_quarter_plan_id   uuid references company_os.pr_quarterly_plans(id),
+  promoted_backlog_item_id uuid references company_os.client_backlog_items(id),
+  last_reviewed_on         date,
+  published_at             timestamptz,
+  created_by               text,
+  created_at               timestamptz not null default now(),
+  updated_at               timestamptz not null default now(),
+  archived_at              timestamptz, archived_by text
+);</code></pre>
+<p>“Promote” = create a <code>client_backlog_items</code> row and set <code>promoted_backlog_item_id</code>.</p>
+
+<p><strong><code>pr_case_studies</code></strong> <span class="tag new">new</span></p>
+<pre><code>create table company_os.pr_case_studies (
+  id                  uuid primary key default gen_random_uuid(),
+  pr_program_id       uuid not null references company_os.pr_programs(id),
+  company_id          uuid not null references company_os.companies(id),
+  customer_person_id  uuid references company_os.people(id),     <span class="cm">-- PII lives on people</span>
+  customer_company_id uuid references company_os.companies(id),
+  description         text,
+  location            text,   <span class="cm">-- enum TBD; free text until values settle</span>
+  story_type          text,   <span class="cm">-- enum TBD</span>
+  status              text not null default 'proposed'
+    check (status in ('proposed','in_progress','approved','used')),
+  published_at        timestamptz,
+  created_at          timestamptz not null default now(),
+  updated_at          timestamptz not null default now(),
+  archived_at         timestamptz, archived_by text
+);</code></pre>
+<p><code>used_in</code> = <code>marketing_content</code> rows where <code>case_study_id</code> matches (the FK in M6).</p>
+
+<p><strong><code>interactions</code> = touchpoints.</strong> <span class="tag internal">internal only</span></p>
+<pre><code>alter table company_os.interactions drop constraint interactions_kind_check;
+alter table company_os.interactions add constraint interactions_kind_check
+  check (kind in ('note','call','email','meeting','message','status_change','system',
+                  'lunch','gift','catchup'));</code></pre>
+<p>Key to <code>company_id</code> + <code>subject_type = 'pr_program'</code>, <code>subject_id = &lt;program&gt;</code>. No portal reader exists and none is added.</p>
+</section>
+
+<section class="mig">
+<h3><span class="n">M8</span>Views — nobody types a count</h3>
+<pre><code>create view company_os.pr_program_stats as
+select p.id as pr_program_id,
+  (select count(*) from company_os.marketing_content c
+     where c.pr_program_id = p.id and c.channel = 'linkedin'
+       and c.published_at is not null)                              as linkedin_post_count,
+  (select count(*) from company_os.marketing_content c
+     where c.pr_program_id = p.id
+       and c.channel in ('earned','online','print','tv','radio','podcast','syndication','speaking')
+       and c.published_at is not null)                              as coverage_count,
+  (select max(i.occurred_at) from company_os.interactions i
+     where i.subject_type = 'pr_program' and i.subject_id = p.id
+       and i.kind in ('meeting','lunch','catchup'))                 as last_formal_catchup
+from company_os.pr_programs p;</code></pre>
+<p>Later: <code>pr_target_progress</code> — per backlog item, <code>quantity_target</code> vs count of linked <code>marketing_content</code>. That is the EOS scorecard row.</p>
+</section>
+
+<h2>Loader surface</h2>
+<p>Reuse the three-module pattern. New reads land in:</p>
+<ul>
+  <li><code>lib/hub/program.ts</code> — extend <code>ProgramDetail</code> with <code>quarterlyPlans</code>, <code>awards</code>, <code>newsPipeline</code>, <code>caseStudies</code>, <code>stats</code>.</li>
+  <li><code>lib/team/clients.ts</code> — <code>getClientCoverageForActor</code> gains a <code>programId</code> filter; add <code>getClientPlanForActor</code>.</li>
+  <li><code>lib/portal/pr-programs.ts</code> — client reads, <code>published_at is not null</code> only, never selecting internal columns.</li>
+  <li><code>lib/admin/audit.ts</code> — <code>recordAudit</code> already handles any table by name.</li>
+</ul>
+<p>Tabs: the team hub already has Overview / Work Board / Roadmap / Documents / Coverage / Meetings / Invoices / Team. PR Hub adds <strong>90-Day Plan</strong> (plan + targets + variance), <strong>Awards</strong>, <strong>Pipeline</strong>; Roadmap becomes the workstream view of targets. Media contacts appear on the existing Contacts pages filtered by <code>persona = 'media'</code>.</p>
+
+<h2>Build order</h2>
+<ol class="build">
+  <li><div>Fresh schema dump → M1–M3, M4 (<code>pr_quarterly_plans</code> + backlog columns), M8.<span class="verify"><b>verify</b>Seed one program end-to-end by SQL; <code>pr_program_stats</code> returns a row.</span></div></li>
+  <li><div>90-Day Plan tab on <code>/team</code> and <code>/admin</code>: create plan, targets by workstream, variance on a target.<span class="verify"><b>verify</b>A slipped target shows reason + note; the portal shows it only after <code>published_at</code> is set.</span></div></li>
+  <li><div>M6 + Coverage tab: link a coverage row to a task and a target.<span class="verify"><b>verify</b><code>coverage_count</code> and target progress change without anyone editing a number.</span></div></li>
+  <li><div>M5 board conventions: <code>metadata.pr</code> on tasks, column ladder, status note surfaced to the portal for non-internal cards.<span class="verify"><b>verify</b>An internal card never appears in <code>/portal</code>; a public card shows its status note.</span></div></li>
+  <li><div>M7 Awards / Pipeline / Case Studies tabs.<span class="verify"><b>verify</b>Promote a pipeline item → a backlog row appears under the right workstream.</span></div></li>
+  <li><div>Media contacts: persona + role, journalist link on coverage.<span class="verify"><b>verify</b>One journalist row, two clients, both coverage lists show them.</span></div></li>
+</ol>
+
+<h2>Open questions</h2>
+<p>None block step 1.</p>
+<ul>
+  <li><code>location</code> / <code>story_type</code> enum values for case studies (carried over from v0.5, which listed them as “dropdown, values TBD”).</li>
+</ul>
+<p><strong>Settled:</strong> one Work Board per program, with the PR column ladder (planned → pitching → in progress → waiting → delivered). No per-program column customisation.</p>
+
+<h2>As built — 3 Sep 2026</h2>
+<p>Where the build departed from the sketch above.</p>
+<ul>
+  <li><code>program_plans</code> already had <code>quarter</code> and <code>signed_off_at</code> live; the LinkedIn strategy uses those (no <code>signoff_date</code>) plus <code>published_at</code>.</li>
+  <li>Workstream keys are the hyphenated ones the first client already carried (<code>news-announcements</code>, <code>thought-leadership</code>, <code>newsjacking</code>, <code>linkedin-authority</code>, <code>speaking</code>) plus <code>awards</code>; <code>seed_pr_workstreams(program_id)</code> inserts them per program and skips keys the company already has.</li>
+  <li><code>pr_program_stats</code> also carries <code>awards_in_flight</code>; <code>pr_target_progress</code> shipped now, with outcome and board-card counts.</li>
+  <li>Coverage seeded from the account sheet had <code>status='published'</code> and no <code>published_at</code>; <code>07-marketing-content.sql</code> backfills it so those rows count. The agency's marketing calendar now excludes rows with <code>company_id</code> set.</li>
+  <li>Outcomes never hard-delete: <code>status='skipped'</code> removes a row from view.</li>
+  <li>Case studies: no <code>location</code> / <code>story_type</code>. “Used in” is <code>marketing_content.case_study_id</code>.</li>
+  <li>Roadmap UI removed end to end; Human Token fields removed from the board, sprint view and card editor (<code>tasks.human_tokens</code> stays in the DB, unread).</li>
+  <li>Migrations: <code>supabase/pr-hub/02-…09-*.sql</code>, idempotent, applied to the live project; <code>supabase/01-schema.sql</code> regenerated from live.</li>
+</ul>
+</div>
 </body>
 </html>

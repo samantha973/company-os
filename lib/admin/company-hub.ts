@@ -3,6 +3,7 @@
 // via the layout); these take a companyId directly and never widen scope.
 
 import { companyOs } from "@/lib/supabase";
+import { BRAND_SHORT } from "@/lib/brand";
 import {
   BACKLOG_SELECT,
   ROADMAP_GROUPS_SELECT,
@@ -75,7 +76,7 @@ export async function getCompanyHubTeam(companyId: string): Promise<HubTeam> {
 
   const edge8 = assignments
     .filter((a) => a.client_visible)
-    .map((a) => ({ name: a.full_name || a.email || "Edge8", roleTitle: a.role_title || a.position_title }));
+    .map((a) => ({ name: a.full_name || a.email || BRAND_SHORT, roleTitle: a.role_title || a.position_title }));
 
   const rows = (peopleRows ?? []) as Array<{
     role: string | null;

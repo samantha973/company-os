@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Client Hubs",
-  description: "Pick a client to open their hub: work board, roadmap, documents, meetings, and team.",
+  description: "Pick a client to open their hub: 90-day plan, work board, coverage, awards, documents, meetings, and team.",
 };
 
 const CLIENT_STAGES = ["customer", "evangelist"];
@@ -30,7 +30,7 @@ type Row = {
 
 // Client Hubs: a launcher that lists clients as cards. Opening one lands on
 // that company's 360, which defaults to the Client Hub tab for clients, so the
-// board / roadmap / documents / meetings / team are front and centre. The
+// 90-day plan / board / coverage / awards / documents / meetings / team are front and centre. The
 // Active/Inactive filter is driven by metadata.client_hub_active and defaults
 // to active clients.
 export default async function ClientHubsPage({ searchParams }: { searchParams: SearchParamsObj }) {

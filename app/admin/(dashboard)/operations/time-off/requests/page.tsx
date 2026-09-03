@@ -7,6 +7,7 @@ import { countWorkingDays, formatLeaveBalance } from "@/lib/admin/time-off";
 import { ViewToggle } from "@/components/admin/ViewToggle";
 import { TimeOffCalendar, type CalendarEntry } from "@/components/admin/TimeOffCalendar";
 import { TimeOffBoard, type MemberOption, type RequestRow, type LeaderRow } from "./TimeOffBoard";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 // Belt-and-braces: this repo has seen supabase fetches cache-frozen on Vercel
@@ -151,7 +152,7 @@ export default async function TimeOffPage() {
       <PageHead
         eyebrow="Operations"
         title="Time Off"
-        sub="Edge8 policy auto-approves; On Target waits for a decision. Deny anything that doesn't work."
+        sub={`${BRAND_SHORT} policy auto-approves; On Target waits for a decision. Deny anything that doesn't work.`}
         action={
           <div style={{ display: "flex", gap: 8 }}>
             <Link href="/admin/operations/time-off/policies" className="admin-btn">

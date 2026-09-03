@@ -7,12 +7,14 @@
 import { supabase, companyOs } from "@/lib/supabase";
 import type { PortalActor } from "@/lib/portal-auth";
 import { canContribute, ROLE_DENIED } from "@/lib/portal/roles";
+import { setupProgramWorkspaceCore } from "@/lib/hub/program-actions";
+import type { ProgramStatus } from "@/lib/pr/enums";
 
 const BUCKET = "program-documents";
 const DOWNLOAD_TTL_SECONDS = 60 * 5;
 
-export type ProgramMethod = "upload" | "chat";
-export type ProgramStatus = "draft" | "active" | "complete";
+export type ProgramMethod = "upload" | "chat" | "linkedin_strategy";
+export type { ProgramStatus };
 
 export type PortalProgramDocument = {
   id: string;
@@ -181,6 +183,12 @@ async function createProgramWithPlan(
     await companyOs.from("pr_programs").delete().eq("id", prog.id); // don't orphan
     return { ok: false, error: "Couldn't create the plan. Please try again." };
   }
+
+  // Working parts: the standard PR workstreams and one Work Board with the PR
+  // column ladder. Best-effort — the program exists either way, and the hub
+  // band offers "Set up Work Board" if this did not complete.
+  const setup = await setupProgramWorkspaceCore(companyId, prog.id, actor.email);
+  if (!setup.ok) console.error("program workspace setup failed:", setup.error);
 
   return { ok: true, programId: prog.id, planId: plan.id };
 }

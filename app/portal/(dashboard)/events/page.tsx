@@ -5,6 +5,7 @@ import { formatEventDates, eventPath, type EventRecord } from "@/lib/events";
 import { PageHead } from "@/components/admin/PageHead";
 import { Badge, statusTone } from "@/components/admin/Badge";
 import { formatDate, humanize } from "@/lib/admin/format";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -77,7 +78,7 @@ export default async function PortalEventsPage() {
 
   return (
     <>
-      <PageHead eyebrow="Client Portal" title="My Events" sub="Your registrations, plus what's coming up at Edge8." />
+      <PageHead eyebrow="Client Portal" title="My Events" sub={`Your registrations, plus what's coming up at ${BRAND_SHORT}.`} />
 
       <div className="admin-card admin-section-card">
         <h2 className="admin-card-title">Upcoming ({upcoming.length})</h2>

@@ -1,0 +1,235 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { Badge, type BadgeTone } from "@/components/admin/Badge";
+import { EditableDate, EditableLink, EditableSelect, EditableText } from "@/components/admin/InlineEdit";
+import type { ProgramSummary } from "@/lib/hub/program";
+import type { ProgramEngagementPatch } from "@/lib/hub/program-actions";
+import type { Result } from "@/lib/admin/mutations";
+import type { PersonOption } from "@/lib/admin/people-options";
+import type { TouchpointInput } from "@/lib/hub/supporting-actions";
+import type { TouchpointRow } from "@/lib/hub/supporting";
+import { LogTouchpoint } from "@/components/hub/LogTouchpoint";
+import { PROGRAM_HEALTH, PROGRAM_HEALTH_LABEL, PROGRAM_STATUSES, type ProgramHealth, type ProgramStatus } from "@/lib/pr/enums";
+import { formatCents, formatDate, humanize } from "@/lib/admin/format";
+
+// One PR Program on the hub band: the engagement record (leads, health,
+// contract, drive folders) and the derived tallies. Admin and team surfaces
+// pass `actions` so the record edits in place; the fee and the internal
+// drive folder render for admin only. The portal never renders this card —
+// it has its own client-safe shape in lib/portal/program-hub.ts.
+
+export type ProgramCardActions = {
+  update: (programId: string, patch: ProgramEngagementPatch) => Promise<Result>;
+  setupWorkspace: (programId: string) => Promise<Result & { boardSlug?: string }>;
+  logTouchpoint?: (programId: string, input: TouchpointInput) => Promise<Result>;
+};
+
+const STATUS_TONE: Record<ProgramStatus, BadgeTone> = {
+  draft: "neutral",
+  active: "ok",
+  paused: "warn",
+  complete: "info",
+};
+
+const HEALTH_TONE: Record<ProgramHealth, BadgeTone> = {
+  green: "ok",
+  amber: "warn",
+  red: "err",
+};
+
+function Lock() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-label="internal only" style={{ verticalAlign: "-1px" }}>
+      <rect x="3" y="7" width="10" height="7" rx="1.5" />
+      <path d="M5 7V5a3 3 0 0 1 6 0v2" />
+    </svg>
+  );
+}
+
+function Field({ label, internal, children }: { label: string; internal?: boolean; children: React.ReactNode }) {
+  return (
+    <div style={{ minWidth: 0 }}>
+      <div className="mp-kpi-label" style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        {label}
+        {internal && <Lock />}
+      </div>
+      <div style={{ marginTop: 4, fontWeight: 600 }}>{children}</div>
+    </div>
+  );
+}
+
+export function ProgramCard({
+  program,
+  audience,
+  href,
+  people = [],
+  touchpoints = [],
+  actions,
+}: {
+  program: ProgramSummary;
+  audience: "admin" | "team";
+  href: string;
+  people?: PersonOption[];
+  touchpoints?: TouchpointRow[];
+  actions?: ProgramCardActions;
+}) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [setupError, setSetupError] = useState<string | null>(null);
+  const isAdmin = audience === "admin";
+  const p = program;
+
+  const save = (field: keyof ProgramEngagementPatch) => async (value: string) => {
+    if (!actions) return { ok: false as const, error: "Read-only." };
+    const patch: ProgramEngagementPatch =
+      field === "engagement_fee_cents"
+        ? { engagement_fee_cents: value.trim() === "" ? null : Math.round(Number(value.replace(/[^0-9.]/g, "")) * 100) }
+        : ({ [field]: value } as ProgramEngagementPatch);
+    const r = await actions.update(p.id, patch);
+    if (r.ok) router.refresh();
+    return r;
+  };
+
+  const peopleOptions = people.map((x) => ({ value: x.id, label: x.name }));
+  const personLabel = (id: string) => people.find((x) => x.id === id)?.name ?? "—";
+
+  const plan = p.currentPlan;
+  const feeDollars = p.engagementFeeCents != null ? String(p.engagementFeeCents / 100) : "";
+
+  return (
+    <section className="admin-card admin-section-card" style={{ marginBottom: 16 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap", marginBottom: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <h2 className="admin-card-title" style={{ margin: 0 }}>
+            <Link href={href} style={{ color: "inherit", textDecoration: "none" }}>{p.name}</Link>
+          </h2>
+          {actions ? (
+            <EditableSelect
+              value={p.status}
+              options={PROGRAM_STATUSES.map((s) => ({ value: s, label: humanize(s) }))}
+              onSave={save("status")}
+              ariaLabel="Program status"
+              render={(v) => <Badge tone={STATUS_TONE[v as ProgramStatus] ?? "neutral"}>{humanize(v)}</Badge>}
+            />
+          ) : (
+            <Badge tone={STATUS_TONE[p.status]}>{humanize(p.status)}</Badge>
+          )}
+          {actions ? (
+            <EditableSelect
+              value={p.health ?? ""}
+              options={PROGRAM_HEALTH.map((h) => ({ value: h, label: PROGRAM_HEALTH_LABEL[h] }))}
+              onSave={save("account_health")}
+              placeholder="Set health…"
+              ariaLabel="Account health"
+              render={(v) => (
+                <Badge tone={HEALTH_TONE[v as ProgramHealth] ?? "neutral"} dot>
+                  {PROGRAM_HEALTH_LABEL[v as ProgramHealth] ?? v}
+                </Badge>
+              )}
+            />
+          ) : (
+            p.health && <Badge tone={HEALTH_TONE[p.health]} dot>{PROGRAM_HEALTH_LABEL[p.health]}</Badge>
+          )}
+          <span className="admin-cell-muted" style={{ fontSize: 11, display: "inline-flex", alignItems: "center", gap: 4 }}>
+            <Lock /> health is internal
+          </span>
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          {actions && p.boardCount === 0 && (
+            <button
+              type="button"
+              className="admin-btn admin-btn--sm"
+              disabled={pending}
+              onClick={() =>
+                startTransition(async () => {
+                  setSetupError(null);
+                  const r = await actions.setupWorkspace(p.id);
+                  if (!r.ok) setSetupError(r.error);
+                  else router.refresh();
+                })
+              }
+            >
+              {pending ? "Setting up…" : "Set up Work Board"}
+            </button>
+          )}
+          <Link href={href} className="admin-btn admin-btn--sm">Open program →</Link>
+        </div>
+      </div>
+      {setupError && <div className="admin-editable-note admin-editable-note--err" style={{ marginBottom: 10 }}>{setupError}</div>}
+
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${isAdmin ? 6 : 5}, minmax(0, 1fr))`, gap: 16, marginBottom: 16 }}>
+        <Field label="Account lead">
+          {actions ? (
+            <EditableSelect value={p.accountLead?.id ?? ""} options={peopleOptions} onSave={save("account_lead_id")} placeholder="Assign…" ariaLabel="Account lead" render={personLabel} />
+          ) : (
+            p.accountLead?.name ?? "—"
+          )}
+        </Field>
+        <Field label="Strategic lead">
+          {actions ? (
+            <EditableSelect value={p.strategicLead?.id ?? ""} options={peopleOptions} onSave={save("strategic_lead_id")} placeholder="Assign…" ariaLabel="Strategic lead" render={personLabel} />
+          ) : (
+            p.strategicLead?.name ?? "—"
+          )}
+        </Field>
+        <Field label="Contract review">
+          {actions ? <EditableDate value={p.contractReview ?? ""} onSave={save("contract_review")} ariaLabel="Contract review date" /> : formatDate(p.contractReview)}
+        </Field>
+        {isAdmin && (
+          <Field label="Fee / month" internal>
+            {actions ? (
+              <EditableText value={feeDollars} onSave={save("engagement_fee_cents")} placeholder="Set fee…" ariaLabel="Monthly fee" render={(v) => (v ? formatCents(Math.round(Number(v) * 100), "aud") : "—")} />
+            ) : (
+              formatCents(p.engagementFeeCents, "aud")
+            )}
+          </Field>
+        )}
+        <Field label="Last catch-up" internal>
+          {p.stats.lastFormalCatchup ? formatDate(p.stats.lastFormalCatchup) : <span className="admin-cell-muted">None logged</span>}
+        </Field>
+        <Field label="Client drive">
+          {actions ? <EditableLink value={p.clientDriveFolder ?? ""} onSave={save("client_drive_folder")} placeholder="Add link…" ariaLabel="Client drive folder" /> : p.clientDriveFolder ? <a href={p.clientDriveFolder} target="_blank" rel="noopener noreferrer">Open ↗</a> : "—"}
+        </Field>
+      </div>
+
+      <div className="mp-kpi-grid" style={{ marginBottom: 0 }}>
+        <div className="mp-kpi">
+          <div className="mp-kpi-label">Coverage</div>
+          <div className="mp-kpi-val">{p.stats.coverageCount}</div>
+          <div className="mp-kpi-note">published pieces</div>
+        </div>
+        <div className="mp-kpi">
+          <div className="mp-kpi-label">LinkedIn posts</div>
+          <div className="mp-kpi-val">{p.stats.linkedinPostCount}</div>
+          <div className="mp-kpi-note">published</div>
+        </div>
+        <div className="mp-kpi">
+          <div className="mp-kpi-label">Plan targets</div>
+          <div className="mp-kpi-val">
+            {plan ? (
+              <>
+                {plan.targetsOnTrack} <span style={{ fontSize: 15, fontWeight: 500 }} className="admin-cell-muted">of {plan.targetsTotal} on track</span>
+              </>
+            ) : (
+              <span className="admin-cell-muted" style={{ fontSize: 15, fontWeight: 500 }}>No plan yet</span>
+            )}
+          </div>
+          <div className="mp-kpi-note">
+            {plan
+              ? `${plan.quarterLabel}${plan.targetsWithVariance ? ` · ${plan.targetsWithVariance} with a variance` : ""}${plan.publishedAt ? "" : " · draft"}`
+              : "Start one on the 90-Day Plan tab"}
+          </div>
+        </div>
+        <div className="mp-kpi">
+          <div className="mp-kpi-label">Awards in flight</div>
+          <div className="mp-kpi-val">{p.stats.awardsInFlight}</div>
+          <div className="mp-kpi-note">agreed, submitted or shortlisted</div>
+        </div>
+      </div>
+      {actions?.logTouchpoint && <LogTouchpoint programId={p.id} recent={touchpoints} action={actions.logTouchpoint} />}
+    </section>
+  );
+}

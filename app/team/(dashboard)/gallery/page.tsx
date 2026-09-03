@@ -2,9 +2,10 @@ import { requireTeamMember } from "@/lib/team-auth";
 import { PageHead } from "@/components/admin/PageHead";
 import { listGalleryPhotos, taggablePeople } from "@/lib/gallery";
 import { GalleryBrowser } from "@/components/team/GalleryBrowser";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Gallery", description: "Photos from the Edge8 team." };
+export const metadata = { title: "Gallery", description: `Photos from the ${BRAND_SHORT} team.` };
 
 // Company photo wall. Company-visible (no per-actor scope); admins add photos in
 // /admin/operations/gallery. Public-bucket images, so a plain <img>. Any team

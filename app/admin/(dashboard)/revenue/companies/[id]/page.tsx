@@ -12,15 +12,30 @@ import { getMeetingsForCompany } from "@/lib/admin/meetings";
 import { getSurveyResponsesForCompany } from "@/lib/admin/surveys";
 import { getBoardBySlug, listBoardManageOptions } from "@/lib/boards/data";
 import { listDocumentsForCompanies } from "@/lib/client-documents";
-import { getCompanyHubTeam, getLiveCardItemIds } from "@/lib/admin/company-hub";
+import { getCompanyHubTeam } from "@/lib/admin/company-hub";
+import { listProgramSummaries, type ProgramSummary } from "@/lib/hub/program";
+import { listAssignablePeople } from "@/lib/admin/people-options";
+import { getPlanTab } from "@/lib/hub/plan";
+import { suggestNextQuarter } from "@/lib/pr/quarters";
+import { QuarterlyPlanPanel } from "@/components/hub/QuarterlyPlanPanel";
+import { setupProgramWorkspace, updateProgramEngagement } from "./program-actions";
+import { getCoverageTab } from "@/lib/hub/coverage-tab";
+import { CoveragePanel } from "@/components/hub/CoveragePanel";
+import { adminCreateOutcome, adminPublishOutcome, adminRemoveOutcome, adminUpdateOutcome } from "./outcome-actions";
+import { getSupportingTab } from "@/lib/hub/supporting-tab";
+import { AwardsPanel } from "@/components/hub/AwardsPanel";
+import { PipelinePanel } from "@/components/hub/PipelinePanel";
+import { CaseStudiesPanel } from "@/components/hub/CaseStudiesPanel";
+import * as sup from "./supporting-actions";
 import {
-  fetchAll,
-  listProgramSummaries,
-  PROGRAM_SELECT,
-  type ProgramSummary,
-  type ProgramSummaryInputs,
-} from "@/lib/hub/program";
-import { BACKLOG_SELECT, ROADMAP_GROUPS_SELECT, type BacklogItem, type RoadmapGroup } from "@/lib/client-backlog";
+  adminArchiveTarget,
+  adminCreatePlan,
+  adminCreateTarget,
+  adminCreateWorkstream,
+  adminPublishPlan,
+  adminUpdatePlan,
+  adminUpdateTarget,
+} from "./plan-actions";
 import { getAdminUser } from "@/lib/admin-auth";
 import { PageHead } from "@/components/admin/PageHead";
 import { Badge } from "@/components/admin/Badge";
@@ -35,8 +50,6 @@ import { InvoicesPanel } from "@/components/hub/InvoicesPanel";
 import { HubTeamPanel } from "@/components/hub/HubTeamPanel";
 import { HubProgramsBand } from "@/components/hub/HubProgramsBand";
 import { BoardView } from "@/app/admin/(dashboard)/boards/[slug]/BoardView";
-import { BacklogAdminEditor } from "@/app/admin/(dashboard)/edges/client-roadmaps/BacklogAdminEditor";
-import { OverviewEditor } from "@/app/admin/(dashboard)/edges/client-roadmaps/OverviewEditor";
 import { setMeetingPublished, setMeetingProgram } from "@/app/admin/(dashboard)/revenue/meetings/actions";
 import { companyOs } from "@/lib/supabase";
 import { firstParam, mergeQuery, type SearchParamsObj } from "@/lib/admin/url";
@@ -226,102 +239,48 @@ export default async function CompanyDetailPage({
   }
 
   // ── Client Hub tabs + top band data ──────────────────────────────
-  // The hub home is organized by PR Program: a company-grain Human Tokens
-  // strip, the program card grid, then the company-wide tabs. When programs
-  // exist, the Work Board / Roadmap / Documents / Meetings tabs show ONLY
-  // untagged (pr_program_id null) rows, so nothing is presented twice; tagged
-  // rows live in their program view. When no programs exist, the tabs behave
-  // exactly as before.
-  async function hubData(): Promise<{ tabs: TabDef[]; programs: ProgramSummary[] }> {
+  // The hub is organized around the client's PR Program: the engagement band,
+  // then 90-Day Plan / Work Board / Coverage / Awards / Pipeline / Case
+  // Studies / Documents / Meetings / Invoices / Team. One program per client.
+  async function hubData(): Promise<{
+    tabs: TabDef[];
+    programs: ProgramSummary[];
+    people: Awaited<ReturnType<typeof listAssignablePeople>>;
+    touchpoints: Awaited<ReturnType<typeof getSupportingTab>> extends infer T ? (T extends { touchpoints: infer U } ? U : never) : never;
+  }> {
     // Wave 1: every query here depends only on the company id, and every
-    // dataset is fetched exactly once. The program summaries are DERIVED from
-    // these rows below rather than re-fetching them.
-    const [
-      { data: programData },
-      boardRowsRes,
-      boardOptions,
-      admin,
-      itemRows,
-      groupRows,
-      overviewRow,
-      meetings,
-      invoices,
-      team,
-      documents,
-    ] = await Promise.all([
-      companyOs.from("pr_programs").select(PROGRAM_SELECT).eq("company_id", company.id).order("created_at", { ascending: false }),
-      companyOs
-        .from("boards")
-        .select("id, slug, pr_program_id")
-        .eq("client_company_id", company.id)
-        .eq("status", "active")
-        .is("archived_at", null)
-        .order("sort_order", { ascending: true }),
-      listBoardManageOptions(),
-      getAdminUser(),
-      // Paginated: backlog items routinely outgrow PostgREST's 1000-row cap,
-      // and a truncated read could wrongly drop the company-wide tabs. Trailing
-      // .order("id") keeps pages stable.
-      fetchAll<BacklogItem>(() =>
+    // dataset is fetched exactly once.
+    const [programSummaries, boardRowsRes, boardOptions, admin, meetings, invoices, team, documents, people] =
+      await Promise.all([
+        listProgramSummaries(company.id),
         companyOs
-          .from("client_backlog_items")
-          .select(BACKLOG_SELECT)
-          .eq("company_id", company.id)
+          .from("boards")
+          .select("id, slug, pr_program_id")
+          .eq("client_company_id", company.id)
+          .eq("status", "active")
           .is("archived_at", null)
-          .order("sort_order", { ascending: true })
-          .order("id"),
-      ),
-      companyOs.from("client_roadmap_groups").select(ROADMAP_GROUPS_SELECT).eq("company_id", company.id).is("archived_at", null).order("sort_order", { ascending: true }),
-      companyOs.from("client_roadmap_overview").select("body").eq("company_id", company.id).maybeSingle(),
-      getMeetingsForCompany(company.id),
-      getInvoicesForCompany(company.id),
-      getCompanyHubTeam(company.id),
-      listDocumentsForCompanies([company.id]),
-    ]);
+          .order("sort_order", { ascending: true }),
+        listBoardManageOptions(),
+        getAdminUser(),
+        getMeetingsForCompany(company.id),
+        getInvoicesForCompany(company.id),
+        getCompanyHubTeam(company.id),
+        listDocumentsForCompanies([company.id]),
+        listAssignablePeople(),
+      ]);
 
-    const programRowsFull = (programData ?? []) as ProgramSummaryInputs["programs"];
-    const hasPrograms = programRowsFull.length > 0;
+    const programRowsFull = programSummaries;
     const hubBoards = (boardRowsRes.data ?? []) as Array<{ id: string; slug: string; pr_program_id: string | null }>;
-    const untaggedBoards = hubBoards.filter((b) => !b.pr_program_id);
-    // First active board (same "first active" convention as before); with
-    // programs present, first active UNTAGGED board (program boards render in
-    // their program view instead).
-    const boardSlug = (hasPrograms ? untaggedBoards[0] : hubBoards[0])?.slug ?? null;
+    // The program's own board first; else the first active board.
+    const firstProgramId = programRowsFull[0]?.id ?? null;
+    const boardSlug = (hubBoards.find((b) => b.pr_program_id === firstProgramId) ?? hubBoards[0])?.slug ?? null;
+    const hubMeetings = meetings;
+    const hubDocuments = documents;
 
-    const allItems = itemRows;
-    const allGroups = (groupRows.data ?? []) as unknown as RoadmapGroup[];
-    // Company-wide slices: untagged rows only once programs exist.
-    const roadmapItems = hasPrograms ? allItems.filter((i) => !i.pr_program_id) : allItems;
-    const usedKeys = new Set(roadmapItems.map((i) => i.group_key));
-    const roadmapGroups = hasPrograms
-      ? allGroups.filter((g) => g.pr_program_id === null || usedKeys.has(g.key))
-      : allGroups;
-    const hubMeetings = hasPrograms ? meetings.filter((m) => !m.prProgramId) : meetings;
-    const hubDocuments = hasPrograms ? documents.filter((d) => !d.programId) : documents;
-    // Both tabs drop together only when at least one row is program-tagged AND
-    // nothing company-wide remains (zero data loss of access; each tagged row
-    // is reachable in its program view). The tagged-row guard keeps a company
-    // with programs but no boards/items from vacuously losing the tabs, which
-    // hold the OverviewEditor and the place to start a company-wide roadmap.
-    const taggedBoardCount = hubBoards.length - untaggedBoards.length;
-    const taggedItemCount = allItems.length - roadmapItems.length;
-    const dropCompanyWideTabs =
-      hasPrograms &&
-      taggedBoardCount + taggedItemCount > 0 &&
-      untaggedBoards.length === 0 &&
-      roadmapItems.length === 0;
-    const overviewBody = (overviewRow.data as { body: string } | null)?.body ?? "";
-
-    // Wave 2: the only fetches that depend on wave 1 (board slug, repo ids,
-    // the admin's email, the filtered item ids).
-    const [programSummaries, boardDetail, liveCardItemIds, viewerRow] = await Promise.all([
-      listProgramSummaries(company.id, {
-        programs: programRowsFull,
-        backlogRows: allItems,
-        boardRows: hubBoards,
-      }),
+    // Wave 2: the only fetches that depend on wave 1 (board slug, the admin's
+    // email).
+    const [boardDetail, viewerRow] = await Promise.all([
       boardSlug ? getBoardBySlug(boardSlug) : Promise.resolve(null),
-      getLiveCardItemIds(roadmapItems.map((i) => i.id)),
       // The admin's own person row, so cards freshly assigned to them wear "New".
       admin
         ? companyOs.from("people").select("id").eq("email", admin.email).is("archived_at", null).limit(1).maybeSingle()
@@ -330,6 +289,43 @@ export default async function CompanyDetailPage({
     const viewerPersonId = (viewerRow.data as { id: string } | null)?.id ?? null;
 
     const programOptions: ProgramOption[] = programRowsFull.map((p) => ({ id: p.id, name: p.name }));
+
+    // The 90-Day Plan tab: one program per client, so the first program's
+    // plans. ?plan= switches quarters.
+    const planProgram = programRowsFull[0] ?? null;
+    const planTab = planProgram ? await getPlanTab(company.id, planProgram.id, { planId: firstParam(searchParams.plan) }) : null;
+    const planTabs: TabDef[] =
+      planProgram && planTab
+        ? [
+            {
+              key: "plan",
+              label: "90-Day Plan",
+              count: planTab.targets.length || undefined,
+              content: (
+                <QuarterlyPlanPanel
+                  programId={planProgram.id}
+                  plans={planTab.plans}
+                  selected={planTab.selected}
+                  targets={planTab.targets}
+                  groups={planTab.groups}
+                  meetings={meetings.map((m) => ({ id: m.id, title: m.title, date: m.meetingDate }))}
+                  meetingHref={(id) => `/admin/revenue/meetings/${id}`}
+                  planHref={(planId) => `/admin/revenue/companies/${company.id}?view=hub&plan=${planId}`}
+                  suggestNext={suggestNextQuarter(planTab.plans[0]?.ends_on ?? null)}
+                  actions={{
+                    createPlan: adminCreatePlan.bind(null, company.id),
+                    updatePlan: adminUpdatePlan.bind(null, company.id),
+                    publishPlan: adminPublishPlan.bind(null, company.id),
+                    createTarget: adminCreateTarget.bind(null, company.id),
+                    updateTarget: adminUpdateTarget.bind(null, company.id),
+                    archiveTarget: adminArchiveTarget.bind(null, company.id),
+                    createWorkstream: adminCreateWorkstream.bind(null, company.id),
+                  }}
+                />
+              ),
+            },
+          ]
+        : [];
     const hubInvoices = invoices.map((r) => ({
       id: r.id,
       docNumber: r.doc_number,
@@ -341,48 +337,119 @@ export default async function CompanyDetailPage({
       status: r.status,
     }));
 
-    const companyWideTabs: TabDef[] = dropCompanyWideTabs
-      ? []
-      : [
+    const companyWideTabs: TabDef[] = [
+      {
+        key: "board",
+        label: "Work Board",
+        content: boardDetail ? (
+          <BoardView detail={boardDetail} canManage teamOptions={boardOptions.team} clientOptions={boardOptions.clients} programOptions={boardOptions.programs} viewerPersonId={viewerPersonId} />
+        ) : (
+          <section className="admin-card admin-section-card">
+            <Empty text="No Work Board yet. Use “Set up Work Board” on the program above — it seeds the PR columns." />
+          </section>
+        ),
+      },
+    ];
+
+    const coverageTab = planProgram ? await getCoverageTab(company.id) : null;
+    const coverageKind = firstParam(searchParams.kind) === "linkedin" ? "linkedin" : "coverage";
+    const coverageTabs: TabDef[] = coverageTab
+      ? [
           {
-            key: "board",
-            label: hasPrograms ? "Work Board (company-wide)" : "Work Board",
-            content: boardDetail ? (
-              <BoardView detail={boardDetail} canManage teamOptions={boardOptions.team} clientOptions={boardOptions.clients} programOptions={boardOptions.programs} viewerPersonId={viewerPersonId} />
-            ) : (
-              <section className="admin-card admin-section-card">
-                <Empty
-                  text={
-                    hasPrograms
-                      ? "No company-wide work board. Program boards live in their PR Program view."
-                      : "This client has no active work board yet. Create one from Work Boards."
-                  }
-                />
-              </section>
-            ),
-          },
-          {
-            key: "roadmap",
-            label: hasPrograms ? "Roadmap (company-wide)" : "Roadmap",
-            count: roadmapItems.length,
+            key: "coverage",
+            label: "Coverage",
+            count: coverageTab.rows.length || undefined,
             content: (
-              <>
-                <OverviewEditor companyId={company.id} initialBody={overviewBody} />
-                <BacklogAdminEditor
-                  companyId={company.id}
-                  groups={roadmapGroups}
-                  items={roadmapItems}
-                  programs={hasPrograms ? programOptions : undefined}
-                  showArchived={false}
-                  liveCardItemIds={liveCardItemIds}
-                />
-              </>
+              <CoveragePanel
+                programId={coverageTab.program.id}
+                rows={coverageTab.rows}
+                kind={coverageKind}
+                kindHref={(k) => `/admin/revenue/companies/${company.id}?view=hub&tab=coverage&kind=${k}`}
+                targets={coverageTab.targets}
+                tasks={coverageTab.tasks}
+                journalists={coverageTab.journalists}
+                documents={coverageTab.documents}
+                actions={{
+                  create: adminCreateOutcome.bind(null, company.id),
+                  update: adminUpdateOutcome.bind(null, company.id),
+                  publish: adminPublishOutcome.bind(null, company.id),
+                  remove: adminRemoveOutcome.bind(null, company.id),
+                }}
+              />
             ),
           },
-        ];
+        ]
+      : [];
+
+    const supporting = planProgram ? await getSupportingTab(company.id) : null;
+    const supportingTabs: TabDef[] = supporting
+      ? [
+          {
+            key: "awards",
+            label: "Awards",
+            count: supporting.awards.length || undefined,
+            content: (
+              <AwardsPanel
+                programId={supporting.program.id}
+                rows={supporting.awards}
+                documents={supporting.documents}
+                plans={supporting.plans}
+                showCost
+                actions={{
+                  createAward: sup.adminCreateAward.bind(null, company.id),
+                  updateAward: sup.adminUpdateAward.bind(null, company.id),
+                  publishAward: sup.adminPublishAward.bind(null, company.id),
+                  archiveAward: sup.adminArchiveAward.bind(null, company.id),
+                }}
+              />
+            ),
+          },
+          {
+            key: "pipeline",
+            label: "Pipeline",
+            count: supporting.pipeline.filter((p) => p.status !== "promoted").length || undefined,
+            content: (
+              <PipelinePanel
+                programId={supporting.program.id}
+                rows={supporting.pipeline}
+                plans={supporting.plans}
+                groups={supporting.groups}
+                actions={{
+                  createPipeline: sup.adminCreatePipeline.bind(null, company.id),
+                  updatePipeline: sup.adminUpdatePipeline.bind(null, company.id),
+                  publishPipeline: sup.adminPublishPipeline.bind(null, company.id),
+                  archivePipeline: sup.adminArchivePipeline.bind(null, company.id),
+                  promotePipeline: sup.adminPromotePipeline.bind(null, company.id),
+                }}
+              />
+            ),
+          },
+          {
+            key: "case-studies",
+            label: "Case Studies",
+            count: supporting.caseStudies.length || undefined,
+            content: (
+              <CaseStudiesPanel
+                programId={supporting.program.id}
+                rows={supporting.caseStudies}
+                customers={supporting.customers}
+                actions={{
+                  createCaseStudy: sup.adminCreateCaseStudy.bind(null, company.id),
+                  updateCaseStudy: sup.adminUpdateCaseStudy.bind(null, company.id),
+                  publishCaseStudy: sup.adminPublishCaseStudy.bind(null, company.id),
+                  archiveCaseStudy: sup.adminArchiveCaseStudy.bind(null, company.id),
+                }}
+              />
+            ),
+          },
+        ]
+      : [];
 
     const tabs: TabDef[] = [
+      ...planTabs,
       ...companyWideTabs,
+      ...coverageTabs,
+      ...supportingTabs,
       {
         key: "documents",
         label: "Documents",
@@ -416,7 +483,7 @@ export default async function CompanyDetailPage({
       { key: "team", label: "Team", content: <HubTeamPanel team={team} /> },
     ];
 
-    return { tabs, programs: programSummaries };
+    return { tabs, programs: programSummaries, people, touchpoints: supporting?.touchpoints ?? [] };
   }
 
   const hub = view === "hub" ? await hubData() : null;
@@ -466,12 +533,20 @@ export default async function CompanyDetailPage({
       {hub && (
         <HubProgramsBand
           programs={hub.programs}
+          audience="admin"
           programHref={(programId) => `/admin/revenue/companies/${company.id}/programs/${programId}`}
+          people={hub.people}
+          touchpoints={hub.touchpoints}
+          actions={{
+            update: updateProgramEngagement.bind(null, company.id),
+            setupWorkspace: setupProgramWorkspace.bind(null, company.id),
+            logTouchpoint: sup.adminLogTouchpoint.bind(null, company.id),
+          }}
         />
       )}
 
       <div className="admin-card admin-section-card">
-        <Tabs tabs={tabs} />
+        <Tabs tabs={tabs} initialKey={firstParam(searchParams.tab)} syncParam="tab" />
       </div>
     </div>
   );

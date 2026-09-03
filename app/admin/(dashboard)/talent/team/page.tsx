@@ -14,12 +14,13 @@ import {
   type ShelfOptions,
   type TeamShelfRowData,
 } from "./TeamShelf";
+import { BRAND_SHORT } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Team",
-  description: "Edge8 team members and departments.",
+  description: `${BRAND_SHORT} team members and departments.`,
 };
 
 // Talent office: internal team (persona=employee). Rows open an inline-editable

@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { submitGeneralInquiry } from "./actions";
+import { BRAND_SHORT } from "@/lib/brand";
 
 // Inline general-request form (Redeem.tsx pattern): subject + message straight
 // into the CRM inquiries pipeline.
@@ -35,7 +36,7 @@ export function GeneralRequest() {
   if (sent && !open) {
     return (
       <div style={{ display: "grid", gap: 8 }}>
-        <div className="admin-alert admin-alert--ok">Sent — the Edge8 team will get back to you.</div>
+        <div className="admin-alert admin-alert--ok">Sent — the {BRAND_SHORT} team will get back to you.</div>
         <button type="button" className="admin-btn" onClick={() => setSent(false)}>
           Send another
         </button>

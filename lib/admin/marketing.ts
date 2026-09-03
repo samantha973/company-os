@@ -329,6 +329,7 @@ const PERSONA_LABELS: Record<string, string> = {
   employee: "Employee",
   vendor: "Vendor",
   student: "Student",
+  media: "Media",
 };
 
 export function personaLabel(persona: string | null): string {

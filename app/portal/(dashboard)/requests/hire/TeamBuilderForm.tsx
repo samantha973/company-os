@@ -11,6 +11,7 @@ import {
   findBracket,
 } from "@/lib/portal/hire-catalog";
 import { submitTeamRequest } from "../actions";
+import { BRAND_SHORT } from "@/lib/brand";
 
 const usd = (n: number) => `$${n.toLocaleString()}`;
 
@@ -108,7 +109,7 @@ export function TeamBuilderForm({ companies }: { companies: { id: string; name: 
     return (
       <div className="admin-card admin-section-card">
         <div className="admin-alert admin-alert--ok" style={{ marginBottom: 12 }}>
-          Request received. The Edge8 team will follow up with next steps.
+          Request received. The {BRAND_SHORT} team will follow up with next steps.
         </div>
         <Link href="/portal/requests" className="admin-btn admin-btn--primary">
           Back to requests
