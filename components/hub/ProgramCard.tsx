@@ -56,12 +56,18 @@ export function ProgramCard({
   people = [],
   touchpoints = [],
   actions,
+  scopeSwitch,
+  scopeLabel = "all time",
 }: {
   program: ProgramSummary;
   audience: "admin" | "team";
   people?: PersonOption[];
   touchpoints?: TouchpointRow[];
   actions?: ProgramCardActions;
+  // The All time / quarter switch (lib/hub/scope). The tallies below are
+  // already scoped by the caller; the label says which range they cover.
+  scopeSwitch?: React.ReactNode;
+  scopeLabel?: string;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -118,6 +124,7 @@ export function ProgramCard({
             <span className="admin-hub-band-lock"><Lock /> internal</span>
           </div>
           <div className="admin-hub-band-actions">
+            {scopeSwitch}
             {actions && p.boardCount === 0 && (
               <button
                 type="button"
@@ -177,12 +184,12 @@ export function ProgramCard({
         <div className="admin-kpi">
           <div className="admin-kpi-label">Coverage</div>
           <div className="admin-kpi-val">{p.stats.coverageCount}</div>
-          <div className="admin-kpi-note">published pieces</div>
+          <div className="admin-kpi-note">published · {scopeLabel}</div>
         </div>
         <div className="admin-kpi">
           <div className="admin-kpi-label">LinkedIn posts</div>
           <div className="admin-kpi-val">{p.stats.linkedinPostCount}</div>
-          <div className="admin-kpi-note">published</div>
+          <div className="admin-kpi-note">published · {scopeLabel}</div>
         </div>
         <div className="admin-kpi">
           <div className="admin-kpi-label">Targets on track</div>
@@ -200,7 +207,7 @@ export function ProgramCard({
         <div className="admin-kpi">
           <div className="admin-kpi-label">Awards in flight</div>
           <div className="admin-kpi-val">{p.stats.awardsInFlight}</div>
-          <div className="admin-kpi-note">agreed, submitted or shortlisted</div>
+          <div className="admin-kpi-note">agreed, submitted or shortlisted · {scopeLabel}</div>
         </div>
       </div>
     </div>

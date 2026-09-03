@@ -13,6 +13,9 @@ import { getPlanTab } from "@/lib/hub/plan";
 import { getCoverageTab } from "@/lib/hub/coverage-tab";
 import { getSupportingTab } from "@/lib/hub/supporting-tab";
 import { suggestNextQuarter } from "@/lib/pr/quarters";
+import { ALL_TIME, cardInScope, resolvePlanScope, scopeAwards, scopeCaseStudies, scopeLabel, scopeOutcomes, scopeParam, scopePipeline } from "@/lib/hub/scope";
+import { scopeProgramSummary } from "@/lib/hub/scoped-band";
+import { PlanScopeSwitch } from "@/components/hub/PlanScopeSwitch";
 import { humanize } from "@/lib/admin/format";
 import { firstParam, type SearchParamsObj } from "@/lib/admin/url";
 import { PageHead } from "@/components/admin/PageHead";
@@ -102,17 +105,38 @@ export default async function ClientHubPage({
   const hubBoards = (boardRowsRes.data ?? []) as Array<{ id: string; slug: string; pr_program_id: string | null }>;
   const boardSlug = (hubBoards.find((b) => b.pr_program_id === program?.id) ?? hubBoards[0])?.slug ?? null;
 
-  // Wave 2: the reads that depend on wave 1.
+  // Wave 2: the reads that depend on wave 1. `plan` is the hub's range:
+  // absent → current quarter, "all" → all time, an id → that quarter.
+  const planParam = firstParam(searchParams.plan);
   const [boardDetail, viewerRow, planTab, coverageTab, supporting] = await Promise.all([
     boardSlug ? getBoardBySlug(boardSlug) : Promise.resolve(null),
     admin
       ? companyOs.from("people").select("id").eq("email", admin.email).is("archived_at", null).limit(1).maybeSingle()
       : Promise.resolve({ data: null }),
-    program ? getPlanTab(company.id, program.id, { planId: firstParam(searchParams.plan) }) : Promise.resolve(null),
+    program ? getPlanTab(company.id, program.id, { planId: planParam === ALL_TIME ? null : planParam }) : Promise.resolve(null),
     program ? getCoverageTab(company.id) : Promise.resolve(null),
     program ? getSupportingTab(company.id) : Promise.resolve(null),
   ]);
   const viewerPersonId = (viewerRow.data as { id: string } | null)?.id ?? null;
+
+  // The 90-Day Plan as a filter: everything below the band shows what was in
+  // scope for the chosen range, and the band's tallies follow.
+  const scope = resolvePlanScope(planTab?.plans ?? [], planParam);
+  const scopedRows = coverageTab ? scopeOutcomes(coverageTab.rows, scope) : [];
+  const scopedAwards = supporting ? scopeAwards(supporting.awards, scope) : [];
+  const scopedPipeline = supporting ? scopePipeline(supporting.pipeline, scope) : [];
+  const scopedCases = supporting ? scopeCaseStudies(supporting.caseStudies, scope) : [];
+  const scopedBoard = boardDetail
+    ? { ...boardDetail, cards: boardDetail.cards.filter((c) => cardInScope(scope, { createdAt: c.created_at, dueDate: c.due_date, done: c.status === "done" })) }
+    : null;
+  const bandPrograms = programs.map((p) =>
+    p.id === program?.id && coverageTab && supporting
+      ? scopeProgramSummary(p, scope, { outcomes: coverageTab.rows, awards: supporting.awards, plan: planTab })
+      : p,
+  );
+  const scopeSwitch = planTab ? (
+    <PlanScopeSwitch plans={planTab.plans.map((x) => ({ id: x.id, label: x.quarter_label, draft: !x.published_at }))} value={scopeParam(scope)} />
+  ) : null;
   const programOptions: ProgramOption[] = programs.map((p) => ({ id: p.id, name: p.name }));
   const coverageKind = firstParam(searchParams.kind) === "linkedin" ? "linkedin" : "coverage";
   const hubInvoices = invoices.map((r) => ({
@@ -161,8 +185,8 @@ export default async function ClientHubPage({
     {
       key: "board",
       label: "Work Board",
-      content: boardDetail ? (
-        <BoardView detail={boardDetail} canManage teamOptions={boardOptions.team} clientOptions={boardOptions.clients} programOptions={boardOptions.programs} viewerPersonId={viewerPersonId} />
+      content: scopedBoard ? (
+        <BoardView detail={scopedBoard} canManage teamOptions={boardOptions.team} clientOptions={boardOptions.clients} programOptions={boardOptions.programs} viewerPersonId={viewerPersonId} />
       ) : (
         <section className="admin-card admin-section-card">
           <Empty text="No Work Board yet. Use “Set up Work Board” on the program above — it seeds the PR columns." />
@@ -174,11 +198,11 @@ export default async function ClientHubPage({
           {
             key: "coverage",
             label: "Coverage",
-            count: coverageTab.rows.length || undefined,
+            count: scopedRows.length || undefined,
             content: (
               <CoveragePanel
                 programId={coverageTab.program.id}
-                rows={coverageTab.rows}
+                rows={scopedRows}
                 kind={coverageKind}
                 kindHrefBase={`${hubBase}?tab=coverage&kind=`}
                 targets={coverageTab.targets}
@@ -201,11 +225,11 @@ export default async function ClientHubPage({
           {
             key: "awards",
             label: "Awards",
-            count: supporting.awards.length || undefined,
+            count: scopedAwards.length || undefined,
             content: (
               <AwardsPanel
                 programId={supporting.program.id}
-                rows={supporting.awards}
+                rows={scopedAwards}
                 documents={supporting.documents}
                 plans={supporting.plans}
                 showCost
@@ -221,11 +245,11 @@ export default async function ClientHubPage({
           {
             key: "pipeline",
             label: "Pipeline",
-            count: supporting.pipeline.filter((p) => p.status !== "promoted").length || undefined,
+            count: scopedPipeline.filter((p) => p.status !== "promoted").length || undefined,
             content: (
               <PipelinePanel
                 programId={supporting.program.id}
-                rows={supporting.pipeline}
+                rows={scopedPipeline}
                 plans={supporting.plans}
                 groups={supporting.groups}
                 actions={{
@@ -241,11 +265,11 @@ export default async function ClientHubPage({
           {
             key: "case-studies",
             label: "Case Studies",
-            count: supporting.caseStudies.length || undefined,
+            count: scopedCases.length || undefined,
             content: (
               <CaseStudiesPanel
                 programId={supporting.program.id}
-                rows={supporting.caseStudies}
+                rows={scopedCases}
                 customers={supporting.customers}
                 actions={{
                   createCaseStudy: sup.adminCreateCaseStudy.bind(null, company.id),
@@ -307,10 +331,12 @@ export default async function ClientHubPage({
       />
 
       <HubProgramsBand
-        programs={programs}
+        programs={bandPrograms}
         audience="admin"
         people={people}
         touchpoints={supporting?.touchpoints ?? []}
+        scopeSwitch={scopeSwitch}
+        scopeLabel={scopeLabel(scope)}
         actions={{
           update: updateProgramEngagement.bind(null, company.id),
           setupWorkspace: setupProgramWorkspace.bind(null, company.id),

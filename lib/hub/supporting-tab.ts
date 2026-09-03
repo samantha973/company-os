@@ -5,7 +5,7 @@
 import { companyOs } from "@/lib/supabase";
 import { listDocumentsForCompanies } from "@/lib/client-documents";
 import { listProgramSummaries, type ProgramSummary } from "@/lib/hub/program";
-import { listPlans } from "@/lib/hub/plan";
+import { listPlans, type QuarterlyPlan } from "@/lib/hub/plan";
 import { listAwards, listCaseStudies, listCustomerPicks, listPipeline, listTouchpoints, type AwardRow, type CaseStudyRow, type PersonPick, type PipelineRow, type TouchpointRow } from "@/lib/hub/supporting";
 import { ROADMAP_GROUPS_SELECT, type RoadmapGroup } from "@/lib/client-backlog";
 
@@ -16,6 +16,7 @@ export type SupportingTab = {
   caseStudies: CaseStudyRow[];
   touchpoints: TouchpointRow[];
   plans: Array<{ id: string; label: string }>;
+  planRows: QuarterlyPlan[]; // full rows, for the plan-scope filter
   groups: Array<{ key: string; title: string }>;
   documents: Array<{ id: string; filename: string }>;
   customers: PersonPick[];
@@ -45,6 +46,7 @@ export async function getSupportingTab(companyId: string): Promise<SupportingTab
     caseStudies,
     touchpoints,
     plans: plans.map((p) => ({ id: p.id, label: p.quarter_label })),
+    planRows: plans,
     groups,
     documents: documents.filter((d) => d.source === "upload").map((d) => ({ id: d.id, filename: d.filename })),
     customers,
