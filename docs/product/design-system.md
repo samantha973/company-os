@@ -48,16 +48,29 @@ definitions themselves.
   genuinely new component is needed, add it to `admin.css` under the
   Components section and to `/admin/patterns` in the same PR.
 
-## Migration status
+## Migration status — complete (3 Sep 2026)
 
-The consolidation is landing surface by surface. Each PR replaces that
-surface's private prefix with shared classes, removes its inline styles, and
-deletes the old CSS. Order:
+Every surface now runs on the one system. `app/admin/admin.css` carries two
+namespaces only: `.admin-*` (components) and `.u-*` (layout utilities). The
+27 per-feature prefixes are gone — each was renamed by exact class name into
+`.admin-<component>-*` and its consumers updated.
 
-1. Foundation — tokens, utilities, guardrail (this document) ✅
-2. Client Hub — admin, team, portal (`hub-`, `plan-`, `sap-`, `mp-`, `board-`)
-3. Client Hubs list, Companies, Contacts, Dashboard, Settings (`appdet-`, `deal-`, `staff-`, `assume-`, `portal-`)
-4. Revenue — deals, leads, marketing, events (`mcr-`, `lead-`, `book-`)
-5. Talent — jobs, applications, team (`hire-`, `loop-`)
-6. Team intranet — coaching, goals, ideas, gallery, hiring, strategy (`coach-`, `mycoach-`, `goal-`, `goals-`, `cg-`, `edges-`, `idea-`, `ideas-`, `ts-`, `tp-`, `dir-`, `gallery-`, `phototag-`)
-7. Assistant widget (`chatw-`), then delete every prefix that no longer has a consumer.
+| PR | Surface |
+|---|---|
+| #21 | Foundation — tokens, utilities, guardrail |
+| #22 | Client Hub — admin, team, portal |
+| #26 | Dashboard, Client Hubs list, Companies, Contacts, Settings, shared components |
+| #27 | Revenue — deals, leads, marketing, events, invoices, affiliates |
+| #28 | Talent, Operations, Company, Edges, Boards |
+| #29 | Team intranet, client portal, assistant widget |
+
+What remains inline, and why it stays: data-driven values only — progress
+bar widths, runtime series/stage colours (already token variables), avatar
+sizes from props, a CSS variable carrying a column count, and hidden file
+inputs. Each carries a `/* layout-ok: reason */` comment. The guardrail
+ceilings are set to today's counts, so they can only go down.
+
+**Adding a new screen:** compose from the classes above. If a pattern truly
+needs a new class, add it to the end of `admin.css` under the relevant
+component section and to `/admin/patterns` in the same PR. Never a new prefix,
+never a raw colour, never an inline colour/border/font.

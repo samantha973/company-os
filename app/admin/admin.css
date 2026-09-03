@@ -2693,8 +2693,8 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
 /* Overlapping member initials on the boards index. */
 /* Initials are text, so the chips sit side by side; an overlapped stack
    would clip the second letter. */
-.board-avatar-stack { display: flex; align-items: center; gap: 4px; }
-.board-avatar-more {
+.admin-board-avatar-stack { display: flex; align-items: center; gap: 4px; }
+.admin-board-avatar-more {
   margin-left: 6px;
   font-size: 11px;
   color: var(--admin-muted);
@@ -4285,7 +4285,7 @@ a.admin-ideas-share-card:hover {
 .admin-edges-status-seg-btn.is-on.is-off_track { background: var(--admin-err-bg); color: var(--admin-err-ink); }
 
 /* Members whose FAST goals ladder up to a KR: photo avatars (initials as the
-   no-photo fallback), side by side like .board-avatar-stack, name on hover. */
+   no-photo fallback), side by side like .admin-board-avatar-stack, name on hover. */
 .admin-edges-ladder { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
 .admin-edges-ladder-av {
   width: 20px;
