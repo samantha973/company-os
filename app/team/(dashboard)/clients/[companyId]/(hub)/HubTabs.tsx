@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 // Client hub tab nav for a PR program. Active state from the pathname: exact
-// match for Overview, prefix match for the subroutes.
+// match for Overview, prefix match for the subroutes. The plan-scope param
+// (?plan=) travels with every tab link so the chosen range sticks.
 
 const TABS = [
   { href: "", label: "Overview" },
@@ -21,13 +22,15 @@ const TABS = [
 
 export function HubTabs({ base }: { base: string }) {
   const pathname = (usePathname() ?? "").replace(/\/$/, "");
+  const plan = useSearchParams()?.get("plan");
+  const suffix = plan ? `?plan=${encodeURIComponent(plan)}` : "";
   return (
-    <nav className="admin-tabs u-mb-4">
+    <nav className="admin-tabs">
       {TABS.map((t) => {
         const href = `${base}${t.href}`;
         const active = t.href === "" ? pathname === base : pathname.startsWith(href);
         return (
-          <Link key={t.label} href={href} className={`admin-tab${active ? " is-active" : ""}`}>
+          <Link key={t.label} href={`${href}${suffix}`} className={`admin-tab${active ? " is-active" : ""}`}>
             {t.label}
           </Link>
         );

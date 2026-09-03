@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireTeamMember } from "@/lib/team-auth";
-import { getClientBoardViewForActor, getActorClientCompanies, getHubOverviewForActor } from "@/lib/team/clients";
+import { getClientBoardViewForActor, getActorClientCompanies, getHubOverviewForActor, getHubPlansForActor } from "@/lib/team/clients";
 import { isBoardMemberForActor } from "@/lib/team/boards";
+import { resolvePlanScope, scopeCards } from "@/lib/hub/scope";
+import { firstParam, type SearchParamsObj } from "@/lib/admin/url";
 import { MyCardsStrip, type MyStripCard } from "./MyCardsStrip";
 import { ClientBoardView } from "@/components/hub/ClientBoardView";
 
@@ -24,18 +26,21 @@ function Lock() {
   );
 }
 
-export default async function TeamClientBoardTab({ params }: { params: { companyId: string } }) {
+export default async function TeamClientBoardTab({ params, searchParams }: { params: { companyId: string }; searchParams: SearchParamsObj }) {
   const actor = await requireTeamMember();
   // Assignment gate first: an unassigned actor gets a 404 even to learn
   // whether a board exists.
   const companies = await getActorClientCompanies(actor);
   if (!companies.some((c) => c.id === params.companyId)) notFound();
 
-  const overview = await getHubOverviewForActor(actor, params.companyId);
+  const [overview, plans] = await Promise.all([getHubOverviewForActor(actor, params.companyId), getHubPlansForActor(actor, params.companyId)]);
   const program = overview?.programs[0] ?? null;
-  const board = program
+  const fullBoard = program
     ? await getClientBoardViewForActor(actor, params.companyId, { programId: program.id, includeInternal: true })
     : await getClientBoardViewForActor(actor, params.companyId, { includeInternal: true });
+  // The plan scope: cards that were live during the chosen quarter.
+  const scope = resolvePlanScope(plans, firstParam(searchParams.plan));
+  const board = fullBoard ? { ...fullBoard, cards: scopeCards(fullBoard.cards, scope) } : null;
 
   if (!board) {
     return (

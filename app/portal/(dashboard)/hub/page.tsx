@@ -10,6 +10,9 @@ import { PageHead } from "@/components/admin/PageHead";
 import { MetricCard } from "@/components/admin/MetricCard";
 import { Badge, statusTone } from "@/components/admin/Badge";
 import { targetDone, targetOnTrack } from "@/lib/hub/plan";
+import { ALL_TIME, resolvePlanScope, scopeCards, scopeLabel, scopeOutcomes, scopeParam } from "@/lib/hub/scope";
+import { PlanScopeSwitch } from "@/components/hub/PlanScopeSwitch";
+import { firstParam, type SearchParamsObj } from "@/lib/admin/url";
 import { COVERAGE_CHANNEL_LABEL, VARIANCE_REASON_LABEL, type VarianceReason } from "@/lib/pr/enums";
 import { formatDate, humanize } from "@/lib/admin/format";
 
@@ -25,11 +28,12 @@ function fmtReach(n: number | null): string {
 // The client hub overview: what we agreed (the published plan), what's
 // waiting on the client, what we're working on, and what we've secured.
 // Every read is scoped and published-only by construction.
-export default async function PortalHubPage() {
+export default async function PortalHubPage({ searchParams }: { searchParams: SearchParamsObj }) {
   const actor = await requirePortalMember();
-  const [programs, plan, outcomes, meetings, boards] = await Promise.all([
+  const planParam = firstParam(searchParams.plan);
+  const [programs, plan, allOutcomes, meetings, boards] = await Promise.all([
     listPortalProgramSummaries(actor),
-    getPlanTabForActor(actor),
+    getPlanTabForActor(actor, planParam === ALL_TIME ? null : planParam),
     listOutcomesForActor(actor),
     getMeetingsForActor(actor),
     listHubBoardsForActor(actor),
@@ -54,17 +58,21 @@ export default async function PortalHubPage() {
     );
   }
 
+  // The 90-Day Plan as a filter (?plan=): the same rule the team sees, so
+  // both sides quote the same numbers.
+  const scope = resolvePlanScope(plan?.plans ?? [], planParam);
+  const outcomes = scopeOutcomes(allOutcomes.map((o) => ({ ...o, createdAt: o.publishDate ?? "" })), scope);
+  const label = scopeLabel(scope);
+  const scopeQuery = `plan=${encodeURIComponent(scopeParam(scope))}`;
+
   const programBoard = boards.find((b) => b.prProgramId === program.id) ?? boards[0] ?? null;
   const board = programBoard ? await getBoardViewForActor(actor, programBoard.id) : null;
   const columnName = new Map((board?.columns ?? []).map((c) => [c.id, c.name]));
-  const openCards = (board?.cards ?? []).filter((c) => !c.done);
+  const openCards = scopeCards(board?.cards ?? [], scope).filter((c) => !c.done);
   const waitingCards = openCards.filter((c) => /waiting/i.test(columnName.get(c.columnId ?? "") ?? ""));
 
   const coverage = outcomes.filter((o) => o.kind === "coverage");
   const posts = outcomes.filter((o) => o.kind === "linkedin");
-  const inQuarter = (d: string | null) => !!plan?.selected && !!d && d >= plan.selected.starts_on && d <= plan.selected.ends_on;
-  const coverageThisQuarter = plan?.selected ? coverage.filter((o) => inQuarter(o.publishDate)).length : coverage.length;
-  const postsThisQuarter = plan?.selected ? posts.filter((o) => inQuarter(o.publishDate)).length : posts.length;
   const postTarget = plan?.targets.find((t) => t.group_key === "linkedin-authority")?.quantity_target ?? null;
   const targets = plan?.targets ?? [];
   const onTrack = targets.filter(targetOnTrack).length;
@@ -76,18 +84,23 @@ export default async function PortalHubPage() {
       <PageHead
         eyebrow="Client hub"
         title={program.name}
-        sub={plan?.selected ? `${plan.selected.quarter_label} · ${formatDate(plan.selected.starts_on)} – ${formatDate(plan.selected.ends_on)}` : "Your PR programme"}
-        action={<Badge tone={statusTone(program.status)}>{humanize(program.status)}</Badge>}
+        sub={scope.mode === "plan" ? `${scope.plan.quarter_label} · ${formatDate(scope.plan.starts_on)} – ${formatDate(scope.plan.ends_on)}` : "Your PR programme · all time"}
+        action={
+          <div className="u-row u-wrap">
+            {plan && <PlanScopeSwitch plans={plan.plans.map((p) => ({ id: p.id, label: p.quarter_label }))} value={scopeParam(scope)} />}
+            <Badge tone={statusTone(program.status)}>{humanize(program.status)}</Badge>
+          </div>
+        }
       />
 
       <div className="admin-kpi-grid u-mb-4">
-        <MetricCard label={plan?.selected ? "Coverage this quarter" : "Coverage"} value={coverageThisQuarter} sub={reach > 0 ? `est. reach ${fmtReach(reach)}` : `${coverage.length} total`} href="/portal/coverage" />
-        <MetricCard label="LinkedIn posts" value={postTarget ? <>{postsThisQuarter} <span className="admin-kpi-of">of {postTarget}</span></> : postsThisQuarter} sub={plan?.selected ? "this quarter" : "published"} href="/portal/coverage?kind=linkedin" />
+        <MetricCard label="Coverage" value={coverage.length} sub={reach > 0 ? `est. reach ${fmtReach(reach)} · ${label}` : label} href={`/portal/coverage?${scopeQuery}`} />
+        <MetricCard label="LinkedIn posts" value={postTarget && scope.mode === "plan" ? <>{posts.length} <span className="admin-kpi-of">of {postTarget}</span></> : posts.length} sub={`published · ${label}`} href={`/portal/coverage?${scopeQuery}&kind=linkedin`} />
         <MetricCard
           label="Plan targets"
           value={plan ? <>{onTrack} <span className="admin-kpi-of">of {targets.length} on track</span></> : "—"}
           sub={plan ? (targets.length - onTrack > 0 ? `${targets.length - onTrack} behind — see below` : "all on plan") : "plan not published yet"}
-          href={plan ? "/portal/plan" : undefined}
+          href={plan ? `/portal/plan?${scopeQuery}` : undefined}
         />
       </div>
 
@@ -115,7 +128,7 @@ export default async function PortalHubPage() {
           <section className="admin-card admin-section-card">
             <div className="admin-card-head">
               <h2 className="admin-card-title">{plan?.selected ? `${plan.selected.quarter_label} plan` : "90-Day Plan"}</h2>
-              {plan && <Link href="/portal/plan" className="admin-cell-muted u-sm">Full plan →</Link>}
+              {plan && <Link href={`/portal/plan?${scopeQuery}`} className="admin-cell-muted u-sm">Full plan →</Link>}
             </div>
             {!plan?.selected ? (
               <div className="admin-empty">Your 90-day plan will appear here once it is published.</div>
@@ -172,7 +185,7 @@ export default async function PortalHubPage() {
           <section className="admin-card admin-section-card">
             <div className="admin-card-head">
               <h2 className="admin-card-title">Latest coverage</h2>
-              {coverage.length > 0 && <Link href="/portal/coverage" className="admin-cell-muted u-sm">All {coverage.length} →</Link>}
+              {coverage.length > 0 && <Link href={`/portal/coverage?${scopeQuery}`} className="admin-cell-muted u-sm">All {coverage.length} →</Link>}
             </div>
             {coverage.length === 0 ? (
               <div className="admin-empty">Nothing published yet.</div>

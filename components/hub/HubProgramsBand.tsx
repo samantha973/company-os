@@ -13,12 +13,16 @@ export function HubProgramsBand({
   people,
   touchpoints = [],
   actions,
+  scopeSwitch,
+  scopeLabel,
 }: {
   programs: ProgramSummary[];
   audience: "admin" | "team";
   people?: PersonOption[];
   touchpoints?: TouchpointRow[];
   actions?: ProgramCardActions;
+  scopeSwitch?: React.ReactNode;
+  scopeLabel?: string;
 }) {
   if (programs.length === 0) {
     return (
@@ -30,7 +34,7 @@ export function HubProgramsBand({
   return (
     <>
       {programs.map((p) => (
-        <ProgramCard key={p.id} program={p} audience={audience} people={people} touchpoints={touchpoints} actions={actions} />
+        <ProgramCard key={p.id} program={p} audience={audience} people={people} touchpoints={touchpoints} actions={actions} scopeSwitch={scopeSwitch} scopeLabel={scopeLabel} />
       ))}
     </>
   );

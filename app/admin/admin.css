@@ -4971,3 +4971,5 @@ a.admin-list-row { text-decoration: none; color: inherit; }
 /* BoardView */
 /* Sprint summary link on the Sprints tab: a block-level .admin-card with the compact card padding. */
 .admin-board-sprint { display: block; padding: var(--admin-space-3) var(--admin-space-4); }
+.admin-scope-switch { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.admin-scope-switch .admin-chip { font-size: var(--admin-text-sm); padding: 4px 10px; text-decoration: none; }

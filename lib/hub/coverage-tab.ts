@@ -7,6 +7,7 @@ import { listDocumentsForCompanies } from "@/lib/client-documents";
 import { listProgramSummaries, type ProgramSummary } from "@/lib/hub/program";
 import { listMediaContacts, listOutcomes, listProgramTaskOptions, type MediaContactOption, type Option, type OutcomeRow } from "@/lib/hub/outcomes";
 import { ROADMAP_GROUPS_SELECT, type RoadmapGroup } from "@/lib/client-backlog";
+import { listPlans, type QuarterlyPlan } from "@/lib/hub/plan";
 
 export type CoverageTab = {
   program: ProgramSummary;
@@ -15,6 +16,7 @@ export type CoverageTab = {
   tasks: Option[];
   journalists: MediaContactOption[];
   documents: Array<{ id: string; filename: string }>;
+  planRows: QuarterlyPlan[]; // for the plan-scope filter
 };
 
 export async function getCoverageTab(companyId: string): Promise<CoverageTab | null> {
@@ -22,7 +24,7 @@ export async function getCoverageTab(companyId: string): Promise<CoverageTab | n
   const program = programs[0];
   if (!program) return null;
 
-  const [rows, { data: targetRows }, { data: groupRows }, tasks, journalists, documents] = await Promise.all([
+  const [rows, { data: targetRows }, { data: groupRows }, tasks, journalists, documents, planRows] = await Promise.all([
     listOutcomes(companyId, program.id),
     companyOs
       .from("client_backlog_items")
@@ -35,6 +37,7 @@ export async function getCoverageTab(companyId: string): Promise<CoverageTab | n
     listProgramTaskOptions(companyId, program.id),
     listMediaContacts(),
     listDocumentsForCompanies([companyId]),
+    listPlans(companyId, program.id),
   ]);
   const groups = (groupRows ?? []) as unknown as RoadmapGroup[];
   const groupTitle = (key: string) => groups.find((g) => g.key === key)?.title ?? key;
@@ -51,5 +54,6 @@ export async function getCoverageTab(companyId: string): Promise<CoverageTab | n
     tasks,
     journalists,
     documents: documents.filter((d) => d.source === "upload").map((d) => ({ id: d.id, filename: d.filename })),
+    planRows,
   };
 }

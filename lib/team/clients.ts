@@ -39,6 +39,7 @@ import {
   type ProgramSummary,
 } from "@/lib/hub/program";
 import { getPlanTab, type PlanTab } from "@/lib/hub/plan";
+import { listPlans as listHubPlans, type QuarterlyPlan as HubPlanRow } from "@/lib/hub/plan";
 import { getCoverageTab, type CoverageTab } from "@/lib/hub/coverage-tab";
 import { getSupportingTab, type SupportingTab } from "@/lib/hub/supporting-tab";
 
@@ -296,6 +297,17 @@ export async function getHubOverviewForActor(
 
   const programs = await listProgramSummaries(companyId);
   return { programs };
+}
+
+// The company's 90-day plans, for the hub's All time / quarter switch.
+// Empty when the company is outside the actor's assignments or has no program.
+export async function getHubPlansForActor(actor: TeamActor, companyId: string): Promise<HubPlanRow[]> {
+  const companies = await actorCompanyIds(actor);
+  if (!companies.has(companyId)) return [];
+  const programs = await listProgramSummaries(companyId);
+  const program = programs[0];
+  if (!program) return [];
+  return listHubPlans(companyId, program.id);
 }
 
 // One PR Program's full detail for an assigned client. Null both when the
