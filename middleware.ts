@@ -17,6 +17,8 @@ export async function middleware(request: NextRequest) {
   // session yet, so they must be reachable session-less too.
   if (
     pathname.startsWith("/admin/login") ||
+    pathname.startsWith("/admin/verify") ||
+    pathname.startsWith("/admin/reset-password") ||
     pathname.startsWith("/team/login") ||
     pathname.startsWith("/team/callback") ||
     pathname.startsWith("/team/verify") ||
