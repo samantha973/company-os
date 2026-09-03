@@ -16,10 +16,10 @@ import { PROGRAM_HEALTH, PROGRAM_HEALTH_LABEL, PROGRAM_STATUSES, type ProgramHea
 import { formatCents, formatDate, humanize } from "@/lib/admin/format";
 
 // One PR Program on the hub band: the engagement record (leads, health,
-// contract, drive folders) and the derived tallies. Admin and team surfaces
-// pass `actions` so the record edits in place; the fee and the internal
-// drive folder render for admin only. The portal never renders this card —
-// it has its own client-safe shape in lib/portal/program-hub.ts.
+// contract, drive folders) then the derived tallies. Admin and team surfaces
+// pass `actions` so the record edits in place; the fee renders for admin
+// only. The portal never renders this card — it has its own client-safe
+// shape in lib/portal/program-hub.ts.
 
 export type ProgramCardActions = {
   update: (programId: string, patch: ProgramEngagementPatch) => Promise<Result>;
@@ -27,18 +27,8 @@ export type ProgramCardActions = {
   logTouchpoint?: (programId: string, input: TouchpointInput) => Promise<Result>;
 };
 
-const STATUS_TONE: Record<ProgramStatus, BadgeTone> = {
-  draft: "neutral",
-  active: "ok",
-  paused: "warn",
-  complete: "info",
-};
-
-const HEALTH_TONE: Record<ProgramHealth, BadgeTone> = {
-  green: "ok",
-  amber: "warn",
-  red: "err",
-};
+const STATUS_TONE: Record<ProgramStatus, BadgeTone> = { draft: "neutral", active: "ok", paused: "warn", complete: "info" };
+const HEALTH_TONE: Record<ProgramHealth, BadgeTone> = { green: "ok", amber: "warn", red: "err" };
 
 function Lock() {
   return (
@@ -51,12 +41,12 @@ function Lock() {
 
 function Field({ label, internal, children }: { label: string; internal?: boolean; children: React.ReactNode }) {
   return (
-    <div style={{ minWidth: 0 }}>
-      <div className="mp-kpi-label" style={{ display: "flex", alignItems: "center", gap: 4 }}>
+    <div className="hub-field">
+      <div className="hub-field-label">
         {label}
         {internal && <Lock />}
       </div>
-      <div style={{ marginTop: 4, fontWeight: 600 }}>{children}</div>
+      <div className="hub-field-value">{children}</div>
     </div>
   );
 }
@@ -95,107 +85,101 @@ export function ProgramCard({
 
   const peopleOptions = people.map((x) => ({ value: x.id, label: x.name }));
   const personLabel = (id: string) => people.find((x) => x.id === id)?.name ?? "—";
-
   const plan = p.currentPlan;
   const feeDollars = p.engagementFeeCents != null ? String(p.engagementFeeCents / 100) : "";
+  const behind = plan ? plan.targetsTotal - plan.targetsOnTrack : 0;
 
   return (
-    <section className="admin-card admin-section-card" style={{ marginBottom: 16 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap", marginBottom: 14 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <h2 className="admin-card-title" style={{ margin: 0 }}>
-            <Link href={href} style={{ color: "inherit", textDecoration: "none" }}>{p.name}</Link>
-          </h2>
-          {actions ? (
-            <EditableSelect
-              value={p.status}
-              options={PROGRAM_STATUSES.map((s) => ({ value: s, label: humanize(s) }))}
-              onSave={save("status")}
-              ariaLabel="Program status"
-              render={(v) => <Badge tone={STATUS_TONE[v as ProgramStatus] ?? "neutral"}>{humanize(v)}</Badge>}
-            />
-          ) : (
-            <Badge tone={STATUS_TONE[p.status]}>{humanize(p.status)}</Badge>
-          )}
-          {actions ? (
-            <EditableSelect
-              value={p.health ?? ""}
-              options={PROGRAM_HEALTH.map((h) => ({ value: h, label: PROGRAM_HEALTH_LABEL[h] }))}
-              onSave={save("account_health")}
-              placeholder="Set health…"
-              ariaLabel="Account health"
-              render={(v) => (
-                <Badge tone={HEALTH_TONE[v as ProgramHealth] ?? "neutral"} dot>
-                  {PROGRAM_HEALTH_LABEL[v as ProgramHealth] ?? v}
-                </Badge>
-              )}
-            />
-          ) : (
-            p.health && <Badge tone={HEALTH_TONE[p.health]} dot>{PROGRAM_HEALTH_LABEL[p.health]}</Badge>
-          )}
-          <span className="admin-cell-muted" style={{ fontSize: 11, display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <Lock /> health is internal
-          </span>
-        </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          {actions && p.boardCount === 0 && (
-            <button
-              type="button"
-              className="admin-btn admin-btn--sm"
-              disabled={pending}
-              onClick={() =>
-                startTransition(async () => {
-                  setSetupError(null);
-                  const r = await actions.setupWorkspace(p.id);
-                  if (!r.ok) setSetupError(r.error);
-                  else router.refresh();
-                })
-              }
-            >
-              {pending ? "Setting up…" : "Set up Work Board"}
-            </button>
-          )}
-          <Link href={href} className="admin-btn admin-btn--sm">Open program →</Link>
-        </div>
-      </div>
-      {setupError && <div className="admin-editable-note admin-editable-note--err" style={{ marginBottom: 10 }}>{setupError}</div>}
-
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${isAdmin ? 6 : 5}, minmax(0, 1fr))`, gap: 16, marginBottom: 16 }}>
-        <Field label="Account lead">
-          {actions ? (
-            <EditableSelect value={p.accountLead?.id ?? ""} options={peopleOptions} onSave={save("account_lead_id")} placeholder="Assign…" ariaLabel="Account lead" render={personLabel} />
-          ) : (
-            p.accountLead?.name ?? "—"
-          )}
-        </Field>
-        <Field label="Strategic lead">
-          {actions ? (
-            <EditableSelect value={p.strategicLead?.id ?? ""} options={peopleOptions} onSave={save("strategic_lead_id")} placeholder="Assign…" ariaLabel="Strategic lead" render={personLabel} />
-          ) : (
-            p.strategicLead?.name ?? "—"
-          )}
-        </Field>
-        <Field label="Contract review">
-          {actions ? <EditableDate value={p.contractReview ?? ""} onSave={save("contract_review")} ariaLabel="Contract review date" /> : formatDate(p.contractReview)}
-        </Field>
-        {isAdmin && (
-          <Field label="Fee / month" internal>
+    <div className="hub-band hub-inline">
+      <section className="admin-card admin-section-card">
+        <div className="hub-band-top">
+          <div className="hub-band-title">
+            <h2>
+              <Link href={href} style={{ color: "inherit", textDecoration: "none" }}>{p.name}</Link>
+            </h2>
             {actions ? (
-              <EditableText value={feeDollars} onSave={save("engagement_fee_cents")} placeholder="Set fee…" ariaLabel="Monthly fee" render={(v) => (v ? formatCents(Math.round(Number(v) * 100), "aud") : "—")} />
+              <EditableSelect
+                value={p.status}
+                options={PROGRAM_STATUSES.map((s) => ({ value: s, label: humanize(s) }))}
+                onSave={save("status")}
+                ariaLabel="Program status"
+                render={(v) => <Badge tone={STATUS_TONE[v as ProgramStatus] ?? "neutral"}>{humanize(v)}</Badge>}
+              />
             ) : (
-              formatCents(p.engagementFeeCents, "aud")
+              <Badge tone={STATUS_TONE[p.status]}>{humanize(p.status)}</Badge>
             )}
-          </Field>
-        )}
-        <Field label="Last catch-up" internal>
-          {p.stats.lastFormalCatchup ? formatDate(p.stats.lastFormalCatchup) : <span className="admin-cell-muted">None logged</span>}
-        </Field>
-        <Field label="Client drive">
-          {actions ? <EditableLink value={p.clientDriveFolder ?? ""} onSave={save("client_drive_folder")} placeholder="Add link…" ariaLabel="Client drive folder" /> : p.clientDriveFolder ? <a href={p.clientDriveFolder} target="_blank" rel="noopener noreferrer">Open ↗</a> : "—"}
-        </Field>
-      </div>
+            {actions ? (
+              <EditableSelect
+                value={p.health ?? ""}
+                options={PROGRAM_HEALTH.map((h) => ({ value: h, label: PROGRAM_HEALTH_LABEL[h] }))}
+                onSave={save("account_health")}
+                placeholder="Set health…"
+                ariaLabel="Account health"
+                render={(v) => <Badge tone={HEALTH_TONE[v as ProgramHealth] ?? "neutral"} dot>{PROGRAM_HEALTH_LABEL[v as ProgramHealth] ?? v}</Badge>}
+              />
+            ) : (
+              p.health && <Badge tone={HEALTH_TONE[p.health]} dot>{PROGRAM_HEALTH_LABEL[p.health]}</Badge>
+            )}
+            <span className="hub-band-lock"><Lock /> internal</span>
+          </div>
+          <div className="hub-band-actions">
+            {actions && p.boardCount === 0 && (
+              <button
+                type="button"
+                className="admin-btn admin-btn--sm"
+                disabled={pending}
+                onClick={() =>
+                  startTransition(async () => {
+                    setSetupError(null);
+                    const r = await actions.setupWorkspace(p.id);
+                    if (!r.ok) setSetupError(r.error);
+                    else router.refresh();
+                  })
+                }
+              >
+                {pending ? "Setting up…" : "Set up Work Board"}
+              </button>
+            )}
+            <Link href={href}>Open program →</Link>
+          </div>
+        </div>
+        {setupError && <div className="admin-editable-note admin-editable-note--err" style={{ marginBottom: 10 }}>{setupError}</div>}
 
-      <div className="mp-kpi-grid" style={{ marginBottom: 0 }}>
+        <div className={`hub-fields${isAdmin ? "" : " hub-fields--5"}`}>
+          <Field label="Account lead">
+            {actions ? <EditableSelect value={p.accountLead?.id ?? ""} options={peopleOptions} onSave={save("account_lead_id")} placeholder="Assign…" ariaLabel="Account lead" render={personLabel} /> : p.accountLead?.name ?? "—"}
+          </Field>
+          <Field label="Strategic lead">
+            {actions ? <EditableSelect value={p.strategicLead?.id ?? ""} options={peopleOptions} onSave={save("strategic_lead_id")} placeholder="Assign…" ariaLabel="Strategic lead" render={personLabel} /> : p.strategicLead?.name ?? "—"}
+          </Field>
+          <Field label="Contract review">
+            {actions ? <EditableDate value={p.contractReview ?? ""} onSave={save("contract_review")} ariaLabel="Contract review date" /> : formatDate(p.contractReview)}
+          </Field>
+          {isAdmin && (
+            <Field label="Fee" internal>
+              {actions ? (
+                <EditableText value={feeDollars} onSave={save("engagement_fee_cents")} placeholder="Set fee…" ariaLabel="Monthly fee" render={(v) => (v ? `${formatCents(Math.round(Number(v) * 100), "aud")} / mo` : "—")} />
+              ) : (
+                formatCents(p.engagementFeeCents, "aud")
+              )}
+            </Field>
+          )}
+          <Field label="Last catch-up" internal>
+            {p.stats.lastFormalCatchup ? formatDate(p.stats.lastFormalCatchup) : <span className="admin-editable-empty">None logged</span>}
+          </Field>
+          <Field label="Client drive">
+            {actions ? <EditableLink value={p.clientDriveFolder ?? ""} onSave={save("client_drive_folder")} placeholder="Add link…" ariaLabel="Client drive folder" /> : p.clientDriveFolder ? <a href={p.clientDriveFolder} target="_blank" rel="noopener noreferrer">Open ↗</a> : "—"}
+          </Field>
+        </div>
+
+        {actions?.logTouchpoint && (
+          <div className="hub-band-foot">
+            <LogTouchpoint programId={p.id} recent={touchpoints} action={actions.logTouchpoint} />
+          </div>
+        )}
+      </section>
+
+      <div className="mp-kpi-grid hub-kpis">
         <div className="mp-kpi">
           <div className="mp-kpi-label">Coverage</div>
           <div className="mp-kpi-val">{p.stats.coverageCount}</div>
@@ -207,19 +191,15 @@ export function ProgramCard({
           <div className="mp-kpi-note">published</div>
         </div>
         <div className="mp-kpi">
-          <div className="mp-kpi-label">Plan targets</div>
+          <div className="mp-kpi-label">Targets on track</div>
           <div className="mp-kpi-val">
-            {plan ? (
-              <>
-                {plan.targetsOnTrack} <span style={{ fontSize: 15, fontWeight: 500 }} className="admin-cell-muted">of {plan.targetsTotal} on track</span>
-              </>
-            ) : (
-              <span className="admin-cell-muted" style={{ fontSize: 15, fontWeight: 500 }}>No plan yet</span>
-            )}
+            {plan ? <>{plan.targetsOnTrack} <span className="hub-kpi-of">of {plan.targetsTotal}</span></> : <span className="hub-kpi-of">No plan yet</span>}
           </div>
-          <div className="mp-kpi-note">
+          <div className={`mp-kpi-note${behind > 0 ? " hub-kpi-note--warn" : ""}`}>
             {plan
-              ? `${plan.quarterLabel}${plan.targetsWithVariance ? ` · ${plan.targetsWithVariance} with a variance` : ""}${plan.publishedAt ? "" : " · draft"}`
+              ? behind > 0
+                ? `${behind} with a variance`
+                : `${plan.quarterLabel}${plan.publishedAt ? "" : " · draft"}`
               : "Start one on the 90-Day Plan tab"}
           </div>
         </div>
@@ -229,7 +209,6 @@ export function ProgramCard({
           <div className="mp-kpi-note">agreed, submitted or shortlisted</div>
         </div>
       </div>
-      {actions?.logTouchpoint && <LogTouchpoint programId={p.id} recent={touchpoints} action={actions.logTouchpoint} />}
-    </section>
+    </div>
   );
 }

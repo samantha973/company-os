@@ -4894,3 +4894,66 @@ a.hub-program-card:hover {
 
 /* Cockpit drawer: "Open full deal" link acts as an inline button. */
 .deal-open-link { display: inline-flex; }
+
+/* ─── PR Hub: Client Hub band + 90-Day Plan ─────────────────────────────
+   The hub's inline editors (health, leads, dates, fee…) sit inside running
+   text and label/value pairs, so the block-level .admin-editable default
+   (Team roster shelf) is overridden here: they render as the value itself,
+   with the hover affordance only. */
+.hub-inline .admin-editable-row { display: inline-flex; align-items: center; gap: 6px; width: auto; max-width: 100%; }
+.hub-inline .admin-editable {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  max-width: 100%;
+  padding: 2px 6px;
+  margin: -2px -6px;
+  font: inherit;
+  color: inherit;
+  white-space: nowrap;
+}
+.hub-inline .admin-editable-note { white-space: nowrap; }
+.hub-inline .admin-input, .hub-inline .admin-select { padding: 4px 8px; font-size: 13px; width: auto; min-width: 140px; }
+.hub-inline .admin-textarea { font-size: 13px; }
+
+.hub-band { margin-bottom: 16px; }
+.hub-band-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.hub-band-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.hub-band-title h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.hub-band-lock { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--admin-muted); }
+.hub-band-actions { display: flex; gap: 8px; align-items: center; }
+.hub-fields { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+.hub-fields--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 1100px) { .hub-fields, .hub-fields--5 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .hub-fields, .hub-fields--5 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.hub-field { min-width: 0; }
+.hub-field-label { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+.hub-field-value { font-weight: 600; font-size: 13px; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; }
+.hub-field-value .admin-editable-empty { font-weight: 400; }
+.hub-band > .admin-section-card { margin-bottom: 16px; }
+.hub-kpis { margin-bottom: 16px; }
+.hub-kpi-of { font-size: 15px; font-weight: 500; color: var(--admin-muted); }
+.hub-kpi-note--warn { color: var(--admin-warn-ink); }
+.hub-band-foot { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--admin-line-soft); }
+
+.plan-switch { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.plan-switch-chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.plan-switch .admin-chip { font-size: 12px; padding: 4px 10px; }
+.plan-switch .admin-chip.is-active { border-color: var(--admin-accent); color: var(--admin-accent); font-weight: 600; }
+.plan-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.plan-head-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 15px; font-weight: 600; }
+.plan-head-title .plan-dates { font-weight: 500; color: var(--admin-ink-2); }
+.plan-head-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 6px; font-size: 12px; color: var(--admin-ink-2); }
+.plan-head-actions { display: flex; gap: 8px; align-items: center; }
+.plan-objectives { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+@media (max-width: 800px) { .plan-objectives { grid-template-columns: 1fr; } }
+.plan-objective { border: 1px solid var(--admin-line-soft); border-radius: 8px; padding: 12px 14px; background: var(--admin-surface-2); }
+.plan-objective .hub-field-label { margin-bottom: 6px; }
+.plan-objective p { margin: 0; white-space: pre-wrap; line-height: 1.55; }
+.plan-objective .admin-editable-row, .plan-objective .admin-editable { display: block; width: 100%; margin: 0; padding: 0; white-space: pre-wrap; line-height: 1.55; text-align: left; }
+.plan-targets .admin-table th:first-child, .plan-targets .admin-table td:first-child { font-weight: 600; }
+.plan-progress { display: flex; align-items: center; gap: 10px; }
+.plan-progress .board-progress { flex: 1; }
+.plan-progress-n { font-variant-numeric: tabular-nums; color: var(--admin-ink-2); white-space: nowrap; min-width: 44px; }
+.plan-variance-reason { font-weight: 600; color: var(--admin-warn-ink); }
+.plan-add { display: grid; grid-template-columns: 180px 1fr 110px auto; gap: 10px; align-items: end; margin-top: 14px; }
