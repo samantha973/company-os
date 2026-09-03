@@ -61,8 +61,8 @@ export function QuarterlyPlanPanel({
   targets,
   groups,
   meetings = [],
-  meetingHref,
-  planHref,
+  meetingHrefBase,
+  planHrefBase,
   suggestNext,
   actions,
 }: {
@@ -72,8 +72,10 @@ export function QuarterlyPlanPanel({
   targets: PlanTarget[];
   groups: RoadmapGroup[];
   meetings?: MeetingOption[];
-  meetingHref?: (id: string) => string;
-  planHref: (planId: string) => string;
+  // Prefix strings, not functions: this is a client component and server pages
+  // cannot hand it callbacks. meetingHrefBase ending in "/" gets the id appended.
+  meetingHrefBase?: string;
+  planHrefBase: string;
   suggestNext: QuarterSpec;
   actions?: PlanActions;
 }) {
@@ -128,7 +130,7 @@ export function QuarterlyPlanPanel({
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
           {plans.map((p) => (
-            <Link key={p.id} href={planHref(p.id)} className={`admin-chip${selected?.id === p.id ? " is-active" : ""}`} style={selected?.id === p.id ? { borderColor: "var(--admin-accent)", color: "var(--admin-accent)", fontWeight: 600 } : undefined}>
+            <Link key={p.id} href={`${planHrefBase}${p.id}`} className={`admin-chip${selected?.id === p.id ? " is-active" : ""}`} style={selected?.id === p.id ? { borderColor: "var(--admin-accent)", color: "var(--admin-accent)", fontWeight: 600 } : undefined}>
               {p.quarter_label}
               {!p.published_at && <span className="admin-cell-muted"> · draft</span>}
             </Link>
@@ -209,7 +211,7 @@ export function QuarterlyPlanPanel({
                   ) : (
                     <span>{meetingOf(selected.planning_meeting_id) ? meetingLabel(meetingOf(selected.planning_meeting_id) as MeetingOption) : "—"}</span>
                   )}
-                  {selected.planning_meeting_id && meetingHref && <Link href={meetingHref(selected.planning_meeting_id)}>Open meeting →</Link>}
+                  {selected.planning_meeting_id && meetingHrefBase && <Link href={meetingHrefBase.endsWith("/") ? `${meetingHrefBase}${selected.planning_meeting_id}` : meetingHrefBase}>Open meeting →</Link>}
                   <span>·</span>
                   <span>Signed off</span>
                   {actions ? <EditableDate value={selected.signoff_date ?? ""} onSave={savePlan("signoff_date")} placeholder="not yet" ariaLabel="Sign-off date" /> : <span>{selected.signoff_date ? formatDate(selected.signoff_date) : "not yet"}</span>}

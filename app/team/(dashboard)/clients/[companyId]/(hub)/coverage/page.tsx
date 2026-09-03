@@ -30,7 +30,7 @@ export default async function TeamClientCoverageTab({
       programId={data.program.id}
       rows={data.rows}
       kind={kind}
-      kindHref={(k) => `/team/clients/${companyId}/coverage?kind=${k}`}
+      kindHrefBase={`/team/clients/${companyId}/coverage?kind=`}
       targets={data.targets}
       tasks={data.tasks}
       journalists={data.journalists}
