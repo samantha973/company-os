@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
+import './styles/tokens.css'
 import './globals.css'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.startsWith('http')
