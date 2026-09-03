@@ -309,7 +309,6 @@ export default async function ClientHubPage({
       <HubProgramsBand
         programs={programs}
         audience="admin"
-        programHref={(programId) => `/admin/revenue/companies/${company.id}/programs/${programId}`}
         people={people}
         touchpoints={supporting?.touchpoints ?? []}
         actions={{

@@ -10,14 +10,12 @@ import { ProgramCard, type ProgramCardActions } from "@/components/hub/ProgramCa
 export function HubProgramsBand({
   programs,
   audience,
-  programHref,
   people,
   touchpoints = [],
   actions,
 }: {
   programs: ProgramSummary[];
   audience: "admin" | "team";
-  programHref: (programId: string) => string;
   people?: PersonOption[];
   touchpoints?: TouchpointRow[];
   actions?: ProgramCardActions;
@@ -32,7 +30,7 @@ export function HubProgramsBand({
   return (
     <>
       {programs.map((p) => (
-        <ProgramCard key={p.id} program={p} audience={audience} href={programHref(p.id)} people={people} touchpoints={touchpoints} actions={actions} />
+        <ProgramCard key={p.id} program={p} audience={audience} people={people} touchpoints={touchpoints} actions={actions} />
       ))}
     </>
   );

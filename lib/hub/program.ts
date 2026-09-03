@@ -51,6 +51,7 @@ export type ProgramSummary = {
   // Derived.
   stats: ProgramStats;
   boardCount: number; // active boards keyed to this program
+  unlinkedBoardCount: number; // the company's active boards not yet keyed to any program (pre-program-model data)
   currentPlan: PlanSnapshot | null;
 };
 
@@ -153,8 +154,12 @@ export async function listProgramSummaries(companyId: string): Promise<ProgramSu
 
   const statsById = new Map(((statsData ?? []) as StatsRow[]).map((s) => [s.pr_program_id, s]));
   const boardsByProgram = new Map<string, number>();
+  let unlinkedBoards = 0;
   for (const r of boardRows) {
-    if (!r.pr_program_id) continue;
+    if (!r.pr_program_id) {
+      unlinkedBoards++;
+      continue;
+    }
     boardsByProgram.set(r.pr_program_id, (boardsByProgram.get(r.pr_program_id) ?? 0) + 1);
   }
 
@@ -183,6 +188,7 @@ export async function listProgramSummaries(companyId: string): Promise<ProgramSu
           }
         : EMPTY_STATS,
       boardCount: boardsByProgram.get(p.id) ?? 0,
+      unlinkedBoardCount: unlinkedBoards,
       currentPlan: plans.get(p.id) ?? null,
     };
   });
