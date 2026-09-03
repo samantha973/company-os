@@ -27,7 +27,7 @@ export function LogTouchpoint({
   const [draft, setDraft] = useState({ kind: "catchup", occurredOn: new Date().toISOString().slice(0, 10), subject: "", body: "" });
 
   return (
-    <div style={{ marginTop: 12 }}>
+    <div style={{ flex: 1 }}>
       <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
         <button type="button" className="admin-btn admin-btn--sm" onClick={() => setOpen((v) => !v)}>
           {open ? "Cancel" : "Log catch-up"}
