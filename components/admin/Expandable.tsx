@@ -33,15 +33,15 @@ export function Expandable({
   return (
     <div>
       <div
-        className={`appdet-expand${clamped ? " appdet-expand--clamped" : ""}`}
-        style={{ maxHeight: clamped ? collapsedHeight : undefined }}
+        className={`admin-record-expand${clamped ? " admin-record-expand--clamped" : ""}`}
+        style={{ maxHeight: clamped ? collapsedHeight : undefined }} /* layout-ok: data-driven clamp height */
       >
         <div ref={innerRef}>{children}</div>
       </div>
       {overflowing && (
         <button
           type="button"
-          className="appdet-expand-toggle"
+          className="admin-record-expand-toggle"
           aria-expanded={expanded}
           onClick={() => setExpanded((v) => !v)}
         >

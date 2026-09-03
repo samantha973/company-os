@@ -196,20 +196,20 @@ export function DealManage({ deal, stages }: { deal: DealManageData; stages: Dea
 
   return (
     <>
-      <div className="appdet-head">
-        <div className="appdet-head-crumb">
+      <div className="admin-record-head">
+        <div className="admin-record-head-crumb">
           <Link href="/admin/revenue/deals">← Deals</Link>
         </div>
-        <div className="appdet-head-row">
-          <div className="appdet-head-id">
-            <h1 className="appdet-head-title">
+        <div className="admin-record-head-row">
+          <div className="admin-record-head-id">
+            <h1 className="admin-record-head-title">
               <span>{deal.title || deal.personName || deal.companyName || "Untitled deal"}</span>
               {stageName && !closed && <Badge tone="info">{stageName}</Badge>}
               {closed && <Badge tone={statusTone(status)}>{humanize(status)}</Badge>}
               {pendingHandoff && <Badge tone="warn">Handoff pending</Badge>}
               {archived && <Badge tone="neutral">Archived</Badge>}
             </h1>
-            <div className="appdet-head-meta">
+            <div className="admin-record-head-meta">
               {deal.companyId ? (
                 <Link href={`/admin/revenue/companies/${deal.companyId}`}>
                   <strong>{deal.companyName || "Company"}</strong>
@@ -232,13 +232,13 @@ export function DealManage({ deal, stages }: { deal: DealManageData; stages: Dea
               {deal.source ? ` · ${humanize(deal.source)}` : ""}
             </div>
             {status === "lost" && deal.lostReason && (
-              <div className="appdet-head-meta" style={{ marginTop: 2 }}>
+              <div className="admin-record-head-meta" style={{ marginTop: 2 }}>
                 Lost: {humanize(deal.lostReason)}
               </div>
             )}
           </div>
 
-          <div className="appdet-head-actions deal-head-actions">
+          <div className="admin-record-head-actions deal-head-actions">
             <div style={{ textAlign: "right" }}>
               <div style={{ fontSize: 26, fontWeight: 800, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums", lineHeight: 1.05 }}>
                 {formatCents(deal.amountCents, currency)}
@@ -369,8 +369,8 @@ export function DealManage({ deal, stages }: { deal: DealManageData; stages: Dea
         </div>
       )}
 
-      <div className="appdet-cols">
-        <div className="appdet-main">
+      <div className="admin-record-cols">
+        <div className="admin-record-main">
           <section className="admin-card admin-section-card">
             <div className="admin-section-label" style={{ marginBottom: 12 }}>Deal terms</div>
             <dl className="admin-kv admin-kv--editable">
@@ -493,7 +493,7 @@ export function DealManage({ deal, stages }: { deal: DealManageData; stages: Dea
           </section>
         </div>
 
-        <aside className="appdet-rail">
+        <aside className="admin-record-rail">
           {pendingHandoff && (
             <section className="admin-card admin-section-card" style={{ borderColor: "var(--admin-warn-line, var(--admin-line-strong))" }}>
               <div className="admin-section-label" style={{ marginBottom: 8 }}>SDR handoff</div>
@@ -697,20 +697,20 @@ function PipelineStrip({
   }
 
   return (
-    <div className="appdet-pipe" role="list" aria-label="Pipeline stages">
+    <div className="admin-record-pipe" role="list" aria-label="Pipeline stages">
       {stages.map((s, i) => {
         const state = i < currentIdx ? "done" : i === currentIdx ? "now" : "todo";
         const age = state === "now" ? ageLabel() : null;
         return (
-          <div key={s.id} className={`appdet-step appdet-step--${state}`} role="listitem">
-            <button type="button" className="appdet-step-hit" onClick={() => onMove(s)} title={`Move to ${s.name}`}>
-              <span className="appdet-step-node">{state === "done" ? "✓" : i + 1}</span>
-              <span className="appdet-step-label">
+          <div key={s.id} className={`admin-record-step admin-record-step--${state}`} role="listitem">
+            <button type="button" className="admin-record-step-hit" onClick={() => onMove(s)} title={`Move to ${s.name}`}>
+              <span className="admin-record-step-node">{state === "done" ? "✓" : i + 1}</span>
+              <span className="admin-record-step-label">
                 {s.name}
-                {age && <span className="appdet-step-sub">{age}</span>}
+                {age && <span className="admin-record-step-sub">{age}</span>}
               </span>
             </button>
-            {i < stages.length - 1 && <span className="appdet-step-bar" />}
+            {i < stages.length - 1 && <span className="admin-record-step-bar" />}
           </div>
         );
       })}

@@ -74,7 +74,7 @@ export default async function CompanyDetailPage({
       key: "details",
       label: "Details",
       content: (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div className="admin-panel">
           <CompanyDetailsCard
             company={{
               id: company.id,
@@ -92,11 +92,11 @@ export default async function CompanyDetailPage({
           {showAffiliateCard && (
             <div className="admin-card admin-section-card">
               <h2 className="admin-card-title">Referral &amp; affiliates</h2>
-              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div className="u-stack u-gap-4">
                 {companyAffiliate?.active && (
                   <div>
-                    <div className="admin-cell-muted" style={{ fontSize: 12, marginBottom: 4 }}>This company is an affiliate</div>
-                    <div style={{ display: "inline-flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                    <div className="admin-cell-muted u-sm u-mb-1">This company is an affiliate</div>
+                    <div className="u-row u-wrap">
                       {companyAffiliate.code && <Badge tone="ok">{companyAffiliate.code}</Badge>}
                       <span className="admin-cell-strong">{formatCents(companyAffiliate.realizedCents, "usd")} earned</span>
                       {companyAffiliate.unpaidCents > 0 && (
@@ -107,10 +107,10 @@ export default async function CompanyDetailPage({
                 )}
                 {affiliateContacts.length > 0 && (
                   <div>
-                    <div className="admin-cell-muted" style={{ fontSize: 12, marginBottom: 4 }}>Affiliate contacts</div>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                    <div className="admin-cell-muted u-sm u-mb-1">Affiliate contacts</div>
+                    <div className="u-row u-wrap">
                       {affiliateContacts.map((p) => (
-                        <Link key={p.id} href={`/admin/contacts/${p.id}`} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                        <Link key={p.id} href={`/admin/contacts/${p.id}`} className="u-row">
                           {p.full_name || p.email}
                           {p.affiliateCode && <Badge tone="ok">{p.affiliateCode}</Badge>}
                         </Link>
@@ -205,8 +205,8 @@ export default async function CompanyDetailPage({
         title={name}
         sub={company.website_url || undefined}
         action={
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
-            <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+          <div className="u-stack u-items-end" /* layout-ok: no cross-axis end utility (needs .u-items-end) */>
+            <span className="u-row u-wrap">
               {company.archived_at && <Badge tone="neutral">Archived</Badge>}
               {isClient ? <Badge tone="ok">Client</Badge> : company.lifecycle_stage && <Badge tone="neutral">{humanize(company.lifecycle_stage)}</Badge>}
               {company.priority && <Badge>{humanize(company.priority)}</Badge>}
@@ -223,11 +223,11 @@ export default async function CompanyDetailPage({
         }
       />
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
+      <div className="u-row u-between u-wrap u-gap-3 u-mb-4">
         <Link href={`/admin/clients/${company.id}`} className="admin-btn admin-btn--primary">
           Open Client Hub →
         </Link>
-        <span className="admin-cell-muted" style={{ fontSize: 13 }}>
+        <span className="admin-cell-muted">
           {deals.length} {deals.length === 1 ? "deal" : "deals"}
           {dealValueCents ? ` · ${formatCents(dealValueCents, "usd")} total` : ""} ·{" "}
           <Link href={`/admin/revenue/deals?company=${company.id}`}>Open in CRM →</Link>
