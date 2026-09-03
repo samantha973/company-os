@@ -1,5 +1,6 @@
 import { Badge } from "@/components/admin/Badge";
 import type { HubTeam } from "@/lib/team/clients";
+import { humanize } from "@/lib/admin/format";
 
 // Client Hub team tab: both sides of the account, the Edge8 staff assigned to
 // the client (client-visible assignments only) and the client's own people.
@@ -42,7 +43,7 @@ export function HubTeamPanel({ team }: { team: HubTeam }) {
                 </div>
                 {m.title && (
                   <div className="admin-list-aside">
-                    <Badge tone="neutral">{m.title}</Badge>
+                    <Badge tone={m.title === "spokesperson" ? "info" : "neutral"}>{humanize(m.title)}</Badge>
                   </div>
                 )}
               </div>

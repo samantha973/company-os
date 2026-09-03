@@ -9,6 +9,9 @@ import type { ProgramSummary } from "@/lib/hub/program";
 import type { ProgramEngagementPatch } from "@/lib/hub/program-actions";
 import type { Result } from "@/lib/admin/mutations";
 import type { PersonOption } from "@/lib/admin/people-options";
+import type { TouchpointInput } from "@/lib/hub/supporting-actions";
+import type { TouchpointRow } from "@/lib/hub/supporting";
+import { LogTouchpoint } from "@/components/hub/LogTouchpoint";
 import { PROGRAM_HEALTH, PROGRAM_HEALTH_LABEL, PROGRAM_STATUSES, type ProgramHealth, type ProgramStatus } from "@/lib/pr/enums";
 import { formatCents, formatDate, humanize } from "@/lib/admin/format";
 
@@ -21,6 +24,7 @@ import { formatCents, formatDate, humanize } from "@/lib/admin/format";
 export type ProgramCardActions = {
   update: (programId: string, patch: ProgramEngagementPatch) => Promise<Result>;
   setupWorkspace: (programId: string) => Promise<Result & { boardSlug?: string }>;
+  logTouchpoint?: (programId: string, input: TouchpointInput) => Promise<Result>;
 };
 
 const STATUS_TONE: Record<ProgramStatus, BadgeTone> = {
@@ -62,12 +66,14 @@ export function ProgramCard({
   audience,
   href,
   people = [],
+  touchpoints = [],
   actions,
 }: {
   program: ProgramSummary;
   audience: "admin" | "team";
   href: string;
   people?: PersonOption[];
+  touchpoints?: TouchpointRow[];
   actions?: ProgramCardActions;
 }) {
   const router = useRouter();
@@ -223,6 +229,7 @@ export function ProgramCard({
           <div className="mp-kpi-note">agreed, submitted or shortlisted</div>
         </div>
       </div>
+      {actions?.logTouchpoint && <LogTouchpoint programId={p.id} recent={touchpoints} action={actions.logTouchpoint} />}
     </section>
   );
 }

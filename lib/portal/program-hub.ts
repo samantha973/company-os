@@ -12,6 +12,7 @@ import type { PortalActor } from "@/lib/portal-auth";
 import { listProgramSummaries, type ProgramStats, type ProgramStatus } from "@/lib/hub/program";
 import { getCurrentPlanSnapshots, type PlanSnapshot } from "@/lib/hub/plan";
 import type { ClientBoardColumn, ClientBoardCard } from "@/lib/boards/client-view";
+import { prMeta } from "@/lib/boards/types";
 
 export type PortalProgramSummary = {
   id: string;
@@ -154,7 +155,7 @@ export async function getBoardViewForActor(actor: PortalActor, boardId: string):
     companyOs.from("board_columns").select("id, name, is_done").eq("board_id", board.id).order("position"),
     companyOs
       .from("tasks")
-      .select("id, title, priority, due_date, status, board_column_id, assignee_id, sprint_id, created_at")
+      .select("id, title, priority, due_date, status, board_column_id, assignee_id, sprint_id, created_at, metadata")
       .eq("board_id", board.id)
       .eq("internal", false)
       .is("parent_task_id", null)
@@ -175,6 +176,7 @@ export async function getBoardViewForActor(actor: PortalActor, boardId: string):
     assignee_id: string | null;
     sprint_id: string | null;
     created_at: string;
+    metadata: Record<string, unknown> | null;
   }[];
 
   const personIds = [...new Set(tasks.map((t) => t.assignee_id).filter(Boolean) as string[])];
@@ -192,18 +194,25 @@ export async function getBoardViewForActor(actor: PortalActor, boardId: string):
   );
   const sprintById = new Map((sprintsRes.data ?? []).map((s) => [s.id, s.name]));
 
-  const cards: ClientBoardCard[] = tasks.map((t) => ({
-    id: t.id,
-    title: t.title,
-    priority: t.priority,
-    dueDate: t.due_date,
-    columnId: t.board_column_id,
-    done: t.status === "done",
-    assigneeId: t.assignee_id,
-    assigneeName: t.assignee_id ? nameById.get(t.assignee_id) ?? null : null,
-    sprintName: t.sprint_id ? sprintById.get(t.sprint_id) ?? null : null,
-    createdAt: t.created_at,
-  }));
+  const cards: ClientBoardCard[] = tasks.map((t) => {
+    const pr = prMeta(t);
+    return {
+      id: t.id,
+      title: t.title,
+      priority: t.priority,
+      dueDate: t.due_date,
+      columnId: t.board_column_id,
+      done: t.status === "done",
+      assigneeId: t.assignee_id,
+      assigneeName: t.assignee_id ? nameById.get(t.assignee_id) ?? null : null,
+      sprintName: t.sprint_id ? sprintById.get(t.sprint_id) ?? null : null,
+      createdAt: t.created_at,
+      prType: pr.type,
+      statusNote: pr.status_note,
+      link: pr.link,
+      internal: false,
+    };
+  });
 
   return { boardName: board.name, columns, cards };
 }

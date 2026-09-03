@@ -57,6 +57,26 @@ export function assignedAt(card: { metadata: Record<string, unknown>; created_at
   return typeof stamped === "string" ? stamped : card.created_at;
 }
 
+// PR Hub card fields ride in tasks.metadata.pr (docs/plans/2026-09-03-pr-hub-
+// client-record.md, M5): the kind of effort, a client-facing one-line status,
+// and a link. Client-visible on non-internal cards.
+export type TaskPrMeta = { type: string | null; status_note: string | null; link: string | null };
+
+export function prMeta(card: { metadata: Record<string, unknown> | null }): TaskPrMeta {
+  const raw = (card.metadata?.["pr"] ?? null) as Partial<TaskPrMeta> | null;
+  return {
+    type: typeof raw?.type === "string" && raw.type ? raw.type : null,
+    status_note: typeof raw?.status_note === "string" && raw.status_note ? raw.status_note : null,
+    link: typeof raw?.link === "string" && raw.link ? raw.link : null,
+  };
+}
+
+// Normalise a PR meta patch before it is written: trimmed strings or null.
+export function cleanPr(input: Partial<TaskPrMeta> | null | undefined): TaskPrMeta {
+  const s = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim().slice(0, 500) : null);
+  return { type: s(input?.type), status_note: s(input?.status_note), link: s(input?.link) };
+}
+
 // Every board seeds with these four columns; they can be renamed/reordered later.
 export const DEFAULT_COLUMNS: Array<{ name: string; is_done: boolean }> = [
   { name: "To do", is_done: false },
@@ -140,7 +160,6 @@ export type TaskRow = {
   status: TaskStatus;
   priority: TaskPriority;
   due_date: string | null;
-  human_tokens: number | null;
   completed_at: string | null;
   internal: boolean;
   subject_type: string | null;
@@ -153,7 +172,7 @@ export type TaskRow = {
 };
 
 export const TASK_SELECT =
-  "id, title, description, board_id, board_column_id, sprint_id, position, assignee_id, created_by, status, priority, due_date, human_tokens, completed_at, internal, subject_type, subject_id, parent_task_id, metadata, archived_at, created_at, updated_at";
+  "id, title, description, board_id, board_column_id, sprint_id, position, assignee_id, created_by, status, priority, due_date, completed_at, internal, subject_type, subject_id, parent_task_id, metadata, archived_at, created_at, updated_at";
 
 // Whole days a card has sat in its current column, given the last move time.
 export function daysInColumn(since: string | null | undefined, now: Date = new Date()): number {

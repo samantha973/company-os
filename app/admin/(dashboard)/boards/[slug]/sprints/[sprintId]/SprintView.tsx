@@ -87,30 +87,21 @@ export function SprintView({
   }
 
   // ── Plan vs actual ────────────────────────────────────────────────────────
-  const tokens = (c: BoardCard) => c.human_tokens ?? 0;
   const done = cards.filter((c) => c.status === "done");
   const open = cards.filter((c) => c.status !== "done");
-  const plannedHT = cards.reduce((s, c) => s + tokens(c), 0);
-  const doneHT = done.reduce((s, c) => s + tokens(c), 0);
-  const unestimated = cards.filter((c) => c.human_tokens == null).length;
   const cardPct = cards.length ? Math.round((done.length / cards.length) * 100) : 0;
-  const htPct = plannedHT ? Math.round((doneHT / plannedHT) * 100) : 0;
 
-  type PersonLine = { name: string; done: number; total: number; doneHT: number; totalHT: number };
+  type PersonLine = { name: string; done: number; total: number };
   const byAssignee = useMemo(() => {
     const map = new Map<string, PersonLine>();
     for (const c of cards) {
       const name = c.assignee_name ?? "Unassigned";
-      const line = map.get(name) ?? { name, done: 0, total: 0, doneHT: 0, totalHT: 0 };
+      const line = map.get(name) ?? { name, done: 0, total: 0 };
       line.total += 1;
-      line.totalHT += tokens(c);
-      if (c.status === "done") {
-        line.done += 1;
-        line.doneHT += tokens(c);
-      }
+      if (c.status === "done") line.done += 1;
       map.set(name, line);
     }
-    return [...map.values()].sort((a, b) => b.totalHT - a.totalHT || b.total - a.total);
+    return [...map.values()].sort((a, b) => b.total - a.total);
   }, [cards]);
 
   const bar = (pct: number) => (
@@ -172,9 +163,6 @@ export function SprintView({
           {initials(c.assignee_name)}
         </span>
       )}
-      <span className="admin-cell-muted" style={{ fontSize: 12, width: 52, textAlign: "right" }}>
-        {c.human_tokens != null ? `${c.human_tokens} HT` : "–"}
-      </span>
     </div>
   );
 
@@ -309,19 +297,6 @@ export function SprintView({
             </div>
             {bar(cardPct)}
           </div>
-          <div>
-            <div className="admin-label">Human Tokens</div>
-            <div style={{ fontSize: 22, fontWeight: 700 }}>
-              {doneHT}
-              <span className="admin-cell-muted" style={{ fontSize: 14, fontWeight: 600 }}> / {plannedHT} delivered</span>
-            </div>
-            {bar(htPct)}
-            {unestimated > 0 && (
-              <div className="admin-cell-muted" style={{ fontSize: 12, marginTop: 4 }}>
-                {unestimated} card{unestimated === 1 ? "" : "s"} without an estimate
-              </div>
-            )}
-          </div>
         </div>
 
         {byAssignee.length > 0 && (
@@ -335,9 +310,6 @@ export function SprintView({
                 <span className="admin-cell-strong" style={{ flex: "1 1 160px" }}>{p.name}</span>
                 <span className="admin-cell-muted" style={{ fontSize: 12 }}>
                   {p.done}/{p.total} cards
-                </span>
-                <span className="admin-cell-muted" style={{ fontSize: 12, width: 110, textAlign: "right" }}>
-                  {p.doneHT}/{p.totalHT} HT
                 </span>
               </div>
             ))}

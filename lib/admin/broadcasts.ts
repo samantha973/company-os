@@ -110,7 +110,8 @@ export type AudienceMember = { personId: string; email: string; name: string | n
 // the sender uses, and the two cannot drift apart. Job seekers are the only
 // structurally excluded persona: prospects, clients, and employees all belong on
 // the newsletter once they carry consent (the internal team included).
-export const BLOCKED_PERSONAS = new Set(["job_seeker"]);
+// Media contacts (journalists) are never newsletter recipients either.
+export const BLOCKED_PERSONAS = new Set(["job_seeker", "media"]);
 
 // The consent/suppression gate every marketing recipient must pass. This is the
 // single source of truth: the sender (passesSuppression, below) and the hub's

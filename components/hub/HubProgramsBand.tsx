@@ -1,5 +1,6 @@
 import type { ProgramSummary } from "@/lib/hub/program";
 import type { PersonOption } from "@/lib/admin/people-options";
+import type { TouchpointRow } from "@/lib/hub/supporting";
 import { ProgramCard, type ProgramCardActions } from "@/components/hub/ProgramCard";
 
 // The hub home's top band, shared by the admin company 360 (Client Hub view)
@@ -11,12 +12,14 @@ export function HubProgramsBand({
   audience,
   programHref,
   people,
+  touchpoints = [],
   actions,
 }: {
   programs: ProgramSummary[];
   audience: "admin" | "team";
   programHref: (programId: string) => string;
   people?: PersonOption[];
+  touchpoints?: TouchpointRow[];
   actions?: ProgramCardActions;
 }) {
   if (programs.length === 0) {
@@ -29,7 +32,7 @@ export function HubProgramsBand({
   return (
     <>
       {programs.map((p) => (
-        <ProgramCard key={p.id} program={p} audience={audience} href={programHref(p.id)} people={people} actions={actions} />
+        <ProgramCard key={p.id} program={p} audience={audience} href={programHref(p.id)} people={people} touchpoints={touchpoints} actions={actions} />
       ))}
     </>
   );

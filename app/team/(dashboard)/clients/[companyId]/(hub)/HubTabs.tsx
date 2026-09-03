@@ -3,42 +3,27 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-// Client hub tab nav. Active state from the pathname: exact match for
-// Overview, prefix match for the subroutes. With PR Programs present, the
-// Work Board and Roadmap tabs are labeled company-wide (program boards and
-// roadmaps live in their program view), and dropCompanyWide removes them
-// under the same guarded rule as the admin hub home; the routes themselves
-// keep working for deep links either way.
+// Client hub tab nav for a PR program. Active state from the pathname: exact
+// match for Overview, prefix match for the subroutes.
 
-export function HubTabs({
-  base,
-  hasPrograms,
-  dropCompanyWide,
-}: {
-  base: string;
-  hasPrograms: boolean;
-  dropCompanyWide: boolean;
-}) {
+const TABS = [
+  { href: "", label: "Overview" },
+  { href: "/plan", label: "90-Day Plan" },
+  { href: "/board", label: "Work Board" },
+  { href: "/coverage", label: "Coverage" },
+  { href: "/awards", label: "Awards" },
+  { href: "/pipeline", label: "Pipeline" },
+  { href: "/case-studies", label: "Case Studies" },
+  { href: "/documents", label: "Documents" },
+  { href: "/meetings", label: "Meetings" },
+  { href: "/team", label: "Team" },
+];
+
+export function HubTabs({ base }: { base: string }) {
   const pathname = (usePathname() ?? "").replace(/\/$/, "");
-  const companyWideTabs = dropCompanyWide
-    ? []
-    : [
-        { href: "/board", label: hasPrograms ? "Work Board (company-wide)" : "Work Board" },
-        { href: "/roadmap", label: hasPrograms ? "Roadmap (company-wide)" : "Roadmap" },
-      ];
-  const tabs = [
-    { href: "", label: "Overview" },
-    { href: "/plan", label: "90-Day Plan" },
-    ...companyWideTabs,
-    { href: "/documents", label: "Documents" },
-    { href: "/coverage", label: "Coverage" },
-    { href: "/meetings", label: "Meetings" },
-    { href: "/invoices", label: "Invoices" },
-    { href: "/team", label: "Team" },
-  ];
   return (
     <nav className="admin-tabs" style={{ marginBottom: 18 }}>
-      {tabs.map((t) => {
+      {TABS.map((t) => {
         const href = `${base}${t.href}`;
         const active = t.href === "" ? pathname === base : pathname.startsWith(href);
         return (

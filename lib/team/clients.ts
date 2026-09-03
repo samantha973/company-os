@@ -39,6 +39,7 @@ import {
 } from "@/lib/hub/program";
 import { getPlanTab, type PlanTab } from "@/lib/hub/plan";
 import { getCoverageTab, type CoverageTab } from "@/lib/hub/coverage-tab";
+import { getSupportingTab, type SupportingTab } from "@/lib/hub/supporting-tab";
 
 export type ClientCompany = { id: string; name: string; roleTitle: string | null };
 
@@ -196,7 +197,7 @@ export async function getClientRoadmapSnippets(
 export async function getClientBoardViewForActor(
   actor: TeamActor,
   companyId: string,
-  opts?: { untaggedOnly?: boolean },
+  opts?: { untaggedOnly?: boolean; programId?: string; includeInternal?: boolean },
 ): Promise<ClientBoardView | null> {
   const companies = await actorCompanyIds(actor);
   if (!companies.has(companyId)) return null;
@@ -271,6 +272,14 @@ export async function getPlanTabForActor(
     getMeetingsForCompany(companyId),
   ]);
   return { program, tab, meetings };
+}
+
+// Awards / Pipeline / Case Studies for an assigned client. Null when the
+// company is not in the actor's assignment set.
+export async function getSupportingTabForActor(actor: TeamActor, companyId: string): Promise<SupportingTab | null> {
+  const companies = await actorCompanyIds(actor);
+  if (!companies.has(companyId)) return null;
+  return getSupportingTab(companyId);
 }
 
 export type HubOverview = { programs: ProgramSummary[] };
