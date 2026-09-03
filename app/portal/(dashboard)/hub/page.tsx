@@ -56,8 +56,14 @@ export default async function PortalHubPage() {
           <h2 className="admin-card-title" style={{ marginBottom: 10 }}>Your programs</h2>
           <div className="admin-list">
             {programs.map((p) => {
-              const meta =
-                p.roadmapTotal > 0 ? `Roadmap ${p.roadmapDone}/${p.roadmapTotal} done` : "No roadmap items yet";
+              const plan = p.currentPlan;
+              const meta = [
+                `${p.stats.coverageCount} coverage`,
+                `${p.stats.linkedinPostCount} LinkedIn posts`,
+                plan ? `${plan.quarterLabel}: ${plan.targetsOnTrack} of ${plan.targetsTotal} targets on track` : null,
+              ]
+                .filter(Boolean)
+                .join(" · ");
               return (
                 <Link
                   key={p.id}

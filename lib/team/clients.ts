@@ -32,7 +32,6 @@ import {
 } from "@/lib/client-backlog";
 import {
   fetchAll,
-  fetchProgramSummaryInputs,
   getProgramDetail,
   listProgramSummaries,
   type ProgramDetail,
@@ -263,8 +262,7 @@ export async function getHubOverviewForActor(
   const companies = await actorCompanyIds(actor);
   if (!companies.has(companyId)) return null;
 
-  const inputs = await fetchProgramSummaryInputs(companyId);
-  const programs = await listProgramSummaries(companyId, inputs);
+  const programs = await listProgramSummaries(companyId);
   return { programs };
 }
 

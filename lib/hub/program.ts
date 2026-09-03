@@ -1,36 +1,57 @@
-// Shared, company-scoped loaders for the PR Program view (Client Hub by AI
-// Program, PR 1). A PR Program = one company_os.pr_programs row, plus roadmap
-// items, boards, and documents tagged via their nullable pr_program_id columns.
+// Shared, company-scoped loaders for the PR Program (the engagement record
+// on company_os.pr_programs) and everything that hangs off it: the derived
+// tallies in pr_program_stats, the current 90-day plan snapshot, boards,
+// documents and meetings tagged via their pr_program_id columns.
 //
 // Same discipline as lib/admin/company-hub.ts: these take a companyId directly
 // and never widen scope; authorization is the caller's gate (requireAdmin via
-// the admin layout today, team/portal actors later). Reads go through the
-// service-role companyOs client.
+// the admin layout, the team actor's assignments, the portal actor's scope).
+// Reads go through the service-role companyOs client.
+//
+// INTERNAL FIELDS: ProgramSummary carries engagementFeeCents, health and
+// internalDriveFolder. lib/portal/* must map to its own client-safe shape and
+// never pass a ProgramSummary to a portal page.
 //
 // Every loader degrades: a company with no programs returns an empty list.
 
 import { companyOs } from "@/lib/supabase";
-import {
-  BACKLOG_SELECT,
-  ROADMAP_GROUPS_SELECT,
-  type BacklogItem,
-  type RoadmapGroup,
-} from "@/lib/client-backlog";
+import { BACKLOG_SELECT, ROADMAP_GROUPS_SELECT, type BacklogItem, type RoadmapGroup } from "@/lib/client-backlog";
 import { listDocumentsForCompanies, type ClientDocument } from "@/lib/client-documents";
 import { getMeetingsForCompany, type AdminMeetingRow } from "@/lib/admin/meetings";
+import { personName, type NamedPerson } from "@/lib/people-name";
+import { getCurrentPlanSnapshots, type PlanSnapshot } from "@/lib/hub/plan";
+import type { ProgramHealth, ProgramStatus } from "@/lib/pr/enums";
 
-export type ProgramStatus = "draft" | "active" | "complete";
+export type { ProgramHealth, ProgramStatus } from "@/lib/pr/enums";
+
+export type PersonRef = { id: string; name: string };
+
+export type ProgramStats = {
+  coverageCount: number;
+  linkedinPostCount: number;
+  lastFormalCatchup: string | null;
+  awardsInFlight: number;
+};
 
 export type ProgramSummary = {
   id: string;
+  companyId: string;
   name: string;
   status: ProgramStatus;
-  githubRepo: string | null;
-  repoUrl: string | null;
-  // Company OS rollups (by pr_program_id).
-  roadmapDone: number; // backlog items with status 'shipped'
-  roadmapTotal: number;
+  createdAt: string;
+  // Engagement record.
+  health: ProgramHealth | null; // internal (admin + team), never the portal
+  accountLead: PersonRef | null;
+  strategicLead: PersonRef | null;
+  contractStart: string | null;
+  contractReview: string | null;
+  engagementFeeCents: number | null; // admin only
+  clientDriveFolder: string | null;
+  internalDriveFolder: string | null; // internal
+  // Derived.
+  stats: ProgramStats;
   boardCount: number; // active boards keyed to this program
+  currentPlan: PlanSnapshot | null;
 };
 
 export type ProgramBoard = {
@@ -68,44 +89,54 @@ export async function fetchAll<T>(
   return rows;
 }
 
+type PersonJoin = (NamedPerson & { id: string }) | (NamedPerson & { id: string })[] | null;
+
 type ProgramRow = {
   id: string;
+  company_id: string;
   name: string;
   status: ProgramStatus;
-  github_repo: string | null;
-  repo_url: string | null;
+  created_at: string;
+  account_health: ProgramHealth | null;
+  contract_start: string | null;
+  contract_review: string | null;
+  engagement_fee_cents: number | null;
+  client_drive_folder: string | null;
+  internal_drive_folder: string | null;
+  account_lead: PersonJoin;
+  strategic_lead: PersonJoin;
 };
 
-// The select behind ProgramRow, exported so a surface that already needs the
-// full pr_programs rows (the hub home) can fetch them once and hand them in.
-export const PROGRAM_SELECT = "id, name, status, github_repo, repo_url";
+const PERSON_JOIN = "id, display_name, preferred_name, full_name, email";
+export const PROGRAM_SELECT =
+  "id, company_id, name, status, created_at, account_health, contract_start, contract_review, engagement_fee_cents, client_drive_folder, internal_drive_folder, " +
+  `account_lead:people!pr_programs_account_lead_id_fkey(${PERSON_JOIN}), strategic_lead:people!pr_programs_strategic_lead_id_fkey(${PERSON_JOIN})`;
 
-// Everything listProgramSummaries aggregates over, so a caller that already
-// fetched these datasets for its own rendering (the hub home fetches the full
-// backlog and board rows anyway) can pass them in and no dataset is fetched
-// twice per page load. Shapes are structural minimums; richer rows (e.g. full
-// BacklogItem) satisfy them.
-export type ProgramSummaryInputs = {
-  programs: ProgramRow[];
-  backlogRows: Array<{ pr_program_id: string | null; status: string }>; // active items
-  boardRows: Array<{ pr_program_id: string | null }>; // active boards
+const one = <T,>(e: T | T[] | null | undefined): T | null => (Array.isArray(e) ? e[0] ?? null : e ?? null);
+
+function personRef(j: PersonJoin): PersonRef | null {
+  const p = one(j);
+  return p ? { id: p.id, name: personName(p) } : null;
+}
+
+type StatsRow = {
+  pr_program_id: string;
+  linkedin_post_count: number;
+  coverage_count: number;
+  last_formal_catchup: string | null;
+  awards_in_flight: number;
 };
 
-export async function fetchProgramSummaryInputs(companyId: string): Promise<ProgramSummaryInputs> {
-  const [{ data: programData }, backlogRows, boardRows] = await Promise.all([
+const EMPTY_STATS: ProgramStats = { coverageCount: 0, linkedinPostCount: 0, lastFormalCatchup: null, awardsInFlight: 0 };
+
+export async function listProgramSummaries(companyId: string): Promise<ProgramSummary[]> {
+  const [{ data: programData }, { data: statsData }, boardRows, plans] = await Promise.all([
     companyOs
       .from("pr_programs")
       .select(PROGRAM_SELECT)
       .eq("company_id", companyId)
       .order("created_at", { ascending: false }),
-    fetchAll<{ pr_program_id: string | null; status: string }>(() =>
-      companyOs
-        .from("client_backlog_items")
-        .select("pr_program_id, status")
-        .eq("company_id", companyId)
-        .is("archived_at", null)
-        .order("id"),
-    ),
+    companyOs.from("pr_program_stats").select("*").eq("company_id", companyId),
     fetchAll<{ pr_program_id: string | null }>(() =>
       companyOs
         .from("boards")
@@ -115,52 +146,58 @@ export async function fetchProgramSummaryInputs(companyId: string): Promise<Prog
         .is("archived_at", null)
         .order("id"),
     ),
+    getCurrentPlanSnapshots(companyId),
   ]);
-  return { programs: (programData ?? []) as ProgramRow[], backlogRows, boardRows };
-}
-
-export async function listProgramSummaries(
-  companyId: string,
-  pre?: ProgramSummaryInputs,
-): Promise<ProgramSummary[]> {
-  const inputs = pre ?? (await fetchProgramSummaryInputs(companyId));
-  const { programs, backlogRows, boardRows } = inputs;
+  const programs = (programData ?? []) as unknown as ProgramRow[];
   if (programs.length === 0) return [];
 
-  const doneByProgram = new Map<string, number>();
-  const totalByProgram = new Map<string, number>();
-  for (const r of backlogRows) {
-    if (!r.pr_program_id) continue;
-    totalByProgram.set(r.pr_program_id, (totalByProgram.get(r.pr_program_id) ?? 0) + 1);
-    if (r.status === "shipped") {
-      doneByProgram.set(r.pr_program_id, (doneByProgram.get(r.pr_program_id) ?? 0) + 1);
-    }
-  }
-
+  const statsById = new Map(((statsData ?? []) as StatsRow[]).map((s) => [s.pr_program_id, s]));
   const boardsByProgram = new Map<string, number>();
   for (const r of boardRows) {
     if (!r.pr_program_id) continue;
     boardsByProgram.set(r.pr_program_id, (boardsByProgram.get(r.pr_program_id) ?? 0) + 1);
   }
 
-  return programs.map((p) => ({
-    id: p.id,
-    name: p.name,
-    status: p.status,
-    githubRepo: p.github_repo,
-    repoUrl: p.repo_url,
-    roadmapDone: doneByProgram.get(p.id) ?? 0,
-    roadmapTotal: totalByProgram.get(p.id) ?? 0,
-    boardCount: boardsByProgram.get(p.id) ?? 0,
-  }));
+  return programs.map((p) => {
+    const s = statsById.get(p.id);
+    return {
+      id: p.id,
+      companyId: p.company_id,
+      name: p.name,
+      status: p.status,
+      createdAt: p.created_at,
+      health: p.account_health,
+      accountLead: personRef(p.account_lead),
+      strategicLead: personRef(p.strategic_lead),
+      contractStart: p.contract_start,
+      contractReview: p.contract_review,
+      engagementFeeCents: p.engagement_fee_cents,
+      clientDriveFolder: p.client_drive_folder,
+      internalDriveFolder: p.internal_drive_folder,
+      stats: s
+        ? {
+            coverageCount: Number(s.coverage_count),
+            linkedinPostCount: Number(s.linkedin_post_count),
+            lastFormalCatchup: s.last_formal_catchup,
+            awardsInFlight: Number(s.awards_in_flight),
+          }
+        : EMPTY_STATS,
+      boardCount: boardsByProgram.get(p.id) ?? 0,
+      currentPlan: plans.get(p.id) ?? null,
+    };
+  });
+}
+
+export async function getProgramSummary(companyId: string, programId: string): Promise<ProgramSummary | null> {
+  const all = await listProgramSummaries(companyId);
+  return all.find((p) => p.id === programId) ?? null;
 }
 
 export async function getProgramDetail(
   companyId: string,
   programId: string,
 ): Promise<ProgramDetail | null> {
-  const summaries = await listProgramSummaries(companyId);
-  const summary = summaries.find((s) => s.id === programId);
+  const summary = await getProgramSummary(companyId, programId);
   if (!summary) return null;
 
   const [{ data: groupData }, { data: itemData }, { data: boardData }, allDocuments, meetings] =

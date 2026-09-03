@@ -22,6 +22,14 @@ const SCOPE_ALLOWLIST: Record<string, { column: string; scope: ScopeKind }> = {
   client_backlog_items: { column: "company_id", scope: "company" },
   client_roadmap_groups: { column: "company_id", scope: "company" },
   client_roadmap_overview: { column: "company_id", scope: "company" },
+  // PR Hub (docs/plans/2026-09-03-pr-hub-client-record.md). Every reader
+  // additionally filters `published_at is not null`; the flag is the client
+  // visibility line, the scope key is the company line.
+  pr_quarterly_plans: { column: "company_id", scope: "company" },
+  pr_awards: { column: "company_id", scope: "company" },
+  pr_news_pipeline: { column: "company_id", scope: "company" },
+  pr_case_studies: { column: "company_id", scope: "company" },
+  marketing_content: { column: "company_id", scope: "company" },
 };
 
 function scopeIds(actor: PortalActor, scope: ScopeKind): string[] {

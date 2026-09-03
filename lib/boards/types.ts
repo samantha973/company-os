@@ -65,6 +65,15 @@ export const DEFAULT_COLUMNS: Array<{ name: string; is_done: boolean }> = [
   { name: "Done", is_done: true },
 ];
 
+// A PR program's Work Board: the PR status ladder. One board per program.
+export const PR_COLUMNS: Array<{ name: string; is_done: boolean }> = [
+  { name: "Planned", is_done: false },
+  { name: "Pitching", is_done: false },
+  { name: "In progress", is_done: false },
+  { name: "Waiting", is_done: false },
+  { name: "Delivered", is_done: true },
+];
+
 export type BoardRow = {
   id: string;
   name: string;

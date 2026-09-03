@@ -19,6 +19,7 @@ export const dynamic = "force-dynamic";
 const STATUS_TONE: Record<ProgramStatus, BadgeTone> = {
   draft: "neutral",
   active: "ok",
+  paused: "warn",
   complete: "info",
 };
 
@@ -140,11 +141,9 @@ export default async function ProgramDetailPage({
       <PageHead
         eyebrow={<Link href={`/admin/revenue/companies/${company.id}?view=hub`}>← {companyName}</Link>}
         title={detail.name}
-        sub={detail.githubRepo ?? undefined}
         action={
           <span style={{ display: "inline-flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>{/* layout-ok: mirrors the company 360 badge row verbatim */}
             <Badge tone={STATUS_TONE[detail.status]}>{detail.status}</Badge>
-            {detail.githubRepo && <Badge tone="neutral">{detail.githubRepo}</Badge>}
           </span>
         }
       />

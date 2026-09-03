@@ -13,13 +13,9 @@ import { getSurveyResponsesForCompany } from "@/lib/admin/surveys";
 import { getBoardBySlug, listBoardManageOptions } from "@/lib/boards/data";
 import { listDocumentsForCompanies } from "@/lib/client-documents";
 import { getCompanyHubTeam, getLiveCardItemIds } from "@/lib/admin/company-hub";
-import {
-  fetchAll,
-  listProgramSummaries,
-  PROGRAM_SELECT,
-  type ProgramSummary,
-  type ProgramSummaryInputs,
-} from "@/lib/hub/program";
+import { fetchAll, listProgramSummaries, type ProgramSummary } from "@/lib/hub/program";
+import { listAssignablePeople } from "@/lib/admin/people-options";
+import { setupProgramWorkspace, updateProgramEngagement } from "./program-actions";
 import { BACKLOG_SELECT, ROADMAP_GROUPS_SELECT, type BacklogItem, type RoadmapGroup } from "@/lib/client-backlog";
 import { getAdminUser } from "@/lib/admin-auth";
 import { PageHead } from "@/components/admin/PageHead";
@@ -232,12 +228,11 @@ export default async function CompanyDetailPage({
   // untagged (pr_program_id null) rows, so nothing is presented twice; tagged
   // rows live in their program view. When no programs exist, the tabs behave
   // exactly as before.
-  async function hubData(): Promise<{ tabs: TabDef[]; programs: ProgramSummary[] }> {
+  async function hubData(): Promise<{ tabs: TabDef[]; programs: ProgramSummary[]; people: Awaited<ReturnType<typeof listAssignablePeople>> }> {
     // Wave 1: every query here depends only on the company id, and every
-    // dataset is fetched exactly once. The program summaries are DERIVED from
-    // these rows below rather than re-fetching them.
+    // dataset is fetched exactly once.
     const [
-      { data: programData },
+      programSummaries,
       boardRowsRes,
       boardOptions,
       admin,
@@ -248,8 +243,9 @@ export default async function CompanyDetailPage({
       invoices,
       team,
       documents,
+      people,
     ] = await Promise.all([
-      companyOs.from("pr_programs").select(PROGRAM_SELECT).eq("company_id", company.id).order("created_at", { ascending: false }),
+      listProgramSummaries(company.id),
       companyOs
         .from("boards")
         .select("id, slug, pr_program_id")
@@ -277,9 +273,10 @@ export default async function CompanyDetailPage({
       getInvoicesForCompany(company.id),
       getCompanyHubTeam(company.id),
       listDocumentsForCompanies([company.id]),
+      listAssignablePeople(),
     ]);
 
-    const programRowsFull = (programData ?? []) as ProgramSummaryInputs["programs"];
+    const programRowsFull = programSummaries;
     const hasPrograms = programRowsFull.length > 0;
     const hubBoards = (boardRowsRes.data ?? []) as Array<{ id: string; slug: string; pr_program_id: string | null }>;
     const untaggedBoards = hubBoards.filter((b) => !b.pr_program_id);
@@ -312,14 +309,9 @@ export default async function CompanyDetailPage({
       roadmapItems.length === 0;
     const overviewBody = (overviewRow.data as { body: string } | null)?.body ?? "";
 
-    // Wave 2: the only fetches that depend on wave 1 (board slug, repo ids,
-    // the admin's email, the filtered item ids).
-    const [programSummaries, boardDetail, liveCardItemIds, viewerRow] = await Promise.all([
-      listProgramSummaries(company.id, {
-        programs: programRowsFull,
-        backlogRows: allItems,
-        boardRows: hubBoards,
-      }),
+    // Wave 2: the only fetches that depend on wave 1 (board slug, the admin's
+    // email, the filtered item ids).
+    const [boardDetail, liveCardItemIds, viewerRow] = await Promise.all([
       boardSlug ? getBoardBySlug(boardSlug) : Promise.resolve(null),
       getLiveCardItemIds(roadmapItems.map((i) => i.id)),
       // The admin's own person row, so cards freshly assigned to them wear "New".
@@ -416,7 +408,7 @@ export default async function CompanyDetailPage({
       { key: "team", label: "Team", content: <HubTeamPanel team={team} /> },
     ];
 
-    return { tabs, programs: programSummaries };
+    return { tabs, programs: programSummaries, people };
   }
 
   const hub = view === "hub" ? await hubData() : null;
@@ -466,7 +458,13 @@ export default async function CompanyDetailPage({
       {hub && (
         <HubProgramsBand
           programs={hub.programs}
+          audience="admin"
           programHref={(programId) => `/admin/revenue/companies/${company.id}/programs/${programId}`}
+          people={hub.people}
+          actions={{
+            update: updateProgramEngagement.bind(null, company.id),
+            setupWorkspace: setupProgramWorkspace.bind(null, company.id),
+          }}
         />
       )}
 
