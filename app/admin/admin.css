@@ -4856,8 +4856,8 @@ a.admin-hub-program-card:hover {
 .admin-hub-field-value .admin-editable-empty { font-weight: 400; }
 .admin-hub-band > .admin-section-card { margin-bottom: 16px; }
 .admin-hub-kpis { margin-bottom: 16px; }
-.admin-hub-kpi-of { font-size: 15px; font-weight: 500; color: var(--admin-muted); }
-.admin-hub-kpi-note--warn { color: var(--admin-warn-ink); }
+.admin-kpi-of { font-size: 15px; font-weight: 500; color: var(--admin-muted); }
+.admin-kpi-note--warn { color: var(--admin-warn-ink); }
 .admin-hub-band-foot { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--admin-line-soft); }
 
 .admin-plan-switch { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -4924,3 +4924,50 @@ a.admin-hub-program-card:hover {
 .u-center-text { text-align: center; }
 .u-tabular { font-variant-numeric: tabular-nums; }
 .u-label { font-size: var(--admin-text-sm); color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+
+/* ─── Panel composition ───────────────────────────────────────────────────
+   Small structural classes that recur across every record panel (hub tabs,
+   revenue, talent). They replace the inline flex/grid/margin styles that used
+   to carry this layout. */
+.admin-panel { display: flex; flex-direction: column; gap: var(--admin-space-4); }
+.admin-card-head { display: flex; justify-content: space-between; align-items: center; gap: var(--admin-space-3); margin-bottom: var(--admin-space-3); flex-wrap: wrap; }
+.admin-card-head .admin-card-title { margin: 0; }
+.admin-form-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.admin-form-row > .admin-field { flex: 1 1 150px; min-width: 0; }
+.admin-form-row > .admin-field--wide { flex: 2 1 260px; }
+.admin-form-row > .admin-btn { flex: 0 0 auto; }
+.admin-table-wrap--flat { box-shadow: none; }
+.admin-th--xs { width: 40px; }
+.admin-th--sm { width: 110px; }
+.admin-th--md { width: 160px; }
+.admin-th--lg { width: 200px; }
+.admin-cell-stack { display: flex; flex-direction: column; gap: 2px; }
+.admin-chip.is-active { border-color: var(--admin-accent); color: var(--admin-accent); font-weight: 600; }
+a.admin-list-row { text-decoration: none; color: inherit; }
+.admin-progress-fill.is-done { background: var(--admin-ok-ink); }
+.admin-input--w-xs { width: 70px; }
+.admin-input--w-sm { max-width: 220px; }
+.admin-kpi-of { font-size: var(--admin-text-lg); font-weight: 500; color: var(--admin-muted); }
+.admin-kpi-note--warn { color: var(--admin-warn-ink); }
+.admin-cols-main-aside { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: var(--admin-space-4); align-items: start; }
+@media (max-width: 960px) { .admin-cols-main-aside { grid-template-columns: 1fr; } }
+.u-m-0 { margin: 0; }
+.u-ink { color: var(--admin-ink); }
+.u-ok { color: var(--admin-ok-ink); font-weight: 600; }
+.u-warn { color: var(--admin-warn-ink); font-weight: 600; }
+.u-prewrap { white-space: pre-wrap; }
+.u-list { margin: 0; padding-left: 16px; }
+.admin-icon-inline { vertical-align: -1px; }
+.admin-list-aside--row { flex-direction: row; align-items: center; gap: var(--admin-space-2); }
+.admin-kanban-card-note { font-style: italic; margin-top: 2px; }
+.admin-row-divided { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--admin-line); }
+.admin-form-row > .u-w-full { flex-basis: 100%; }
+.u-link-plain { color: inherit; text-decoration: none; }
+.u-ml-2 { margin-left: var(--admin-space-2); }
+.u-err { color: var(--admin-err-ink); }
+.admin-form-row > .admin-input, .admin-form-row > .admin-select { flex: 1 1 150px; min-width: 0; }
+.admin-form-row > .admin-input.u-grow { flex: 2 1 240px; }
+
+/* BoardView */
+/* Sprint summary link on the Sprints tab: a block-level .admin-card with the compact card padding. */
+.admin-board-sprint { display: block; padding: var(--admin-space-3) var(--admin-space-4); }

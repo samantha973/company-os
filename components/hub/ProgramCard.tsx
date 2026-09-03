@@ -32,7 +32,7 @@ const HEALTH_TONE: Record<ProgramHealth, BadgeTone> = { green: "ok", amber: "war
 
 function Lock() {
   return (
-    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-label="internal only" style={{ verticalAlign: "-1px" }}>
+    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-label="internal only" className="admin-icon-inline">
       <rect x="3" y="7" width="10" height="7" rx="1.5" />
       <path d="M5 7V5a3 3 0 0 1 6 0v2" />
     </svg>
@@ -95,7 +95,7 @@ export function ProgramCard({
         <div className="admin-hub-band-top">
           <div className="admin-hub-band-title">
             <h2>
-              <Link href={href} style={{ color: "inherit", textDecoration: "none" }}>{p.name}</Link>
+              <Link href={href} className="u-link-plain">{p.name}</Link>
             </h2>
             {actions ? (
               <EditableSelect
@@ -143,7 +143,7 @@ export function ProgramCard({
             <Link href={href}>Open program →</Link>
           </div>
         </div>
-        {setupError && <div className="admin-editable-note admin-editable-note--err" style={{ marginBottom: 10 }}>{setupError}</div>}
+        {setupError && <div className="admin-editable-note admin-editable-note--err u-mb-3">{setupError}</div>}
 
         <div className={`admin-hub-fields${isAdmin ? "" : " admin-hub-fields--5"}`}>
           <Field label="Account lead">
@@ -193,9 +193,9 @@ export function ProgramCard({
         <div className="admin-kpi">
           <div className="admin-kpi-label">Targets on track</div>
           <div className="admin-kpi-val">
-            {plan ? <>{plan.targetsOnTrack} <span className="admin-hub-kpi-of">of {plan.targetsTotal}</span></> : <span className="admin-hub-kpi-of">No plan yet</span>}
+            {plan ? <>{plan.targetsOnTrack} <span className="admin-kpi-of">of {plan.targetsTotal}</span></> : <span className="admin-kpi-of">No plan yet</span>}
           </div>
-          <div className={`admin-kpi-note${behind > 0 ? " admin-hub-kpi-note--warn" : ""}`}>
+          <div className={`admin-kpi-note${behind > 0 ? " admin-kpi-note--warn" : ""}`}>
             {plan
               ? behind > 0
                 ? `${behind} with a variance`

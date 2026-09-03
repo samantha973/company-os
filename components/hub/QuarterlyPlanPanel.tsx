@@ -45,7 +45,7 @@ function Progress({ t }: { t: PlanTarget }) {
   return (
     <div className="admin-plan-progress">
       <div className="admin-progress">
-        <div className="admin-progress-fill" style={{ width: `${pct}%`, background: targetDone(t) ? "var(--admin-ok-ink)" : undefined }} />
+        <div className={`admin-progress-fill${targetDone(t) ? " is-done" : ""}`} style={{ width: `${pct}%` }} /* layout-ok: data-driven width */ />
       </div>
       <span className="admin-plan-progress-n">
         {target > 0 ? `${done} / ${target}` : done > 0 ? `${done}` : "—"}
@@ -123,7 +123,7 @@ export function QuarterlyPlanPanel({
   const onTrack = targets.filter(targetOnTrack).length;
 
   return (
-    <div className="admin-hub-inline" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div className="admin-hub-inline admin-panel">
       {error && <div className="admin-editable-note admin-editable-note--err">{error}</div>}
 
       {/* Plan switcher + new-quarter form */}
@@ -146,8 +146,8 @@ export function QuarterlyPlanPanel({
 
       {actions && showNew && (
         <section className="admin-card admin-section-card">
-          <h3 className="admin-card-title" style={{ marginBottom: 10 }}>Start a quarter</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 2fr auto", gap: 10, alignItems: "end" }}>
+          <h3 className="admin-card-title u-mb-3">Start a quarter</h3>
+          <div className="admin-form-row">
             <label className="admin-field"><span className="admin-cell-muted">Quarter</span><input className="admin-input" value={newPlan.quarter_label} onChange={(e) => setNewPlan({ ...newPlan, quarter_label: e.target.value })} /></label>
             <label className="admin-field"><span className="admin-cell-muted">Starts</span><input className="admin-input" type="date" value={newPlan.starts_on} onChange={(e) => setNewPlan({ ...newPlan, starts_on: e.target.value })} /></label>
             <label className="admin-field"><span className="admin-cell-muted">Ends</span><input className="admin-input" type="date" value={newPlan.ends_on} onChange={(e) => setNewPlan({ ...newPlan, ends_on: e.target.value })} /></label>
@@ -194,7 +194,7 @@ export function QuarterlyPlanPanel({
                     )}
                   </span>
                   {selected.published_at ? <Badge tone="ok">Published {formatDate(selected.published_at)}</Badge> : <Badge tone="neutral">Draft</Badge>}
-                  <span className="admin-cell-muted" style={{ fontWeight: 400 }}>{onTrack} of {targets.length} targets on track</span>
+                  <span className="admin-cell-muted">{onTrack} of {targets.length} targets on track</span>
                 </div>
                 <div className="admin-plan-head-meta">
                   <span>Keyed off</span>
@@ -231,7 +231,7 @@ export function QuarterlyPlanPanel({
                 {actions ? (
                   <EditableTextarea value={selected.business_objective ?? ""} onSave={savePlan("business_objective")} placeholder="What does the business need this quarter?" ariaLabel="Business objective" rows={3} />
                 ) : (
-                  <div style={{ whiteSpace: "pre-wrap" }}>{selected.business_objective ?? <span className="admin-cell-muted">—</span>}</div>
+                  <div className="u-prewrap">{selected.business_objective ?? <span className="admin-cell-muted">—</span>}</div>
                 )}
               </div>
               <div className="admin-plan-objective">
@@ -239,7 +239,7 @@ export function QuarterlyPlanPanel({
                 {actions ? (
                   <EditableTextarea value={selected.comms_objective ?? ""} onSave={savePlan("comms_objective")} placeholder="What will comms deliver to serve it?" ariaLabel="Comms objective" rows={3} />
                 ) : (
-                  <div style={{ whiteSpace: "pre-wrap" }}>{selected.comms_objective ?? <span className="admin-cell-muted">—</span>}</div>
+                  <div className="u-prewrap">{selected.comms_objective ?? <span className="admin-cell-muted">—</span>}</div>
                 )}
               </div>
             </div>
@@ -247,22 +247,22 @@ export function QuarterlyPlanPanel({
 
           {/* Targets */}
           <section className="admin-card admin-section-card">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-              <h3 className="admin-card-title" style={{ margin: 0 }}>Targets</h3>
+            <div className="admin-card-head">
+              <h3 className="admin-card-title">Targets</h3>
             </div>
             {targets.length === 0 ? (
               <div className="admin-empty">No targets yet{actions ? " — add the first one below." : "."}</div>
             ) : (
-              <div className="admin-table-wrap admin-plan-targets" style={{ boxShadow: "none" }}>
+              <div className="admin-table-wrap admin-plan-targets admin-table-wrap--flat">
                 <table className="admin-table">
                   <thead>
                     <tr>
-                      <th style={{ width: 170 }}>Workstream</th>
+                      <th className="admin-th--md">Workstream</th>
                       <th>Target</th>
-                      <th style={{ width: 200 }}>Progress</th>
-                      <th style={{ width: 110 }}>Status</th>
+                      <th className="admin-th--lg">Progress</th>
+                      <th className="admin-th--sm">Status</th>
                       <th>{actions ? "Variance" : "Where it stands"}</th>
-                      {actions && <th style={{ width: 40 }}></th>}
+                      {actions && <th className="admin-th--xs"></th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -271,7 +271,7 @@ export function QuarterlyPlanPanel({
                         const s = statusLabel(t);
                         return (
                           <tr key={t.id}>
-                            <td style={{ fontWeight: 600 }}>
+                            <td className="u-strong">
                               {actions ? (
                                 <EditableSelect value={t.group_key} options={orderedGroups.map((x) => ({ value: x.key, label: x.title }))} onSave={saveTarget(t.id, "group_key")} ariaLabel="Workstream" render={groupTitle} />
                               ) : (
@@ -281,7 +281,7 @@ export function QuarterlyPlanPanel({
                             <td>
                               {actions ? <EditableText value={t.title} onSave={saveTarget(t.id, "title")} ariaLabel="Target" /> : t.title}
                               {actions && (
-                                <div className="admin-cell-muted" style={{ fontSize: 12, marginTop: 2 }}>
+                                <div className="admin-cell-muted u-sm u-mt-1">
                                   Count to <EditableText value={t.quantity_target != null ? String(t.quantity_target) : ""} onSave={saveTarget(t.id, "quantity_target")} placeholder="set a number" ariaLabel="Quantity target" type="number" />
                                 </div>
                               )}
@@ -296,7 +296,7 @@ export function QuarterlyPlanPanel({
                             </td>
                             <td>
                               {actions ? (
-                                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                                <div className="admin-cell-stack">
                                   <EditableSelect
                                     value={t.variance_reason ?? ""}
                                     options={VARIANCE_REASONS.map((r) => ({ value: r, label: VARIANCE_REASON_LABEL[r] }))}
@@ -356,9 +356,9 @@ export function QuarterlyPlanPanel({
               </div>
             )}
             {actions && (
-              <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 12 }} className="admin-cell-muted">
-                <span style={{ fontSize: 12 }}>Need another workstream?</span>
-                <input className="admin-input" style={{ maxWidth: 220 }} placeholder="e.g. Podcasts" value={newWorkstream} onChange={(e) => setNewWorkstream(e.target.value)} />
+              <div className="admin-cell-muted u-row u-mt-3">
+                <span className="u-sm">Need another workstream?</span>
+                <input className="admin-input admin-input--w-sm" placeholder="e.g. Podcasts" value={newWorkstream} onChange={(e) => setNewWorkstream(e.target.value)} />
                 <button type="button" className="admin-btn admin-btn--sm" disabled={pending || !newWorkstream.trim()} onClick={() => run(() => actions.createWorkstream(programId, newWorkstream), () => setNewWorkstream(""))}>Add</button>
               </div>
             )}

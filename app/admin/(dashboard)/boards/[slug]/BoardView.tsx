@@ -441,7 +441,7 @@ export function BoardView({
 
   return (
     <>
-      <div className="admin-tabs" role="tablist" style={{ marginBottom: 12 }}>
+      <div className="admin-tabs u-mb-3" role="tablist">
         <button
           className={`admin-tab${tab === "stories" ? " is-active" : ""}`}
           type="button"
@@ -463,15 +463,15 @@ export function BoardView({
       </div>
 
       {banner && (
-        <div className="admin-alert admin-alert--err" style={{ marginBottom: 12 }}>
+        <div className="admin-alert admin-alert--err u-mb-3">
           {banner}
         </div>
       )}
 
       {tab === "sprints" && (
-        <div style={{ display: "grid", gap: 10 }}>
+        <div className="u-stack u-gap-3">
           {sprints.length === 0 && (
-            <div className="admin-cell-muted" style={{ fontSize: 13 }}>
+            <div className="admin-cell-muted u-sm">
               No sprints yet. Create one with Manage sprints.
             </div>
           )}
@@ -485,28 +485,27 @@ export function BoardView({
                 <Link
                   key={s.id}
                   href={`${boardBase}/sprints/${s.id}`}
-                  className="admin-card"
-                  style={{ padding: "12px 16px", display: "block", textDecoration: "none", color: "inherit" }}
+                  className="admin-card admin-board-sprint u-link-plain"
                 >
-                  <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                  <div className="u-row u-wrap u-gap-3">
                     <span className="admin-cell-strong">{s.name}</span>
                     <Badge tone={s.status === "active" ? "ok" : "neutral"}>{s.status}</Badge>
                     {(s.starts_on || s.ends_on) && (
-                      <span className="admin-cell-muted" style={{ fontSize: 12 }}>
+                      <span className="admin-cell-muted u-sm">
                         {s.starts_on ? formatDate(s.starts_on) : "?"} to {s.ends_on ? formatDate(s.ends_on) : "?"}
                       </span>
                     )}
-                    <span className="admin-cell-muted" style={{ marginLeft: "auto", fontSize: 12 }}>
+                    <span className="admin-cell-muted u-ml-auto u-sm">
                       {doneCards.length}/{inSprint.length} cards
                     </span>
                   </div>
                   {s.goal && (
-                    <div className="admin-cell-muted" style={{ fontSize: 13, marginTop: 4 }}>
+                    <div className="admin-cell-muted u-sm u-mt-1">
                       {s.goal}
                     </div>
                   )}
-                  <div style={{ marginTop: 8, height: 5, borderRadius: 99, background: "var(--admin-line)", overflow: "hidden" }}>
-                    <div style={{ width: `${pct}%`, height: "100%", background: "var(--admin-accent)" }} />
+                  <div className="admin-progress u-mt-2">
+                    <div className="admin-progress-fill" style={{ width: `${pct}%` }} /* layout-ok: data-driven progress width */ />
                   </div>
                 </Link>
               );
@@ -521,14 +520,13 @@ export function BoardView({
 
       {tab === "stories" && (
       <>
-      <div className="admin-toolbar" style={{ gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
+      <div className="admin-toolbar u-mb-3">
         <button className="admin-btn admin-btn--primary admin-btn--sm" onClick={() => openCreate(firstColumn)}>
           New card
         </button>
         {sprints.length > 0 && (
           <select
-            className={`admin-select${sprintFilter !== "all" ? " is-filtering" : ""}`}
-            style={{ maxWidth: 220 }}
+            className={`admin-select admin-input--w-sm${sprintFilter !== "all" ? " is-filtering" : ""}`}
             value={sprintFilter}
             onChange={(e) => setSprintFilter(e.target.value)}
             aria-label="Filter by sprint"
@@ -555,8 +553,7 @@ export function BoardView({
           </Link>
         )}
         <select
-          className={`admin-select${assigneeFilter ? " is-filtering" : ""}`}
-          style={{ maxWidth: 200 }}
+          className={`admin-select admin-input--w-sm${assigneeFilter ? " is-filtering" : ""}`}
           value={assigneeFilter}
           onChange={(e) => setAssigneeFilter(e.target.value)}
           aria-label="Filter by assignee"
@@ -569,8 +566,7 @@ export function BoardView({
           ))}
         </select>
         <select
-          className={`admin-select${priorityFilter ? " is-filtering" : ""}`}
-          style={{ maxWidth: 140 }}
+          className={`admin-select admin-input--w-sm${priorityFilter ? " is-filtering" : ""}`}
           value={priorityFilter}
           onChange={(e) => setPriorityFilter(e.target.value)}
           aria-label="Filter by priority"
@@ -584,7 +580,7 @@ export function BoardView({
         </select>
         {filtersActive && (
           <>
-            <span className="admin-cell-muted" style={{ fontSize: 12 }}>
+            <span className="admin-cell-muted u-sm">
               {cards.length} of {sourceCards.length} cards
             </span>
             <button className="admin-btn admin-btn--sm" onClick={clearFilters}>
@@ -602,8 +598,8 @@ export function BoardView({
           </button>
         )}
         <span
-          className="admin-cell-muted"
-          style={{ marginLeft: "auto", fontSize: 12, cursor: "help" }}
+          className="admin-cell-muted u-ml-auto u-sm"
+          style={{ cursor: "help" }} /* layout-ok: cursor hint only, no utility class */
           title={`Amber clock = in column more than ${AGING_DAYS} days`}
         >
           ◷ &gt;{AGING_DAYS}d
@@ -657,18 +653,17 @@ export function BoardView({
                 )}
                 {c.due_date && (
                   <span
-                    className="admin-kanban-card-sub"
-                    style={{ marginLeft: "auto", color: overdue ? "var(--admin-err-ink)" : undefined }}
+                    className={`admin-kanban-card-sub u-ml-auto${overdue ? " u-err" : ""}`}
                   >
                     {formatDate(c.due_date)}
                   </span>
                 )}
               </div>
               {prMeta(c).status_note && (
-                <div className="admin-kanban-card-sub" style={{ marginTop: 4, fontStyle: "italic" }}>{prMeta(c).status_note}</div>
+                <div className="admin-kanban-card-sub admin-kanban-card-note">{prMeta(c).status_note}</div>
               )}
               {(c.subtasks.length > 0 || c.comments.length > 0) && (
-                <div className="admin-kanban-card-sub" style={{ marginTop: 4, display: "flex", gap: 12 }}>
+                <div className="admin-kanban-card-sub u-row u-gap-3 u-mt-1">
                   {c.subtasks.length > 0 && (
                     <span>
                       ☑ {c.subtasks.filter((s) => s.done).length}/{c.subtasks.length}
@@ -678,7 +673,7 @@ export function BoardView({
                 </div>
               )}
               {aging && (
-                <div className="admin-kanban-card-sub" style={{ color: "var(--admin-warn-ink)", marginTop: 4 }}>
+                <div className="admin-kanban-card-sub u-warn u-mt-1">
                   ◷ {days}d in column
                 </div>
               )}
@@ -709,20 +704,12 @@ export function BoardView({
             </div>
 
             {form.subjectType === SUBJECT_COMMITMENT && (
-              <div
-                className="admin-field"
-                style={{
-                  background: "var(--admin-ok-bg)",
-                  color: "var(--admin-ok-ink)",
-                  borderRadius: "var(--admin-radius-sm)",
-                  padding: "10px 12px",
-                }}
-              >
-                <label className="admin-label" style={{ color: "var(--admin-ok-ink)" }}>
+              <div className="admin-field admin-alert admin-alert--ok">
+                <label className="admin-label u-ok">
                   Linked commitment
                 </label>
                 <div>{form.subjectLabel ?? "Coaching commitment"}</div>
-                <div style={{ fontSize: 12, marginTop: 4 }}>
+                <div className="u-sm u-mt-1">
                   Moving this card to a done column marks the commitment kept.
                 </div>
               </div>
@@ -840,7 +827,7 @@ export function BoardView({
 
             {isClientBoard && (
               <div className="admin-field">
-                <label className="admin-label" style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <label className="admin-label u-row">
                   <input
                     type="checkbox"
                     checked={form.internal}
@@ -908,21 +895,21 @@ export function BoardView({
                     : ""}
                 </label>
                 {activeCard?.subtasks.map((s) => (
-                  <div key={s.id} style={{ display: "flex", gap: 8, alignItems: "center", padding: "4px 0" }}>
+                  <div key={s.id} className="u-row u-mt-1">
                     <input
                       type="checkbox"
                       checked={s.done}
                       onChange={(e) => toggleSub(s.id, e.target.checked)}
                       disabled={saving}
                     />
-                    <span style={{ flex: 1, textDecoration: s.done ? "line-through" : undefined, color: s.done ? "var(--admin-muted)" : undefined }}>
+                    <span className={`u-grow${s.done ? " u-muted" : ""}`} style={{ textDecoration: s.done ? "line-through" : undefined }} /* layout-ok: state-driven strike-through, no utility class */>
                       {s.title}
                     </span>
                   </div>
                 ))}
-                <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
+                <div className="u-row u-mt-2">
                   <input
-                    className="admin-input"
+                    className="admin-input u-grow"
                     placeholder="Add a subtask…"
                     value={newSubtask}
                     onChange={(e) => setNewSubtask(e.target.value)}
@@ -932,7 +919,6 @@ export function BoardView({
                         addSub();
                       }
                     }}
-                    style={{ flex: 1 }}
                   />
                   <button className="admin-btn" onClick={addSub} disabled={saving || !newSubtask.trim()}>
                     Add
@@ -947,32 +933,31 @@ export function BoardView({
                   Comments{activeCard && activeCard.comments.length > 0 ? ` (${activeCard.comments.length})` : ""}
                 </label>
                 {activeCard?.comments.map((c) => (
-                  <div key={c.id} style={{ padding: "8px 0", borderTop: "1px solid var(--admin-line)" }}>
-                    <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
-                      <span className="admin-cell-strong" style={{ fontSize: 12 }}>
+                  <div key={c.id} style={{ padding: "8px 0", borderTop: "1px solid var(--admin-line)" }} /* layout-ok: divided block (not a flex row); no non-flex divider class */>
+                    <div className="u-row">
+                      <span className="admin-cell-strong u-sm">
                         {c.author}
                       </span>
-                      <span className="admin-cell-muted" style={{ fontSize: 11 }}>
+                      <span className="admin-cell-muted u-xs">
                         {timeAgo(c.createdAt)}
                       </span>
                     </div>
-                    <div style={{ fontSize: 13, whiteSpace: "pre-wrap", marginTop: 2 }}>{c.body}</div>
+                    <div className="u-sm u-prewrap u-mt-1">{c.body}</div>
                   </div>
                 ))}
-                <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                <div className="u-row u-mt-2">
                   <textarea
-                    className="admin-textarea"
+                    className="admin-textarea u-grow"
                     rows={2}
                     placeholder="Add a comment…"
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    style={{ flex: 1 }}
                   />
                   <button
                     className="admin-btn"
                     onClick={addCmt}
                     disabled={saving || !newComment.trim()}
-                    style={{ alignSelf: "flex-end" }}
+                    style={{ alignSelf: "flex-end" }} /* layout-ok: bottom-align next to a textarea; no align-self utility */
                   >
                     Comment
                   </button>
@@ -980,7 +965,7 @@ export function BoardView({
               </div>
             )}
 
-            <div className="admin-form-actions" style={{ display: "flex", gap: 8 }}>
+            <div className="admin-form-actions">
               <button className="admin-btn admin-btn--primary" onClick={save} disabled={saving}>
                 {saving ? "Saving…" : form.id ? "Save" : "Create card"}
               </button>
@@ -1005,8 +990,8 @@ export function BoardView({
               onChange={(e) => setSprintForm({ ...sprintForm, name: e.target.value })}
             />
           </div>
-          <div className="admin-field" style={{ display: "flex", gap: 8 }}>
-            <div style={{ flex: 1 }}>
+          <div className="admin-field u-stack">
+            <div className="u-grow">
               <label className="admin-label">Starts</label>
               <input
                 className="admin-input"
@@ -1015,7 +1000,7 @@ export function BoardView({
                 onChange={(e) => setSprintForm({ ...sprintForm, startsOn: e.target.value })}
               />
             </div>
-            <div style={{ flex: 1 }}>
+            <div className="u-grow">
               <label className="admin-label">Ends</label>
               <input
                 className="admin-input"
@@ -1040,32 +1025,21 @@ export function BoardView({
           </div>
 
           {sprints.length > 0 && (
-            <div style={{ marginTop: 16 }}>
+            <div className="u-mt-4">
               <label className="admin-label">Existing</label>
               {sprints.map((s) => (
-                <div
-                  key={s.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    padding: "8px 0",
-                    borderTop: "1px solid var(--admin-line)",
-                    flexWrap: "wrap",
-                  }}
-                >
+                <div key={s.id} className="admin-row-divided u-wrap">
                   <Link className="admin-cell-strong" href={`${boardBase}/sprints/${s.id}`}>
                     {s.name}
                   </Link>
                   <Badge tone={s.status === "active" ? "ok" : "neutral"}>{s.status}</Badge>
                   {s.status === "active" && (
-                    <div style={{ marginLeft: "auto", display: "flex", gap: 6, alignItems: "center" }}>
+                    <div className="u-row u-ml-auto">
                       <select
-                        className="admin-select"
+                        className="admin-select admin-input--w-sm"
                         value={rollTarget[s.id] ?? ""}
                         onChange={(e) => setRollTarget({ ...rollTarget, [s.id]: e.target.value })}
                         aria-label="Roll unfinished to"
-                        style={{ maxWidth: 160 }}
                       >
                         <option value="">Roll to backlog</option>
                         {activeSprints
@@ -1144,20 +1118,11 @@ export function BoardView({
             </button>
           </div>
 
-          <div style={{ marginTop: 18 }}>
+          <div className="u-mt-4">
             <label className="admin-label">Members ({members.length})</label>
             {members.map((m) => (
-              <div
-                key={m.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "7px 0",
-                  borderTop: "1px solid var(--admin-line)",
-                }}
-              >
-                <span className="admin-cell-strong" style={{ flex: 1 }}>
+              <div key={m.id} className="admin-row-divided">
+                <span className="admin-cell-strong u-grow">
                   {m.name}
                 </span>
                 <button className="admin-btn admin-btn--sm" onClick={() => removeMember(m.id)} disabled={saving}>
@@ -1165,13 +1130,12 @@ export function BoardView({
                 </button>
               </div>
             ))}
-            <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+            <div className="u-row u-mt-3">
               <select
-                className="admin-select"
+                className="admin-select u-grow"
                 value={newMemberId}
                 onChange={(e) => setNewMemberId(e.target.value)}
                 aria-label="Add member"
-                style={{ flex: 1 }}
               >
                 <option value="">Add a member…</option>
                 {addableMembers.map((p) => (
@@ -1186,7 +1150,7 @@ export function BoardView({
             </div>
           </div>
 
-          <div style={{ marginTop: 18, borderTop: "1px solid var(--admin-line)", paddingTop: 12 }}>
+          <div className="admin-row-divided u-mt-4">
             <button className="admin-btn admin-btn--danger" onClick={archiveThisBoard} disabled={saving}>
               Archive board
             </button>
@@ -1200,19 +1164,10 @@ export function BoardView({
             <span className="admin-cell-muted">Nothing archived.</span>
           ) : (
             archivedCards.map((a) => (
-              <div
-                key={a.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "8px 0",
-                  borderTop: "1px solid var(--admin-line)",
-                }}
-              >
-                <div style={{ flex: 1, minWidth: 0 }}>
+              <div key={a.id} className="admin-row-divided">
+                <div className="u-grow">
                   <div className="admin-cell-strong">{a.title}</div>
-                  <div className="admin-cell-muted" style={{ fontSize: 11 }}>
+                  <div className="admin-cell-muted u-xs">
                     {a.columnName ? `${a.columnName} · ` : ""}archived {timeAgo(a.archivedAt)}
                     {a.archivedBy ? ` by ${a.archivedBy}` : ""}
                   </div>

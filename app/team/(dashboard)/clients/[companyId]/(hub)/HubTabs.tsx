@@ -22,7 +22,7 @@ const TABS = [
 export function HubTabs({ base }: { base: string }) {
   const pathname = (usePathname() ?? "").replace(/\/$/, "");
   return (
-    <nav className="admin-tabs" style={{ marginBottom: 18 }}>
+    <nav className="admin-tabs u-mb-4">
       {TABS.map((t) => {
         const href = `${base}${t.href}`;
         const active = t.href === "" ? pathname === base : pathname.startsWith(href);

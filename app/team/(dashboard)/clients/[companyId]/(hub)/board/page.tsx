@@ -17,7 +17,7 @@ export const metadata = { title: "Work Board" };
 
 function Lock() {
   return (
-    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden style={{ verticalAlign: "-1px" }}>
+    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden className="admin-icon-inline">
       <rect x="3" y="7" width="10" height="7" rx="1.5" />
       <path d="M5 7V5a3 3 0 0 1 6 0v2" />
     </svg>
@@ -39,8 +39,8 @@ export default async function TeamClientBoardTab({ params }: { params: { company
 
   if (!board) {
     return (
-      <div className="admin-card admin-section-card" style={{ padding: 22 }}>
-        <p className="admin-page-sub" style={{ margin: 0 }}>
+      <div className="admin-card admin-section-card">
+        <p className="admin-page-sub u-m-0">
           No Work Board yet. Set one up from the Overview tab (it seeds the PR columns: Planned → Pitching → In progress → Waiting → Delivered).
         </p>
       </div>
@@ -60,8 +60,8 @@ export default async function TeamClientBoardTab({ params }: { params: { company
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap", margin: "0 0 14px" }}>
-        <p className="admin-page-sub" style={{ margin: 0 }}>
+      <div className="u-row u-wrap u-between u-mb-4">
+        <p className="admin-page-sub u-m-0">
           {board.boardName}.{" "}
           {isMember ? (
             <>Work the full board at <Link href={`/team/boards/${board.boardSlug}`}>Work Boards</Link>.</>
@@ -69,7 +69,7 @@ export default async function TeamClientBoardTab({ params }: { params: { company
             <>You are not a member of this board, so the view is read-only.</>
           )}
         </p>
-        <span className="admin-cell-muted" style={{ fontSize: 12, display: "inline-flex", alignItems: "center", gap: 5 }}>
+        <span className="admin-cell-muted u-sm u-row u-gap-1">
           <Lock /> {lockedCount} locked {lockedCount === 1 ? "card" : "cards"} — locked cards never appear in the client hub
         </span>
       </div>

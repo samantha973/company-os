@@ -76,7 +76,7 @@ export default async function PrProgramDetailPage({
       content: boardView ? (
         <>
           {programBoards.length > 1 && (
-            <div className="admin-viewtoggle" style={{ marginBottom: 14 }}>
+            <div className="admin-viewtoggle u-mb-4">
               {programBoards.map((b) => (
                 <Link
                   key={b.id}
@@ -101,12 +101,12 @@ export default async function PrProgramDetailPage({
       label: "Plan briefs",
       content:
         program.plans.length > 0 ? (
-          <section className="admin-card admin-section-card" style={{ maxWidth: 900 }}>
-            <h2 className="admin-card-title" style={{ marginBottom: 12 }}>Plan briefs</h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <section className="admin-card admin-section-card u-max-narrow">
+            <h2 className="admin-card-title u-mb-3">Plan briefs</h2>
+            <div className="admin-panel">
               {program.plans.map((pl) => (
                 <div key={pl.id}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <div className="u-row u-mb-2">
                     <strong>{pl.title}</strong>
                     <Badge>{pl.method === "chat" ? "Guided plan" : pl.method === "linkedin_strategy" ? "LinkedIn strategy" : "Documents"}</Badge>
                     <span className="admin-cell-muted">{formatDate(pl.createdAt)}</span>
@@ -133,7 +133,7 @@ export default async function PrProgramDetailPage({
       label: "Documents",
       count: program.documents.length,
       content: (
-        <section className="admin-card admin-section-card" style={{ maxWidth: 900 }}>
+        <section className="admin-card admin-section-card u-max-narrow">
           {program.documents.length === 0 ? (
             <Empty text="No documents uploaded." />
           ) : (
@@ -147,7 +147,7 @@ export default async function PrProgramDetailPage({
       label: "Meetings",
       count: meetings.length,
       content: (
-        <section className="admin-card admin-section-card" style={{ maxWidth: 900 }}>
+        <section className="admin-card admin-section-card u-max-narrow">
           <MeetingsPanel meetings={meetings} detailBasePath="/portal/meetings" />
         </section>
       ),

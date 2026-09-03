@@ -24,7 +24,7 @@ const NONDONE_ACCENTS = [STAGE_NEUTRAL, STAGE_LEAD, STAGE_PROPOSAL, STAGE_DISCOV
 
 function Lock() {
   return (
-    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden style={{ verticalAlign: "-1px" }}>
+    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden className="admin-icon-inline">
       <rect x="3" y="7" width="10" height="7" rx="1.5" />
       <path d="M5 7V5a3 3 0 0 1 6 0v2" />
     </svg>
@@ -77,7 +77,7 @@ export function ClientBoardView({
                     </div>
                     <div className="admin-kanban-card-title">{c.title}</div>
                     {c.statusNote && (
-                      <div className="admin-kanban-card-sub" style={{ fontStyle: "italic", marginTop: 2 }}>{c.statusNote}</div>
+                      <div className="admin-kanban-card-sub admin-kanban-card-note">{c.statusNote}</div>
                     )}
                     <div className="admin-kanban-card-meta">
                       <span className="admin-kanban-card-assignee">
@@ -86,7 +86,7 @@ export function ClientBoardView({
                       </span>
                       <Badge tone={PRIORITY_TONE[c.priority]}>{PRIORITY_LABEL[c.priority]}</Badge>
                       {c.dueDate && (
-                        <span className="admin-kanban-card-sub" style={{ marginLeft: "auto" }}>
+                        <span className="admin-kanban-card-sub u-ml-auto">
                           {formatDate(c.dueDate)}
                         </span>
                       )}

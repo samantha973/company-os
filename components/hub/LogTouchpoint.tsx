@@ -27,19 +27,19 @@ export function LogTouchpoint({
   const [draft, setDraft] = useState({ kind: "catchup", occurredOn: new Date().toISOString().slice(0, 10), subject: "", body: "" });
 
   return (
-    <div style={{ flex: 1 }}>
-      <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+    <div className="u-grow">
+      <div className="u-row u-wrap">
         <button type="button" className="admin-btn admin-btn--sm" onClick={() => setOpen((v) => !v)}>
           {open ? "Cancel" : "Log catch-up"}
         </button>
         {recent.length > 0 && (
-          <span className="admin-cell-muted" style={{ fontSize: 12 }}>
+          <span className="admin-cell-muted u-sm">
             Recent: {recent.slice(0, 3).map((t) => `${TOUCHPOINT_KIND_LABEL[t.kind as TouchpointKind] ?? t.kind} ${formatDate(t.occurredAt)}`).join(" · ")}
           </span>
         )}
       </div>
       {open && (
-        <div style={{ display: "grid", gridTemplateColumns: "140px 150px 1fr auto", gap: 10, alignItems: "end", marginTop: 10 }}>
+        <div className="admin-form-row u-mt-3">
           <label className="admin-field">
             <span className="admin-cell-muted">Kind</span>
             <select className="admin-select" value={draft.kind} onChange={(e) => setDraft({ ...draft, kind: e.target.value })}>
@@ -67,7 +67,7 @@ export function LogTouchpoint({
           >
             Save
           </button>
-          {error && <div className="admin-editable-note admin-editable-note--err" style={{ gridColumn: "1 / -1" }}>{error}</div>}
+          {error && <div className="admin-editable-note admin-editable-note--err u-w-full">{error}</div>}
         </div>
       )}
     </div>

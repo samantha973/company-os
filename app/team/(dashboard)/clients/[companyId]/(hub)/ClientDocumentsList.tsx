@@ -164,7 +164,7 @@ export function ClientDocumentsList({
   return (
     <div>
       <div
-        className={`gallery-drop${drag ? " is-drag" : ""}`}
+        className={`gallery-drop u-mb-3${drag ? " is-drag" : ""}`}
         role="button"
         tabIndex={0}
         onClick={() => inputRef.current?.click()}
@@ -179,7 +179,6 @@ export function ClientDocumentsList({
           setDrag(false);
           addFiles(Array.from(e.dataTransfer.files));
         }}
-        style={{ marginBottom: 12 }}
       >
         <span className="gallery-drop-ico" aria-hidden>⬆</span>
         <span className="gallery-drop-title">Drag files here, or click to browse</span>
@@ -187,15 +186,14 @@ export function ClientDocumentsList({
         <input ref={inputRef} type="file" multiple hidden onChange={(e) => { addFiles(Array.from(e.target.files ?? [])); if (inputRef.current) inputRef.current.value = ""; }} />
       </div>
 
-      <form onSubmit={addLink} className="admin-form-row" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
+      <form onSubmit={addLink} className="admin-form-row u-mb-3">
         <input
           type="url"
-          className="admin-input"
+          className="admin-input u-grow"
           placeholder="Add a link instead (e.g. a Google Drive URL)"
           value={linkUrl}
           onChange={(e) => setLinkUrl(e.target.value)}
           required
-          style={{ flex: "2 1 240px" }}
         />
         <input
           type="text"
@@ -203,7 +201,6 @@ export function ClientDocumentsList({
           placeholder="Label (optional)"
           value={linkLabel}
           onChange={(e) => setLinkLabel(e.target.value)}
-          style={{ flex: "1 1 160px" }}
         />
         <button type="submit" className="admin-btn admin-btn--sm" disabled={linkBusy || linkUrl.trim() === ""}>
           {linkBusy ? "Adding…" : "Add link"}
@@ -211,14 +208,14 @@ export function ClientDocumentsList({
       </form>
 
       {queue.length > 0 && (
-        <div className="admin-list" style={{ marginBottom: 12 }}>
+        <div className="admin-list u-mb-3">
           {queue.map((it) => (
             <div className="admin-list-row" key={it.id}>
               <div className="admin-list-main">
                 <div className="admin-list-title">{it.file.name}</div>
                 <div className="admin-list-sub">
                   {it.status === "error" ? (
-                    <span style={{ color: "var(--admin-err-ink)" }}>{it.error}</span>
+                    <span className="u-err">{it.error}</span>
                   ) : it.status === "uploading" ? (
                     `Uploading… ${Math.round(it.progress * 100)}%`
                   ) : (
@@ -287,7 +284,7 @@ export function ClientDocumentsList({
           ))}
         </div>
       )}
-      {error && <div className="admin-alert admin-alert--err" style={{ marginTop: 10 }}>{error}</div>}
+      {error && <div className="admin-alert admin-alert--err u-mt-3">{error}</div>}
     </div>
   );
 }
