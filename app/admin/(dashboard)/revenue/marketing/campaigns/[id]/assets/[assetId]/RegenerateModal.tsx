@@ -63,23 +63,23 @@ export function RegenerateModal({
   }
 
   return (
-    <div className="mcr-modal-overlay" role="dialog" aria-modal="true" onMouseDown={(e) => e.target === e.currentTarget && !busy && onClose()}>
-      <div className="mcr-modal-card">
-        <div className="mcr-modal-head">
-          <span className="mcr-modal-title">{title}</span>
+    <div className="admin-campaign-modal-overlay" role="dialog" aria-modal="true" onMouseDown={(e) => e.target === e.currentTarget && !busy && onClose()}>
+      <div className="admin-campaign-modal-card">
+        <div className="admin-campaign-modal-head">
+          <span className="admin-campaign-modal-title">{title}</span>
           <button type="button" className="admin-btn admin-btn--sm" onClick={onClose} disabled={busy}>
             Close
           </button>
         </div>
 
-        <div className="mcr-modal-body">
+        <div className="admin-campaign-modal-body">
           {loading ? (
             <div className="admin-hint">Loading the prompt…</div>
           ) : seedError ? (
             <div className="admin-alert admin-alert--err">{seedError}</div>
           ) : (
             <>
-              <label className="admin-label" style={{ display: "block", marginBottom: 8 }}>
+              <label className="admin-label u-block u-mb-2">
                 Prompt to be used — edit before running
               </label>
               <textarea
@@ -90,13 +90,13 @@ export function RegenerateModal({
                 disabled={busy}
               />
 
-              <details className="admin-card" style={{ padding: "10px 12px", marginTop: 12 }} open={showSources} onToggle={(e) => setShowSources((e.target as HTMLDetailsElement).open)}>
-                <summary style={{ cursor: "pointer", fontWeight: 600, fontSize: 13 }}>Built from</summary>
-                <div className="admin-hint" style={{ marginTop: 8 }}>{builtFrom}</div>
+              <details className="admin-card u-mt-3 u-p-3" open={showSources} onToggle={(e) => setShowSources((e.target as HTMLDetailsElement).open)}>
+                <summary className="u-strong u-pointer">Built from</summary>
+                <div className="admin-hint u-mt-2">{builtFrom}</div>
               </details>
 
               {error && (
-                <div className="admin-alert admin-alert--err" style={{ marginTop: 12 }}>
+                <div className="admin-alert admin-alert--err u-mt-3">
                   {error}
                 </div>
               )}
@@ -104,9 +104,9 @@ export function RegenerateModal({
           )}
         </div>
 
-        <div className="mcr-modal-foot">
+        <div className="admin-campaign-modal-foot">
           <span className="admin-hint">{footnote}</span>
-          <div style={{ display: "flex", gap: 8 }}>
+          <div className="u-row">
             <button type="button" className="admin-btn" onClick={onClose} disabled={busy}>
               Cancel
             </button>

@@ -33,16 +33,16 @@ export function SyncButton() {
       : `${s.entity === "aio" ? "AIO" : "Edge8"}: ${s.error ?? "failed"}`;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-end" }}>
+    <div className="u-stack u-items-end">
       <button type="button" className="admin-btn admin-btn--sm" disabled={pending} onClick={run}>
         {pending ? "Syncing…" : "Sync now"}
       </button>
       {result && (
-        <span style={{ fontSize: 12, color: "var(--admin-muted)", textAlign: "right" }}>
+        <span className="u-sm u-muted u-right">
           {result.map(label).join(" · ")}
         </span>
       )}
-      {err && <span style={{ fontSize: 12, color: "var(--admin-err-ink)" }}>{err}</span>}
+      {err && <span className="u-sm u-err">{err}</span>}
     </div>
   );
 }

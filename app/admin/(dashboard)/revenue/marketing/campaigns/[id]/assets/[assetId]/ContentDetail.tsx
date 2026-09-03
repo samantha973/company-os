@@ -85,10 +85,10 @@ export function ContentDetail({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div className="u-stack u-gap-4">
       {note && <div className={`admin-alert admin-alert--${note.tone}`}>{note.text}</div>}
 
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <div className="u-row u-wrap">
         <span className="admin-chip">{entry.channel}</span>
         <Badge tone={statusTone(entry.status)}>{STATUS_LABEL[entry.status]}</Badge>
         {entry.pillarName && <span className="admin-chip">Pillar: {entry.pillarName}</span>}
@@ -97,15 +97,15 @@ export function ContentDetail({
         )}
       </div>
 
-      <div className="mcr-detail-grid">
+      <div className="admin-campaign-detail-grid">
         {/* Formatted text */}
-        <section className="admin-card mcr-panel">
-          <div className="mcr-panel-head">
-            <span className="mcr-panel-title">{isBlog ? "Blog preview" : "Formatted text"}</span>
-            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+        <section className="admin-card admin-campaign-panel">
+          <div className="admin-campaign-panel-head">
+            <span className="admin-campaign-panel-title">{isBlog ? "Blog preview" : "Formatted text"}</span>
+            <div className="u-row u-wrap">
               {isBlog && (
                 <select
-                  className="admin-select mcr-style-select"
+                  className="admin-select admin-campaign-style-select"
                   value={blogStyle}
                   onChange={(e) => pickBlogStyle(e.target.value)}
                   disabled={pending}
@@ -138,7 +138,7 @@ export function ContentDetail({
             </div>
           </div>
           {editing ? (
-            <div className="admin-form" style={{ padding: 16 }}>
+            <div className="admin-form u-p-4">
               <textarea
                 className="admin-textarea"
                 rows={20}
@@ -164,19 +164,19 @@ export function ContentDetail({
                 coverUrl={selected?.url ?? null}
               />
             ) : (
-              <div className="idea-plan" style={{ padding: 16 }} dangerouslySetInnerHTML={{ __html: html }} />
+              <div className="idea-plan u-p-4" dangerouslySetInnerHTML={{ __html: html }} />
             )
           ) : (
-            <div className="admin-empty" style={{ margin: 16 }}>
+            <div className="admin-empty u-m-4">
               No copy yet. Edit markdown to write it, or draft it from the calendar.
             </div>
           )}
         </section>
 
         {/* Images */}
-        <section className="admin-card mcr-panel">
-          <div className="mcr-panel-head">
-            <span className="mcr-panel-title">
+        <section className="admin-card admin-campaign-panel">
+          <div className="admin-campaign-panel-head">
+            <span className="admin-campaign-panel-title">
               Images{images.length > 0 ? ` · ${images.length}` : ""}
             </span>
             <button type="button" className="admin-btn admin-btn--sm admin-btn--primary" onClick={() => setModal("image")} disabled={pending}>
@@ -190,18 +190,18 @@ export function ContentDetail({
                   image full size, so don't duplicate it here; just show the
                   version tray. Other channels have no preview cover, so show it. */}
               {!isBlog && (
-                <a href={selected.url} target="_blank" rel="noreferrer" className="mcr-imgbox">
+                <a href={selected.url} target="_blank" rel="noreferrer" className="admin-campaign-imgbox">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={selected.url} alt={entry.title} />
                 </a>
               )}
               {(isBlog ? images.length >= 1 : images.length > 1) && (
-                <div className="mcr-thumbs" style={isBlog ? { paddingTop: 14 } : undefined}>
+                <div className="admin-campaign-thumbs" style={isBlog ? { paddingTop: 14 } : undefined}>
                   {images.map((img, i) => (
                     <button
                       key={img.id}
                       type="button"
-                      className={`mcr-thumb${img.isSelected ? " is-selected" : ""}`}
+                      className={`admin-campaign-thumb${img.isSelected ? " is-selected" : ""}`}
                       onClick={() => pickImage(img.id)}
                       disabled={pending || img.isSelected}
                       title={img.isSelected ? "Selected" : "Use this version"}
@@ -212,14 +212,14 @@ export function ContentDetail({
                   ))}
                 </div>
               )}
-              <div className="admin-hint" style={{ padding: "0 16px 16px" }}>
+              <div className="admin-hint u-p-4 u-pt-0">
                 {isBlog
                   ? "The cover in the preview shows the selected image. Every generation is kept; click a version to switch, or regenerate to add one."
                   : "Every generation is kept. The highlighted version is the one that publishes; click an older one to switch back."}
               </div>
             </>
           ) : (
-            <div className="admin-empty" style={{ margin: 16 }}>
+            <div className="admin-empty u-m-4">
               No image yet. Generate one from the entry&apos;s image brief and the brand palette.
             </div>
           )}

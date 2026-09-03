@@ -102,14 +102,14 @@ export function ReferrerField({
   }
 
   return (
-    <div style={{ marginBottom: 16 }}>
-      <div className="admin-label" style={{ marginBottom: 6 }}>
+    <div className="u-mb-4">
+      <div className="admin-label u-mb-2">
         Referrer
       </div>
 
       {mode === "idle" &&
         (referrerId ? (
-          <div className="deal-inline-row">
+          <div className="admin-deal-inline-row">
             <Link href={`/admin/contacts/${referrerId}`} className="admin-cell-strong">
               {referrerName || "View contact"}
             </Link>
@@ -127,7 +127,7 @@ export function ReferrerField({
         ))}
 
       {mode === "search" && (
-        <div className="deal-field-stack">
+        <div className="admin-deal-field-stack">
           <input
             className="admin-input"
             autoFocus
@@ -137,20 +137,14 @@ export function ReferrerField({
           />
           {term.trim().length >= 2 && (
             <div
-              style={{
-                border: "1px solid var(--admin-line)",
-                borderRadius: 8,
-                overflow: "hidden",
-                maxHeight: 220,
-                overflowY: "auto",
-              }}
+              className="admin-scroll-sm admin-box"
             >
               {searching ? (
-                <div className="admin-hint" style={{ padding: "8px 10px" }}>
+                <div className="admin-hint u-p-2">
                   Searching…
                 </div>
               ) : hits.length === 0 ? (
-                <div className="admin-hint" style={{ padding: "8px 10px" }}>
+                <div className="admin-hint u-p-2">
                   No matching contacts. Add them as a new contact below.
                 </div>
               ) : (
@@ -160,7 +154,7 @@ export function ReferrerField({
                     type="button"
                     onClick={() => link(h)}
                     disabled={busy}
-                    className="deal-option"
+                    className="admin-deal-option"
                   >
                     <span className="admin-cell-strong">{h.name}</span>
                     <span className="admin-cell-muted">{h.email}</span>
@@ -169,7 +163,7 @@ export function ReferrerField({
               )}
             </div>
           )}
-          <div className="deal-btn-row">
+          <div className="admin-deal-btn-row">
             <button
               type="button"
               className="admin-btn admin-btn--sm"
@@ -190,7 +184,7 @@ export function ReferrerField({
       )}
 
       {mode === "new" && (
-        <div className="deal-field-stack">
+        <div className="admin-deal-field-stack">
           <div className="admin-field">
             <label className="admin-label">Name</label>
             <input className="admin-input" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Full name" />
@@ -199,7 +193,7 @@ export function ReferrerField({
             <label className="admin-label">Email</label>
             <input className="admin-input" type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="name@example.com" />
           </div>
-          <div className="deal-btn-row">
+          <div className="admin-deal-btn-row">
             <button type="button" className="admin-btn admin-btn--primary admin-btn--sm" onClick={createNew} disabled={busy}>
               {busy ? "Saving…" : "Create & link"}
             </button>
@@ -211,7 +205,7 @@ export function ReferrerField({
       )}
 
       {err && (
-        <div className="admin-alert admin-alert--err" style={{ marginTop: 8 }}>
+        <div className="admin-alert admin-alert--err u-mt-2">
           {err}
         </div>
       )}
@@ -286,14 +280,14 @@ export function ReferrerCompanyField({
   }
 
   return (
-    <div style={{ marginBottom: 16 }}>
-      <div className="admin-label" style={{ marginBottom: 6 }}>
+    <div className="u-mb-4">
+      <div className="admin-label u-mb-2">
         Referring company
       </div>
 
       {mode === "idle" &&
         (referrerCompanyId ? (
-          <div className="deal-inline-row">
+          <div className="admin-deal-inline-row">
             <Link href={`/admin/revenue/companies/${referrerCompanyId}`} className="admin-cell-strong">
               {referrerCompanyName || "View company"}
             </Link>
@@ -311,7 +305,7 @@ export function ReferrerCompanyField({
         ))}
 
       {mode === "search" && (
-        <div className="deal-field-stack">
+        <div className="admin-deal-field-stack">
           <input
             className="admin-input"
             autoFocus
@@ -321,20 +315,14 @@ export function ReferrerCompanyField({
           />
           {term.trim().length >= 2 && (
             <div
-              style={{
-                border: "1px solid var(--admin-line)",
-                borderRadius: 8,
-                overflow: "hidden",
-                maxHeight: 220,
-                overflowY: "auto",
-              }}
+              className="admin-scroll-sm admin-box"
             >
               {searching ? (
-                <div className="admin-hint" style={{ padding: "8px 10px" }}>
+                <div className="admin-hint u-p-2">
                   Searching…
                 </div>
               ) : hits.length === 0 ? (
-                <div className="admin-hint" style={{ padding: "8px 10px" }}>
+                <div className="admin-hint u-p-2">
                   No matching companies.
                 </div>
               ) : (
@@ -344,7 +332,7 @@ export function ReferrerCompanyField({
                     type="button"
                     onClick={() => link(h)}
                     disabled={busy}
-                    className="deal-option"
+                    className="admin-deal-option"
                   >
                     <span className="admin-cell-strong">{h.name || "Unnamed company"}</span>
                   </button>
@@ -352,7 +340,7 @@ export function ReferrerCompanyField({
               )}
             </div>
           )}
-          <div className="deal-btn-row">
+          <div className="admin-deal-btn-row">
             <button type="button" className="admin-btn admin-btn--sm" onClick={reset}>
               Cancel
             </button>
@@ -361,7 +349,7 @@ export function ReferrerCompanyField({
       )}
 
       {err && (
-        <div className="admin-alert admin-alert--err" style={{ marginTop: 8 }}>
+        <div className="admin-alert admin-alert--err u-mt-2">
           {err}
         </div>
       )}
@@ -408,8 +396,8 @@ export function DealCommunications({ dealId }: { dealId: string }) {
   }
 
   return (
-    <div style={{ marginTop: 18 }}>
-      <div className="admin-label" style={{ marginBottom: 6 }}>
+    <div className="u-mt-4">
+      <div className="admin-label u-mb-2">
         Communications
       </div>
 
@@ -422,13 +410,13 @@ export function DealCommunications({ dealId }: { dealId: string }) {
           onChange={(e) => setBody(e.target.value)}
         />
       </div>
-      <div className="admin-form-actions" style={{ marginBottom: 12 }}>
+      <div className="admin-form-actions u-mb-3">
         <button type="button" className="admin-btn admin-btn--primary admin-btn--sm" onClick={add} disabled={saving || !body.trim()}>
           {saving ? "Adding…" : "Add communication"}
         </button>
       </div>
       {saveErr && (
-        <div className="admin-alert admin-alert--err" style={{ marginBottom: 12 }}>
+        <div className="admin-alert admin-alert--err u-mb-3">
           {saveErr}
         </div>
       )}
@@ -440,19 +428,16 @@ export function DealCommunications({ dealId }: { dealId: string }) {
       ) : items.length === 0 ? (
         <div className="admin-empty">No communications yet.</div>
       ) : (
-        <ul className="deal-comm-list">
+        <ul className="admin-deal-comm-list">
           {items.map((c) => (
             <li
               key={c.id}
-              style={{
-                borderLeft: "2px solid var(--admin-line-strong)",
-                paddingLeft: 10,
-              }}
+              className="admin-quote"
             >
-              <div className="admin-cell-muted" style={{ marginBottom: 2 }}>
+              <div className="admin-cell-muted u-mb-1">
                 {humanize(c.kind)} · {formatDate(c.occurredAt)}
               </div>
-              <div style={{ whiteSpace: "pre-wrap" }}>{c.body || c.subject || "—"}</div>
+              <div className="u-prewrap">{c.body || c.subject || "—"}</div>
             </li>
           ))}
         </ul>
