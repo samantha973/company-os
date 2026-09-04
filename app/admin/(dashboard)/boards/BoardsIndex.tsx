@@ -135,18 +135,18 @@ export function BoardsIndex({
                     </span>
                     {total > 0 && <span>{pct}% done</span>}
                   </div>
-                  <div className="admin-progress">
-                    <div className="admin-progress-fill" style={{ width: `${pct}%` }} /* layout-ok: data-driven width */ />
+                  <div className="admin-meter admin-meter--thin">
+                    <div className="admin-meter-fill" style={{ width: `${pct}%` }} /* layout-ok: data-driven width */ />
                   </div>
                 </div>
                 <div className="u-row u-between u-mt-3">
-                  <span className="admin-board-avatar-stack">
+                  <span className="admin-avatar-stack">
                     {shown.map((name, i) => (
-                      <span key={`${name}-${i}`} className="admin-kanban-avatar" title={name}>
+                      <span key={`${name}-${i}`} className="admin-avatar admin-avatar--sm admin-avatar--soft" title={name}>
                         {initials(name)}
                       </span>
                     ))}
-                    {extra > 0 && <span className="admin-board-avatar-more">+{extra}</span>}
+                    {extra > 0 && <span className="admin-avatar-more">+{extra}</span>}
                     {b.member_names.length === 0 && (
                       <span className="admin-cell-muted u-sm">
                         No members
@@ -226,21 +226,21 @@ export function BoardsIndex({
                           <span className="admin-cell-muted">—</span>
                         ) : (
                           <span className="u-row">
-                            <span className="admin-progress u-inline-block u-w-90">
-                              <span className="admin-progress-fill u-block" style={{ width: `${pct}%` }} /* layout-ok: data-driven width */ />
+                            <span className="admin-meter admin-meter--thin u-inline-block u-w-90">
+                              <span className="admin-meter-fill u-block" style={{ width: `${pct}%` }} /* layout-ok: data-driven width */ />
                             </span>
                             <span className="admin-cell-mono">{pct}%</span>
                           </span>
                         )}
                       </td>
                       <td>
-                        <span className="admin-board-avatar-stack">
+                        <span className="admin-avatar-stack">
                           {shown.map((name, i) => (
-                            <span key={`${name}-${i}`} className="admin-kanban-avatar" title={name}>
+                            <span key={`${name}-${i}`} className="admin-avatar admin-avatar--sm admin-avatar--soft" title={name}>
                               {initials(name)}
                             </span>
                           ))}
-                          {extra > 0 && <span className="admin-board-avatar-more">+{extra}</span>}
+                          {extra > 0 && <span className="admin-avatar-more">+{extra}</span>}
                           {b.member_names.length === 0 && <span className="admin-cell-muted">—</span>}
                         </span>
                       </td>

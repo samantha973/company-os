@@ -1154,16 +1154,6 @@ a.admin-start-btn.ghost:hover { color: var(--admin-sidebar-strong); }
 /* Name links to the member's profile, ink at rest, accent on hover. */
 a.admin-dir-name { color: var(--admin-ink); }
 a.admin-dir-name:hover { color: var(--admin-accent); }
-.admin-dir-avatar {
-  width: 28px; height: 28px; flex: 0 0 auto;
-  border-radius: 50%;
-  background: var(--admin-accent);
-  color: var(--color-bg-primary);
-  display: grid; place-items: center;
-  font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
-  overflow: hidden;
-}
-.admin-dir-avatar img { width: 100%; height: 100%; object-fit: cover; }
 /* Directory: sort caret (faint until the column is active) + result count. */
 .admin-team-dir-caret { font-size: 11px; opacity: 0.7; }
 .admin-th-sort:hover .admin-team-dir-caret { opacity: 1; }
@@ -1275,19 +1265,9 @@ a.admin-team-collage-photo:hover img { transform: scale(1.04); }
   background: linear-gradient(transparent, var(--admin-scrim));
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.admin-team-collage-avatar {
-  width: 72px; height: 72px; flex: 0 0 auto;
-  border-radius: 50%;
-  background: var(--admin-accent);
-  color: var(--color-bg-primary);
-  display: grid; place-items: center;
-  font-size: 18px; font-weight: 700;
-  overflow: hidden;
-}
 /* Faces are links to profiles now, keep initials white, ring on hover. */
 a.admin-team-collage-avatar { color: var(--color-bg-primary); transition: box-shadow var(--transition); }
 a.admin-team-collage-avatar:hover { box-shadow: 0 0 0 3px var(--admin-accent-soft), 0 0 0 1.5px var(--admin-accent); }
-.admin-team-collage-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
 /* Masonry photo wall (team browse), CSS columns keep it dependency-free. */
 .admin-gallery-masonry { columns: 4 220px; column-gap: 12px; }
@@ -1384,11 +1364,6 @@ a.admin-team-collage-avatar:hover { box-shadow: 0 0 0 3px var(--admin-accent-sof
   max-width: 100%;
 }
 .admin-phototag-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
-.admin-phototag-avatar { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; flex: 0 0 auto; background: var(--admin-line-soft); }
-.admin-phototag-avatar--blank {
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; color: var(--admin-muted);
-}
 .admin-phototag-x {
   border: 0; background: transparent; cursor: pointer;
   font-size: 15px; line-height: 1; color: var(--admin-muted); padding: 0 2px;
@@ -2089,10 +2064,6 @@ a.admin-campaign-asset-title:hover { color: var(--admin-accent); }
 .admin-campaign-toolbar-right { display: flex; justify-content: flex-end; margin-bottom: 14px; }
 .admin-campaign-section-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
 .admin-campaign-chip-row { display: flex; gap: 6px; flex-wrap: wrap; }
-.admin-campaign-progress { display: flex; align-items: center; gap: 8px; }
-.admin-campaign-progress-track { flex: 1; height: 8px; border-radius: 20px; background: var(--admin-line-soft); overflow: hidden; }
-.admin-campaign-progress-fill { height: 100%; }
-.admin-campaign-progress-num { font-size: 12px; min-width: 62px; text-align: right; }
 /* List view: a small square thumbnail in the image column. */
 .admin-campaign-asset-thumb {
   width: 44px;
@@ -2645,19 +2616,6 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
   color: var(--admin-ink-2);
   min-width: 0;
 }
-.admin-kanban-avatar {
-  width: 20px;
-  height: 20px;
-  border-radius: var(--admin-radius-pill);
-  background: var(--admin-accent-soft);
-  color: var(--admin-accent);
-  font-size: 11px;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
 /* Hint shown in a column with no cards so it doesn't read as broken. */
 .admin-kanban-col-empty {
   border: 1px dashed var(--admin-line-strong);
@@ -2692,24 +2650,7 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
 /* Overlapping member initials on the boards index. */
 /* Initials are text, so the chips sit side by side; an overlapped stack
    would clip the second letter. */
-.admin-board-avatar-stack { display: flex; align-items: center; gap: 4px; }
-.admin-board-avatar-more {
-  margin-left: 6px;
-  font-size: 11px;
-  color: var(--admin-muted);
-}
 /* Thin done-vs-open progress track on a board card. */
-.admin-progress {
-  height: 4px;
-  border-radius: 2px;
-  background: var(--admin-line-soft);
-  overflow: hidden;
-}
-.admin-progress-fill {
-  height: 100%;
-  border-radius: 2px;
-  background: var(--admin-accent);
-}
 /* Role tag on cross-req boards, color + tint arrive inline per req. */
 .admin-kanban-role-tag {
   font-size: 11px;
@@ -3483,21 +3424,6 @@ a.admin-chip:hover { border-color: var(--admin-accent); color: var(--admin-accen
   display: flex;
   align-items: center;
   gap: 10px;
-}
-.admin-coach-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex: none;
-}
-.admin-coach-avatar--empty {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--admin-tint);
-  color: var(--admin-ink-2);
-  font-weight: 600;
 }
 .admin-coach-card-name { font-weight: 600; font-size: 14px; }
 .admin-coach-card-role { font-size: 12px; color: var(--admin-ink-2); }
@@ -4770,12 +4696,6 @@ a.admin-hub-program-card:hover {
   gap: 8px;
 }
 /* Roadmap done/total labels above the progress track. */
-.admin-hub-program-progressrow {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  margin-bottom: 6px;
-}
 
 /* ─── Deal record (DealManage full page + shared DealFields) ─────────────────
    Layout for the deal record fields and the full-page decision header, lifted
@@ -4875,9 +4795,6 @@ a.admin-hub-program-card:hover {
 .admin-plan-objective p { margin: 0; white-space: pre-wrap; line-height: 1.55; }
 .admin-plan-objective .admin-editable-row, .admin-plan-objective .admin-editable { display: block; width: 100%; margin: 0; padding: 0; white-space: pre-wrap; line-height: 1.55; text-align: left; }
 .admin-plan-targets .admin-table th:first-child, .admin-plan-targets .admin-table td:first-child { font-weight: 600; }
-.admin-plan-progress { display: flex; align-items: center; gap: 10px; }
-.admin-plan-progress .admin-progress { flex: 1; }
-.admin-plan-progress-n { font-variant-numeric: tabular-nums; color: var(--admin-ink-2); white-space: nowrap; min-width: 44px; }
 .admin-plan-variance-reason { font-weight: 600; color: var(--admin-warn-ink); }
 .admin-plan-add { display: grid; grid-template-columns: 180px 1fr 110px auto; gap: 10px; align-items: end; margin-top: 14px; }
 
@@ -4900,7 +4817,6 @@ a.admin-hub-program-card:hover {
 .admin-cell-stack { display: flex; flex-direction: column; gap: 2px; }
 .admin-chip.is-active { border-color: var(--admin-accent); color: var(--admin-accent); font-weight: 600; }
 a.admin-list-row { text-decoration: none; color: inherit; }
-.admin-progress-fill.is-done { background: var(--admin-ok-ink); }
 .admin-input--w-xs { width: 70px; }
 .admin-input--w-sm { max-width: 220px; }
 .admin-kpi-of { font-size: var(--admin-text-lg); font-weight: 500; color: var(--admin-muted); }
@@ -4932,19 +4848,10 @@ a.admin-list-row { text-decoration: none; color: inherit; }
 .admin-input--icon-right { padding-right: 40px; }
 .admin-thumb { width: 88px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: var(--admin-radius-xs); border: 1px solid var(--admin-line); background: var(--admin-line-soft); color: var(--admin-muted); font-size: var(--admin-text-xs); flex: 0 0 auto; }
 .admin-thumb-img { width: 88px; height: 56px; object-fit: cover; border-radius: var(--admin-radius-xs); border: 1px solid var(--admin-line); background: var(--admin-line-soft); }
-.admin-box { border: 1px solid var(--admin-line); border-radius: var(--admin-radius-sm); }
 .admin-scroll-sm { max-height: 220px; overflow-y: auto; }
 .admin-scroll-md { max-height: 500px; overflow: auto; }
 .admin-scroll-lg { max-height: 600px; overflow: auto; }
 /* ─── Revenue components ────────────────────────────────────────────────── */
-.admin-meter { height: 8px; border-radius: 20px; background: var(--admin-line-soft); overflow: hidden; margin-top: 6px; }
-.admin-meter--thick { height: 10px; }
-.admin-meter--flat { border-radius: 4px; margin-top: 0; flex: 1; }
-.admin-meter-fill { height: 100%; border-radius: inherit; background: var(--admin-accent); }
-.admin-meter-fill.is-done { background: var(--admin-ok-ink); }
-.admin-meter-fill.is-muted { background: var(--admin-muted); }
-.admin-box-pad { border: 1px solid var(--admin-line); border-radius: 10px; padding: 14px; }
-.admin-tag-pill { font-size: var(--admin-text-xs); padding: 2px 8px; border-radius: var(--admin-radius-pill); background: var(--admin-tint); display: inline-flex; gap: 6px; align-items: center; }
 .admin-chip-outline { display: inline-flex; gap: 6px; align-items: baseline; padding: 6px 12px; border-radius: var(--admin-radius-pill); border: 1px solid var(--admin-line); }
 .admin-btn-reset { background: none; border: 0; padding: 0; margin: 0; font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; line-height: 1; }
 .admin-sort-arrow { font-size: 0.9em; opacity: 0.35; }
@@ -4958,12 +4865,8 @@ a.admin-list-row { text-decoration: none; color: inherit; }
 .admin-card--warn { border-color: var(--admin-warn-strong); }
 .admin-quote { border-left: 2px solid var(--admin-line-strong); padding-left: 10px; }
 .admin-code-lg { font-size: 20px; font-weight: 700; }
-.admin-campaign-progress-fill.is-done { background: var(--admin-ok-ink); }
-.admin-meter--thin { height: 6px; margin-top: 0; }
 .admin-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--admin-ink); flex-shrink: 0; display: inline-block; }
 /* ─── Talent / Operations / Boards components ──────────────────────────── */
-.admin-avatar-img { border-radius: 50%; object-fit: cover; }
-.admin-avatar-initials { border-radius: 50%; background: var(--admin-tint); display: inline-flex; align-items: center; justify-content: center; font-size: var(--admin-text-sm); font-weight: 600; flex-shrink: 0; }
 .admin-kr-index { color: var(--admin-faint); font-weight: 700; font-size: 11px; margin-right: 8px; }
 .admin-h-sm { font-size: var(--admin-text-base); font-weight: 700; margin: 14px 0 4px; color: var(--admin-ink); }
 .admin-h-md { font-weight: 700; font-size: 16px; letter-spacing: -0.01em; }
@@ -4973,22 +4876,15 @@ a.admin-list-row { text-decoration: none; color: inherit; }
 .admin-star-btn { font-size: 22px; }
 .admin-star-btn--sm { font-size: 16px; }
 .admin-badge-inverse { font-size: var(--admin-text-xs); font-weight: 700; color: var(--admin-bg); background: var(--admin-ink); border-radius: var(--admin-radius-xs); padding: 2px 8px; }
-.admin-tag-xs { font-size: 11px; font-weight: 700; letter-spacing: .04em; padding: 2px 8px; border-radius: var(--admin-radius-pill); background: var(--admin-muted-bg); color: var(--admin-muted-ink); }
-.admin-tag-xs--accent { background: var(--admin-accent-soft); color: var(--admin-accent); }
-.admin-tag-xs--warn { background: var(--admin-warn-bg); color: var(--admin-warn-ink); }
 .admin-score-btn { width: 28px; height: 28px; border-radius: var(--admin-radius-xs); border: 1px solid var(--admin-line-strong); background: transparent; color: var(--admin-ink); cursor: pointer; font-size: var(--admin-text-base); font-weight: 600; }
 .admin-score-btn.is-on { background: var(--admin-accent); color: var(--color-bg-primary); }
 .admin-scroll-xs { max-height: 160px; overflow: auto; }
-.admin-callout { background: var(--admin-accent-soft); border-radius: 10px; padding: 12px 14px; }
 .admin-num-xl { font-size: 22px; font-weight: 700; }
 .admin-td-inset { background: var(--admin-bg); }
 .admin-mono { font-family: var(--admin-font-mono); font-size: var(--admin-text-base); line-height: 1.6; }
-.admin-panel-soft { background: var(--admin-muted-bg); border-radius: var(--admin-radius-sm); padding: 8px 10px; }
 /* ─── Team intranet / portal components ─────────────────────────────────── */
 .admin-skeleton-bar--title { width: 280px; height: 26px; margin: 12px 0 28px; }
 .admin-skeleton-bar--sub { width: 160px; height: 22px; margin-top: 12px; }
-.admin-avatar-lg { width: 88px; height: 88px; font-size: 32px; }
-.admin-avatar-initials--accent { background: var(--admin-accent-soft); color: var(--admin-accent-strong); font-size: var(--admin-text-md); display: flex; }
 .admin-frame { width: 100%; height: 70vh; border: 1px solid var(--admin-line); border-radius: var(--admin-radius-sm); background: var(--color-bg-primary); }
 .admin-scroll-vh { max-height: 58vh; overflow-y: auto; }
 .admin-card--ok { border-color: var(--admin-ok-ink); }
@@ -5006,3 +4902,42 @@ a.admin-list-row { text-decoration: none; color: inherit; }
 .admin-pat-shadow-chip--md { box-shadow: var(--admin-shadow-md); }
 .admin-pat-shadow-chip--modal { box-shadow: var(--admin-shadow-modal); }
 .admin-kanban-col-dot--accent { background: var(--admin-accent); }
+
+/* ─── Consolidated components (design-debt item 9) ────────────────────────
+   One meter, one avatar, one box, one tag. Sizes and tones are modifiers. */
+.admin-meter { height: 6px; border-radius: var(--admin-radius-pill); background: var(--admin-line-soft); overflow: hidden; }
+.admin-meter--thin { height: 4px; }
+.admin-meter--thick { height: 10px; }
+.admin-meter--flat { border-radius: 4px; flex: 1; }
+.admin-meter--spaced { margin-top: 6px; }
+.admin-meter-fill { height: 100%; border-radius: inherit; background: var(--admin-accent); }
+.admin-meter-fill.is-done { background: var(--admin-ok-ink); }
+.admin-meter-fill.is-muted { background: var(--admin-muted); }
+.admin-meter-row { display: flex; align-items: center; gap: var(--admin-space-2); }
+.admin-meter-row .admin-meter { flex: 1; }
+.admin-meter-num { font-size: var(--admin-text-sm); font-variant-numeric: tabular-nums; color: var(--admin-ink-2); white-space: nowrap; min-width: 44px; text-align: right; }
+.admin-meter-labels { display: flex; justify-content: space-between; font-size: var(--admin-text-sm); margin-bottom: 6px; }
+
+.admin-avatar { border-radius: 50%; background: var(--admin-tint); color: var(--admin-ink); display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: var(--admin-text-sm); flex: 0 0 auto; overflow: hidden; object-fit: cover; }
+.admin-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.admin-avatar--xs { width: 18px; height: 18px; font-size: 11px; }
+.admin-avatar--sm { width: 20px; height: 20px; font-size: 11px; font-weight: 700; }
+.admin-avatar--md { width: 28px; height: 28px; font-size: 11px; font-weight: 700; letter-spacing: 0.3px; }
+.admin-avatar--lg { width: 40px; height: 40px; }
+.admin-avatar--xl { width: 72px; height: 72px; font-size: 18px; font-weight: 700; }
+.admin-avatar--xxl { width: 88px; height: 88px; font-size: 32px; }
+.admin-avatar--accent { background: var(--admin-accent); color: var(--color-bg-primary); }
+.admin-avatar--soft { background: var(--admin-accent-soft); color: var(--admin-accent-strong); }
+.admin-avatar--empty { background: var(--admin-line-soft); }
+.admin-avatar-stack { display: flex; align-items: center; gap: 4px; }
+.admin-avatar-more { margin-left: 6px; font-size: 11px; color: var(--admin-muted); }
+
+.admin-box { border: 1px solid var(--admin-line); border-radius: var(--admin-radius-sm); }
+.admin-box--pad { padding: 14px; border-radius: 10px; }
+.admin-box--accent { background: var(--admin-accent-soft); border-color: transparent; padding: 12px 14px; border-radius: 10px; }
+.admin-box--soft { background: var(--admin-muted-bg); border-color: transparent; padding: 8px 10px; }
+
+.admin-tag { font-size: var(--admin-text-xs); padding: 2px 8px; border-radius: var(--admin-radius-pill); background: var(--admin-tint); display: inline-flex; gap: 6px; align-items: center; }
+.admin-tag--xs { font-weight: 700; letter-spacing: 0.04em; background: var(--admin-muted-bg); color: var(--admin-muted-ink); }
+.admin-tag--accent { background: var(--admin-accent-soft); color: var(--admin-accent); }
+.admin-tag--warn { background: var(--admin-warn-bg); color: var(--admin-warn-ink); }

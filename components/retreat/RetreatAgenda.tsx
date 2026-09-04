@@ -55,7 +55,7 @@ export function RetreatAgenda({ blocks, view }: { blocks: AgendaBlock[]; view: "
                         <span
                           key={s.id}
                           title={STAFF_ROLE_LABELS[s.role]}
-                          className="admin-tag-pill"
+                          className="admin-tag"
                         >
                           {s.personName ?? "Unknown"} · {STAFF_ROLE_LABELS[s.role]}
                         </span>

@@ -81,7 +81,7 @@ export function ClientBoardView({
                     )}
                     <div className="admin-kanban-card-meta">
                       <span className="admin-kanban-card-assignee">
-                        <span className="admin-kanban-avatar">{initials(who)}</span>
+                        <span className="admin-avatar admin-avatar--sm admin-avatar--soft">{initials(who)}</span>
                         {who}
                       </span>
                       <Badge tone={PRIORITY_TONE[c.priority]}>{PRIORITY_LABEL[c.priority]}</Badge>

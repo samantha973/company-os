@@ -123,7 +123,7 @@ export default async function CallDetailPage({ params }: { params: { id: string 
             <div className={`${isHostSpeaker(s.name) ? "admin-cell-strong" : undefined} u-w-160`}>
               {s.name}
             </div>
-            <div className="admin-meter admin-meter--flat">
+            <div className="admin-meter admin-meter--spaced admin-meter--flat">
               <div
                 className={`admin-meter-fill${isHostSpeaker(s.name) ? "" : " is-muted"}`}
                 style={{ width: `${Math.round(s.share * 100)}%` }} /* layout-ok: data-driven width */

@@ -31,7 +31,7 @@ export function TeamCollage({ photos, avatars }: { photos: GalleryPhoto[]; avata
     const a = avatars[i];
     if (a) {
       tiles.push(
-        <Link key={`a${a.id}`} className="admin-team-collage-avatar" href={`/team/directory/${a.id}`} title={a.name}>
+        <Link key={`a${a.id}`} className="admin-avatar admin-avatar--xl admin-avatar--accent" href={`/team/directory/${a.id}`} title={a.name}>
           {a.avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={a.avatarUrl} alt={a.name} loading="lazy" decoding="async" />

@@ -262,7 +262,7 @@ export default async function MarketingPage({ searchParams }: { searchParams: Se
                         </span>
                       </div>
                       <div
-                        className="admin-meter"
+                        className="admin-meter admin-meter--spaced"
                       >
                         <div
                           className="admin-meter-fill"
@@ -346,7 +346,7 @@ export default async function MarketingPage({ searchParams }: { searchParams: Se
                   </span>
                 </div>
                 <div
-                  className="admin-meter admin-meter--thick"
+                  className="admin-meter admin-meter--spaced admin-meter--thick"
                 >
                   <div
                     className="admin-meter-fill"
