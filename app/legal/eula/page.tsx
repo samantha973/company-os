@@ -34,8 +34,7 @@ export default function TermsOfServicePage() {
 
           <Block heading="Description of services">
             <p>
-              The PR Hub provides AI leadership training, automation consulting, global staffing, and
-              related programs, along with a client and team portal for managing engagements,
+              The PR Hub provides public relations and strategic communications services, along with a client and team portal for managing engagements,
               invoicing, and communication.
             </p>
           </Block>
