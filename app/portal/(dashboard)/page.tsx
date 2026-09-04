@@ -1,423 +1,252 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { requirePortalMember } from "@/lib/portal-auth";
-import { getAssignedTeam } from "@/lib/portal/team";
-import { getAssignedTimeOff, getLeaveDecisionQueue } from "@/lib/portal/time-off";
-import { getInvoicesForActor } from "@/lib/portal/invoices";
-import { listWorkRequestsForActor } from "@/lib/portal/work-requests";
-import { getMyEvents } from "@/lib/portal/events";
-import { getBoardForClient } from "@/lib/portal/boards";
+import { contributorCompanyScope } from "@/lib/portal/roles";
+import { listPortalProgramSummaries, listHubBoardsForActor, getBoardViewForActor } from "@/lib/portal/program-hub";
+import { getPlanTabForActor } from "@/lib/portal/plan";
+import { listOutcomesForActor } from "@/lib/portal/outcomes";
+import { listAwardsForActor, listCaseStudiesForActor } from "@/lib/portal/supporting";
+import { getMeetingsForActor } from "@/lib/portal/meetings";
 import { listDocumentsForActor } from "@/lib/portal/documents";
-import { hasPublishedPlan } from "@/lib/portal/plan";
+import { getInvoicesForActor } from "@/lib/portal/invoices";
 import { PageHead } from "@/components/admin/PageHead";
-import { MetricCard } from "@/components/admin/MetricCard";
-import { Badge } from "@/components/admin/Badge";
-import { formatCents, formatDate, humanize } from "@/lib/admin/format";
-import { formatHours } from "@/lib/admin/contractors";
-
-import { PRIORITY_LABEL as TASK_LABEL, PRIORITY_TONE as TASK_TONE } from "@/lib/boards/types";
-import { BRAND_SHORT } from "@/lib/brand";
+import { Tabs, type TabDef } from "@/components/admin/Tabs";
+import { PlanScopeSwitch } from "@/components/hub/PlanScopeSwitch";
+import { QuarterlyPlanPanel } from "@/components/hub/QuarterlyPlanPanel";
+import { ClientBoardView } from "@/components/hub/ClientBoardView";
+import { CoveragePanel } from "@/components/hub/CoveragePanel";
+import { AwardsPanel } from "@/components/hub/AwardsPanel";
+import { CaseStudiesPanel } from "@/components/hub/CaseStudiesPanel";
+import { MeetingsPanel } from "@/components/hub/MeetingsPanel";
+import { PortalProgramBand } from "@/components/portal/PortalProgramBand";
+import { PortalInvoices } from "@/components/portal/PortalInvoices";
+import { DocumentsView } from "./documents/DocumentsView";
+import { targetOnTrack } from "@/lib/hub/plan";
+import type { OutcomeRow } from "@/lib/hub/outcomes";
+import { ALL_TIME, AWARD_IN_FLIGHT, resolvePlanScope, scopeAwards, scopeCards, scopeCaseStudies, scopeLabel, scopeOutcomes, scopeParam } from "@/lib/hub/scope";
+import { quarterFor } from "@/lib/pr/quarters";
+import { firstParam, type SearchParamsObj } from "@/lib/admin/url";
+import { formatDate } from "@/lib/admin/format";
 
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
-// Portal home. Job in one line: answer "does anything need me?" in five seconds,
-// then route into the modules. Every section is self-scoped by construction —
-// every helper below is bound to the actor's companyScope / assignment scope, so
-// this page adds no new data-access surface, only new composition. It renders
-// nothing it has no data for: a brand-new client still lands on the stat tiles +
-// quick actions, never an empty shell. Plan: docs/plans/2026-07-18-portal-home-build-plan.md
+export const metadata: Metadata = { title: "The Hub" };
 
-function isoDay(offsetDays = 0): string {
-  const d = new Date();
-  d.setDate(d.getDate() + offsetDays);
-  return d.toISOString().slice(0, 10);
+function Empty({ text }: { text: string }) {
+  return <div className="admin-empty">{text}</div>;
 }
 
-function timeOffRange(start: string, end: string, half: boolean): string {
-  const label = start === end ? formatDate(start) : `${formatDate(start)} → ${formatDate(end)}`;
-  return half ? `${label} · half day` : label;
-}
-
-function eventRange(startsAt: string | null, endsAt: string | null): string {
-  if (!startsAt) return "Date to be confirmed";
-  const start = formatDate(startsAt);
-  if (!endsAt || endsAt === startsAt) return start;
-  return `${start} → ${formatDate(endsAt)}`;
-}
-
-export default async function PortalHome() {
+// The Hub: the client's mirror of the admin Client Hub. The program band on
+// top (client-safe fields, four tallies), then the same tabs the team works
+// in — 90-Day Plan, Work Board, Coverage, Awards, Case Studies, Documents,
+// Meetings, Invoices. Every read is company-scoped and published-only by
+// construction; the All time / quarter switch uses the same rule as admin.
+export default async function PortalHubPage({ searchParams }: { searchParams: SearchParamsObj }) {
   const actor = await requirePortalMember();
+  const planParam = firstParam(searchParams.plan);
+  const [programs, plan, allOutcomes, allAwards, allCases, meetings, boards, documents, invoices] = await Promise.all([
+    listPortalProgramSummaries(actor),
+    getPlanTabForActor(actor, planParam === ALL_TIME ? null : planParam),
+    listOutcomesForActor(actor),
+    listAwardsForActor(actor),
+    listCaseStudiesForActor(actor),
+    getMeetingsForActor(actor),
+    listHubBoardsForActor(actor),
+    listDocumentsForActor(actor),
+    getInvoicesForActor(actor),
+  ]);
+  const canCreate = contributorCompanyScope(actor).length > 0;
+  const program = programs[0] ?? null;
 
-  const [team, timeOff, leaveDecisions, invoices, requests, events, hasPlan, board, documents] =
-    await Promise.all([
-      getAssignedTeam(actor),
-      getAssignedTimeOff(actor),
-      getLeaveDecisionQueue(actor),
-      getInvoicesForActor(actor),
-      listWorkRequestsForActor(actor),
-      getMyEvents(actor),
-      hasPublishedPlan(actor),
-      getBoardForClient(actor),
-      listDocumentsForActor(actor),
-    ]);
+  if (!program) {
+    return (
+      <div>
+        <PageHead eyebrow="Client hub" title="The Hub" />
+        <div className="admin-card admin-section-card">
+          <h2 className="admin-card-title u-mb-2">No PR programme yet</h2>
+          <p className="admin-page-sub u-m-0">This is where your plan, activity and coverage will live once the programme starts.</p>
+          {canCreate && (
+            <div className="u-mt-4">
+              <Link href="/portal/programs/add" className="admin-btn admin-btn--primary">Add PR Program</Link>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
-  const firstName = actor.displayName.split(/\s+/)[0] || actor.displayName;
-  const companies = actor.memberships.map((m) => m.companyName).filter(Boolean) as string[];
+  const scope = resolvePlanScope(plan?.plans ?? [], planParam);
+  const label = scopeLabel(scope);
+  const scopeValue = scopeParam(scope);
+  const outcomes = scopeOutcomes(allOutcomes.map((o) => ({ ...o, createdAt: o.publishDate ?? "" })), scope);
+  const awards = scopeAwards(allAwards, scope);
+  const caseStudies = scopeCaseStudies(allCases, scope);
+  const coverage = outcomes.filter((o) => o.kind === "coverage");
+  const posts = outcomes.filter((o) => o.kind === "linkedin");
+  const targets = plan?.targets ?? [];
+  const postTarget = scope.mode === "plan" ? plan?.targets.find((t) => t.group_key === "linkedin-authority")?.quantity_target ?? null : null;
 
-  const hasStaff = team.length > 0;
-  const today = isoDay(0);
-  const weekEnd = isoDay(7);
-  // A leave overlaps "this week" iff it starts on/before the window's end and
-  // ends on/after today. Dates are YYYY-MM-DD, so lexical compare is date compare.
-  const outThisWeek = timeOff.filter((e) => e.startDate <= weekEnd && e.endDate >= today);
-
-  // Actionable = blocked on the CLIENT. estimate_submitted / work_submitted are
-  // the two states where the contractor is waiting on this person to decide.
-  const needsDecision = requests.filter(
-    (r) => r.status === "estimate_submitted" || r.status === "work_submitted",
-  );
-  // Moving, but on Edge8's side — surfaced as a count, not a card. Draft is the
-  // client's own unsent request, so it is neither "yours to action" nor "ours".
-  const inProgress = requests.filter((r) =>
-    ["awaiting_estimate", "changes_requested", "approved"].includes(r.status),
-  );
-  const openRequestCount = requests.filter(
-    (r) => !["completed", "cancelled", "rejected", "draft"].includes(r.status),
-  ).length;
-
-  const openInvoices = invoices.filter((inv) => inv.balanceCents > 0);
-  const openTotal = openInvoices.reduce((sum, inv) => sum + inv.balanceCents, 0);
-  const openCurrency = openInvoices[0]?.currency ?? "usd";
-
-  const upcomingEvents = events
-    .filter((e) => e.startsAt && e.startsAt.slice(0, 10) >= today && e.status !== "cancelled")
-    .sort((a, b) => (a.startsAt! < b.startsAt! ? -1 : 1));
-  const nextEvent = upcomingEvents[0] ?? null;
-
-  // Leave waiting on this person to decide. Empty unless they are named as
-  // client manager on an active placement, so it adds no surface for anyone
-  // else (lib/portal/time-off.ts).
-  const hasAttention =
-    openInvoices.length > 0 || needsDecision.length > 0 || leaveDecisions.length > 0;
-
-  // Delivery at a glance: the three views shared with the team client hub.
-  const openCards = (board?.cards ?? []).filter((c) => !c.done);
+  const programBoard = boards.find((b) => b.prProgramId === program.id) ?? boards[0] ?? null;
+  const fullBoard = programBoard ? await getBoardViewForActor(actor, programBoard.id) : null;
+  const board = fullBoard ? { ...fullBoard, cards: scopeCards(fullBoard.cards, scope) } : null;
   const columnName = new Map((board?.columns ?? []).map((c) => [c.id, c.name]));
-  const latestDocs = documents.slice(0, 3);
-  const hasGlance = hasPlan || board !== null || documents.length > 0;
+  const waitingCards = (board?.cards ?? []).filter((c) => !c.done && /waiting/i.test(columnName.get(c.columnId ?? "") ?? ""));
+
+  // The read-only coverage panel takes the full row shape; client-safe fields
+  // only are populated, the internal ones are null by construction.
+  const coverageRows: OutcomeRow[] = outcomes.map((o) => ({
+    id: o.id,
+    kind: o.kind,
+    channel: o.channel,
+    title: o.title,
+    outlet: o.outlet,
+    url: o.url,
+    publishDate: o.publishDate,
+    publishedAt: o.publishDate,
+    reach: o.reach,
+    copyMd: o.copyMd,
+    taskId: null,
+    taskTitle: null,
+    backlogItemId: null,
+    targetTitle: o.targetTitle,
+    journalistId: null,
+    journalistName: null,
+    caseStudyId: null,
+    mediaAssetDocumentId: null,
+    mediaAssetName: null,
+    createdAt: o.publishDate ?? "",
+  }));
+  const coverageKind = firstParam(searchParams.kind) === "linkedin" ? "linkedin" : "coverage";
+  const companies = actor.memberships
+    .filter((m): m is typeof m & { companyId: string } => !!m.companyId)
+    .map((m) => ({ companyId: m.companyId, companyName: m.companyName ?? "Your company" }));
+  const q = `plan=${encodeURIComponent(scopeValue)}`;
+
+  const tabs: TabDef[] = [
+    {
+      key: "plan",
+      label: "90-Day Plan",
+      count: targets.length || undefined,
+      content: plan ? (
+        <QuarterlyPlanPanel
+          programId={plan.programId}
+          plans={plan.plans}
+          selected={plan.selected}
+          targets={plan.targets}
+          groups={plan.groups}
+          planHrefBase={`/portal?tab=plan&plan=`}
+          suggestNext={quarterFor(new Date())}
+        />
+      ) : (
+        <section className="admin-card admin-section-card"><Empty text="Your 90-day plan will appear here once it is published." /></section>
+      ),
+    },
+    {
+      key: "board",
+      label: "Work Board",
+      count: board ? board.cards.filter((c) => !c.done).length || undefined : undefined,
+      content: board ? <ClientBoardView board={board} viewerPersonId={actor.personId} /> : <section className="admin-card admin-section-card"><Empty text="No activity board yet." /></section>,
+    },
+    {
+      key: "coverage",
+      label: "Coverage",
+      count: coverageRows.length || undefined,
+      content: (
+        <section className="admin-card admin-section-card">
+          <CoveragePanel programId={program.id} rows={coverageRows} kind={coverageKind} kindHrefBase={`/portal?tab=coverage&${q}&kind=`} />
+        </section>
+      ),
+    },
+    {
+      key: "awards",
+      label: "Awards",
+      count: awards.length || undefined,
+      content: <section className="admin-card admin-section-card"><AwardsPanel programId={program.id} rows={awards} /></section>,
+    },
+    {
+      key: "case-studies",
+      label: "Case Studies",
+      count: caseStudies.length || undefined,
+      content: <section className="admin-card admin-section-card"><CaseStudiesPanel programId={program.id} rows={caseStudies} /></section>,
+    },
+    {
+      key: "documents",
+      label: "Documents",
+      count: documents.length || undefined,
+      content: (
+        <section className="admin-card admin-section-card">
+          <DocumentsView documents={documents} companies={companies} actorEmail={actor.email} />
+        </section>
+      ),
+    },
+    {
+      key: "meetings",
+      label: "Meetings",
+      count: meetings.length || undefined,
+      content: (
+        <section className="admin-card admin-section-card">
+          <MeetingsPanel meetings={meetings} detailBasePath="/portal/meetings" />
+        </section>
+      ),
+    },
+    ...(invoices.length > 0
+      ? [
+          {
+            key: "invoices",
+            label: "Invoices",
+            count: invoices.length,
+            content: <section className="admin-card admin-section-card"><PortalInvoices invoices={invoices} /></section>,
+          } satisfies TabDef,
+        ]
+      : []),
+  ];
+
+  const current = scope.mode === "plan" ? scope.plan : plan?.selected ?? null;
 
   return (
-    <>
-      <PageHead
-        eyebrow="Client Portal"
-        title={`Welcome, ${firstName}`}
-        sub={companies.length > 0 ? companies.join(" · ") : undefined}
+    <div>
+      <PageHead eyebrow="Client hub" title="The Hub" sub={current ? `${current.quarter_label} · ${formatDate(current.starts_on)} – ${formatDate(current.ends_on)}` : "Your PR programme"} />
+
+      <PortalProgramBand
+        name={program.name}
+        status={program.status}
+        accountLead={program.accountLead}
+        strategicLead={program.strategicLead}
+        quarterLabel={current?.quarter_label ?? null}
+        quarterDates={current ? `${formatDate(current.starts_on)} – ${formatDate(current.ends_on)}` : null}
+        scopeSwitch={plan ? <PlanScopeSwitch plans={plan.plans.map((p) => ({ id: p.id, label: p.quarter_label }))} value={scopeValue} /> : undefined}
+        scopeLabel={label}
+        kpis={{
+          coverage: coverage.length,
+          posts: posts.length,
+          postTarget,
+          targetsOnTrack: targets.filter(targetOnTrack).length,
+          targetsTotal: targets.length,
+          hasPlan: !!plan?.selected,
+          awardsInFlight: awards.filter((a) => AWARD_IN_FLIGHT.has(a.stage)).length,
+        }}
       />
 
-      {hasGlance && (
-        <div className="admin-glance u-mb-4">
-          <div className="admin-glance-cell">
-            <span className="admin-glance-label">90-Day Plan</span>
-            <span className="admin-glance-value">{hasPlan ? "Published" : "Coming soon"}</span>
-            <span className="admin-glance-note">
-              {hasPlan ? <Link href="/portal/plan">Open →</Link> : "Published by your account team"}
-            </span>
-          </div>
-          <div className="admin-glance-cell">
-            <span className="admin-glance-label">Activity</span>
-            <span className="admin-glance-value">
-              {board ? `${openCards.length} in motion` : "Nothing yet"}
-            </span>
-            <span className="admin-glance-note">
-              {board ? <Link href="/portal/hub">Open →</Link> : "Set up by your account team"}
-            </span>
-          </div>
-          <div className="admin-glance-cell">
-            <span className="admin-glance-label">Documents</span>
-            <span className="admin-glance-value">
-              {documents.length === 0 ? "None yet" : `${documents.length} file${documents.length === 1 ? "" : "s"}`}
-            </span>
-            <span className="admin-glance-note">
-              <Link href="/portal/hub">{documents.length > 0 ? "Open →" : "Upload →"}</Link>
-            </span>
-          </div>
-        </div>
-      )}
-
-      {hasAttention && (
-        <div className="admin-card admin-section-card admin-card--attention u-mb-4">
-          <h2 className="admin-card-title u-mb-3">
-            Needs your attention
-          </h2>
+      {waitingCards.length > 0 && (
+        <section className="admin-card admin-section-card admin-card--attention u-mb-4">
+          <h2 className="admin-card-title u-mb-3">Waiting on you</h2>
           <div className="admin-list">
-            {openInvoices.map((inv) => {
-              const overdue = !!inv.dueDate && inv.dueDate.slice(0, 10) < today;
-              return (
-                <div className="admin-list-row" key={inv.id}>
-                  <div className="admin-list-main">
-                    <div className="admin-list-title">
-                      Invoice {inv.docNumber || inv.id.slice(0, 8)}
-                    </div>
-                    <div className="admin-list-sub">
-                      {formatCents(inv.balanceCents, inv.currency)}{" "}
-                      {overdue
-                        ? `overdue since ${formatDate(inv.dueDate)}`
-                        : inv.dueDate
-                          ? `due ${formatDate(inv.dueDate)}`
-                          : "outstanding"}
-                    </div>
-                  </div>
-                  <div className="admin-list-aside">
-                    <Badge tone={overdue ? "err" : "warn"}>{overdue ? "Overdue" : "Due"}</Badge>
-                    {inv.paymentLink ? (
-                      <a
-                        className="admin-btn admin-btn--sm admin-btn--primary"
-                        href={inv.paymentLink}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Pay now
-                      </a>
-                    ) : (
-                      <Link className="admin-btn admin-btn--sm" href="/portal/invoices">
-                        View
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-
-            {leaveDecisions.map((r) => (
-              <Link
-                className="admin-list-row u-link-plain"
-                key={r.id}
-                href="/portal/time-off"
-              >
-                <div className="admin-list-main">
-                  <div className="admin-list-title">{r.fullName || "Team member"} requested time off</div>
-                  <div className="admin-list-sub">
-                    {timeOffRange(r.startDate, r.endDate, r.isHalfDay)}
-                  </div>
-                </div>
-                <div className="admin-list-aside">
-                  <Badge tone="warn">Approve leave</Badge>
-                </div>
-              </Link>
-            ))}
-
-            {needsDecision.map((r) => (
-              <Link
-                className="admin-list-row u-link-plain"
-                key={r.id}
-                href={`/portal/requests/${r.id}`}
-              >
-                <div className="admin-list-main">
-                  <div className="admin-list-title">{r.title}</div>
-                  <div className="admin-list-sub">
-                    {r.status === "estimate_submitted"
-                      ? `${r.contractorName || "Your contractor"} sent an estimate${
-                          r.estimatedHours != null ? ` · est ${formatHours(r.estimatedHours)}` : ""
-                        }`
-                      : `${r.contractorName || "Your contractor"} delivered the work${
-                          r.actualHours != null ? ` · ${formatHours(r.actualHours)}` : ""
-                        }`}
-                  </div>
-                </div>
-                <div className="admin-list-aside">
-                  <Badge tone="warn">
-                    {r.status === "estimate_submitted" ? "Approve estimate" : "Review & accept"}
-                  </Badge>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          {inProgress.length > 0 && (
-            <p className="admin-page-sub u-mt-3 u-mb-0">
-              {inProgress.length} more {inProgress.length === 1 ? "request is" : "requests are"} in
-              progress with {BRAND_SHORT}. <Link href="/portal/requests">View all</Link>
-            </p>
-          )}
-        </div>
-      )}
-
-      <div className="admin-kpi-grid u-mb-4">
-        <MetricCard
-          label="Open requests"
-          value={openRequestCount}
-          sub="in flight"
-          href="/portal/requests"
-        />
-        {hasStaff && (
-          <MetricCard
-            label="Your team"
-            value={team.length}
-            sub={team.length === 1 ? "dedicated person" : "dedicated people"}
-            href="/portal/team"
-          />
-        )}
-        {invoices.length > 0 && (
-          <MetricCard
-            label="Outstanding"
-            value={openTotal > 0 ? formatCents(openTotal, openCurrency) : "Paid up"}
-            sub={openTotal > 0 ? `${openInvoices.length} open` : "all settled"}
-            href="/portal/invoices"
-          />
-        )}
-        {events.length > 0 && (
-          <MetricCard
-            label="Upcoming events"
-            value={upcomingEvents.length}
-            sub="registered"
-            href="/portal/events"
-          />
-        )}
-      </div>
-
-      {(openCards.length > 0 || latestDocs.length > 0 || hasStaff || nextEvent) && (
-        <h2 className="admin-section-label">Your engagement</h2>
-      )}
-
-      {board && openCards.length > 0 && (
-        <div className="admin-card admin-section-card u-mb-4">
-          <div className="admin-card-head">
-            <h2 className="admin-card-title">
-              Work Board
-              <span className="admin-cell-muted u-sm u-ml-2">
-                in motion
-              </span>
-            </h2>
-            <Link href="/portal/hub" className="admin-cell-muted u-sm">
-              View board →
-            </Link>
-          </div>
-          <div className="admin-list">
-            {openCards.slice(0, 3).map((c) => (
-              <Link
-                key={c.id}
-                href="/portal/hub"
-                className="admin-list-row u-link-plain"
-              >
+            {waitingCards.map((c) => (
+              <div className="admin-list-row" key={c.id}>
                 <div className="admin-list-main">
                   <div className="admin-list-title">{c.title}</div>
-                  {c.columnId && columnName.get(c.columnId) && (
-                    <div className="admin-list-sub">{columnName.get(c.columnId)}</div>
-                  )}
+                  {c.dueDate && <div className="admin-list-sub">Needed by {formatDate(c.dueDate)}</div>}
                 </div>
-                <div className="admin-list-aside">
-                  <Badge tone={TASK_TONE[c.priority] ?? "neutral"}>{TASK_LABEL[c.priority] ?? c.priority}</Badge>
-                </div>
-              </Link>
+              </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {latestDocs.length > 0 && (
-        <div className="admin-card admin-section-card u-mb-4">
-          <div className="admin-card-head">
-            <h2 className="admin-card-title">
-              Latest documents
-            </h2>
-            <Link href="/portal/hub" className="admin-cell-muted u-sm">
-              All {documents.length} →
-            </Link>
-          </div>
-          <div className="admin-list">
-            {latestDocs.map((d) => {
-              const ext = d.filename.match(/\.([a-zA-Z0-9]{1,5})$/)?.[1]?.toUpperCase() ?? null;
-              return (
-                <div className="admin-list-row" key={d.id}>
-                  <div className="admin-list-main">
-                    <div className="admin-list-title">{d.filename}</div>
-                    <div className="admin-list-sub">
-                      {formatDate(d.createdAt)}
-                      {(d.uploaderName || d.uploadedBy) && ` · ${d.uploaderName ?? d.uploadedBy}`}
-                    </div>
-                  </div>
-                  {ext && (
-                    <div className="admin-list-aside">
-                      <Badge tone="info">{ext}</Badge>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {hasStaff && (
-        <div className="admin-card admin-section-card u-mb-4">
-          <div className="admin-card-head">
-            <h2 className="admin-card-title">
-              This week
-            </h2>
-            <Link href="/portal/time-off" className="admin-cell-muted u-sm">
-              Time off →
-            </Link>
-          </div>
-          {outThisWeek.length === 0 ? (
-            <p className="admin-page-sub u-m-0">
-              Your whole team is in this week.
-            </p>
-          ) : (
-            <div className="admin-list">
-              {outThisWeek.map((e) => (
-                <div className="admin-list-row" key={e.id}>
-                  <div className="admin-list-main">
-                    <div className="admin-list-title">{e.fullName || "Team member"}</div>
-                    <div className="admin-list-sub">{humanize(e.leaveType)}</div>
-                  </div>
-                  <div className="admin-list-aside">
-                    <span className="admin-cell-muted u-sm">
-                      {timeOffRange(e.startDate, e.endDate, e.isHalfDay)}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {nextEvent && (
-        <div className="admin-card admin-section-card u-mb-4">
-          <div className="u-row-top u-wrap u-between">
-            <div>
-              <div className="admin-eyebrow u-mb-1">
-                Next event
-              </div>
-              <h2 className="admin-card-title u-mb-1">
-                {nextEvent.eventTitle || "Event"}
-              </h2>
-              <div className="admin-cell-muted">
-                {eventRange(nextEvent.startsAt, nextEvent.endsAt)}
-                {nextEvent.location ? ` · ${nextEvent.location}` : ""}
-                {nextEvent.tierTitle ? ` · ${nextEvent.tierTitle}` : ""}
-              </div>
-            </div>
-            <Badge tone="ok">{humanize(nextEvent.status)}</Badge>
-          </div>
-        </div>
+        </section>
       )}
 
       <div className="admin-card admin-section-card">
-        <h2 className="admin-card-title u-mb-3">
-          Quick actions
-        </h2>
-        <div className="u-row u-wrap">
-          <Link href="/portal/requests/new" className="admin-btn admin-btn--primary">
-            New project request
-          </Link>
-          <Link href="/portal/requests/hire" className="admin-btn">
-            Full-time hire estimate
-          </Link>
-          <Link href="/portal/referrals" className="admin-btn">
-            Refer &amp; earn
-          </Link>
-        </div>
+        <Tabs tabs={tabs} initialKey={firstParam(searchParams.tab)} syncParam="tab" />
       </div>
-    </>
+    </div>
   );
 }

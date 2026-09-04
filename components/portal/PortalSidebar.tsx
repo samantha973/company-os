@@ -35,45 +35,21 @@ type NavGroup = { label: string | null; items: NavItem[] };
 // client's own record (Account). Groups collapse, matching AdminSidebar. Home
 // stays ungrouped and renders as a top-level landmark: same accent bar and
 // type as a section header, since it outranks the items inside the sections.
+// Four items, flat. The Hub (/portal) mirrors the admin Client Hub \u2014 plan,
+// activity, coverage, awards, case studies, documents, meetings and invoices
+// are its tabs, not nav entries. Everything else the portal can do (requests,
+// referrals, time off, users) stays reachable by URL but out of the nav.
 const NAV: NavGroup[] = [
   {
     label: null,
-    items: [{ label: "Overview", href: "/portal", ico: "\u25c8", built: true }],
-  },
-  {
-    label: "Your PR programme",
     items: [
-      // PR Programs leads: /portal/hub is the one PR Programs hub (company
-      // overview + program cards); /portal/programs redirects here, so this is
-      // the single entry point. Membership is the entitlement.
-      { label: "PR Programs", href: "/portal/hub", ico: "\u21c9", built: true },
-      // The published 90-day plan; appears once the team publishes one.
-      { label: "90-Day Plan", href: "/portal/plan", ico: "\u25a3", built: true, entitlementKey: "plan" },
-      { label: "Coverage", href: "/portal/coverage", ico: "\u25a4", built: true, entitlementKey: "coverage" },
-      { label: "Awards", href: "/portal/awards", ico: "\u2605", built: true, entitlementKey: "awards" },
-      { label: "Case Studies", href: "/portal/case-studies", ico: "\u275d", built: true, entitlementKey: "caseStudies" },
-    ],
-  },
-  {
-    label: "People",
-    items: [
-      // "Your PR Hub team" not "Team": this is the agency staff assigned to the client,
-      // not the client's own portal users (that's Account \u2192 Users).
+      { label: "The Hub", href: "/portal", ico: "\u25a6", built: true },
+      // "Your PR Hub team" not "Team": the agency staff assigned to the client.
       { label: `Your ${BRAND_SHORT} team`, href: "/portal/team", ico: "\u2637", built: true, entitlementKey: "team" },
-      { label: "Time Off", href: "/portal/time-off", ico: "\u263c", built: true, entitlementKey: "timeOff" },
-    ],
-  },
-  {
-    label: "Account",
-    items: [
       // Personal Profile is self-scoped, so every role gets it, always.
       { label: "Personal Profile", href: "/portal/profile", ico: "\u25c9", built: true },
-      // Company Profile edits the shared company record: admins only, same gate
-      // as Users.
+      // Company Profile edits the shared company record: admins only.
       { label: "Company Profile", href: "/portal/company", ico: "\u2302", built: true, entitlementKey: "companyProfile" },
-      { label: "Invoices", href: "/portal/invoices", ico: "\u25a4", built: true, entitlementKey: "invoices" },
-      // Users: portal admins manage their own company's users (PR 3).
-      { label: "Users", href: "/portal/users", ico: "\u265f", built: true, entitlementKey: "users" },
     ],
   },
 ];
@@ -211,18 +187,7 @@ export function PortalSidebar({
                 )}
                 {!isCollapsed &&
                   group.items.map((item) =>
-                    // The ungrouped items (Home) sit at section-header rank, so
-                    // they take the header's accent bar and type rather than an
-                    // item's icon-and-label row.
-                    group.label === null ? (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className={`admin-nav-toplink${isActive(pathname, item.href) ? " is-active" : ""}`}
-                      >
-                        {item.label}
-                      </Link>
-                    ) : isEnabled(item) ? (
+                    isEnabled(item) ? (
                       <Link
                         key={item.href}
                         href={item.href}

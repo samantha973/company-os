@@ -22,6 +22,9 @@ export type PortalProgramSummary = {
   // One line derived from the program plan's 5Ds brief; null when no plan
   // brief exists yet.
   description: string | null;
+  // The agency people on the account, by display name. Client-safe.
+  accountLead: string | null;
+  strategicLead: string | null;
   stats: Pick<ProgramStats, "coverageCount" | "linkedinPostCount">;
   // The current PUBLISHED 90-day plan, or null while the team is drafting.
   currentPlan: Pick<PlanSnapshot, "id" | "quarterLabel" | "startsOn" | "endsOn" | "targetsTotal" | "targetsOnTrack" | "targetsWithVariance"> | null;
@@ -86,6 +89,8 @@ export async function listPortalProgramSummaries(actor: PortalActor): Promise<Po
     name: s.name,
     status: s.status,
     description: briefByProgram.has(s.id) ? briefToOneLine(briefByProgram.get(s.id) as string) : null,
+    accountLead: s.accountLead?.name ?? null,
+    strategicLead: s.strategicLead?.name ?? null,
     stats: { coverageCount: s.stats.coverageCount, linkedinPostCount: s.stats.linkedinPostCount },
     currentPlan: plan
       ? {
