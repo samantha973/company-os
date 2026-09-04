@@ -1,6 +1,6 @@
 // Brand palette for renderers that cannot read CSS custom properties:
-// Open Graph images (Satori), QR codes, and HTML email sent to external
-// inboxes. Everything rendered in the browser must use the tokens in
+// Open Graph images, QR codes, and HTML email sent to external inboxes.
+// Everything rendered in the browser must use the tokens in
 // app/styles/tokens.css instead — this file mirrors §1 of that file and
 // must be kept in sync with it. `npm run check:tokens` allows raw colours
 // only there and here.
@@ -17,4 +17,10 @@ export const PALETTE = {
   inkBody: "#797c82",
   muted: "#9CA3AF",
   greyMid: "#6B7280",
+} as const;
+
+// Inline-style helpers for HTML email, where every colour has to be literal.
+export const EMAIL = {
+  button: `display:inline-block;background:${PALETTE.dark};color:${PALETTE.white};text-decoration:none;`,
+  mutedText: `color:${PALETTE.inkBody};`,
 } as const;

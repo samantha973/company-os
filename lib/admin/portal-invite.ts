@@ -1,3 +1,4 @@
+import { PALETTE } from "@/lib/design/palette";
 // Server-only. Core client-portal provisioning, shared between the admin UI
 // server actions (app/admin/(dashboard)/revenue/companies/portal-actions.ts),
 // the admin assistant's approval-gated invite_portal_member tool
@@ -188,8 +189,8 @@ export async function invitePortalMemberCore(
         html: `
           <p>Hi,</p>
           <p>You've been given access to the <strong>${BRAND_PORTAL}</strong>.</p>
-          <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:#04102D;color:#ffffff;text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Open the Client Portal</a></p>
-          <p style="font-size:13px;color:#64748b;">The button takes you to a sign-in page — press "Sign in" there and you're in. If the link expires, request a fresh one at <a href="${siteOrigin()}/portal/login">${siteOrigin()}/portal/login</a> or reply to this email.</p>
+          <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:${PALETTE.dark};color:${PALETTE.white};text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Open the Client Portal</a></p>
+          <p style="font-size:13px;color:${PALETTE.inkBody};">The button takes you to a sign-in page — press "Sign in" there and you're in. If the link expires, request a fresh one at <a href="${siteOrigin()}/portal/login">${siteOrigin()}/portal/login</a> or reply to this email.</p>
           <p>${BRAND_SIGNOFF}</p>
         `.trim(),
         logMeta: { source: "portal_invite" },
@@ -251,8 +252,8 @@ export async function resendPortalLinkCore(
     subject: `Your ${BRAND_PORTAL} sign-in link`,
     html: `
       <p>Here is your sign-in link for the ${BRAND_PORTAL}:</p>
-      <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:#04102D;color:#ffffff;text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Sign in to the Client Portal</a></p>
-      <p style="font-size:13px;color:#64748b;">The button takes you to a sign-in page — press "Sign in" there and you're in. If the link expires, you can request a fresh one any time at <a href="${siteOrigin()}/portal/login">${siteOrigin()}/portal/login</a>.</p>
+      <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:${PALETTE.dark};color:${PALETTE.white};text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Sign in to the Client Portal</a></p>
+      <p style="font-size:13px;color:${PALETTE.inkBody};">The button takes you to a sign-in page — press "Sign in" there and you're in. If the link expires, you can request a fresh one any time at <a href="${siteOrigin()}/portal/login">${siteOrigin()}/portal/login</a>.</p>
     `,
     logMeta: { source: "portal_resend" },
   });
@@ -351,10 +352,10 @@ export async function setTempPasswordCore(
         <li>Go to <a href="${loginUrl}">${loginUrl}</a></li>
         <li>Press <strong>Sign in with a password</strong></li>
         <li>Email: <strong>${t.email}</strong></li>
-        <li>Temporary password: <span style="font-family:monospace;font-size:15px;font-weight:600;background:#f1f5f9;padding:3px 10px;border-radius:6px;">${password}</span></li>
+        <li>Temporary password: <span style="font-family:monospace;font-size:15px;font-weight:600;background:${PALETTE.canvas};padding:3px 10px;border-radius:6px;">${password}</span></li>
       </ol>
       <p>You'll be asked to choose your own password right after you sign in.</p>
-      <p style="font-size:13px;color:#64748b;">If anything gets in the way, just reply to this email.</p>
+      <p style="font-size:13px;color:${PALETTE.inkBody};">If anything gets in the way, just reply to this email.</p>
     `.trim(),
     logMeta: { source: "portal_temp_password" },
     logBody:
@@ -489,8 +490,8 @@ export async function sendSelfServeSignInLink(rawEmail: string): Promise<void> {
     subject: `Your ${BRAND_PORTAL} sign-in link`,
     html: `
       <p>Here is your sign-in link for the ${BRAND_PORTAL}:</p>
-      <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:#04102D;color:#ffffff;text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Sign in to the Client Portal</a></p>
-      <p style="font-size:13px;color:#64748b;">The button takes you to a sign-in page — press "Sign in" there and you're in. If the link expires, you can request a fresh one any time at <a href="${siteOrigin()}/portal/login">${siteOrigin()}/portal/login</a>.</p>
+      <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:${PALETTE.dark};color:${PALETTE.white};text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Sign in to the Client Portal</a></p>
+      <p style="font-size:13px;color:${PALETTE.inkBody};">The button takes you to a sign-in page — press "Sign in" there and you're in. If the link expires, you can request a fresh one any time at <a href="${siteOrigin()}/portal/login">${siteOrigin()}/portal/login</a>.</p>
     `,
     logMeta: { source: "portal_self_serve_link" },
   });
@@ -528,8 +529,8 @@ export async function sendSelfServePasswordReset(rawEmail: string): Promise<void
     subject: `Reset your ${BRAND_PORTAL} password`,
     html: `
       <p>We received a request to set a new password for your ${BRAND_PORTAL} account.</p>
-      <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:#04102D;color:#ffffff;text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Set a new password</a></p>
-      <p style="font-size:13px;color:#64748b;">The button takes you to a confirmation page — press "Sign in" there, then choose your new password. If you didn't request this, you can ignore this email.</p>
+      <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:${PALETTE.dark};color:${PALETTE.white};text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Set a new password</a></p>
+      <p style="font-size:13px;color:${PALETTE.inkBody};">The button takes you to a confirmation page — press "Sign in" there, then choose your new password. If you didn't request this, you can ignore this email.</p>
     `,
     logMeta: { source: "portal_self_serve_reset" },
   });

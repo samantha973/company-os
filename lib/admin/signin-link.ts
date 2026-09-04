@@ -1,3 +1,4 @@
+import { PALETTE } from "@/lib/design/palette";
 // Server-only. Self-serve magic-link sign-in for the /admin Company OS, from the
 // /admin/login page (no session). The admin mirror of lib/team/signin-link.ts:
 // mint the token server-side and email a link to /admin/verify, which only
@@ -59,8 +60,8 @@ export async function sendAdminSelfServeSignInLink(rawEmail: string): Promise<vo
     subject: `Your ${BRAND} sign-in link`,
     html: `
       <p>Here is your sign-in link for ${BRAND}:</p>
-      <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:#04102D;color:#ffffff;text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Sign in to the Company OS</a></p>
-      <p style="font-size:13px;color:#64748b;">The button takes you to a sign-in page. Press "Sign in" there and you're in. If the link expires, you can request a fresh one any time at <a href="${siteOrigin()}/admin/login">${siteOrigin()}/admin/login</a>.</p>
+      <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:${PALETTE.dark};color:${PALETTE.white};text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Sign in to the Company OS</a></p>
+      <p style="font-size:13px;color:${PALETTE.inkBody};">The button takes you to a sign-in page. Press "Sign in" there and you're in. If the link expires, you can request a fresh one any time at <a href="${siteOrigin()}/admin/login">${siteOrigin()}/admin/login</a>.</p>
     `,
     logMeta: { source: "admin_self_serve_link" },
   });
