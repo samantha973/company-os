@@ -52,7 +52,7 @@ export function UnsubscribeForm({ token }: { token: string }) {
       <p>
         <button
           type="button"
-          className="btn btn-primary"
+          className="site-btn site-btn-primary"
           onClick={handleUnsubscribe}
           disabled={status === 'sending'}
         >
