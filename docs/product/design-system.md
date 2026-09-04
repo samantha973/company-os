@@ -86,3 +86,10 @@ migration here. Sequence per repo: measure → foundation PR (tokens, utilities,
 `check:tokens` as prebuild) → rename prefixes by exact class name → run both
 converters per surface → hand-finish the colour/border leftovers as component
 classes → refresh baselines, build, eyeball, merge.
+
+## Colours stored as data
+
+`company_os.tags.color` is the one column that can hold a colour. It stores
+a **token name** (for example `--admin-chart-2`), never a hex value, and the
+renderer resolves it with `var(--…)`. The same rule applies to any future
+column or shared TypeScript list: name the token, do not copy the number.

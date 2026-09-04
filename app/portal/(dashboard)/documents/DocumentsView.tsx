@@ -166,7 +166,7 @@ export function DocumentsView({
       <div className="admin-card admin-section-card u-mb-4">
         <h2 className="admin-card-title u-mb-3">Upload documents</h2>
         {companies.length > 1 && (
-          <div className="u-mb-3" style={{ maxWidth: 360 }} /* layout-ok: control width cap, no 360px width utility */>
+          <div className="u-mb-3 u-max-5">
             <label className="admin-label" htmlFor="doc-company">Company</label>
             <select
               id="doc-company"

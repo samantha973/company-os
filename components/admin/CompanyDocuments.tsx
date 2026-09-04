@@ -160,10 +160,9 @@ export function CompanyDocuments({
       <div className="u-row u-wrap u-gap-3 u-mb-3">
         {programs.length > 0 && (
           <select
-            className="admin-select"
+            className="admin-select u-max-5"
             value={programId}
             onChange={(e) => setProgramId(e.target.value)}
-            style={{ maxWidth: 320 }} /* layout-ok: control width cap, no 320px width utility */
             aria-label="Tag uploads to a PR Program (optional)"
           >
             <option value="">No program tag</option>
