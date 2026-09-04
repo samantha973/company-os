@@ -73,6 +73,23 @@
   --color-elevation-modal: 0 24px 80px rgba(4, 16, 45, 0.32);
   --color-elevation-dark: 0 12px 32px rgba(0, 0, 0, 0.4);
 
+  /* Home page — mint on black. The sign-in landing keeps its own identity;
+     these are its primitives so the CSS module reads names, not hex. */
+  --color-black: #000000;
+  --color-home-ink-2: #3C4043;
+  --color-home-ink-3: #1F2327;
+  --color-home-muted: #9AA0A6;
+  --color-home-grey-1: #F6F7F8;
+  --color-home-grey-2: #F0F1F2;
+  --color-home-grey-3: #E8EAED;
+  --color-home-grey-4: #E0E2E4;
+  --color-home-grey-5: #BDC1C6;
+  --color-home-mint-soft: #8BE6D3;
+  --color-home-mint-pale: #CDF7E9;
+  --color-home-mint-wash: #B6ECD9;
+  --color-home-mint-deep: #4A6B60;
+  --color-home-mint-deeper: #2D3F39;
+
   /* Type */
   --font-display: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
   --font-body: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
