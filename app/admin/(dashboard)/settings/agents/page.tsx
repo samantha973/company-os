@@ -90,6 +90,19 @@ export default async function AgentsPage() {
   await requireSuperAdmin();
   const { vercel, local, counts, violations, capture } = loadAgentManagement();
 
+  if (counts.total === 0) {
+    return (
+      <>
+        <PageHead eyebrow="Settings" title="Agents" sub="No routines are scheduled for this account." />
+        <div className="admin-card admin-section-card">
+          <div className="admin-empty">
+            Nothing is running. Vercel crons live in vercel.json (currently none) and appear here automatically when added; local routines are registered in lib/admin/agent-management.ts.
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <PageHead
