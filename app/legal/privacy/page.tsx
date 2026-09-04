@@ -125,7 +125,7 @@ export default function PrivacyPolicyPage() {
 
           <Block heading="International data transfers">
             <p>
-              The PR Hub operates across the United States and Vietnam. By using our services, you
+              The PR Hub operates in Australia. By using our services, you
               understand that your information may be transferred to and processed in countries
               other than your own, which may have different data-protection laws.
             </p>
