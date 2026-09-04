@@ -288,7 +288,8 @@ if (existsSync(ADMIN_CSS)) {
    a broken build, and the remaining offenders are tracked in the inventory.
    ───────────────────────────────────────────────────────────── */
 
-const TYPE_SCALE = [11, 12, 13, 14, 15, 16, 18, 20, 24, 28, 32, 40, 48, 64, 80];
+// Matches the --admin-text-* ramp in app/styles/tokens.css (22 = card h1, 26 = page title).
+const TYPE_SCALE = [11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26, 28, 32, 40, 48, 64, 80];
 const SPACE_SCALE = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 56, 64, 80, 96, 120];
 
 const offScale = { type: new Map(), space: new Map() };

@@ -16,7 +16,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 22px clamp(24px, 5vw, 72px);
+  padding: 24px clamp(24px, 5vw, 80px);
   border-bottom: 1px solid var(--color-home-grey-2);
 }
 .brand {
@@ -27,7 +27,7 @@
 .logo {
   display: flex;
   align-items: baseline;
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 700;
   letter-spacing: -1px;
 }
@@ -48,7 +48,7 @@
   gap: 10px;
   background: var(--color-black);
   color: var(--color-bg-primary);
-  padding: 12px 26px;
+  padding: 12px 24px;
   font-size: 12px;
   letter-spacing: 2.5px;
   font-weight: 500;
@@ -62,10 +62,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 26px;
+  gap: 24px;
   background: var(--color-black);
   color: var(--color-bg-primary);
-  padding: 84px clamp(24px, 5vw, 72px) 110px;
+  padding: 80px clamp(24px, 5vw, 80px) 120px;
   text-align: center;
 }
 .heroBadge {
@@ -123,7 +123,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 32px;
-  padding: 0 clamp(24px, 5vw, 72px) 72px;
+  padding: 0 clamp(24px, 5vw, 80px) 80px;
   margin-top: -48px;
 }
 .door {
@@ -133,13 +133,13 @@
   background: var(--color-bg-primary);
   border: 1px solid var(--color-home-grey-3);
   box-shadow: 0 8px 30px color-mix(in srgb, var(--color-black) 8%, transparent);
-  padding: 36px 32px;
+  padding: 32px 32px;
 }
 .doorMint {
   background: var(--color-home-mint-pale);
   border-color: var(--color-home-mint-wash);
 }
-.doorTag { font-size: 10px; letter-spacing: 2.5px; color: var(--color-home-muted); }
+.doorTag { font-size: 11px; letter-spacing: 2.5px; color: var(--color-home-muted); }
 .doorMint .doorTag { color: var(--color-home-mint-deep); }
 .doorTitle { font-size: 22px; font-weight: 700; letter-spacing: 1.5px; margin: 0; }
 .doorDesc {
@@ -159,7 +159,7 @@
   background: var(--color-bg-primary);
   color: var(--color-black);
   border: 1.5px solid var(--color-black);
-  padding: 15px 24px;
+  padding: 16px 24px;
   font-size: 12px;
   letter-spacing: 2.5px;
   font-weight: 500;
@@ -178,7 +178,7 @@
   flex-direction: column;
   align-items: center;
   gap: 48px;
-  padding: 24px clamp(24px, 5vw, 72px) 80px;
+  padding: 24px clamp(24px, 5vw, 80px) 80px;
 }
 .uniqueHeader {
   display: flex;
@@ -188,7 +188,7 @@
   text-align: center;
 }
 .uniqueLabel { font-size: 11px; letter-spacing: 3px; color: var(--color-home-muted); }
-.uniqueTitle { font-size: 30px; font-weight: 700; letter-spacing: 2px; margin: 0; }
+.uniqueTitle { font-size: 32px; font-weight: 700; letter-spacing: 2px; margin: 0; }
 .uniqueSub {
   font-size: 15px;
   line-height: 1.7;
@@ -205,7 +205,7 @@
 }
 .uniqueItem { display: flex; flex-direction: column; gap: 12px; }
 .uniqueItemTitle {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 1.5px;
   border-bottom: 2px solid var(--color-accent-mint-bright);
@@ -227,7 +227,7 @@
   align-items: center;
   gap: 12px;
   background: var(--color-home-mint-pale);
-  padding: 52px clamp(24px, 5vw, 72px);
+  padding: 48px clamp(24px, 5vw, 80px);
   text-align: center;
 }
 .quoteText {
@@ -248,7 +248,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 16px 32px;
-  padding: 32px clamp(24px, 5vw, 72px);
+  padding: 32px clamp(24px, 5vw, 80px);
   background: var(--color-home-grey-1);
   margin-top: auto;
 }
@@ -278,7 +278,7 @@
   .doors { grid-template-columns: 1fr; margin-top: -32px; }
   .uniqueGrid { grid-template-columns: 1fr; gap: 32px; }
   .brandMeta { display: none; }
-  .hero { padding-top: 52px; padding-bottom: 80px; }
+  .hero { padding-top: 48px; padding-bottom: 80px; }
   .heroChips { flex-direction: column; align-items: center; gap: 12px; }
   .footer { flex-direction: column; align-items: flex-start; }
 }
