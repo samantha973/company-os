@@ -96,7 +96,7 @@ export default async function AgentsPage() {
         <PageHead eyebrow="Settings" title="Agents" sub="No routines are scheduled for this account." />
         <div className="admin-card admin-section-card">
           <div className="admin-empty">
-            Nothing is running. Vercel crons live in vercel.json (currently none) and appear here automatically when added; local routines are registered in lib/admin/agent-management.ts.
+            No agents are running, so nothing is spending time or tokens in the background. When The PR Hub adds its first automated routine it will show up here with what it reads, how often it runs and what it connects to.
           </div>
         </div>
       </>
