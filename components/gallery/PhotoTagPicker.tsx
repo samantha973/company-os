@@ -15,10 +15,10 @@ const MAX_RESULTS = 8;
 function Avatar({ name, url }: { name: string; url: string | null }) {
   if (url) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={url} alt="" className="admin-phototag-avatar" />;
+    return <img src={url} alt="" className="admin-avatar admin-avatar--xs" />;
   }
   return (
-    <span className="admin-phototag-avatar admin-phototag-avatar--blank" aria-hidden>
+    <span className="admin-avatar admin-avatar--xs admin-avatar--empty" aria-hidden>
       {name.charAt(0).toUpperCase()}
     </span>
   );

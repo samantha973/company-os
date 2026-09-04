@@ -54,7 +54,7 @@ function Redacted() {
 
 function Bar({ pct }: { pct: number }) {
   return (
-    <div className="admin-meter admin-meter--flat">
+    <div className="admin-meter admin-meter--spaced admin-meter--flat">
       <div
         className="admin-meter-fill" style={{ width: `${Math.max(2, Math.round(pct))}%` }} /* layout-ok: data-driven width */
       />

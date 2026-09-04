@@ -85,15 +85,15 @@ export function MyTasks({ work, boards }: { work: MyWork; boards: MyBoardSummary
                   </div>
                   <div className="u-mt-4">
                     <div
-                      className="admin-cell-muted admin-hub-program-progressrow"
+                      className="admin-cell-muted admin-meter-labels"
                     >
                       <span>
                         {total === 0 ? "No cards yet" : b.openCount === 0 ? "All done" : `${b.openCount} open`}
                       </span>
                       {total > 0 && <span>{pct}% done</span>}
                     </div>
-                    <div className="admin-progress">
-                      <div className="admin-progress-fill" style={{ width: `${pct}%` }} /* layout-ok: data-driven width */ />
+                    <div className="admin-meter admin-meter--thin">
+                      <div className="admin-meter-fill" style={{ width: `${pct}%` }} /* layout-ok: data-driven width */ />
                     </div>
                   </div>
                   <div className="admin-cell-muted u-mt-3 u-sm">

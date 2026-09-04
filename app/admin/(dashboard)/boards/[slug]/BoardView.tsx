@@ -504,8 +504,8 @@ export function BoardView({
                       {s.goal}
                     </div>
                   )}
-                  <div className="admin-progress u-mt-2">
-                    <div className="admin-progress-fill" style={{ width: `${pct}%` }} /* layout-ok: data-driven progress width */ />
+                  <div className="admin-meter admin-meter--thin u-mt-2">
+                    <div className="admin-meter-fill" style={{ width: `${pct}%` }} /* layout-ok: data-driven progress width */ />
                   </div>
                 </Link>
               );
@@ -645,7 +645,7 @@ export function BoardView({
               <div className="admin-kanban-card-meta">
                 {c.assignee_name ? (
                   <span className="admin-kanban-card-assignee">
-                    <span className="admin-kanban-avatar">{initials(c.assignee_name)}</span>
+                    <span className="admin-avatar admin-avatar--sm admin-avatar--soft">{initials(c.assignee_name)}</span>
                     {c.assignee_name}
                   </span>
                 ) : (

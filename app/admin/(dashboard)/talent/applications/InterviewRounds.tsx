@@ -224,7 +224,7 @@ function TranscriptPanel({ round, onChange }: { round: InterviewRound; onChange:
   }
 
   return (
-    <div className="admin-panel-soft">
+    <div className="admin-box admin-box--soft">
       <div className="u-row u-wrap">
         <span className="admin-label u-m-0">
           Transcript
@@ -357,7 +357,7 @@ function PanelSeatRow({
       <div className="u-row u-wrap">
         <span
           aria-hidden
-          className={`admin-tag-xs${seat.isAi ? " admin-tag-xs--accent" : ""}`}
+          className={`admin-tag admin-tag--xs${seat.isAi ? " admin-tag--accent" : ""}`}
         >
           {seat.isAi ? "AI" : seat.role === "lead" ? "LEAD" : seat.role.toUpperCase()}
         </span>
@@ -467,7 +467,7 @@ function PanelSeatRow({
 function DisagreeTag() {
   return (
     <span
-      className="admin-tag-xs admin-tag-xs--warn"
+      className="admin-tag admin-tag--xs admin-tag--warn"
     >
       GAP
     </span>

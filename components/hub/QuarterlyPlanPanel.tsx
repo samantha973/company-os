@@ -43,11 +43,11 @@ function Progress({ t }: { t: PlanTarget }) {
   const done = t.progress.outcome_count;
   const pct = target > 0 ? Math.min(100, Math.round((done / target) * 100)) : targetDone(t) ? 100 : 0;
   return (
-    <div className="admin-plan-progress">
-      <div className="admin-progress">
-        <div className={`admin-progress-fill${targetDone(t) ? " is-done" : ""}`} style={{ width: `${pct}%` }} /* layout-ok: data-driven width */ />
+    <div className="admin-meter-row">
+      <div className="admin-meter admin-meter--thin">
+        <div className={`admin-meter-fill${targetDone(t) ? " is-done" : ""}`} style={{ width: `${pct}%` }} /* layout-ok: data-driven width */ />
       </div>
-      <span className="admin-plan-progress-n">
+      <span className="admin-meter-num">
         {target > 0 ? `${done} / ${target}` : done > 0 ? `${done}` : "—"}
       </span>
     </div>

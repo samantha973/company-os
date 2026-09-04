@@ -12,7 +12,7 @@ export function PortalInvoices({ invoices }: { invoices: PortalInvoice[] }) {
     <div className="admin-panel">
       <p className="admin-page-sub u-m-0">{openTotal > 0 ? `${formatCents(openTotal, invoices[0].currency)} outstanding` : "You're all paid up."}</p>
       {invoices.map((inv) => (
-        <div className="admin-box-pad" key={inv.id}>
+        <div className="admin-box admin-box--pad" key={inv.id}>
           <div className="u-row u-between u-wrap">
             <div>
               <h3 className="admin-card-title u-mb-1">Invoice {inv.docNumber || inv.id.slice(0, 8)}</h3>

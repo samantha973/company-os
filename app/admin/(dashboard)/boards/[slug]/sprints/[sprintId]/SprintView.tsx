@@ -105,7 +105,7 @@ export function SprintView({
   }, [cards]);
 
   const bar = (pct: number) => (
-    <div className="admin-meter admin-meter--thin">
+    <div className="admin-meter admin-meter--spaced admin-meter--thin">
       <div className="admin-meter-fill" style={{ width: `${Math.min(pct, 100)}%` }} /* layout-ok: data-driven width */ />
     </div>
   );
@@ -237,7 +237,7 @@ export function SprintView({
         </div>
 
         <div style={sectionStyle}>
-          <div className="admin-callout">
+          <div className="admin-box admin-box--accent">
             {eyebrow("#1 improvement")}
             {editing ? (
               <>

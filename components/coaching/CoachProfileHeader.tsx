@@ -106,9 +106,9 @@ export function CoachProfileHeader({ detail }: { detail: CoachProfileDetail }) {
       <div className="admin-coach-hero__id">
         {member.avatarUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={member.avatarUrl} alt="" width={40} height={40} className="admin-coach-avatar" />
+          <img src={member.avatarUrl} alt="" width={40} height={40} className="admin-avatar admin-avatar--lg" />
         ) : (
-          <span className="admin-coach-avatar admin-coach-avatar--empty" aria-hidden>
+          <span className="admin-avatar admin-avatar--lg admin-avatar--empty" aria-hidden>
             {member.name.slice(0, 1)}
           </span>
         )}

@@ -46,13 +46,13 @@ function Avatar({ name, avatarUrl }: { name: string; avatarUrl: string | null })
         alt=""
         width={size}
         height={size}
-        className="admin-avatar-img u-shrink-0" style={{ width: size, height: size }} /* layout-ok: size from props */
+        className="admin-avatar u-shrink-0" style={{ width: size, height: size }} /* layout-ok: size from props */
       />
     );
   }
   return (
     <div
-      className="admin-avatar-initials admin-avatar-initials--accent" style={{ width: size, height: size }} /* layout-ok: size from props */
+      className="admin-avatar admin-avatar--soft" style={{ width: size, height: size }} /* layout-ok: size from props */
     >
       {initials(name)}
     </div>
