@@ -12,22 +12,24 @@ as each backlog item lands.
 
 | # | Measure | Before | After |
 |---|---|---|---|
-| 1 | Inline `style={{}}` blocks (app + components) | 104 — 22 styled, 82 layout-only (44 marked `layout-ok`) | |
-| 2 | Class prefixes: `admin.css` | `admin-*`, `u-*`, plus 1 stray `.phototag` | |
-| 2 | Class prefixes: `globals.css` | 66 page prefixes, 722 classes, **656 with no consumer** | |
-| 2 | Private stylesheets | 3 CSS modules (`home`, `event`, `survey`) with camelCase classes | |
-| 3 | Raw colours outside `tokens.css` + `palette.ts` | 173 across 17 files (home.module.css 45, ogRender 17, email.ts 17, portal-invite 14, api email routes 28, marketing-email 8, sign-in links 10, contractor-notify 5, talent actions 3, onboarding 1, survey/event modules 2, page.tsx 1) | |
-| 4 | Off-scale font sizes (CSS) | 15 values, 82 declarations (10px ×26, 17px ×22, 19px ×8, 9px ×7 …) | |
-| 4 | Off-scale spacing (CSS) | 26 values, 263 declarations (7px ×32, 22px ×32, 36px ×26, 5px ×24, 9px ×23 …) | |
-| 5 | Page-level widths off the sanctioned 640/880/1440 | 2 in components (360, 320); 7 in the patterns page demos | |
-| 6 | Components with private `<style>` / styled-jsx | 0 (the 3 CSS modules above are the only private styling) | |
-| 7 | CSS variables used but never defined | 3: `--font-dm-sans`, `--font-playfair`, `--font-mono` (`--n` is a deliberate column-count variable) | |
-| 7 | `var(--x, #hex)` fallbacks hiding missing tokens | 0 | |
-| 8 | Colours in shared TS lists / database | TS: only `lib/design/palette.ts` (by design). DB: `tags.color` column exists, empty | |
-| 9 | Overlapping component classes | progress ×4 families, avatar ×6, box ×4, tag/chip/pill ×5 (list below) | |
-| 10 | Non-browser painters reading the palette module | 0 of 11 (OG, QR, 9 email builders all carry their own hex) | |
+| 1 | Inline `style={{}}` blocks (app + components) | 104 — 22 styled, 82 layout-only (44 marked `layout-ok`) | **56, all data-driven and marked** (0 styled; ceiling 0) |
+| 2 | Class prefixes: `admin.css` | `admin-*`, `u-*`, plus 1 stray `.phototag` | `admin-*` only (utilities moved to `app/styles/utilities.css`, `u-*` only) |
+| 2 | Class prefixes: `globals.css` | 66 page prefixes, 722 classes, **656 with no consumer** | `site-*` only, 45 classes, 405 lines (was 3,504); 0 page-prefixed selectors |
+| 2 | Private stylesheets | 3 CSS modules (`home`, `event`, `survey`) with camelCase classes | 3 modules kept as page-scoped styling, token-only |
+| 3 | Raw colours outside `tokens.css` + `palette.ts` | 173 across 17 files (home.module.css 45, ogRender 17, email.ts 17, portal-invite 14, api email routes 28, marketing-email 8, sign-in links 10, contractor-notify 5, talent actions 3, onboarding 1, survey/event modules 2, page.tsx 1) | **0** (the two grep hits left are a PR reference and an HTML entity) |
+| 4 | Off-scale font sizes (CSS) | 15 values, 82 declarations (10px ×26, 17px ×22, 19px ×8, 9px ×7 …) | **0** (scale gains 22 and 26 to match the token ramp) |
+| 4 | Off-scale spacing (CSS) | 26 values, 263 declarations (7px ×32, 22px ×32, 36px ×26, 5px ×24, 9px ×23 …) | **0** |
+| 5 | Page-level widths off the sanctioned 640/880/1440 | 2 in components (360, 320); 7 in the patterns page demos | 0 (all on `u-max-*` utilities) |
+| 6 | Components with private `<style>` / styled-jsx | 0 (the 3 CSS modules above are the only private styling) | 0 |
+| 7 | CSS variables used but never defined | 3: `--font-dm-sans`, `--font-playfair`, `--font-mono` (`--n` is a deliberate column-count variable) | 0 (`--n` remains, documented) |
+| 7 | `var(--x, #hex)` fallbacks hiding missing tokens | 0 | 0 |
+| 8 | Colours in shared TS lists / database | TS: only `lib/design/palette.ts` (by design). DB: `tags.color` column exists, empty | same; rule recorded in the contract: `tags.color` holds a token name |
+| 9 | Overlapping component classes | progress ×4 families, avatar ×6, box ×4, tag/chip/pill ×5 (list below) | 1 each: `.admin-meter`, `.admin-avatar`, `.admin-box`, `.admin-tag` (+ modifiers); badge/chip/pill keep their distinct jobs |
+| 10 | Non-browser painters reading the palette module | 0 of 11 (OG, QR, 9 email builders all carry their own hex) | 9 of 9 (OG renderer and 4 unused form endpoints deleted); `check-tokens` now scans them |
 | — | Vercel functions region = Supabase region | ✅ `syd1` / ap-southeast-2 | ✅ |
-| — | CI running the design guardrails | none (no `.github/workflows`) | |
+| — | CI running the design guardrails | none (no `.github/workflows`) | `check.yml`: typecheck, check:tokens, check:design-ratchet, check:design, check:crons on every PR |
+
+Measured again on 4 Sep 2026 after PR #48 with `scripts/design/measure-debt.sh`. Guardrail state: styled-inline ceiling 0, inline-layout baseline 0 files, ratchet baseline 56 marked inline styles / 0 page-prefixed selectors, off-scale warnings 0, `npm run check` green.
 
 ### Commands used
 
@@ -75,14 +77,16 @@ Order: guardrails and tokens → renames → per-surface inline → scales → c
 
 | # | What | Where | Count | Fix | PR |
 |---|---|---|---|---|---|
-| 1 | Guardrails and CI | `scripts/`, `.github/workflows` | 0 CI jobs today | Adopt the reference `check-tokens.mjs` (PR-number false positives), add `check-design-ratchet.mjs` + baseline, `measure-debt.sh`, a `check` script and a CI job running typecheck + the three design gates; styled ceiling = 21 | #37 |
-| 2 | Undefined tokens and the stray prefix | `tokens.css`, `admin.css` | 3 vars, 1 class | Define `--font-mono` / retire `--font-dm-sans` and `--font-playfair` at their call sites; `.phototag` → `.admin-phototag` | #38 |
-| 3 | Painters read the palette | `lib/ogRender.js`, `lib/qr.ts`, 9 email builders, 3 api email routes | 11 files, ~80 hex | Extend `lib/design/palette.ts` with the email greys; every painter imports it; check-tokens stops exempting them | #39 |
-| 4 | Dead public-site CSS | `app/globals.css` | 656 of 722 classes, ~3,000 lines | Delete every rule whose classes have no consumer | #40 |
-| 5 | Public-site prefix rename | `app/globals.css`, `components/experience/*`, legal/unsubscribe pages | 66 live classes across `xp-`, `btn-`, `hero-`, … | Rename by exact class name into `site-*`; ratchet page-prefix count to 0 | #41 |
-| 6 | CSS modules on tokens | `app/home.module.css`, `events/[slug]/event.module.css`, `surveys/[slug]/survey.module.css` | 47 raw colours | Replace every colour with a token (color-mix for alpha); modules stay scoped, no private aliases | #42 |
-| 7 | Remaining inline styles | admin patterns page, `DocumentsView`, `CompanyDocuments`, public pages | 22 styled + 38 unmarked layout | Converters + hand-finish; only data-driven values remain, each marked | #43 |
-| 8 | Scale normalisation | `admin.css`, `globals.css`, modules | 82 font + 263 spacing declarations | Snap to the documented scales (10→11, 17→16, 19→18, 9→11 …; 7→8, 22→24, 36→32, 5→4 …); check-assets off-scale warnings → 0 | #44 |
-| 9 | Consolidate overlapping components | `admin.css` + consumers | 4 families, 19 classes | Per the table above; rename consumers by exact class name; delete the losers | #45 |
-| 10 | Long tail | `DocumentsView`, `CompanyDocuments`, patterns page, `tags.color` | 2 widths, 7 demo widths, 1 DB column | Widths → `u-max-*`; demo widths → utilities; document that `tags.color` holds a token name, never hex | #46 |
-| 11 | Close-out | this doc | — | Re-run `measure-debt.sh`, fill the After column, lower all ceilings/baselines to zero where reached | #47 |
+| 1 | Guardrails and CI | `scripts/`, `.github/workflows` | 0 CI jobs today | Adopt the reference `check-tokens.mjs` (PR-number false positives), add `check-design-ratchet.mjs` + baseline, `measure-debt.sh`, a `check` script and a CI job running typecheck + the three design gates; styled ceiling = 21 | #38 ✅ |
+| 2 | Undefined tokens and the stray prefix | `tokens.css`, `admin.css` | 3 vars, 1 class | Define `--font-mono` / retire `--font-dm-sans` and `--font-playfair` at their call sites; `.phototag` → `.admin-phototag` | #39, #40 ✅ |
+| 3 | Painters read the palette | `lib/ogRender.js`, `lib/qr.ts`, 9 email builders, 3 api email routes | 11 files, ~80 hex | Extend `lib/design/palette.ts` with the email greys; every painter imports it; check-tokens stops exempting them. Dead OG renderer and 4 unused form endpoints deleted | #41 ✅ |
+| 4 | Dead public-site CSS | `app/globals.css` | 656 of 722 classes, ~3,000 lines | Delete every rule whose classes have no consumer (`prune-dead-css.mjs`) | #42 ✅ |
+| 5 | Public-site prefix rename | `app/globals.css`, `components/experience/*`, legal/unsubscribe pages | 66 live classes across `xp-`, `btn-`, `hero-`, … | Rename by exact class name into `site-*` (`rename-classes.mjs`); ratchet page-prefix count to 0 | #43 ✅ |
+| 6 | CSS modules on tokens | `app/home.module.css`, `events/[slug]/event.module.css`, `surveys/[slug]/survey.module.css` | 47 raw colours | Replace every colour with a token (color-mix for alpha); modules stay scoped, no private aliases | #44 ✅ |
+| 7 | Remaining inline styles | admin patterns page, `DocumentsView`, `CompanyDocuments`, public pages | 22 styled + 38 unmarked layout | Converters + hand-finish; only data-driven values remain, each marked. Utilities move to `app/styles/utilities.css` for every surface | #45 ✅ |
+| 8 | Scale normalisation | `admin.css`, `globals.css`, modules | 82 font + 263 spacing declarations | Snap to the documented scales (10→11, 17→16, 19→18, 9→11 …; 7→8, 22→24, 36→32, 5→4 …); check-assets off-scale warnings → 0 | #46 ✅ |
+| 9 | Consolidate overlapping components | `admin.css` + consumers | 4 families, 19 classes | Per the table above; rename consumers by exact class name; delete the losers | #47 ✅ |
+| 10 | Long tail | `DocumentsView`, `CompanyDocuments`, patterns page, `tags.color` | 2 widths, 7 demo widths, 1 DB column | Widths → `u-max-*`; demo widths → utilities; document that `tags.color` holds a token name, never hex | #48 ✅ |
+| 11 | Close-out | this doc | — | Re-run `measure-debt.sh`, fill the After column, lower all ceilings/baselines to zero where reached | #49 ✅ |
+
+The audit itself landed as #37.
