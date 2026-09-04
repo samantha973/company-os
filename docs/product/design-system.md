@@ -74,3 +74,13 @@ ceilings are set to today's counts, so they can only go down.
 needs a new class, add it to the end of `admin.css` under the relevant
 component section and to `/admin/patterns` in the same PR. Never a new prefix,
 never a raw colour, never an inline colour/border/font.
+
+## Rolling out to another repo
+
+`scripts/design/inline-to-classes.pl` (exact patterns) and
+`scripts/design/smart-inline.pl` (maps any fully-recognised `style={{}}` to
+utilities and merges it into the element's className) did most of the
+migration here. Sequence per repo: measure → foundation PR (tokens, utilities,
+`check:tokens` as prebuild) → rename prefixes by exact class name → run both
+converters per surface → hand-finish the colour/border leftovers as component
+classes → refresh baselines, build, eyeball, merge.
