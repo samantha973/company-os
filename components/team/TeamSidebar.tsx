@@ -4,49 +4,33 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/app/team/(dashboard)/actions";
-import type { TeamRole } from "@/lib/team-auth";
 import { BRAND_TEAM } from "@/lib/brand";
 
 // Lighter sibling of AdminSidebar: reuses the admin shell CSS but drops the brand
-// switcher and collapsible offices. Flat nav grouped My Work / Me / My Team / Company. Items
-// without `enabled` render as muted "soon" placeholders (their slice has not shipped
-// yet), mirroring the admin nav so the shell always looks complete without dead links.
+// switcher. Lean nav grouped My Work / People / Me.
 type NavItem = { label: string; href: string; ico: string; enabled?: boolean };
 type NavGroup = { label: string | null; items: NavItem[] };
 
-function companyGroup(): NavGroup {
+// The PR Hub team surface is deliberately lean: the daily work, the people,
+// the member's own profile. The Edge8 employee intranet (Strategy, Company
+// Goals, Core Values, Gallery, Coaching, Hiring, Onboarding, Approvals, FAST
+// Goals, Reviews, Ideas, Equipment) is unlinked here — the routes still exist
+// and are reachable by URL, gated server-side — and returns as the PR Hub
+// needs it.
+
+// Look each other up: the people directory and the org chart.
+function peopleGroup(): NavGroup {
   return {
-    label: "Company",
+    label: "People",
     items: [
-      { label: "Strategy", href: "/team/strategy", ico: "◆", enabled: true },
-      { label: "Company Goals", href: "/team/company-goals", ico: "⊚", enabled: true },
-      { label: "Core Values", href: "/team/values", ico: "♥", enabled: true },
-      { label: "Org Chart", href: "/team/org", ico: "⌥", enabled: true },
       { label: "Directory", href: "/team/directory", ico: "☷", enabled: true },
-      { label: "Gallery", href: "/team/gallery", ico: "▦", enabled: true },
-      { label: "Coaching Sessions", href: "/team/coaching-sessions", ico: "☰", enabled: true },
+      { label: "Org Chart", href: "/team/org", ico: "⌥", enabled: true },
     ],
   };
 }
 
-// Coaching appears only for actors who coach >=1 person (coaching_profiles
-// rows, not the manager role, dotted-line coaches included). Hiring follows the
-// same idea, not the org "manager" role: it shows only to hiring managers, i.e.
-// people who own a requisition (or admins). See isHiringManager in lib/team/hiring.
-function myTeamGroup(isCoach: boolean, isHiringManager: boolean): NavGroup {
-  return {
-    label: "My Team",
-    items: [
-      ...(isCoach ? [{ label: "Coaching", href: "/team/coaching", ico: "◎", enabled: true }] : []),
-      ...(isHiringManager ? [{ label: "Hiring", href: "/team/hiring", ico: "◇", enabled: true }] : []),
-      { label: "Onboarding", href: "/team/onboarding", ico: "◐", enabled: true },
-      { label: "Approvals", href: "/team/approvals", ico: "✓" },
-    ],
-  };
-}
-
-// Day-to-day execution: the things a member acts on for the company. "Clients"
-// only shows for members assigned to a client company.
+// Day-to-day execution: the things a member acts on. "Clients" only shows for
+// members assigned to a client company.
 function myWorkGroup(hasClients: boolean): NavGroup {
   return {
     label: "My Work",
@@ -58,19 +42,10 @@ function myWorkGroup(hasClients: boolean): NavGroup {
   };
 }
 
-// Personal growth and profile. "My Coach" shows for everyone; members without
-// an active coaching cycle are redirected home by the page itself.
 function meGroup(): NavGroup {
   return {
     label: "Me",
-    items: [
-      { label: "My Coach", href: "/team/my-coaching", ico: "◎", enabled: true },
-      { label: "My FAST Goals", href: "/team/goals", ico: "◉", enabled: true },
-      { label: "Reviews", href: "/team/reviews", ico: "★", enabled: true },
-      { label: "Ideas", href: "/team/ideas", ico: "✦", enabled: true },
-      { label: "Profile", href: "/team/profile", ico: "☺", enabled: true },
-      { label: "My Equipment", href: "/team/equipment", ico: "▤", enabled: true },
-    ],
+    items: [{ label: "Profile", href: "/team/profile", ico: "☺", enabled: true }],
   };
 }
 
@@ -98,34 +73,23 @@ function initials(name: string): string {
 export function TeamSidebar({
   name,
   avatarUrl = null,
-  role,
   isAdmin,
-  isCoach = false,
   hasClients = false,
-  isHiringManager = false,
 }: {
   name: string;
   avatarUrl?: string | null;
-  role: TeamRole;
   isAdmin: boolean;
-  isCoach?: boolean;
-  // Team members assigned to a client see a "Clients" link under Me.
+  // Team members assigned to a client see a "Clients" link under My Work.
   hasClients?: boolean;
-  // Hiring managers (req owners, or admins) see the Hiring link.
-  isHiringManager?: boolean;
 }) {
   const pathname = usePathname() ?? "";
   const [navOpen, setNavOpen] = useState(false);
 
   const groups: NavGroup[] = [
     { label: null, items: [{ label: "Home", href: "/team", ico: "◈", enabled: true }] },
-    // Widening scope: my work, then me, then my team, then the company.
     myWorkGroup(hasClients),
+    peopleGroup(),
     meGroup(),
-    ...(role === "manager" || isCoach || isHiringManager
-      ? [myTeamGroup(isCoach, isHiringManager)]
-      : []),
-    companyGroup(),
   ];
 
   // Nav starts fully collapsed: every labeled group is closed on load, so the
