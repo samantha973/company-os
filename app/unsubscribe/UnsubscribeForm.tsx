@@ -37,7 +37,7 @@ export function UnsubscribeForm({ token }: { token: string }) {
     return (
       <p>
         <strong>You&rsquo;re unsubscribed.</strong> You will not receive any more marketing email
-        from Edge8. You may still get essential messages about services you use, such as event
+        from The PR Hub. You may still get essential messages about services you use, such as event
         tickets or account notices.
       </p>
     )
@@ -46,7 +46,7 @@ export function UnsubscribeForm({ token }: { token: string }) {
   return (
     <>
       <p>
-        Click below to stop receiving marketing email from Edge8. This does not affect essential
+        Click below to stop receiving marketing email from The PR Hub. This does not affect essential
         messages about services you already use.
       </p>
       <p>
@@ -62,7 +62,7 @@ export function UnsubscribeForm({ token }: { token: string }) {
       {status === 'error' && (
         <p>
           {message} You can also email{' '}
-          <a href="mailto:hello@edge8.ai">hello@edge8.ai</a> and we will remove you by hand.
+          <a href="mailto:hello@theprhub.com.au">hello@theprhub.com.au</a> and we will remove you by hand.
         </p>
       )}
     </>

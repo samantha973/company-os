@@ -19,7 +19,7 @@ const MAPPING_KEY: Record<QboEntity, string> = {
   aio: "qbo_customer_ids_aio",
 };
 
-// Sync only covers 2025 onward — matches the existing Edge8 backfill depth and
+// Sync only covers 2025 onward — matches the existing The PR Hub backfill depth and
 // the agreed AIO scope.
 const SINCE = "2025-01-01";
 

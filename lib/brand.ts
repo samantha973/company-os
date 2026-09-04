@@ -13,3 +13,7 @@ export const BRAND_TEAM = `${BRAND} Team`;
 export const BRAND_PORTAL = `${BRAND} Client Portal`;
 export const BRAND_SIGNOFF = `The ${BRAND_SHORT} team`;
 export const PRODUCT = "8 Edges Company OS";
+// Contact points used in legal pages, emails and the unsubscribe flow.
+export const BRAND_EMAIL = "hello@theprhub.com.au";
+export const BRAND_DOMAIN = "theprhub.com.au";
+export const BRAND_LEGAL = "The PR Hub";

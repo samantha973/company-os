@@ -7,8 +7,8 @@ import { UnsubscribeForm } from './UnsubscribeForm'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Edge8 · Unsubscribe',
-  description: 'Stop receiving marketing email from Edge8.',
+  title: 'The PR Hub · Unsubscribe',
+  description: 'Stop receiving marketing email from The PR Hub.',
   robots: { index: false, follow: false },
 }
 
@@ -25,13 +25,13 @@ export default function UnsubscribePage({
     <div className="site-xp-page">
       <article className="site-xp-article">
         <Link href="/" className="site-xp-backlink">
-          ← Edge8
+          ← The PR Hub
         </Link>
 
         <PageHeader
           eyebrow="Email preferences"
           title="Unsubscribe"
-          lead="Manage the marketing email you receive from Edge8."
+          lead="Manage the marketing email you receive from The PR Hub."
         />
 
         <div className="site-xp-blocks">
@@ -41,7 +41,7 @@ export default function UnsubscribePage({
             ) : (
               <p>
                 This unsubscribe link is missing or is no longer valid. Email{' '}
-                <a href="mailto:hello@edge8.ai">hello@edge8.ai</a> and we will remove you from the
+                <a href="mailto:hello@theprhub.com.au">hello@theprhub.com.au</a> and we will remove you from the
                 list by hand.
               </p>
             )}

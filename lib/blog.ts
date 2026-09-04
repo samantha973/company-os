@@ -54,7 +54,7 @@ const getDbPostsList = unstable_cache(
   async (): Promise<UnifiedPostMeta[]> => {
     try {
       // brands!inner scopes rows to THIS site's brand — AIO (and any other
-      // brand's) posts must never render on edge8.ai.
+      // brand's) posts must never render on theprhub.com.au.
       const { data, error } = await companyOs
         .from("marketing_content")
         .select(`${LIST_COLUMNS}, brands!inner(slug)`)

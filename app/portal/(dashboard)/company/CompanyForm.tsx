@@ -14,7 +14,7 @@ const SIZE_LABEL: Record<string, string> = {
 };
 
 // One card per company the actor administers. Everything here is shared with
-// Edge8: the same row powers invoicing and your account team's view, so the
+// The PR Hub: the same row powers invoicing and your account team's view, so the
 // page says so rather than pretending it is a private copy.
 export function CompanyForm({ initial }: { initial: CompanyProfileView }) {
   const router = useRouter();

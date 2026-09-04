@@ -59,7 +59,7 @@ function Avatar({ name, avatarUrl }: { name: string; avatarUrl: string | null })
   );
 }
 
-// Client-facing team roster: the Edge8 staff dedicated to this client, scoped
+// Client-facing team roster: The PR Hub staff dedicated to this client, scoped
 // through company_os.staff_assignments. Directory-safe fields only — see
 // lib/portal/team.ts for the column contract (no balances, no employee_number,
 // no manager chain).

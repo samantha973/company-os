@@ -349,7 +349,7 @@ export async function getCoverageTabForActor(
   return getCoverageTab(companyId);
 }
 
-// Meetings for an assigned client. Team members are internal Edge8 staff, so
+// Meetings for an assigned client. Team members are internal The PR Hub staff, so
 // they see every meeting for the company (draft and published alike) plus the
 // publish state; the client-facing /portal filters to published only. Null when
 // the company is not in the actor's active assignment set.
@@ -400,7 +400,7 @@ export type HubTeam = {
   client: { name: string; title: string | null }[];
 };
 
-// The people on both sides of an assigned client: Edge8 assigned staff (only
+// The people on both sides of an assigned client: The PR Hub assigned staff (only
 // the client-visible assignments) and the client's own contacts. Null when the
 // company is not in the actor's active assignment set.
 export async function getClientTeamForActor(actor: TeamActor, companyId: string): Promise<HubTeam | null> {

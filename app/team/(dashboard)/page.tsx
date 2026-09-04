@@ -34,7 +34,7 @@ const CORE_TEACHING_SLUG = "the-other-50-percent-of-leadership";
 // confirmed (for review/demo). Keyed on the stable person_id like the rest of
 // /team, never on email (see lib/team-auth's identity model).
 const START_HERE_PREVIEW_PERSON_IDS = new Set<string>([
-  "a8bf026f-8c20-49c5-8a55-6fc5c580af64", // Dave Hajdu (dave@edge8.ai)
+  "a8bf026f-8c20-49c5-8a55-6fc5c580af64", // Dave Hajdu (hello@theprhub.com.au)
 ]);
 
 export const dynamic = "force-dynamic";

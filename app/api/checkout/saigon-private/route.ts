@@ -169,7 +169,7 @@ export async function POST(request: Request) {
       to: recipients,
       subject: `Saigon Private Reserve clicked: ${label}`,
       html: `
-        <p>A Saigon private retreat reservation was started on edge8.ai.</p>
+        <p>A Saigon private retreat reservation was started on theprhub.com.au.</p>
         <ul>
           <li><strong>Duration:</strong> ${days} days</li>
           <li><strong>Team size:</strong> ${teamSize}</li>
@@ -215,7 +215,7 @@ export async function POST(request: Request) {
         end_date: endDate,
         person_id: signup.personId,
         inquiry_id: signup.inquiryId,
-        source_site: "edge8.ai",
+        source_site: "theprhub.com.au",
       },
     });
     checkoutUrl = session.url;

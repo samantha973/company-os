@@ -28,9 +28,9 @@ export function SyncButton() {
 
   const label = (s: SyncSummary) =>
     s.ok
-      ? `${s.entity === "aio" ? "AIO" : "Edge8"}: ${s.upserted} synced` +
+      ? `${s.entity === "aio" ? "AIO" : "The PR Hub"}: ${s.upserted} synced` +
         (s.unmappedCount ? `, ${s.unmappedCount} unmapped` : "")
-      : `${s.entity === "aio" ? "AIO" : "Edge8"}: ${s.error ?? "failed"}`;
+      : `${s.entity === "aio" ? "AIO" : "The PR Hub"}: ${s.error ?? "failed"}`;
 
   return (
     <div className="u-stack u-items-end">

@@ -35,7 +35,7 @@ export type InvoiceListRow = {
 export const INVOICE_SELECT =
   "id, external_id, entity, doc_number, txn_date, due_date, currency, amount_cents, balance_cents, status, memo, customer_name, lines, company_id, companies(name, person_companies(is_primary, people(id, full_name)))";
 
-export const ENTITY_LABEL: Record<InvoiceEntity, string> = { edge8: "Edge8", aio: "AIO" };
+export const ENTITY_LABEL: Record<InvoiceEntity, string> = { edge8: "The PR Hub", aio: "AIO" };
 
 // Same convention as portal-assume: the is_primary link wins, else the first.
 export function primaryContact(row: InvoiceListRow): { id: string; full_name: string | null } | null {
@@ -47,7 +47,7 @@ export function primaryContact(row: InvoiceListRow): { id: string; full_name: st
 // QBO deep link. external_id is the bare QBO Invoice txn id; the realm id is
 // the QuickBooks company the invoice belongs to (entity).
 const QBO_REALM_ID: Record<InvoiceEntity, string> = {
-  edge8: "9341452654454281", // Talent Edge LLC
+  edge8: "9341452654454281", // The PR Hub
   aio: "9341455538178258", // AI Officer Institute
 };
 

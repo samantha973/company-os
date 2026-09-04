@@ -46,7 +46,7 @@ export async function listContractorWorkRequests(personId: string): Promise<Cont
 // the current compensation rows are superseded (is_current=false,
 // effective_to=today), never mutated, so rate history stays queryable.
 // Billable (what the client is invoiced per hour, default 100% markup) is
-// always USD — client invoicing runs in USD via Talent Edge LLC — even when
+// always USD — client invoicing runs in USD via The PR Hub — even when
 // the internal rates are VND.
 export async function updateContractorRates(input: {
   teamMemberId: string;

@@ -7,7 +7,7 @@ import { BRAND, BRAND_SHORT } from "@/lib/brand";
 // environments and local dev should never hard-fail on email send.
 
 const resendApiKey = process.env.RESEND_API_KEY;
-const emailFrom = process.env.EMAIL_FROM || "Edge8 <notifications@edge8.ai>";
+const emailFrom = process.env.EMAIL_FROM || "The PR Hub <hello@theprhub.com.au>";
 
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
@@ -50,7 +50,7 @@ async function logSentEmail(opts: {
 // "sent" markers (e.g. event_registrations.confirmation_sent_at) must not
 // stamp on a no-op or failure, or the real send never happens.
 // `logMeta` is merged into the interactions metadata (e.g. a source label).
-// `from` overrides the default sender — only for verified edge8.ai addresses
+// `from` overrides the default sender — only for verified theprhub.com.au addresses
 // (e.g. the acting admin), so DKIM still aligns. `logBody` is stored in the
 // CRM interactions log instead of `html`: used when the email carries a secret
 // (e.g. a temp password) that must not be persisted.
@@ -110,20 +110,20 @@ export async function sendEventTicketEmail(opts: {
     <p style="margin:20px 0;"><a href="${opts.ticketUrl}" style="display:inline-block;background:${PALETTE.dark};color:${PALETTE.white};text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">View my ticket</a></p>
     <p style="font-size:13px;color:${PALETTE.inkBody};">Or copy this link: ${opts.ticketUrl}</p>
     <p style="margin-top:24px;">Reply to this email any time if plans change.</p>
-    <p>Dave and the Edge8 team</p>
+    <p>Dave and The PR Hub team</p>
   `.trim();
 
   return sendTransactionalEmail({
     to: opts.to,
     subject: `You're in: ${opts.eventTitle}`,
     html,
-    replyTo: "quan@edge8.ai",
+    replyTo: "hello@theprhub.com.au",
   });
 }
 
 // Customer-facing email when they reserve a Saigon seat with the
 // offline_vn (bank transfer) flow. Mirrors aio-website's
-// sendRetreatReservedEmail copy and includes the Edge8 AI bank details.
+// sendRetreatReservedEmail copy and includes The PR Hub bank details.
 export async function sendOfflineReservedEmail(opts: {
   to: string;
   name: string | null;
@@ -159,7 +159,7 @@ export async function sendOfflineReservedEmail(opts: {
       <li><strong>Book travel.</strong> Fly into Tan Son Nhat (SGN), the international airport for Saigon. If you&rsquo;re coming from outside Vietnam, apply for a Vietnam eVisa online (allow about 3 business days).</li>
       <li style="margin-top:10px;"><strong>Add Dave on WhatsApp</strong> for direct logistics: <a href="https://wa.me/84909958581">+84 90 995 8581</a>.</li>
     </ol>
-    <p style="margin-top:24px;">Reply to this email any time, or write to quan@edge8.ai.</p>
+    <p style="margin-top:24px;">Reply to this email any time, or write to hello@theprhub.com.au.</p>
     <p>Dave and the AI Officer team</p>
   `.trim();
 
@@ -167,7 +167,7 @@ export async function sendOfflineReservedEmail(opts: {
     to: opts.to,
     subject: `Seat reserved: ${opts.eventTitle}`,
     html,
-    replyTo: "quan@edge8.ai",
+    replyTo: "hello@theprhub.com.au",
   });
 }
 
@@ -178,7 +178,7 @@ export async function sendBankChangeAlert(opts: {
   employeeName: string;
   employeeEmail: string;
 }): Promise<void> {
-  const hrEmail = process.env.HR_ALERT_EMAIL || "dave@edge8.ai";
+  const hrEmail = process.env.HR_ALERT_EMAIL || "hello@theprhub.com.au";
   const when = new Intl.DateTimeFormat("en-GB", {
     timeZone: "Asia/Ho_Chi_Minh",
     dateStyle: "medium",

@@ -3,7 +3,7 @@ import { companyOs } from "@/lib/supabase";
 // Server-only QuickBooks Online client. NEVER import from a client component.
 //
 // Two connections, one row each in company_os.qbo_connection, keyed by
-// entity: 'edge8' (Talent Edge LLC — private retreats + client work billing)
+// entity: 'edge8' (The PR Hub — private retreats + client work billing)
 // and 'aio' (public retreats). One Intuit app authorizes both; each company
 // has its own realm_id + token set. Callers that predate the second company
 // pass nothing and default to 'edge8'. OAuth quirks that shape this module:

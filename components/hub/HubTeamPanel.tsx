@@ -3,7 +3,7 @@ import type { HubTeam } from "@/lib/team/clients";
 import { humanize } from "@/lib/admin/format";
 import { BRAND_SHORT } from "@/lib/brand";
 
-// Client Hub team tab: both sides of the account, the Edge8 staff assigned to
+// Client Hub team tab: both sides of the account, The PR Hub staff assigned to
 // the client (client-visible assignments only) and the client's own people.
 // Shared across the team hub, the admin 360 hub, and the portal.
 export function HubTeamPanel({ team }: { team: HubTeam }) {
