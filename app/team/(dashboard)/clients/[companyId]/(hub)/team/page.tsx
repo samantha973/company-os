@@ -1,18 +1,9 @@
-import { notFound } from "next/navigation";
-import { requireTeamMember } from "@/lib/team-auth";
-import { getClientTeamForActor } from "@/lib/team/clients";
-import { HubTeamPanel } from "@/components/hub/HubTeamPanel";
+import { redirect } from "next/navigation";
+import { firstParam, type SearchParamsObj } from "@/lib/admin/url";
 
-export const dynamic = "force-dynamic";
-
-export const metadata = { title: "Client Team" };
-
-// The Team tab: both sides of the account, The PR Hub staff assigned to this
-// client and the client's own contacts.
-export default async function TeamClientTeamTab({ params }: { params: { companyId: string } }) {
-  const actor = await requireTeamMember();
-  const team = await getClientTeamForActor(actor, params.companyId);
-  if (team === null) notFound();
-
-  return <HubTeamPanel team={team} />;
+// Folded into the client hub (one tabbed page). Kept so old links still land.
+export default function Redirect({ params, searchParams }: { params: { companyId: string }; searchParams: SearchParamsObj }) {
+  const plan = firstParam(searchParams.plan);
+  const kind = firstParam(searchParams.kind);
+  redirect(`/team/clients/${params.companyId}?tab=team${plan ? `&plan=${encodeURIComponent(plan)}` : ""}${kind ? `&kind=${encodeURIComponent(kind)}` : ""}`);
 }

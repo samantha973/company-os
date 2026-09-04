@@ -1,32 +1,9 @@
-import { notFound } from "next/navigation";
-import { requireTeamMember } from "@/lib/team-auth";
-import { getSupportingTabForActor } from "@/lib/team/clients";
-import { resolvePlanScope, scopeAwards } from "@/lib/hub/scope";
+import { redirect } from "next/navigation";
 import { firstParam, type SearchParamsObj } from "@/lib/admin/url";
-import { AwardsPanel } from "@/components/hub/AwardsPanel";
-import { teamArchiveAward, teamCreateAward, teamPublishAward, teamUpdateAward } from "../supporting-actions";
 
-export const dynamic = "force-dynamic";
-export const metadata = { title: "Awards" };
-
-export default async function TeamClientAwardsTab({ params, searchParams }: { params: { companyId: string }; searchParams: SearchParamsObj }) {
-  const actor = await requireTeamMember();
-  const data = await getSupportingTabForActor(actor, params.companyId);
-  if (!data) notFound();
-  const c = params.companyId;
-  const scope = resolvePlanScope(data.planRows, firstParam(searchParams.plan));
-  return (
-    <AwardsPanel
-      programId={data.program.id}
-      rows={scopeAwards(data.awards, scope)}
-      documents={data.documents}
-      plans={data.plans}
-      actions={{
-        createAward: teamCreateAward.bind(null, c),
-        updateAward: teamUpdateAward.bind(null, c),
-        publishAward: teamPublishAward.bind(null, c),
-        archiveAward: teamArchiveAward.bind(null, c),
-      }}
-    />
-  );
+// Folded into the client hub (one tabbed page). Kept so old links still land.
+export default function Redirect({ params, searchParams }: { params: { companyId: string }; searchParams: SearchParamsObj }) {
+  const plan = firstParam(searchParams.plan);
+  const kind = firstParam(searchParams.kind);
+  redirect(`/team/clients/${params.companyId}?tab=awards${plan ? `&plan=${encodeURIComponent(plan)}` : ""}${kind ? `&kind=${encodeURIComponent(kind)}` : ""}`);
 }
