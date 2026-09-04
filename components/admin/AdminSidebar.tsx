@@ -55,7 +55,8 @@ const NAV: NavSection[] = [
       {
         label: null,
         items: [
-          { label: "Company Dashboard", href: "/admin", ico: "◈", enabled: true },
+          // Client Hubs is the home screen; /admin redirects there. The
+          // company dashboard still exists at /admin/dashboard, unlinked for now.
           { label: "Client Hubs", href: "/admin/client-hubs", ico: "▦", enabled: true },
           { label: "Companies", href: "/admin/revenue/companies", ico: "▣", enabled: true },
           { label: "Contacts", href: "/admin/contacts", ico: "⚇", enabled: true },
@@ -69,28 +70,14 @@ const NAV: NavSection[] = [
       {
         label: "Settings",
         collapsible: true,
+        // One level: Admins, Assume, Agents. Pipelines and QuickBooks are
+        // unlinked for now (routes still exist). Agents stays super-admin only;
+        // the route is gated server-side regardless.
         items: [
-          {
-            subheading: "Access",
-            items: [
-              { label: "Admins", href: "/admin/settings/admins", ico: "⚿", enabled: true },
-              { label: "Assume", href: "/admin/settings/assume", ico: "⧉", enabled: true },
-            ],
-          },
-          {
-            subheading: "Configuration",
-            items: [
-              { label: "Pipelines", href: "/admin/settings/pipelines", ico: "⇶" },
-              { label: "QuickBooks", href: "/admin/settings/quickbooks", ico: "⌁", enabled: true },
-            ],
-          },
+          { label: "Admins", href: "/admin/settings/admins", ico: "⚿", enabled: true },
+          { label: "Assume", href: "/admin/settings/assume", ico: "⧉", enabled: true },
+          { label: "Agents", href: "/admin/settings/agents", ico: "⟳", enabled: true, superAdmin: true },
         ],
-      },
-      // Agents sits at the top level of Workspace, a peer of Settings. Still
-      // super-admin only (Dave & Mai); the route is gated server-side regardless.
-      {
-        label: null,
-        items: [{ label: "Agents", href: "/admin/settings/agents", ico: "⟳", enabled: true, superAdmin: true }],
       },
     ],
   },
@@ -103,7 +90,7 @@ const NAV: NavSection[] = [
 // lib/team-auth.ts) — everyone else sees it disabled.
 type View = { key: string; label: string; ico: string; href: string; current?: boolean };
 const VIEWS: View[] = [
-  { key: "admin", label: "Admin", ico: "◈", href: "/admin", current: true },
+  { key: "admin", label: "Admin", ico: "◈", href: "/admin/client-hubs", current: true },
   { key: "team", label: "Team", ico: "☷", href: "/team" },
 ];
 

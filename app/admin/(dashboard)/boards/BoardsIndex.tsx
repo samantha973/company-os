@@ -140,13 +140,13 @@ export function BoardsIndex({
                   </div>
                 </div>
                 <div className="u-row u-between u-mt-3">
-                  <span className="board-avatar-stack">
+                  <span className="admin-board-avatar-stack">
                     {shown.map((name, i) => (
                       <span key={`${name}-${i}`} className="admin-kanban-avatar" title={name}>
                         {initials(name)}
                       </span>
                     ))}
-                    {extra > 0 && <span className="board-avatar-more">+{extra}</span>}
+                    {extra > 0 && <span className="admin-board-avatar-more">+{extra}</span>}
                     {b.member_names.length === 0 && (
                       <span className="admin-cell-muted u-sm">
                         No members
@@ -234,13 +234,13 @@ export function BoardsIndex({
                         )}
                       </td>
                       <td>
-                        <span className="board-avatar-stack">
+                        <span className="admin-board-avatar-stack">
                           {shown.map((name, i) => (
                             <span key={`${name}-${i}`} className="admin-kanban-avatar" title={name}>
                               {initials(name)}
                             </span>
                           ))}
-                          {extra > 0 && <span className="board-avatar-more">+{extra}</span>}
+                          {extra > 0 && <span className="admin-board-avatar-more">+{extra}</span>}
                           {b.member_names.length === 0 && <span className="admin-cell-muted">—</span>}
                         </span>
                       </td>
