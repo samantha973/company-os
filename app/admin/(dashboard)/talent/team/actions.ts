@@ -1,5 +1,6 @@
 "use server";
 
+import { PALETTE } from "@/lib/design/palette";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { supabase, companyOs } from "@/lib/supabase";
@@ -658,8 +659,8 @@ export async function resendPortalInvite(teamMemberId: string): Promise<Result> 
     subject: `Your ${BRAND_TEAM} sign-in link`,
     html: `
       <p>Here is your sign-in link for the ${BRAND_TEAM} workspace:</p>
-      <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:#04102D;color:#ffffff;text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Sign in to the ${BRAND_TEAM} workspace</a></p>
-      <p style="font-size:13px;color:#64748b;">The button takes you to a sign-in page. Press "Sign in" there and you're in. If the link expires, you can request a fresh one any time at <a href="${siteOrigin()}/team/login">${siteOrigin()}/team/login</a>.</p>
+      <p style="margin:20px 0;"><a href="${verifyUrl}" style="display:inline-block;background:${PALETTE.dark};color:${PALETTE.white};text-decoration:none;font-weight:600;padding:12px 28px;border-radius:10px;">Sign in to the ${BRAND_TEAM} workspace</a></p>
+      <p style="font-size:13px;color:${PALETTE.inkBody};">The button takes you to a sign-in page. Press "Sign in" there and you're in. If the link expires, you can request a fresh one any time at <a href="${siteOrigin()}/team/login">${siteOrigin()}/team/login</a>.</p>
     `,
   });
 

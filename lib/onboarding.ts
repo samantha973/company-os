@@ -1,3 +1,4 @@
+import { PALETTE } from "@/lib/design/palette";
 // New Member Onboarding processor. Runs after a survey whose purpose is
 // 'onboarding' is submitted (see app/api/surveys/[slug]/route.ts). It reads each
 // answer's field.config.maps_to and writes it into the CRM: identity + non-
@@ -361,7 +362,7 @@ async function notifyOpsBackfill(
       <p>A new member completed onboarding but has <strong>no application on file</strong>, so this looks like a direct hire.</p>
       <p><strong>${name ?? "(no name)"}</strong> &lt;${email}&gt; is now in <strong>pre-boarding</strong>.</p>
       <p>Please backfill the hiring-side record (department, position, employee number) and send their portal invite from the Team admin when ready.</p>
-      <p style="color:#64748b;font-size:13px;">person_id: ${personId}</p>
+      <p style="color:${PALETTE.inkBody};font-size:13px;">person_id: ${personId}</p>
     `,
     logMeta: { source: "onboarding" },
   });
