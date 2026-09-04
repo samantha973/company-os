@@ -7,7 +7,7 @@
   flex-direction: column;
   background: #ffffff;
   color: #000000;
-  font-family: var(--font-dm-sans), 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--font-body), 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* ── Header ── */
@@ -231,7 +231,7 @@
   text-align: center;
 }
 .quoteText {
-  font-family: var(--font-playfair), Georgia, serif;
+  font-family: var(--font-display), Georgia, serif;
   font-size: 20px;
   line-height: 1.6;
   font-style: italic;
