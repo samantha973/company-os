@@ -1266,8 +1266,8 @@ a.admin-team-collage-photo:hover img { transform: scale(1.04); }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 /* Faces are links to profiles now, keep initials white, ring on hover. */
-a.admin-team-collage-avatar { color: var(--color-bg-primary); transition: box-shadow var(--transition); }
-a.admin-team-collage-avatar:hover { box-shadow: 0 0 0 3px var(--admin-accent-soft), 0 0 0 1.5px var(--admin-accent); }
+a.admin-avatar--xl { color: var(--color-bg-primary); transition: box-shadow var(--transition); }
+a.admin-avatar--xl:hover { box-shadow: 0 0 0 3px var(--admin-accent-soft), 0 0 0 1.5px var(--admin-accent); }
 
 /* Masonry photo wall (team browse), CSS columns keep it dependency-free. */
 .admin-gallery-masonry { columns: 4 220px; column-gap: 12px; }
