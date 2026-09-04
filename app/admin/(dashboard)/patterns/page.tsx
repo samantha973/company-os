@@ -18,8 +18,8 @@ export const metadata: Metadata = {
 function Section({ title, sub, children }: { title: string; sub?: string; children: ReactNode }) {
   return (
     <section className="admin-card admin-section-card admin-pat-section">
-      <h2 className="admin-card-title" style={{ marginBottom: sub ? 4 : 14 }}>{title}</h2>
-      {sub && <p className="admin-pat-caption" style={{ marginTop: 0, marginBottom: 14 }}>{sub}</p>}
+      <h2 className={`admin-card-title ${sub ? "u-mb-1" : "u-mb-4"}`}>{title}</h2>
+      {sub && <p className="admin-pat-caption u-mt-0 u-mb-4">{sub}</p>}
       {children}
     </section>
   );
@@ -28,7 +28,7 @@ function Section({ title, sub, children }: { title: string; sub?: string; childr
 function Swatch({ name, varName }: { name: string; varName: string }) {
   return (
     <div className="admin-pat-swatch">
-      <div className="admin-pat-swatch-chip" style={{ background: `var(${varName})` }} />
+      <div className="admin-pat-swatch-chip" style={{ background: `var(${varName})` }} /* layout-ok: swatch shows the token it names */ />
       <div>
         <div className="admin-pat-swatch-name">{name}</div>
         <div className="admin-pat-swatch-meta">{varName}</div>
@@ -41,7 +41,7 @@ function TypeRow({ meta, size, weight, children }: { meta: string; size: number;
   return (
     <div className="admin-pat-type-row">
       <span className="admin-pat-type-meta">{meta}</span>
-      <span style={{ fontSize: size, fontWeight: weight ?? 400, color: "var(--admin-ink)", lineHeight: 1.3 }}>
+      <span className="u-ink" style={{ fontSize: size, fontWeight: weight ?? 400, lineHeight: 1.3 }} /* layout-ok: type-ramp demo, size from props */>
         {children}
       </span>
     </div>
@@ -61,7 +61,7 @@ export default function PatternsPage() {
       <div className="admin-pat-stack">
         {/* ─── Typography ─────────────────────────────── */}
         <Section title="Typography" sub="Manrope everywhere. Numerics align with tabular-nums, not a second face. 13px base; steps are --admin-text-xs … --admin-text-kpi in app/styles/tokens.css.">
-          <div style={{ marginBottom: 16 }}>
+          <div className="u-mb-4">
             <TypeRow meta="26 / 600" size={26} weight={600}>Page title</TypeRow>
             <TypeRow meta="18 / 600" size={18} weight={600}>Drawer / modal title</TypeRow>
             <TypeRow meta="15 / 600" size={15} weight={600}>Card title</TypeRow>
@@ -71,7 +71,7 @@ export default function PatternsPage() {
             <TypeRow meta="12 / 600" size={12} weight={600}>UPPERCASE EYEBROW</TypeRow>
           </div>
           <div className="admin-pat-row">
-            <span style={{ fontFamily: "var(--admin-font-mono)", fontSize: 14, color: "var(--admin-ink)", fontVariantNumeric: "tabular-nums" }}>
+            <span className="admin-mono u-ink u-tabular">
               $12,480.00 · 1,204 · 2026-07-06 · #E8-1042
             </span>
             <span className="admin-pat-swatch-meta">Manrope, tabular numerics</span>
@@ -133,19 +133,19 @@ export default function PatternsPage() {
         <Section title="Radius">
           <div className="admin-pat-grid">
             <div className="admin-pat-swatch">
-              <div className="admin-pat-radius-chip" style={{ borderRadius: "var(--admin-radius-xs)" }} />
+              <div className="admin-pat-radius-chip admin-pat-radius-chip--xs" />
               <div className="admin-pat-swatch-name">6px · xs<div className="admin-pat-swatch-meta">--admin-radius-xs</div></div>
             </div>
             <div className="admin-pat-swatch">
-              <div className="admin-pat-radius-chip" style={{ borderRadius: "var(--admin-radius-sm)" }} />
+              <div className="admin-pat-radius-chip admin-pat-radius-chip--sm" />
               <div className="admin-pat-swatch-name">8px · sm<div className="admin-pat-swatch-meta">--admin-radius-sm</div></div>
             </div>
             <div className="admin-pat-swatch">
-              <div className="admin-pat-radius-chip" style={{ borderRadius: "var(--admin-radius)" }} />
+              <div className="admin-pat-radius-chip admin-pat-radius-chip--lg" />
               <div className="admin-pat-swatch-name">12px · lg<div className="admin-pat-swatch-meta">--admin-radius</div></div>
             </div>
             <div className="admin-pat-swatch">
-              <div className="admin-pat-radius-chip" style={{ borderRadius: "var(--admin-radius-pill)" }} />
+              <div className="admin-pat-radius-chip admin-pat-radius-chip--pill" />
               <div className="admin-pat-swatch-name">pill<div className="admin-pat-swatch-meta">--admin-radius-pill</div></div>
             </div>
           </div>
@@ -154,15 +154,15 @@ export default function PatternsPage() {
         <Section title="Shadow" sub="Navy-tinted. Drawer and modal shadows appear on their overlays.">
           <div className="admin-pat-grid">
             <div className="admin-pat-swatch">
-              <div className="admin-pat-shadow-chip" style={{ boxShadow: "var(--admin-shadow)" }} />
+              <div className="admin-pat-shadow-chip admin-pat-shadow-chip--sm" />
               <div className="admin-pat-swatch-name">Card<div className="admin-pat-swatch-meta">--admin-shadow</div></div>
             </div>
             <div className="admin-pat-swatch">
-              <div className="admin-pat-shadow-chip" style={{ boxShadow: "var(--admin-shadow-md)" }} />
+              <div className="admin-pat-shadow-chip admin-pat-shadow-chip--md" />
               <div className="admin-pat-swatch-name">Raised<div className="admin-pat-swatch-meta">--admin-shadow-md</div></div>
             </div>
             <div className="admin-pat-swatch">
-              <div className="admin-pat-shadow-chip" style={{ boxShadow: "var(--admin-shadow-modal)" }} />
+              <div className="admin-pat-shadow-chip admin-pat-shadow-chip--modal" />
               <div className="admin-pat-swatch-name">Modal<div className="admin-pat-swatch-meta">--admin-shadow-modal</div></div>
             </div>
           </div>
@@ -181,7 +181,7 @@ export default function PatternsPage() {
 
         {/* ─── Badges ─────────────────────────────────── */}
         <Section title="Badges &amp; pills">
-          <div className="admin-pat-row" style={{ marginBottom: 12 }}>
+          <div className="admin-pat-row u-mb-3">
             <Badge>Neutral</Badge>
             <Badge tone="ok">Won</Badge>
             <Badge tone="warn">Pending</Badge>
@@ -198,7 +198,7 @@ export default function PatternsPage() {
 
         {/* ─── Forms ──────────────────────────────────── */}
         <Section title="Forms" sub="Focus shows the accent ring (--admin-focus-ring).">
-          <div className="admin-form" style={{ maxWidth: 420 }}>
+          <div className="admin-form u-max-sm">
             <div className="admin-field">
               <label className="admin-label">Full name</label>
               <input className="admin-input" defaultValue="Jane Doe" />
@@ -228,7 +228,7 @@ export default function PatternsPage() {
           sub="Every place a person is chosen. Never hand-roll a <select> of names: the roster is around fifty rows and a plain select has no way to find anyone."
         >
           <PersonSelectDemo />
-          <p className="admin-pat-caption" style={{ marginTop: 14, marginBottom: 0 }}>
+          <p className="admin-pat-caption u-mt-4 u-mb-0">
             Feed it from <code>listAssignablePeople()</code> in <code>lib/admin/people-options</code>, which returns
             only people currently on the roster (employees and contractors alike) with names taken from
             <code> people.display_name</code> and ordered by first name. Labels come from
@@ -243,7 +243,7 @@ export default function PatternsPage() {
               <span aria-hidden>🔍</span>
               <input placeholder="Search people" defaultValue="" />
             </div>
-            <select className="admin-select" style={{ width: "auto" }} defaultValue="">
+            <select className="admin-select u-w-auto" defaultValue="">
               <option value="">Persona: All</option>
               <option value="client">Client</option>
             </select>
@@ -256,7 +256,7 @@ export default function PatternsPage() {
                     <th>Name</th>
                     <th>Persona</th>
                     <th>Stage</th>
-                    <th style={{ textAlign: "right" }}>Deal value</th>
+                    <th className="u-right">Deal value</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -264,19 +264,19 @@ export default function PatternsPage() {
                     <td className="admin-cell-strong">Jane Doe</td>
                     <td>Client</td>
                     <td><Badge tone="ok" dot>Customer</Badge></td>
-                    <td className="admin-cell-mono" style={{ textAlign: "right" }}>$12,480.00</td>
+                    <td className="admin-cell-mono u-right">$12,480.00</td>
                   </tr>
                   <tr className="is-clickable">
                     <td className="admin-cell-strong">Minh Tran</td>
                     <td className="admin-cell-muted">Prospect</td>
                     <td><Badge tone="warn" dot>Lead</Badge></td>
-                    <td className="admin-cell-mono" style={{ textAlign: "right" }}>$3,200.00</td>
+                    <td className="admin-cell-mono u-right">$3,200.00</td>
                   </tr>
                   <tr className="is-clickable">
                     <td className="admin-cell-strong">Acme Co.</td>
                     <td className="admin-cell-muted">Client</td>
                     <td><Badge tone="info" dot>Open</Badge></td>
-                    <td className="admin-cell-mono" style={{ textAlign: "right" }}>$48,000.00</td>
+                    <td className="admin-cell-mono u-right">$48,000.00</td>
                   </tr>
                 </tbody>
               </table>
@@ -303,19 +303,19 @@ export default function PatternsPage() {
                   <tr>
                     <th>Name</th>
                     <th>Persona</th>
-                    <th style={{ textAlign: "right" }}>Deal value</th>
+                    <th className="u-right">Deal value</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="is-clickable" tabIndex={0} role="button" aria-haspopup="dialog">
                     <td className="admin-cell-strong">Jane Doe</td>
                     <td><Badge tone="ok" dot>Customer</Badge></td>
-                    <td className="admin-cell-mono" style={{ textAlign: "right" }}>$12,480.00</td>
+                    <td className="admin-cell-mono u-right">$12,480.00</td>
                   </tr>
                   <tr className="is-clickable" tabIndex={0} role="button" aria-haspopup="dialog">
                     <td className="admin-cell-strong">Minh Tran</td>
                     <td><Badge tone="warn" dot>Lead</Badge></td>
-                    <td className="admin-cell-mono" style={{ textAlign: "right" }}>$3,200.00</td>
+                    <td className="admin-cell-mono u-right">$3,200.00</td>
                   </tr>
                 </tbody>
               </table>
@@ -334,7 +334,7 @@ export default function PatternsPage() {
             <button className="admin-tab" type="button">Activity</button>
             <button className="admin-tab" type="button">Deals</button>
           </div>
-          <div className="admin-viewtoggle" style={{ marginTop: 4 }}>
+          <div className="admin-viewtoggle u-mt-1">
             <button className="is-active" type="button">Board</button>
             <button type="button">List</button>
           </div>
@@ -342,7 +342,7 @@ export default function PatternsPage() {
 
         {/* ─── KPI tiles ──────────────────────────────── */}
         <Section title="KPI tiles">
-          <div className="admin-kpi-grid" style={{ marginBottom: 0 }}>
+          <div className="admin-kpi-grid u-mb-0">
             <MetricCard label="Pipeline" value="$248,000" sub="18 open deals" />
             <MetricCard label="Won this month" value="$52,400" sub="+12% vs last" />
             <MetricCard label="Active contacts" value="1,204" sub="Company database" />
@@ -352,7 +352,7 @@ export default function PatternsPage() {
 
         {/* ─── Alerts ─────────────────────────────────── */}
         <Section title="Inline alerts">
-          <div className="admin-pat-stack" style={{ maxWidth: 520 }}>
+          <div className="admin-pat-stack u-max-6">
             <div className="admin-alert admin-alert--ok">Changes saved.</div>
             <div className="admin-alert admin-alert--err">Could not save. Check the highlighted fields.</div>
           </div>
@@ -360,7 +360,7 @@ export default function PatternsPage() {
 
         {/* ─── Detail: key/value + list ───────────────── */}
         <Section title="Detail — key / value">
-          <dl className="admin-kv" style={{ maxWidth: 420 }}>
+          <dl className="admin-kv u-max-sm">
             <dt>Email</dt>
             <dd>jane@acme.co</dd>
             <dt>Phone</dt>
@@ -374,10 +374,10 @@ export default function PatternsPage() {
 
         {/* ─── Kanban card ────────────────────────────── */}
         <Section title="Kanban column &amp; card">
-          <div style={{ maxWidth: 300 }}>
+          <div className="u-max-4">
             <div className="admin-kanban-col">
               <div className="admin-kanban-col-head">
-                <span className="admin-kanban-col-dot" style={{ background: "var(--admin-accent)" }} />
+                <span className="admin-kanban-col-dot admin-kanban-col-dot--accent" />
                 <span className="admin-kanban-col-label">Discovery</span>
                 <span className="admin-kanban-col-count">2</span>
               </div>
@@ -387,7 +387,7 @@ export default function PatternsPage() {
                   <div className="admin-kanban-card-sub">Jane Doe</div>
                   <div className="admin-kanban-card-meta">
                     <Badge tone="warn" dot>60%</Badge>
-                    <span className="admin-cell-mono" style={{ fontSize: 12 }}>$48,000</span>
+                    <span className="admin-cell-mono u-sm">$48,000</span>
                   </div>
                 </div>
                 <div className="admin-kanban-card">
@@ -414,7 +414,7 @@ export default function PatternsPage() {
 
         {/* ─── Modal + drawer facsimile ───────────────── */}
         <Section title="Modal">
-          <div className="admin-modal" style={{ margin: 0 }}>
+          <div className="admin-modal u-m-0">
             <div className="admin-modal-title">Archive this contact?</div>
             <div className="admin-modal-body">They will be hidden from lists but can be restored. Their deals and history are kept.</div>
             <div className="admin-modal-actions">
@@ -425,7 +425,7 @@ export default function PatternsPage() {
         </Section>
 
         <Section title="Drawer header" sub="The live drawer slides in from the right; the header pattern is shown here.">
-          <div className="admin-card" style={{ maxWidth: 460, overflow: "hidden" }}>
+          <div className="admin-card u-max-6 u-clip">
             <div className="admin-drawer-head">
               <div>
                 <div className="admin-drawer-eyebrow">Contact</div>
@@ -446,7 +446,7 @@ export default function PatternsPage() {
 
         {/* ─── Danger zone ────────────────────────────── */}
         <Section title="Danger zone">
-          <div className="admin-danger-zone" style={{ maxWidth: 560 }}>
+          <div className="admin-danger-zone u-max-form">
             <div className="admin-danger-zone-title">Danger zone</div>
             <div className="admin-danger-row">
               <div className="admin-danger-row-text">Permanently erase this person and all associated records. This cannot be undone.</div>

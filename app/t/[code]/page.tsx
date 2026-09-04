@@ -59,7 +59,7 @@ export default async function TicketPage({ params }: { params: { code: string } 
     <main className={styles.page}>
       <div className={styles.ticketCard}>
         <div className={styles.eyebrow}>Your ticket</div>
-        <h1 className={styles.title} style={{ fontSize: "clamp(24px, 4vw, 32px)" }}>
+        <h1 className={`${styles.title} u-text-fluid`}>
           {event.title}
         </h1>
         <p className={styles.meta}>

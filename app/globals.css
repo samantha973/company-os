@@ -398,3 +398,8 @@ footer {
   .site-xp-controls { position: static; margin-top: 16px; }
 }
 
+
+/* Password field (public + portal sign-in): wrapper and the show/hide eye. */
+.site-pw-wrap { position: relative; display: block; }
+.site-pw-input { width: 100%; padding-right: 40px; box-sizing: border-box; }
+.site-pw-eye { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; padding: 0; border: 0; background: none; cursor: pointer; color: var(--color-text-body); }

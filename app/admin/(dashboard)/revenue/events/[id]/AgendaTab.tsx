@@ -382,7 +382,7 @@ function StaffAdder({
         disabled={disabled}
         emptyLabel="+ staff…"
         options={people.map((p) => ({ value: p.id, label: p.name }))}
-        style={{ minWidth: 120 }} /* layout-ok: PersonSelect takes style, not className */
+        className="u-min-1"
       />
       <select className="admin-select u-sm" value={role} onChange={(e) => setRole(e.target.value as AgendaStaffRole)} disabled={disabled}>
         {AGENDA_STAFF_ROLES.map((r) => (

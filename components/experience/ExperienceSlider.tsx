@@ -185,7 +185,7 @@ export function ExperienceSlider() {
         style={{
           transform: `translateX(-${index * 100}%)`,
           transition: reduced ? "none" : "transform 600ms cubic-bezier(0.4, 0, 0.2, 1)",
-        }}
+        }} /* layout-ok: slide position and motion preference are runtime */
       >
         {SLIDES.map((slide, i) => (
           <SlideView key={i} slide={slide} active={i === index} position={`${i + 1} / ${count}`} />
@@ -246,7 +246,7 @@ function SlideView({
               alt={slide.image.alt}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              style={{ objectFit: "cover" }}
+              className="u-cover"
               priority={active}
             />
           ) : (

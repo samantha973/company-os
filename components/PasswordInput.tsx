@@ -25,36 +25,21 @@ export function PasswordInput({
 }) {
   const [show, setShow] = useState(false);
   return (
-    <span style={{ position: "relative", display: "block", ...wrapperStyle }}>
+    <span className="site-pw-wrap" style={wrapperStyle} /* layout-ok: caller-supplied wrapper style */>
       <input
         type={show ? "text" : "password"}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
         autoFocus={autoFocus}
-        style={{ ...inputStyle, width: "100%", paddingRight: 40, boxSizing: "border-box" }}
+        className="site-pw-input" style={inputStyle} /* layout-ok: caller-supplied input style */
       />
       <button
         type="button"
         onClick={() => setShow((s) => !s)}
         aria-label={show ? `Hide ${ariaLabel}` : `Show ${ariaLabel}`}
         aria-pressed={show}
-        style={{
-          position: "absolute",
-          right: 8,
-          top: "50%",
-          transform: "translateY(-50%)",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: 30,
-          height: 30,
-          padding: 0,
-          border: 0,
-          background: "transparent",
-          color: "var(--admin-ink-2)",
-          cursor: "pointer",
-        }}
+        className="site-pw-eye"
       >
         {show ? (
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
