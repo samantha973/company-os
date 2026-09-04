@@ -10,7 +10,11 @@
     "lint": "next lint",
     "check:design": "node scripts/design/check-assets.mjs",
     "check:tokens": "node scripts/design/check-tokens.mjs",
-    "check:crons": "node scripts/check-crons.mjs"
+    "check:crons": "node scripts/check-crons.mjs",
+    "typecheck": "tsc --noEmit -p .",
+    "check:design-ratchet": "node scripts/check-design-ratchet.mjs",
+    "measure:design": "zsh scripts/design/measure-debt.sh",
+    "check": "npm run typecheck && npm run check:tokens && npm run check:design-ratchet && npm run check:design && npm run check:crons"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.111.0",
