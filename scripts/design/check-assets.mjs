@@ -227,7 +227,8 @@ if (faces.length) {
 
 const ADMIN_CSS = join(ROOT, "app/admin/admin.css");
 if (existsSync(ADMIN_CSS)) {
-  const css = stripCssComments(readFileSync(ADMIN_CSS, "utf8"));
+  // Padding companions can be component classes (admin.css) or utilities (utilities.css).
+  const css = stripCssComments(readFileSync(ADMIN_CSS, "utf8") + "\n" + (existsSync(join(ROOT, "app/styles/utilities.css")) ? readFileSync(join(ROOT, "app/styles/utilities.css"), "utf8") : ""));
 
   // A class "pads" if any rule whose SUBJECT is that class declares padding.
   // Checking the subject matters: `.x .admin-section-card + .admin-section-card`

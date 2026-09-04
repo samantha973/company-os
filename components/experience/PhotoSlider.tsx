@@ -69,7 +69,7 @@ export function PhotoSlider({ photos, ratio = "4 / 3" }: { photos: Photo[]; rati
     >
       <div
         className="site-xp-gallery-viewport"
-        style={{ aspectRatio: ratio }}
+        style={{ aspectRatio: ratio }} /* layout-ok: aspect from props */
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -78,7 +78,7 @@ export function PhotoSlider({ photos, ratio = "4 / 3" }: { photos: Photo[]; rati
           style={{
             transform: `translateX(-${index * 100}%)`,
             transition: reduced ? "none" : "transform 500ms cubic-bezier(0.4, 0, 0.2, 1)",
-          }}
+          }} /* layout-ok: slide position and motion preference are runtime */
         >
           {photos.map((p, i) => (
             <div className="site-xp-gallery-slide" key={i} aria-hidden={i !== index}>
@@ -87,7 +87,7 @@ export function PhotoSlider({ photos, ratio = "4 / 3" }: { photos: Photo[]; rati
                 alt={p.alt}
                 fill
                 sizes="(max-width: 800px) 100vw, 720px"
-                style={{ objectFit: "cover" }}
+                className="u-cover"
               />
               {p.caption && <span className="site-xp-gallery-cap">{p.caption}</span>}
             </div>

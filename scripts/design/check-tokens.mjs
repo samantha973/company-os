@@ -39,7 +39,7 @@ const styledInline = []; // inline colour/border/font/radius — migrating per s
 let toleratedInline = 0;
 const tolerated = [];
 const list = process.argv.includes("--list");
-const STYLED_INLINE_CEILING = Number(process.env.STYLED_INLINE_CEILING ?? 21);
+const STYLED_INLINE_CEILING = Number(process.env.STYLED_INLINE_CEILING ?? 0);
 
 for (const dir of SCAN) {
   for (const file of walk(join(ROOT, dir))) {
@@ -63,7 +63,8 @@ for (const dir of SCAN) {
       for (const m of src.matchAll(INLINE_STYLE)) {
         const body = m[1];
         const lineNo = src.slice(0, m.index).split("\n").length;
-        if (STYLED_PROPS.test(body)) {
+        const lineText = lines[lineNo - 1] ?? "";
+        if (STYLED_PROPS.test(body) && !/layout-ok/.test(lineText)) {
           styledInline.push(`${rel}:${lineNo}`);
         } else {
           toleratedInline++;

@@ -11,8 +11,10 @@ live*, this page wins.
 |---|---|---|
 | Colours, type ramp, spacing, radii, shadows | `app/styles/tokens.css` | The **only** file allowed to contain a raw colour. Change a value here and it changes everywhere. |
 | Brand hex for non-browser renderers (OG images, QR, email) | `lib/design/palette.ts` | Mirrors §1 of `tokens.css`. Keep in sync by hand. |
-| App component classes (`.admin-*`, `.u-*`) | `app/admin/admin.css` | Reads tokens by name. No hex, no rgba. Loaded by admin, team and portal. |
-| Public-site classes | `app/globals.css` | Same rule. Translucent colours use `color-mix()` over a token. |
+| Layout utilities (`.u-*`) | `app/styles/utilities.css` | Loaded by every surface from the root layout. Layout, spacing steps and type helpers only. |
+| App component classes (`.admin-*`) | `app/admin/admin.css` | Reads tokens by name. No hex, no rgba. Loaded by admin, team and portal. |
+| Public-site classes (`.site-*`) | `app/globals.css` | Same rule. One namespace; translucent colours use `color-mix()` over a token. |
+| Page-scoped CSS modules | `app/home.module.css`, `events/[slug]/event.module.css`, `surveys/[slug]/survey.module.css` | Allowed for a page with its own identity, but token-only: no raw colour, no private aliases. |
 | Pattern library | `/admin/patterns` | Renders every token and component. If a screen doesn't look like this page, the screen is wrong. |
 | Guardrail | `npm run check:tokens` (runs as `prebuild`) | Fails on any raw colour outside `tokens.css` / `palette.ts`, and on the styled-inline count rising above its ceiling. |
 
