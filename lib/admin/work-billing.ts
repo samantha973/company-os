@@ -64,7 +64,7 @@ async function flagManual(
     `Work request "${req.title}" was accepted but could not be invoiced automatically.`,
     `Reason: ${reason}`,
     ...details,
-    `Review: https://www.edge8.ai/admin/operations/contractor-requests?open=${req.id}`,
+    `Review: https://theprhub.com.au/admin/operations/contractor-requests?open=${req.id}`,
   ];
   if (ACCOUNTING_EMAIL) {
     await sendTransactionalEmail({
@@ -233,7 +233,7 @@ async function runBilling(requestId: string): Promise<BillingOutcome> {
         `<p>Contractor work "${req.title}" was accepted by the client and invoiced automatically.</p>`,
         `<p>QuickBooks invoice ${inv.docNumber ? `#${inv.docNumber}` : inv.id} — ${amountLabel} (${hours}h × $${(rateCents / 100).toFixed(2)}/h, 100% markup rate) for ${company?.name ?? "the client"}.</p>`,
         sent.ok ? `<p>QBO has emailed it to the client.</p>` : `<p><strong>QBO could not email it — please send it from QuickBooks.</strong></p>`,
-        `<p>Request: https://www.edge8.ai/admin/operations/contractor-requests?open=${req.id}</p>`,
+        `<p>Request: https://theprhub.com.au/admin/operations/contractor-requests?open=${req.id}</p>`,
       ].join("\n"),
       replyTo: "dave@edge8.co",
     });

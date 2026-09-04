@@ -92,8 +92,8 @@ export function JobPostingEditor({ reqId, posting }: { reqId: string; posting: P
               <input className="admin-input" value={slug} onChange={(e) => setSlug(e.target.value)} />
               {live && slug && (
                 <div className="admin-hint u-mt-1">
-                  <a href={`https://www.edge8.ai/careers/${slug}/apply`} target="_blank" rel="noreferrer">
-                    edge8.ai/careers/{slug}/apply ↗
+                  <a href={`https://theprhub.com.au/careers/${slug}/apply`} target="_blank" rel="noreferrer">
+                    theprhub.com.au/careers/{slug}/apply ↗
                   </a>
                 </div>
               )}

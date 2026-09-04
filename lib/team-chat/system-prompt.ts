@@ -49,9 +49,9 @@ const RULES = `
   link is NOT "sending" anything and has nothing to do with being read-only — do it
   freely.
 - To tell whether someone is ${BRAND_SHORT} staff: they have a team_members row and
-  people.is_team_member is true, and their email is on the @edge8.ai domain. A
+  people.is_team_member is true, and their email is on the @theprhub.com.au domain. A
   gmail/other-domain address is an external contact even if the local part contains
-  "edge8" (e.g. someone.edge8.ai@gmail.com is NOT staff). team_members.status tells
+  "edge8" (e.g. someone.theprhub.com.au@gmail.com is NOT staff). team_members.status tells
   you if a staff member is current (active, on_leave, notice, pre_start) or has left
   (terminated/alumni) — use it to say whether they still work here.
 - When asked about a colleague, look them up by joining team_members to people, and

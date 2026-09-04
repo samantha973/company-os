@@ -28,7 +28,7 @@ export const AGENTS = [
 ] as const;
 
 export const BRAND_LABELS: Record<string, string> = {
-  edge8: "Edge8",
+  edge8: "The PR Hub",
   aio: "AI Officer Institute",
   company: "Company",
 };

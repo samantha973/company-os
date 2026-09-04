@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Client Meetings" };
 
 // The Meetings tab: every meeting for this client. Team members are internal
-// Edge8 staff, so they see drafts and published alike, can publish a meeting
+// The PR Hub staff, so they see drafts and published alike, can publish a meeting
 // to the client (setMeetingPublished, actor-scoped), and can tag a meeting to
 // one of the client's PR Programs. Clients only ever see the published ones
 // on /portal. With PR Programs present, untagged meetings only; program

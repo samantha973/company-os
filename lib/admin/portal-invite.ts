@@ -24,7 +24,7 @@ export function siteOrigin(): string {
   const origin = h.get("origin");
   if (origin) return origin;
   const host = h.get("host");
-  return host ? `https://${host}` : "https://www.edge8.ai";
+  return host ? `https://${host}` : "https://theprhub.com.au";
 }
 
 export async function findAuthUserByEmail(email: string): Promise<{ id: string } | null> {
@@ -301,7 +301,7 @@ export type TempPasswordResult =
 // generated password is returned to the caller so the admin can read it out
 // directly when even this email gets quarantined — it is never stored in the
 // CRM (the interactions row logs a redacted body). The email is sent from the
-// acting admin's address (a verified edge8.ai sender) so the client sees a
+// acting admin's address (a verified theprhub.com.au sender) so the client sees a
 // human they know rather than a no-reply system address.
 export async function setTempPasswordCore(
   personId: string,

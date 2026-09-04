@@ -1,15 +1,15 @@
 // Client-side user management (PR 3): a portal ADMIN manages their own
 // company's users. Every function re-checks the caller holds the admin role
 // for the target company (lib/portal/roles.ts) before touching anything, and
-// all provisioning runs through the same engine the Edge8 admin UI uses
+// all provisioning runs through the same engine The PR Hub admin UI uses
 // (lib/admin/portal-invite.ts): auth user minted once, scanner-proof invite
 // email via /portal/verify, revoke bans the auth user on last membership.
 //
 // Guards beyond the role gate:
 //   - a client admin can only ever act inside their own company scope
-//   - invites can never target Edge8 admins or active team members
+//   - invites can never target The PR Hub admins or active team members
 //     (loadPortalTarget refuses both)
-//   - you cannot revoke or re-role yourself (no self-lockout; Edge8 does that)
+//   - you cannot revoke or re-role yourself (no self-lockout; The PR Hub does that)
 
 import { companyOs } from "@/lib/supabase";
 import type { PortalActor } from "@/lib/portal-auth";

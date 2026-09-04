@@ -17,7 +17,7 @@ import {
 import { Badge } from "@/components/admin/Badge";
 import { BRAND_SHORT } from "@/lib/brand";
 
-// "Assigned staff" card on the company 360 — who from Edge8 is dedicated to
+// "Assigned staff" card on the company 360 — who from The PR Hub is dedicated to
 // this client, with add/end controls.
 export function AssignedStaffCard({
   companyId,

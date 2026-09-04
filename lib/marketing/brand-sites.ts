@@ -1,7 +1,7 @@
 // Where each brand's blog actually lives. The marketing DB (company_os.
 // marketing_calendar) is one shared source across brands, but each brand renders
 // on its OWN website, so publishing must resolve a per-brand destination — never
-// assume edge8.ai. This map is the single source of truth for that routing.
+// assume theprhub.com.au. This map is the single source of truth for that routing.
 //
 // - self: this repo (edge8-web) renders this brand's posts. Only the self brand's
 //   posts may appear on this site; everything else is filtered out of the reader.
@@ -20,7 +20,7 @@ export type BrandSite = {
 export const SELF_BRAND_SLUG = "edge8";
 
 const SITES: Record<string, BrandSite> = {
-  edge8: { slug: "edge8", domain: "https://www.edge8.ai", self: true, blogEnabled: true },
+  edge8: { slug: "edge8", domain: "https://theprhub.com.au", self: true, blogEnabled: true },
   // ai-officer.com is a separate repo (aio-website) that reads these posts from
   // the shared DB (brand-scoped to ai-officer) and renders them on its own site.
   "ai-officer": { slug: "ai-officer", domain: "https://ai-officer.com", self: false, blogEnabled: true },

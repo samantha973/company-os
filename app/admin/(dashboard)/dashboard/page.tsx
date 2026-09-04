@@ -231,7 +231,7 @@ export default async function DashboardPage() {
           value={formatCents(cash30)}
           sub={
             <>
-              <div>Edge8 {compactUsd(rev30Edge8)}</div>
+              <div>The PR Hub {compactUsd(rev30Edge8)}</div>
               <div>AIO {compactUsd(rev30Aio)}</div>
             </>
           }

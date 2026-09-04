@@ -196,7 +196,7 @@ export function BroadcastEditor({
               className="admin-input"
               value={replyTo}
               disabled={!isDraft}
-              placeholder="dave@edge8.ai"
+              placeholder="hello@theprhub.com.au"
               onChange={(e) => setReplyTo(e.target.value)}
             />
           </div>
@@ -241,7 +241,7 @@ export function BroadcastEditor({
           anyone flagged do-not-contact are excluded no matter what you pick here.
         </p>
         <p className="admin-page-sub u-mt-1">
-          {campaign.brandName && campaign.brandName !== "Edge8"
+          {campaign.brandName && campaign.brandName !== "The PR Hub"
             ? `This is a ${campaign.brandName} broadcast, so it reaches only ${campaign.brandName}'s brand audience.`
             : `With no brand (or the ${BRAND_SHORT} brand) set, this reaches the full house list. Pick a guest brand to scope the send to that brand's audience only.`}
         </p>

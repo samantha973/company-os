@@ -16,7 +16,7 @@ export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 
 // Operations → Time Off. Employees self-serve in /team/time-off; their leave
-// policy decides the path (Edge8 Core Team auto-approves, On Target is manual).
+// policy decides the path (The PR Hub Core Team auto-approves, On Target is manual).
 // This board is awareness-first: upcoming and pending leave up top with the
 // decision controls (approve/reject pending, deny an auto-approval), 2026
 // usage cards, then the full log. The admin "log time off for someone" form is

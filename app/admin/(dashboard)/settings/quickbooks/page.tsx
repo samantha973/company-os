@@ -6,7 +6,7 @@ import { formatDate } from "@/lib/admin/format";
 import { firstParam, type SearchParamsObj } from "@/lib/admin/url";
 
 const CONNECTIONS: { entity: QboEntity; label: string; sub: string }[] = [
-  { entity: "edge8", label: "Edge8 (Talent Edge LLC)", sub: "Private retreats + client work-request billing." },
+  { entity: "edge8", label: "The PR Hub (The PR Hub)", sub: "Private retreats + client work-request billing." },
   { entity: "aio", label: "AIO", sub: "Public retreats." },
 ];
 
@@ -25,7 +25,7 @@ const STATUS_MESSAGE: Record<string, { tone: "ok" | "err"; text: string }> = {
   unconfigured: { tone: "err", text: "QBO env vars are missing (see setup notes below)." },
 };
 
-// Settings → QuickBooks. One connection (Talent Edge LLC): when a client
+// Settings → QuickBooks. One connection (The PR Hub): when a client
 // accepts finished contractor work in the portal, the app creates the QBO
 // invoice at the contractor's billable rate and QBO emails it to the client.
 // Disconnected ≠ broken: billing degrades to a manual_required flag + an
@@ -40,7 +40,7 @@ export default async function QuickBooksSettingsPage({ searchParams }: { searchP
       <PageHead
         eyebrow="Settings"
         title="QuickBooks"
-        sub="One connection per company: Edge8 for client billing and private retreats, AIO for public retreats."
+        sub="One connection per company: The PR Hub for client billing and private retreats, AIO for public retreats."
       />
 
       {flash && (
@@ -88,7 +88,7 @@ export default async function QuickBooksSettingsPage({ searchParams }: { searchP
         <h2 className="admin-card-title u-mb-3">Setup notes</h2>
         <ul className="u-list u-stack u-gap-2">
           <li>
-            Create an app at developer.intuit.com (Accounting scope) for Talent Edge LLC and set
+            Create an app at developer.intuit.com (Accounting scope) for The PR Hub and set
             <span className="admin-cell-mono"> QBO_CLIENT_ID</span>,
             <span className="admin-cell-mono"> QBO_CLIENT_SECRET</span>,
             <span className="admin-cell-mono"> QBO_REDIRECT_URI</span> (= this site's /api/qbo/callback) and

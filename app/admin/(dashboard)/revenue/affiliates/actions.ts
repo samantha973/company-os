@@ -50,7 +50,7 @@ function siteOrigin(): string {
   const origin = h.get("origin");
   if (origin) return origin;
   const host = h.get("host");
-  return host ? `https://${host}` : "https://www.edge8.ai";
+  return host ? `https://${host}` : "https://theprhub.com.au";
 }
 
 export async function getAffiliateShelf(identity: AffiliateIdentity): Promise<Affiliate360 | null> {

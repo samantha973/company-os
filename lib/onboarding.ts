@@ -21,7 +21,7 @@ import { promoteSelfieToAvatar } from "@/lib/avatars";
 import { ensureJourney } from "@/lib/onboarding-cycle";
 import type { SurveyFieldRow } from "@/lib/admin/surveys";
 
-const OPS_EMAIL = "mai@edge8.ai";
+const OPS_EMAIL = "hello@theprhub.com.au";
 
 // Onboarding collects bank details as one free-text line, usually
 // "<account> - <bank> - <branch>" (sometimes newline-separated, or just

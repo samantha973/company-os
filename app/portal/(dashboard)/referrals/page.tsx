@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 // who they've referred, and each commission — with the choice to take it as
 // 20% work credit or 10% cash. Every figure is scoped to their own person id in
 // lib/portal/referrals.ts. Non-affiliates (no code, no history) get a pitch +
-// contact CTA instead of an empty ledger; codes are issued by Edge8 on request.
+// contact CTA instead of an empty ledger; codes are issued by The PR Hub on request.
 export default async function PortalReferralsPage() {
   const actor = await requirePortalMember();
   const data = await getReferralsForActor(actor);
@@ -36,7 +36,7 @@ export default async function PortalReferralsPage() {
           <div className="u-mt-4">
             <a
               className="admin-btn admin-btn--primary"
-              href="mailto:hello@edge8.ai?subject=Referral%20program%20sign-up"
+              href="mailto:hello@theprhub.com.au?subject=Referral%20program%20sign-up"
             >
               Contact us to sign up
             </a>

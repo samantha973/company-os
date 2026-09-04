@@ -243,7 +243,7 @@ export async function createWorkRequestForActor(
 
   const companyName = actor.memberships.find((m) => m.companyId === input.companyId)?.companyName ?? "client";
   await pingOps(
-    `🧑‍💼 Client work request: "${title}" — ${companyName} → ${person?.full_name ?? "contractor"}. Review: https://www.edge8.ai/admin/operations/contractor-requests?open=${data.id}`,
+    `🧑‍💼 Client work request: "${title}" — ${companyName} → ${person?.full_name ?? "contractor"}. Review: https://theprhub.com.au/admin/operations/contractor-requests?open=${data.id}`,
   );
 
   return { ok: true, id: data.id };
@@ -323,7 +323,7 @@ export async function addScopeForActor(
 }
 
 // Clients can cancel only before work is approved — once the contractor may
-// be mid-work, cancellation goes through Edge8 (admin backstop).
+// be mid-work, cancellation goes through The PR Hub (admin backstop).
 const CLIENT_CANCELLABLE = ["awaiting_estimate", "estimate_submitted", "changes_requested"];
 
 export async function cancelWorkRequestForActor(
@@ -369,7 +369,7 @@ export async function createPortalInquiryForActor(
     subject,
     message,
     source: "portal",
-    source_site: "edge8.ai",
+    source_site: "theprhub.com.au",
     status: "new_lead",
     metadata: {
       origin: "portal",
@@ -383,7 +383,7 @@ export async function createPortalInquiryForActor(
 
   const companyName = actor.memberships[0]?.companyName ?? "client";
   await notifyOps(
-    `🧑‍💼 Portal general request from ${actor.displayName} (${companyName}): "${subject}". Review: https://www.edge8.ai/admin/revenue/inquiries`,
+    `🧑‍💼 Portal general request from ${actor.displayName} (${companyName}): "${subject}". Review: https://theprhub.com.au/admin/revenue/inquiries`,
   );
   return { ok: true };
 }
