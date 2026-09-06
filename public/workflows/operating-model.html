@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="The PR Hub operating model — the senior-led, AI-leveraged agency. How we're built, how we work, and why it wins.">
+<title>The Senior-Led Agency</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#FBFAF8; --surface:#FFFFFF; --surface-2:#F5F4F0;
+    --ink:#20242E; --muted:#5A6172; --faint:#8A909E;
+    --line:#E6E3DC; --line-strong:#D6D2C8;
+    --accent:#0E7A6E; --accent-soft:#E4F1EF; --accent-ring:#BFE0DA;
+    --gold:#B4791C; --gold-soft:#F6ECDA; --gold-ring:#E4CFA6;
+    --stop:#B23B3B; --stop-soft:#F7E4E4;
+    --shadow:0 1px 2px rgba(32,36,46,.05),0 10px 30px -14px rgba(32,36,46,.22);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+      --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+      --line:#2B2F3A; --line-strong:#363B48;
+      --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+      --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+      --stop:#E07A7A; --stop-soft:rgba(224,122,122,.12);
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+    --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+    --line:#2B2F3A; --line-strong:#363B48;
+    --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+    --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+    --stop:#E07A7A; --stop-soft:rgba(224,122,122,.12);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:960px; margin:0 auto; padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px) 90px;}
+  .eyebrow{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700;}
+  h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(34px,6vw,62px);
+    line-height:1.0; letter-spacing:-.025em; margin:.28em 0 .32em; text-wrap:balance;}
+  .lede{color:var(--muted); font-size:clamp(16px,1.7vw,19px); max-width:62ch; margin:0 0 6px;}
+  .sig{margin-top:16px; font-size:13.5px; color:var(--faint);}
+  .sig b{color:var(--ink); font-weight:600;}
+
+  h2{font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(22px,3.4vw,30px); font-weight:800;
+    letter-spacing:-.015em; margin:0 0 4px; text-wrap:balance;}
+  .sect{margin-top:clamp(44px,6vw,72px);}
+  .kicker{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:0 0 14px;}
+  .sub{color:var(--muted); max-width:64ch; margin:2px 0 22px; font-size:15.5px;}
+  p{margin:0 0 16px;}
+  .big{font-size:clamp(19px,2.4vw,24px); line-height:1.5; font-weight:500; color:var(--ink); max-width:34ch;
+    font-family:"Bricolage Grotesque",sans-serif; letter-spacing:-.01em;}
+  .big .hl{color:var(--accent);}
+  em.q{font-style:normal; color:var(--muted);}
+
+  hr.rule{border:0; border-top:1px solid var(--line); margin:0;}
+
+  /* principle laws */
+  .laws{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:16px;}
+  .law{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 20px 18px; box-shadow:var(--shadow);}
+  .law .n{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-weight:600; letter-spacing:.04em;}
+  .law h3{font-family:"Bricolage Grotesque",sans-serif; font-size:18px; font-weight:700; margin:8px 0 6px; letter-spacing:-.01em;}
+  .law p{margin:0; font-size:13.5px; color:var(--muted);}
+
+  /* stat tiles */
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px;}
+  .stat{background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .stat .v{font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(26px,4vw,34px); font-weight:800; line-height:1; letter-spacing:-.02em; color:var(--ink);}
+  .stat .v small{font-size:15px; color:var(--accent); font-weight:700;}
+  .stat .l{font-size:12.5px; color:var(--muted); margin-top:8px; line-height:1.35;}
+
+  /* org diagram */
+  .diagram{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:clamp(14px,3vw,26px); box-shadow:var(--shadow); overflow-x:auto;}
+  .diagram svg{display:block; width:100%; height:auto; min-width:560px;}
+
+  /* role cards */
+  .roles{display:grid; gap:16px;}
+  .role{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px 22px 20px; box-shadow:var(--shadow);}
+  .role.lead{border-color:var(--accent-ring); border-left:3px solid var(--accent);}
+  .role .tag{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent-ring);
+    padding:3px 9px; border-radius:20px; font-weight:600;}
+  .role h3{font-family:"Bricolage Grotesque",sans-serif; font-size:20px; font-weight:800; margin:12px 0 2px; letter-spacing:-.015em;}
+  .role .oneline{color:var(--muted); font-size:14.5px; margin:0 0 14px; font-style:italic;}
+  .role .owns{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:0 0 8px;}
+  ul.tick{list-style:none; margin:0; padding:0; display:grid; gap:7px;}
+  ul.tick li{position:relative; padding-left:24px; font-size:14px; color:var(--ink);}
+  ul.tick li::before{content:""; position:absolute; left:2px; top:8px; width:9px; height:9px; border-radius:3px;
+    background:var(--accent-soft); border:1.5px solid var(--accent);}
+  ul.tick.gold li::before{background:var(--gold-soft); border-color:var(--gold);}
+
+  /* service stack */
+  .stack{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px;}
+  .svc{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:15px 16px;}
+  .svc h4{font-family:"Bricolage Grotesque",sans-serif; font-size:15.5px; font-weight:700; margin:0 0 4px;}
+  .svc p{margin:0; font-size:13px; color:var(--muted);}
+  .svc .bonus{font-size:11px; color:var(--gold); font-weight:600; letter-spacing:.03em;}
+
+  /* timeline */
+  .qgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px;}
+  .qcol{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px; box-shadow:var(--shadow);}
+  .qcol .wk{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-weight:600;}
+  .qcol h4{font-family:"Bricolage Grotesque",sans-serif; font-size:16px; margin:6px 0 8px; font-weight:700;}
+  .qcol ul{margin:0; padding-left:18px; font-size:13px; color:var(--muted);}
+  .qcol ul li{margin-bottom:5px;}
+
+  /* tables */
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow);}
+  table{border-collapse:collapse; width:100%; min-width:520px; background:var(--surface); font-size:14px;}
+  th,td{text-align:left; padding:12px 16px; border-bottom:1px solid var(--line); vertical-align:top;}
+  th{font-family:"IBM Plex Sans"; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); font-weight:700; background:var(--surface-2);}
+  tr:last-child td{border-bottom:0;}
+  td b{color:var(--ink);}
+  .pill{display:inline-block; font-size:11px; font-weight:600; padding:2px 8px; border-radius:20px; letter-spacing:.02em;}
+  .pill.g{color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent-ring);}
+  .pill.a{color:var(--gold); background:var(--gold-soft); border:1px solid var(--gold-ring);}
+
+  /* gates */
+  .gates{display:grid; gap:12px; counter-reset:gate;}
+  .gate{display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .gate .num{counter-increment:gate; font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:20px;
+    color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent-ring);
+    width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center;}
+  .gate h4{font-family:"Bricolage Grotesque",sans-serif; font-size:16px; margin:2px 0 4px; font-weight:700;}
+  .gate p{margin:0; font-size:13.5px; color:var(--muted);}
+  .gate .who{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--faint); margin-top:6px; display:block;}
+
+  /* callouts */
+  .counsel{border:1px solid var(--gold-ring); background:var(--gold-soft); border-radius:14px; padding:20px 22px; margin:18px 0;}
+  .counsel .h{display:flex; align-items:center; gap:9px; font-family:"Bricolage Grotesque",sans-serif; font-weight:800;
+    font-size:15px; color:var(--gold); letter-spacing:.01em; margin-bottom:8px;}
+  .counsel .h svg{flex:none;}
+  .counsel p{margin:0 0 10px; font-size:14.5px; color:var(--ink);}
+  .counsel p:last-child{margin-bottom:0;}
+  .counsel .do{font-weight:600;}
+  .counsel .do::before{content:"→ "; color:var(--gold); font-weight:700;}
+
+  blockquote{margin:24px 0; padding:4px 0 4px 22px; border-left:3px solid var(--accent);
+    font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(18px,2.6vw,23px); font-weight:500; letter-spacing:-.01em; line-height:1.4; color:var(--ink);}
+  blockquote cite{display:block; font-family:"IBM Plex Sans"; font-style:normal; font-size:13px; font-weight:600; color:var(--faint); margin-top:12px; letter-spacing:.02em;}
+
+  /* benchmark */
+  .bench{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px;}
+  .firm{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px; box-shadow:var(--shadow);}
+  .firm h4{font-family:"Bricolage Grotesque",sans-serif; font-size:16px; margin:0 0 2px; font-weight:800;}
+  .firm .loc{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); font-weight:700;}
+  .firm p{margin:8px 0 0; font-size:13px; color:var(--muted);}
+  .firm .steal{margin-top:10px; font-size:12.5px; color:var(--ink);}
+  .firm .steal b{color:var(--accent);}
+
+  .sources{font-size:12px; color:var(--faint); margin-top:18px; line-height:1.7;}
+  .sources a{color:var(--muted);}
+
+  footer{margin-top:64px; padding-top:20px; border-top:1px solid var(--line);
+    font-size:12px; color:var(--faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  a.back{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--accent); text-decoration:none; margin-bottom:8px;}
+  code{font-family:"IBM Plex Mono",monospace; font-size:.88em; background:var(--surface-2); padding:1px 6px; border-radius:5px;}
+  .fnote{font-size:12.5px; color:var(--faint); margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="/workflows/hub.html">← Workflows Hub</a>
+  <div class="eyebrow">The PR Hub · Operating Model</div>
+  <h1>The Senior-Led Agency</h1>
+  <p class="lede">The old agency sold you a senior team and gave you a junior one. We do the opposite. Every client is run by someone who has done this for twelve years — and their bench is not a room of graduates. It is artificial intelligence they command like a newsroom.</p>
+  <p class="lede">This is how we are built, how we work, and why it wins.</p>
+  <div class="sig">Operating model · <b>v1</b> · Owned by the Founder &amp; CEO · Reviewed quarterly</div>
+
+  <!-- THE ONE IDEA -->
+  <section class="sect">
+    <p class="kicker">The one idea</p>
+    <p class="big">We don't sell <span class="hl">more</span>. We sell <span class="hl">better</span> — and we've engineered the cost of "better" down to where nobody else can follow.</p>
+    <p class="sub">Every decision in this document ladders back to that sentence. If a hire, a process, or a service doesn't make the work <b>better</b> or the delivery of it <b>cheaper to produce at the same quality</b>, we don't do it. Volume is a race to the bottom run by agencies who confuse activity with value. We are not in that race.</p>
+  </section>
+
+  <hr class="rule">
+
+  <!-- THE FOUR LAWS -->
+  <section class="sect">
+    <h2>Four laws we don't break</h2>
+    <p class="sub">Break one and the model stops working. They are not aspirations. They are constraints.</p>
+    <div class="laws">
+      <div class="law">
+        <div class="n">LAW 01</div>
+        <h3>A senior in every room</h3>
+        <p>The person who wins the client is the person who runs the client. No pitch-and-switch. Ever. Founders of eight- and nine-figure businesses want adults, not apprentices.</p>
+      </div>
+      <div class="law">
+        <div class="n">LAW 02</div>
+        <h3>AI is the junior bench</h3>
+        <p>We don't hire graduates to draft. We built prompts, refined over years, that write the first draft, the award entry, the long-form. The senior edits to exceptional. That's the whole trick.</p>
+      </div>
+      <div class="law">
+        <div class="n">LAW 03</div>
+        <h3>Quality over quantity</h3>
+        <p>We deliver against the client's north star, not a content quota. Fewer, sharper moves that a CEO actually notices beat a monthly report full of noise.</p>
+      </div>
+      <div class="law">
+        <div class="n">LAW 04</div>
+        <h3>Smarter, not harder</h3>
+        <p>Leverage is the point. If our people are working longer hours, we've built the model wrong. Time saved is reinvested into thinking — the one thing clients can't get anywhere else.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE ECONOMICS AT A GLANCE -->
+  <section class="sect">
+    <p class="kicker">Why the math works</p>
+    <div class="stats">
+      <div class="stat"><div class="v">0</div><div class="l">Juniors on the payroll. The bench is AI, governed by senior judgment.</div></div>
+      <div class="stat"><div class="v">6<small>+</small></div><div class="l">Accounts per senior lead at steady state — a number we earn, not assume (see counsel).</div></div>
+      <div class="stat"><div class="v">~8–10<small>h</small></div><div class="l">Hours/week senior strategists reclaim when they direct AI instead of doing the doing.</div></div>
+      <div class="stat"><div class="v">90<small>d</small></div><div class="l">Planning horizon, locked to calendar quarters — easy to manage, easy to invoice.</div></div>
+    </div>
+    <p class="fnote">Time-saving and productivity figures reflect 2026 industry reporting on AI-augmented senior teams (see sources). Treat them as the target we operate toward, not a promise.</p>
+  </section>
+
+  <hr class="rule">
+
+  <!-- THE STRUCTURE -->
+  <section class="sect">
+    <h2>How we're built</h2>
+    <p class="sub">Flat on purpose. Four layers, no fiefdoms, one P&amp;L. Borrowed from the best law-firm-style partnerships in strategic communications — not the pyramid agencies we came from.</p>
+    <div class="diagram" role="img" aria-label="Organisation model: Founder and CEO at the top, an optional business development lead, a flat layer of senior strategic account leads, an AI junior bench, and a shared administrative assistant.">
+      <svg viewBox="0 0 760 470" xmlns="http://www.w3.org/2000/svg" font-family="IBM Plex Sans, sans-serif">
+        <defs>
+          <style>
+            .box{fill:var(--surface-2); stroke:var(--line-strong); stroke-width:1.5;}
+            .boxlead{fill:var(--accent-soft); stroke:var(--accent-ring); stroke-width:1.5;}
+            .boxai{fill:var(--gold-soft); stroke:var(--gold-ring); stroke-width:1.5; stroke-dasharray:5 4;}
+            .t{fill:var(--ink); font-weight:700; font-size:14px;}
+            .ts{fill:var(--muted); font-size:11px;}
+            .tw{fill:var(--faint); font-size:10px; letter-spacing:.08em;}
+            .ln{stroke:var(--line-strong); stroke-width:1.5; fill:none;}
+            .lndash{stroke:var(--gold-ring); stroke-width:1.5; fill:none; stroke-dasharray:4 4;}
+          </style>
+        </defs>
+
+        <!-- Founder -->
+        <rect class="boxlead" x="280" y="14" width="200" height="56" rx="12"/>
+        <text class="t" x="380" y="38" text-anchor="middle">Founder &amp; CEO</text>
+        <text class="ts" x="380" y="55" text-anchor="middle">Brand · New business · Counsel</text>
+
+        <!-- BD (optional) -->
+        <rect class="box" x="520" y="98" width="200" height="52" rx="12" opacity="0.85"/>
+        <text class="tw" x="620" y="118" text-anchor="middle">OPTIONAL LAYER</text>
+        <text class="t" x="620" y="135" text-anchor="middle" font-size="13px">BD / Lead Manager</text>
+
+        <!-- lines founder -> bd -->
+        <path class="ln" d="M480 46 H500 Q520 46 520 70 V124 H540" opacity="0.7"/>
+
+        <!-- vertical spine -->
+        <path class="ln" d="M380 70 V172"/>
+        <text class="tw" x="392" y="120" font-size="10px">weekly accountability ↑↓</text>
+
+        <!-- Account leads row -->
+        <rect class="boxlead" x="70"  y="172" width="180" height="60" rx="12"/>
+        <text class="t"  x="160" y="196" text-anchor="middle">Senior Strategic Lead</text>
+        <text class="ts" x="160" y="214" text-anchor="middle">12+ yrs · owns strategy</text>
+
+        <rect class="boxlead" x="290" y="172" width="180" height="60" rx="12"/>
+        <text class="t"  x="380" y="196" text-anchor="middle">Senior Strategic Lead</text>
+        <text class="ts" x="380" y="214" text-anchor="middle">6 accounts each</text>
+
+        <rect class="boxlead" x="510" y="172" width="180" height="60" rx="12"/>
+        <text class="t"  x="600" y="196" text-anchor="middle">Senior Strategic Lead</text>
+        <text class="ts" x="600" y="214" text-anchor="middle">runs client end-to-end</text>
+
+        <!-- connectors to leads -->
+        <path class="ln" d="M380 172 V158 H160 V172"/>
+        <path class="ln" d="M380 172 V158 H600 V172"/>
+        <path class="ln" d="M380 158 V172"/>
+
+        <!-- AI bench -->
+        <rect class="boxai" x="150" y="290" width="460" height="58" rx="12"/>
+        <text class="tw" x="380" y="312" text-anchor="middle" fill="var(--gold)">THE JUNIOR BENCH</text>
+        <text class="t"  x="380" y="332" text-anchor="middle">AI + the TPH prompt library — drafts, entries, research, monitoring</text>
+
+        <!-- dashed lines leads -> AI -->
+        <path class="lndash" d="M160 232 V290"/>
+        <path class="lndash" d="M380 232 V290"/>
+        <path class="lndash" d="M600 232 V290"/>
+
+        <!-- Admin -->
+        <rect class="box" x="240" y="392" width="280" height="56" rx="12"/>
+        <text class="t"  x="380" y="416" text-anchor="middle">Administrative Assistant</text>
+        <text class="ts" x="380" y="433" text-anchor="middle">Monitoring · filing · reporting · DB of coverage</text>
+
+        <!-- admin connectors -->
+        <path class="ln" d="M380 348 V392"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ROLES -->
+  <section class="sect">
+    <p class="kicker">Who owns what</p>
+    <div class="roles">
+
+      <div class="role">
+        <span class="tag">Layer 1</span>
+        <h3>Founder &amp; CEO</h3>
+        <p class="oneline">The face, the rainmaker, the final word on counsel.</p>
+        <p class="owns">Accountable for</p>
+        <ul class="tick">
+          <li>The personal brand engine — workshops, webinars, podcasts, interviews, collateral.</li>
+          <li>New business: sourcing, securing, and signing. The pipeline is the founder's number.</li>
+          <li>Weekly accountability meeting with every lead — structured, on the EOS rhythm.</li>
+          <li>Renewals strategy, jointly owned with the lead. Nothing lapses by surprise.</li>
+          <li>Guarding the model. The four laws are the founder's to defend.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <span class="tag">Layer 2 · optional</span>
+        <h3>BD / Lead Manager</h3>
+        <p class="oneline">Added the moment the founder becomes the bottleneck — not a day later.</p>
+        <p class="owns">Accountable for</p>
+        <ul class="tick">
+          <li>Running inbound leads and calls the founder generates through to onboarding and sign-off.</li>
+          <li>Freeing the founder to do the two things only the founder can: brand and close.</li>
+        </ul>
+      </div>
+
+      <div class="role lead">
+        <span class="tag">Layer 3 · the engine</span>
+        <h3>Senior Strategic Account Leads</h3>
+        <p class="oneline">10–12+ years. They bring the strategy to the founder, not the other way round.</p>
+        <p class="owns">Accountable for</p>
+        <ul class="tick">
+          <li>Owning the client end-to-end: discovery, the 90-day plan, and the counsel in the room.</li>
+          <li>Every signed deliverable in the contract — knows it cold, delivers it, reports it.</li>
+          <li>Commanding the AI bench: brief it, review it, edit it to exceptional. The lead is the editor, never the typist.</li>
+          <li>Reading the room and the news — AFR, The Australian — spotting the angle before the client does.</li>
+          <li>Renewal radar: knows every contract date and flags it internally well ahead of time.</li>
+          <li>Working with the admin assistant to keep workflows, the coverage database, and reporting current.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <span class="tag">Layer 3.5 · the bench</span>
+        <h3>The AI Junior Bench</h3>
+        <p class="oneline">Not a person. A capability. The best copywriter and researcher you never have to manage.</p>
+        <p class="owns">Deployed for</p>
+        <ul class="tick gold">
+          <li>First-draft long-form, media pitches, LinkedIn content, and award submissions.</li>
+          <li>Desk research, media list building, angle generation, and first-pass monitoring.</li>
+          <li>Reporting scaffolds — the numbers assembled, the senior adds the meaning.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <span class="tag">Layer 4</span>
+        <h3>Administrative Assistant</h3>
+        <p class="oneline">The operational spine. Makes the seniors faster by owning everything that isn't counsel.</p>
+        <p class="owns">Accountable for</p>
+        <ul class="tick">
+          <li>Media monitoring and coverage capture into the central database (links, always current).</li>
+          <li>Reporting production support — weekly, quarterly, annual.</li>
+          <li>Back-end filing. The systems are sophisticated; clients have access at all times.</li>
+          <li>Workflow hygiene across every account.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- THE 90 DAY PLAN -->
+  <section class="sect">
+    <h2>The 90-day plan</h2>
+    <p class="sub">Every client runs on a quarter. Aligned to the calendar so it's clean to manage and clean to invoice. Here's the service stack a lead builds the plan from — and how a quarter actually unfolds.</p>
+
+    <p class="kicker" style="margin-top:28px">The service stack</p>
+    <div class="stack">
+      <div class="svc"><h4>News announcements</h4><p>The planned drumbeat — funding, hires, products, milestones.</p></div>
+      <div class="svc"><h4>Media relations</h4><p>Real relationships, real placements. The core craft.</p></div>
+      <div class="svc"><h4>Newsjacking</h4><p>Day, week, month — insert the client's opinion into the conversation that's already happening.</p></div>
+      <div class="svc"><h4>Awards</h4><p>Only the ones that serve a business objective. Entries drafted by the bench, sharpened by the lead.</p></div>
+      <div class="svc"><h4>LinkedIn strategy</h4><p>Pillars mapped, content owned end-to-end for the client's executive voice.</p></div>
+      <div class="svc"><h4>Long-form articles</h4><p>Pitched to media or run as LinkedIn. Bench drafts, lead edits to exceptional.</p></div>
+      <div class="svc"><h4>Event support</h4><p>Be in the room, harvest the content, turn it into the next news opportunity.</p></div>
+      <div class="svc"><h4>Speaking <span class="bonus">BONUS</span></h4><p>Sourced only when explicitly scoped. Never assumed into a retainer.</p></div>
+    </div>
+
+    <p class="kicker" style="margin-top:34px">How a quarter unfolds</p>
+    <div class="qgrid">
+      <div class="qcol">
+        <div class="wk">WEEKS 1–2</div>
+        <h4>Plan &amp; lock</h4>
+        <ul>
+          <li>Confirm the north star for the quarter</li>
+          <li>Map the service mix to objectives</li>
+          <li>Build the quarterly plan, present to client</li>
+          <li>Bench primed with brand + angle context</li>
+        </ul>
+      </div>
+      <div class="qcol">
+        <div class="wk">WEEKS 3–11</div>
+        <h4>Execute the drumbeat</h4>
+        <ul>
+          <li>Announcements + media relations running</li>
+          <li>Newsjacking as the news breaks</li>
+          <li>LinkedIn + long-form on cadence</li>
+          <li>Coverage logged to the database as it lands</li>
+          <li>EOW bullet-point notes to client</li>
+        </ul>
+      </div>
+      <div class="qcol">
+        <div class="wk">WEEK 12</div>
+        <h4>Report &amp; renew</h4>
+        <ul>
+          <li>Quarterly report against the north star</li>
+          <li>Next-quarter plan drafted</li>
+          <li>Renewal check internally with founder</li>
+          <li>Annual report where the cycle lands</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE AI BENCH IN PRACTICE -->
+  <section class="sect">
+    <h2>The bench, governed</h2>
+    <p class="sub">This is the part that makes or breaks us — and the part most likely to embarrass an agency that does it lazily. A PR firm that lets AI hallucinate a fact into a media pitch has burned the one asset it sells: trust. So the bench runs on gates, and a senior signs every one.</p>
+    <div class="gates">
+      <div class="gate">
+        <div class="num"></div>
+        <div>
+          <h4>Brief</h4>
+          <p>The lead briefs the bench with a governed prompt from the TPH library — client context, angle, tone, the non-negotiables. Rubbish in, rubbish out; the brief is where quality is decided.</p>
+          <span class="who">Owner: Senior lead</span>
+        </div>
+      </div>
+      <div class="gate">
+        <div class="num"></div>
+        <div>
+          <h4>Draft</h4>
+          <p>The bench produces the first draft — long-form, pitch, entry, or research. Fast, cheap, and never client-facing in this state.</p>
+          <span class="who">Owner: AI bench · TPH prompt library</span>
+        </div>
+      </div>
+      <div class="gate">
+        <div class="num"></div>
+        <div>
+          <h4>Fact &amp; source check</h4>
+          <p>Every claim verified against a real source. This gate is mandatory and it is human. No exceptions for speed.</p>
+          <span class="who">Owner: Senior lead (+ admin support)</span>
+        </div>
+      </div>
+      <div class="gate">
+        <div class="num"></div>
+        <div>
+          <h4>Edit to exceptional</h4>
+          <p>The lead does what the lead is paid for: judgment, nuance, the sentence a CEO remembers. Draft becomes counsel.</p>
+          <span class="who">Owner: Senior lead</span>
+        </div>
+      </div>
+      <div class="gate">
+        <div class="num"></div>
+        <div>
+          <h4>Ship &amp; log</h4>
+          <p>Out to the client or the journalist. Coverage and assets logged to the central database. The loop closes.</p>
+          <span class="who">Owner: Senior lead + admin</span>
+        </div>
+      </div>
+    </div>
+    <div class="counsel">
+      <div class="h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 4.5v5c0 5-3.8 8.7-9 10.5-5.2-1.8-9-5.5-9-10.5v-5z"/><path d="M9 12l2 2 4-4"/></svg> Strategic counsel — protect the bench</div>
+      <p>The prompt library is now a company asset worth more than any single employee. Treat it like one: version it, control who can change it, and log which prompt produced which client work. When a lead leaves, the leverage stays.</p>
+      <p class="do">Assign one owner for the prompt library and review it quarterly. Undocumented prompts are a risk, not an asset.</p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- CADENCE -->
+  <section class="sect">
+    <h2>The rhythm</h2>
+    <p class="sub">Work from anywhere. But the cadence is sacred — internally and with the client. Discipline in the rhythm is what lets the flat structure hold.</p>
+
+    <p class="kicker" style="margin-top:24px">Internal</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Ritual</th><th>Cadence</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><b>Accountability with founder</b></td><td><span class="pill g">Weekly</span></td><td>Structured EOS update. Real accountability roles, tight reporting, no theatre.</td></tr>
+          <tr><td><b>In-person team meeting</b></td><td><span class="pill a">Regular cadence</span></td><td>Work-from-anywhere, but attendance at the in-person rhythm is expected.</td></tr>
+          <tr><td><b>Prompt library review</b></td><td><span class="pill g">Quarterly</span></td><td>Keep the bench sharp, safe, and documented.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="kicker" style="margin-top:28px">With the client</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Touchpoint</th><th>Cadence</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><b>Catch-up call</b></td><td><span class="pill g">Fortnightly → Monthly</span></td><td>Fortnightly early; shifts to monthly once a client passes three months.</td></tr>
+          <tr><td><b>End-of-week note</b></td><td><span class="pill g">Weekly</span></td><td>Bullet points. Signal, not noise.</td></tr>
+          <tr><td><b>Quarterly report + plan</b></td><td><span class="pill g">Every quarter</span></td><td>Performance against the north star, next quarter locked.</td></tr>
+          <tr><td><b>Annual report</b></td><td><span class="pill a">Yearly</span></td><td>The big-picture value story.</td></tr>
+          <tr><td><b>In-person visit</b></td><td><span class="pill a">Every 6 months</span></td><td>Lunch or dinner. The relationship is the retention.</td></tr>
+          <tr><td><b>Client events</b></td><td><span class="pill a">As they arise</span></td><td>Expected — especially where content can be harvested geographically.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- INCENTIVES -->
+  <section class="sect">
+    <h2>Paid to keep clients, not chase them</h2>
+    <p class="sub">The whole economic engine is retention. A client kept is worth many times a client won. So we pay for it.</p>
+    <div class="stats">
+      <div class="stat"><div class="v">6<small>mo</small></div><div class="l">First retention milestone — the client has chosen us twice.</div></div>
+      <div class="stat"><div class="v">12<small>mo</small></div><div class="l">Second milestone — we're now part of how they operate.</div></div>
+      <div class="stat"><div class="v">18<small>mo</small></div><div class="l">Third milestone — this is a real book of business.</div></div>
+    </div>
+    <p class="sub" style="margin-top:20px">Senior leads are incentivised well at each milestone a client passes. The message to a lead is simple: <b>keep clients exceptional, and you win with the firm.</b></p>
+    <div class="counsel">
+      <div class="h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 4.5v5c0 5-3.8 8.7-9 10.5-5.2-1.8-9-5.5-9-10.5v-5z"/><path d="M9 12l2 2 4-4"/></svg> Strategic counsel — one boat, one bonus</div>
+      <p>Brunswick's edge isn't its people — plenty of firms have good people. It's the structure: one shared P&amp;L, one bonus pool, no individual profit centres. Nobody hoards a client. In a flat firm of senior egos, that is the difference between collaboration and quiet war.</p>
+      <p class="do">Add a small shared-firm component on top of the individual retention bonus, so a lead helping another lead's client is rewarded, not resented.</p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- STRATEGIC COUNSEL -->
+  <section class="sect">
+    <h2>Where I'd push back</h2>
+    <p class="sub">You asked for counsel, not applause. The model is strong — genuinely. Here are the three places it will be tested, and what I'd do about each before it costs you.</p>
+
+    <div class="counsel">
+      <div class="h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16.5v.01"/></svg> 1 · Six accounts per lead is a ceiling you earn, not a floor you assume</div>
+      <p>Elite senior-led firms run <b>4–5</b> high-touch strategic accounts per person. The pyramid agencies run 6–8 — but only because a junior army absorbs the load. Your bet is that the AI bench closes that gap so a senior can carry six alone. It's a good bet. It is not yet a proven one.</p>
+      <p class="do">Start leads at 4–5. Ramp to 6 only once the bench is demonstrably doing junior-grade work at senior-grade quality. And weight by complexity: a crisis or activism-style account should count as two.</p>
+    </div>
+
+    <div class="counsel">
+      <div class="h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16.5v.01"/></svg> 2 · "No juniors" solves cost and creates a succession hole</div>
+      <p>If you never hire junior, you have no bench of future senior leads, and every senior who leaves takes a client relationship with them. The best firms are quietly becoming the primary <em class="q">developers</em> of senior talent, because that's now the scarce thing.</p>
+      <p class="do">Don't reintroduce the pyramid. But consider one apprentice per 2–3 leads, purely for succession — or an equity/partner path that makes your best leads owners, not flight risks.</p>
+    </div>
+
+    <div class="counsel">
+      <div class="h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16.5v.01"/></svg> 3 · You are the single point of failure on new business</div>
+      <p>At six leads × six accounts, that's ~36 clients — and one person doing all the winning, all the closing, all the brand, and a weekly accountability meeting with every lead. The BD layer is drawn as "optional / later." At scale it isn't optional; it's the thing that stops you being the bottleneck.</p>
+      <p class="do">Hire the BD / lead manager <em class="q">before</em> the pain, not after. The trigger is when your own calendar starts costing you pipeline — and that comes sooner than it feels like it will.</p>
+    </div>
+
+    <div class="counsel">
+      <div class="h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16.5v.01"/></svg> Bonus · Price the value, not the hours</div>
+      <p>If your whole thesis is "better, not more," never sell time. The moment you quote hours you've told the client that hours are the value — and then AI making you faster becomes a reason to <em class="q">pay you less</em>. Price the outcome against their north star.</p>
+      <p class="do">Move to fixed quarterly scope priced on business impact, not effort. Let the leverage fall to your margin, where it belongs.</p>
+    </div>
+  </section>
+
+  <!-- BLOCKQUOTE -->
+  <blockquote>
+    The consumer isn't a moron. She's your wife. Neither is the CEO across the table — so stop staffing the room like he won't notice who's in it.
+    <cite>The spirit of the thing — with apologies to David Ogilvy</cite>
+  </blockquote>
+
+  <hr class="rule">
+
+  <!-- BENCHMARK -->
+  <section class="sect">
+    <h2>Who we studied</h2>
+    <p class="sub">The best strategic-communications firms in the UK and US already run versions of this model. We took what works and cut what doesn't.</p>
+    <div class="bench">
+      <div class="firm">
+        <span class="loc">UK · Global</span>
+        <h4>Brunswick Group</h4>
+        <p>Partnership model borrowed from law, not PR. No individual profit centres, one shared bonus pool, one integrated team.</p>
+        <p class="steal"><b>We steal:</b> one P&amp;L, no fiefdoms.</p>
+      </div>
+      <div class="firm">
+        <span class="loc">US · New York</span>
+        <h4>Joele Frank</h4>
+        <p>A deliberately senior-heavy bench — founding partners and senior advisors on the highest-stakes work: activism, crisis, transactions.</p>
+        <p class="steal"><b>We steal:</b> seniority as the product.</p>
+      </div>
+      <div class="firm">
+        <span class="loc">UK/US · Global</span>
+        <h4>FGS Global</h4>
+        <p>Built from Finsbury, Sard Verbinnen and others into "one integrated team" of cross-disciplinary senior advisors.</p>
+        <p class="steal"><b>We steal:</b> integrated, not siloed.</p>
+      </div>
+      <div class="firm">
+        <span class="loc">US/UK · Global</span>
+        <h4>Teneo</h4>
+        <p>CEO advisory model — sits beside the CEO and senior team with bespoke counsel, backed by a network of senior advisors.</p>
+        <p class="steal"><b>We steal:</b> counsel at the top table.</p>
+      </div>
+      <div class="firm">
+        <span class="loc">US · Global</span>
+        <h4>Weber Shandwick</h4>
+        <p>A client-experience-led model with a centralised data, tech and measurement practice feeding every account.</p>
+        <p class="steal"><b>We steal:</b> a shared intelligence spine (our DB + bench).</p>
+      </div>
+      <div class="firm">
+        <span class="loc">The 2026 shift</span>
+        <h4>The AI-restructured agency</h4>
+        <p>Fewer mid-level roles, senior strategists directing AI-augmented workflows, value-based pricing, ~90% time saved on reporting.</p>
+        <p class="steal"><b>We steal:</b> the bench, the pricing, the leverage.</p>
+      </div>
+    </div>
+    <div class="sources">
+      Sources —
+      <a href="https://everything-pr.com/brunswick-group-pr">Brunswick Group (Everything-PR)</a> ·
+      <a href="https://www.joelefrank.com/our-people">Joele Frank — Our People</a> ·
+      <a href="https://fgsglobal.com/about-us">FGS Global — About</a> ·
+      <a href="https://www.teneo.com/our-firm/">Teneo — Our Firm</a> ·
+      <a href="https://www.campaignasia.com/article/weber-shandwick-unveils-new-client-driven-agency-model/4lldgf64ote3avau8yjull3744">Weber Shandwick — client-driven model</a> ·
+      <a href="https://www.forbes.com/councils/forbesagencycouncil/2026/07/02/how-top-agencies-are-restructuring-to-enable-ai-driven-models/">Forbes — restructuring for AI</a> ·
+      <a href="https://avaansmedia.com/best-boutique-pr-agencies-what-to-look-for-who-theyre-right-for-and-what-they-cost/">Avaans — boutique model &amp; ratios</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>The PR Hub — operating model.</span>
+    <span>Owned by the Founder &amp; CEO · Reviewed quarterly.</span>
+  </footer>
+
+</div>
+</body>
+</html>

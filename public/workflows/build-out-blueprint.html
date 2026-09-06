@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="The PR Hub build-out blueprint — how to stage, finance, and run the senior-led firm from founder to machine.">
+<title>From Gold Mine to Machine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#FBFAF8; --surface:#FFFFFF; --surface-2:#F5F4F0;
+    --ink:#20242E; --muted:#5A6172; --faint:#8A909E;
+    --line:#E6E3DC; --line-strong:#D6D2C8;
+    --accent:#0E7A6E; --accent-soft:#E4F1EF; --accent-ring:#BFE0DA;
+    --gold:#B4791C; --gold-soft:#F6ECDA; --gold-ring:#E4CFA6;
+    --stop:#B23B3B; --stop-soft:#F7E4E4;
+    --shadow:0 1px 2px rgba(32,36,46,.05),0 10px 30px -14px rgba(32,36,46,.22);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+      --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+      --line:#2B2F3A; --line-strong:#363B48;
+      --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+      --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+      --stop:#E07A7A; --stop-soft:rgba(224,122,122,.12);
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+    --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+    --line:#2B2F3A; --line-strong:#363B48;
+    --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+    --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+    --stop:#E07A7A; --stop-soft:rgba(224,122,122,.12);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:980px; margin:0 auto; padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px) 90px;}
+  .eyebrow{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700;}
+  h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(34px,6vw,60px);
+    line-height:1.0; letter-spacing:-.025em; margin:.28em 0 .32em; text-wrap:balance;}
+  .lede{color:var(--muted); font-size:clamp(16px,1.7vw,19px); max-width:64ch; margin:0 0 6px;}
+  .sig{margin-top:16px; font-size:13.5px; color:var(--faint);}
+  .sig b{color:var(--ink); font-weight:600;}
+  h2{font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(22px,3.4vw,30px); font-weight:800;
+    letter-spacing:-.015em; margin:0 0 4px; text-wrap:balance;}
+  .sect{margin-top:clamp(44px,6vw,72px);}
+  .kicker{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:0 0 14px;}
+  .sub{color:var(--muted); max-width:66ch; margin:2px 0 22px; font-size:15.5px;}
+  p{margin:0 0 16px;}
+  .big{font-size:clamp(19px,2.4vw,25px); line-height:1.45; font-weight:500; color:var(--ink); max-width:36ch;
+    font-family:"Bricolage Grotesque",sans-serif; letter-spacing:-.01em;}
+  .big .hl{color:var(--accent);}
+  hr.rule{border:0; border-top:1px solid var(--line); margin:0;}
+
+  /* two-role split */
+  .split{display:grid; grid-template-columns:1fr auto 1fr; gap:0; align-items:stretch; background:var(--surface);
+    border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); overflow:hidden;}
+  .split .half{padding:24px 26px;}
+  .split .plus{display:flex; align-items:center; justify-content:center; font-family:"Bricolage Grotesque",sans-serif;
+    font-size:34px; font-weight:800; color:var(--faint); background:var(--surface-2); padding:0 8px;}
+  .split .role{font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; margin-bottom:6px;}
+  .split .vis .role{color:var(--accent);}
+  .split .int .role{color:var(--gold);}
+  .split h3{font-family:"Bricolage Grotesque",sans-serif; font-size:22px; font-weight:800; margin:0 0 10px; letter-spacing:-.01em;}
+  .split ul{margin:0; padding-left:18px; font-size:13.5px; color:var(--muted);}
+  .split ul li{margin-bottom:5px;}
+  @media (max-width:640px){ .split{grid-template-columns:1fr;} .split .plus{padding:6px 0; font-size:26px;} }
+
+  /* stream cards */
+  .streams{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px;}
+  .stream{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px; box-shadow:var(--shadow); position:relative;}
+  .stream .num{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-weight:600;}
+  .stream .role{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); font-weight:700; margin-top:4px;}
+  .stream h3{font-family:"Bricolage Grotesque",sans-serif; font-size:18px; font-weight:800; margin:8px 0 6px; letter-spacing:-.01em;}
+  .stream p{margin:0; font-size:13.5px; color:var(--muted);}
+
+  /* stat tiles */
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px;}
+  .stat{background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .stat .v{font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(26px,4vw,34px); font-weight:800; line-height:1; letter-spacing:-.02em; color:var(--ink);}
+  .stat .v small{font-size:15px; color:var(--accent); font-weight:700;}
+  .stat .l{font-size:12.5px; color:var(--muted); margin-top:8px; line-height:1.35;}
+
+  /* econ waterfall */
+  .econ{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px; box-shadow:var(--shadow);}
+  .econ .row{display:flex; justify-content:space-between; align-items:baseline; padding:11px 0; border-bottom:1px dashed var(--line);}
+  .econ .row:last-child{border-bottom:0;}
+  .econ .row .k{font-size:14.5px; color:var(--muted);}
+  .econ .row .v{font-family:"IBM Plex Mono",monospace; font-size:15px; font-weight:600; color:var(--ink);}
+  .econ .row.tot{margin-top:6px; padding-top:14px; border-top:2px solid var(--line-strong); border-bottom:0;}
+  .econ .row.tot .k{font-weight:700; color:var(--ink); font-size:16px;}
+  .econ .row.tot .v{color:var(--accent); font-size:19px; font-weight:700;}
+  .econ .neg .v{color:var(--stop);}
+  .econ .cap{font-size:12px; color:var(--faint); margin-top:14px;}
+
+  /* stage roadmap */
+  .stages{display:grid; gap:16px;}
+  .stg{display:grid; grid-template-columns:auto 1fr; gap:18px; align-items:start;
+    background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px; box-shadow:var(--shadow);}
+  .stg.now{border-color:var(--accent-ring); border-left:3px solid var(--accent);}
+  .stg .badge{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:15px; color:var(--accent);
+    background:var(--accent-soft); border:1px solid var(--accent-ring); border-radius:10px; padding:8px 12px; text-align:center; white-space:nowrap; align-self:start;}
+  .stg h3{font-family:"Bricolage Grotesque",sans-serif; font-size:19px; font-weight:800; margin:0 0 2px; letter-spacing:-.01em;}
+  .stg .goal{font-size:13px; color:var(--muted); margin:0 0 12px; font-style:italic;}
+  .stg .meta{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px;}
+  .stg .cell .lab{font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); font-weight:700; margin-bottom:4px;}
+  .stg .cell .val{font-size:13.5px; color:var(--ink);}
+  .stg .trigger{display:inline-block; margin-top:2px; font-family:"IBM Plex Mono",monospace; font-size:11.5px;
+    color:var(--gold); background:var(--gold-soft); border:1px solid var(--gold-ring); border-radius:6px; padding:3px 8px;}
+
+  /* run-it */
+  .run{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px;}
+  .runcard{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px; box-shadow:var(--shadow);}
+  .runcard h3{font-family:"Bricolage Grotesque",sans-serif; font-size:17px; font-weight:800; margin:0 0 8px;}
+  .runcard ul{margin:0; padding-left:18px; font-size:13.5px; color:var(--muted);}
+  .runcard ul li{margin-bottom:5px;}
+
+  /* callouts */
+  .counsel{border:1px solid var(--gold-ring); background:var(--gold-soft); border-radius:14px; padding:20px 22px; margin:18px 0;}
+  .counsel .h{display:flex; align-items:center; gap:9px; font-family:"Bricolage Grotesque",sans-serif; font-weight:800;
+    font-size:15px; color:var(--gold); letter-spacing:.01em; margin-bottom:8px;}
+  .counsel p{margin:0 0 10px; font-size:14.5px; color:var(--ink);}
+  .counsel p:last-child{margin-bottom:0;}
+  .counsel .do{font-weight:600;}
+  .counsel .do::before{content:"→ "; color:var(--gold); font-weight:700;}
+
+  blockquote{margin:24px 0; padding:4px 0 4px 22px; border-left:3px solid var(--accent);
+    font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(18px,2.6vw,23px); font-weight:500; letter-spacing:-.01em; line-height:1.4; color:var(--ink);}
+  blockquote cite{display:block; font-family:"IBM Plex Sans"; font-style:normal; font-size:13px; font-weight:600; color:var(--faint); margin-top:12px; letter-spacing:.02em;}
+
+  footer{margin-top:64px; padding-top:20px; border-top:1px solid var(--line);
+    font-size:12px; color:var(--faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  a.back{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--accent); text-decoration:none; margin-bottom:8px;}
+  a.xref{color:var(--accent); font-weight:600; text-decoration:none;}
+  code{font-family:"IBM Plex Mono",monospace; font-size:.88em; background:var(--surface-2); padding:1px 6px; border-radius:5px;}
+  .fnote{font-size:12.5px; color:var(--faint); margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="/workflows/hub.html">← Workflows Hub</a>
+  <div class="eyebrow">The PR Hub · Build-Out Blueprint</div>
+  <h1>From Gold Mine to Machine</h1>
+  <p class="lede">You don't have a knowledge problem. You have an operating-spine problem — and that is 100% buildable. This is how to stage the firm, finance it out of its own cash flow, and run it without becoming the bottleneck.</p>
+  <div class="sig">Companion to <a class="xref" href="/workflows/operating-model.html">The Senior-Led Agency</a> · Build-out plan · v1</div>
+
+  <!-- THE UNLOCK -->
+  <section class="sect">
+    <p class="kicker">The unlock</p>
+    <p class="big">Visionaries don't run the day-to-day. They <span class="hl">hire the person who does.</span></p>
+    <p class="sub">"I can't run a business" isn't a weakness to fix. It's a signal telling you the exact role to hire. Every great firm is two halves — and you already own the rare one.</p>
+    <div class="split">
+      <div class="half vis">
+        <div class="role">You · The Visionary</div>
+        <h3>The rare half</h3>
+        <ul>
+          <li>The brand, the room, the counsel</li>
+          <li>Winning new business &amp; relationships</li>
+          <li>Vision, strategy, big-idea judgment</li>
+          <li>Cannot be hired — it's you</li>
+        </ul>
+      </div>
+      <div class="plus">+</div>
+      <div class="half int">
+        <div class="role">Your first hire · The Integrator</div>
+        <h3>The buildable half</h3>
+        <ul>
+          <li>Operations, finance, capacity, hiring</li>
+          <li>The weekly rhythm &amp; accountability</li>
+          <li>Turns vision into a running machine</li>
+          <li>Start fractional (COO/GM, 1–2 days/wk)</li>
+        </ul>
+      </div>
+    </div>
+    <p class="fnote">This is the single hire that converts a gold mine into a business you can hold. It comes <b>before</b> you scale account leads.</p>
+  </section>
+
+  <hr class="rule">
+
+  <!-- REVENUE ARCHITECTURE -->
+  <section class="sect">
+    <h2>The revenue architecture</h2>
+    <p class="sub">You already have the funnel. Here's the money named — three streams, one motion. Workshops fill the top; retainers are the engine; earned-media tiers are the on-ramp and the upsell.</p>
+    <div class="streams">
+      <div class="stream">
+        <div class="num">STREAM 01</div>
+        <div class="role">Top of funnel</div>
+        <h3>Workshops &amp; speaking</h3>
+        <p>EO / YPO rooms. You get <em>paid</em> to fill your own pipeline. Every session is warm, qualified demand walking toward you.</p>
+      </div>
+      <div class="stream">
+        <div class="num">STREAM 02</div>
+        <div class="role">The engine</div>
+        <h3>Tiered retainers</h3>
+        <p>Founder-profile + earned-media retainers. Recurring, high-margin, and the part a buyer one day pays a multiple for.</p>
+      </div>
+      <div class="stream">
+        <div class="num">STREAM 03</div>
+        <div class="role">Entry &amp; expansion</div>
+        <h3>Earned-media tiers</h3>
+        <p>Tiered publication packages — exactly what they're asking for. An on-ramp into retainers and an upsell within them.</p>
+      </div>
+    </div>
+    <div class="counsel">
+      <div class="h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg> The wedge — earned media is what AI cites</div>
+      <p>In 2026, earned media isn't just reputation — it's the source material AI and generative search <em>quote</em>. "Get founders into tier-1 publications so they show up in AI answers" is a razor-sharp, ownable proposition. Lead every workshop and pitch with it.</p>
+    </div>
+  </section>
+
+  <!-- UNIT ECONOMICS -->
+  <section class="sect">
+    <h2>Why it funds its own growth</h2>
+    <p class="sub">This is the part that removes the fear. Every account lead pays for themselves many times over — so you hire <b>just behind proven demand</b>, never on hope, and never need outside capital.</p>
+    <div class="stats">
+      <div class="stat"><div class="v">$11k<small>/mo</small></div><div class="l">Average retainer (your target pricing).</div></div>
+      <div class="stat"><div class="v">5</div><div class="l">Retainers per lead at healthy capacity.</div></div>
+      <div class="stat"><div class="v">~$660k</div><div class="l">Annual revenue carried by one senior lead.</div></div>
+      <div class="stat"><div class="v">~64<small>%</small></div><div class="l">Gross margin per lead after all direct cost.</div></div>
+    </div>
+
+    <p class="kicker" style="margin-top:26px">One lead, one year — the math</p>
+    <div class="econ">
+      <div class="row"><span class="k">Revenue — 5 retainers × A$11k × 12 months</span><span class="v">A$660,000</span></div>
+      <div class="row neg"><span class="k">Senior lead — fully-loaded salary</span><span class="v">– A$190,000</span></div>
+      <div class="row neg"><span class="k">Share of Strategy Associate / AI Producer</span><span class="v">– A$35,000</span></div>
+      <div class="row neg"><span class="k">AI bench, tools &amp; share of admin</span><span class="v">– A$50,000</span></div>
+      <div class="row tot"><span class="k">Gross margin per lead</span><span class="v">≈ A$385,000 · ~58–64%</span></div>
+    </div>
+    <p class="cap fnote">Illustrative AUD, calibrated to A$10–12k pricing. Real figures live in the companion financial model — move the sliders and the whole picture updates. The secret is simple: <b>a new salary is only approved when its revenue trigger is hit.</b></p>
+  </section>
+
+  <hr class="rule">
+
+  <!-- THE STAGED BUILD-OUT -->
+  <section class="sect">
+    <h2>The staged build-out</h2>
+    <p class="sub">Financed by cash flow, not risk. Each stage unlocks only when a named revenue trigger is hit — so you're always hiring into demand you can already see.</p>
+    <div class="stages">
+
+      <div class="stg now">
+        <div class="badge">STAGE 0<br><span style="font-weight:600;font-size:11px;">Now → 90 days</span></div>
+        <div>
+          <h3>Prove the funnel</h3>
+          <p class="goal">You + AI bench + part-time VA. Sell workshops, convert your first founding clients yourself.</p>
+          <div class="meta">
+            <div class="cell"><div class="lab">Team</div><div class="val">You · AI bench · part-time admin/VA</div></div>
+            <div class="cell"><div class="lab">Target</div><div class="val">2–3 founding retainers · repeatable pitch</div></div>
+            <div class="cell"><div class="lab">Trigger to advance</div><div class="val"><span class="trigger">~A$25–40k/mo recurring</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stg">
+        <div class="badge">STAGE 1</div>
+        <div>
+          <h3>Buy back your time</h3>
+          <p class="goal">Hire the Integrator. Someone else owns delivery ops and money while you keep selling.</p>
+          <div class="meta">
+            <div class="cell"><div class="lab">Hire</div><div class="val">Fractional COO/GM (1–2 days/wk) + full-time admin</div></div>
+            <div class="cell"><div class="lab">You focus on</div><div class="val">Brand, sales, counsel — nothing else</div></div>
+            <div class="cell"><div class="lab">Trigger</div><div class="val"><span class="trigger">3–4 retainers signed</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stg">
+        <div class="badge">STAGE 2</div>
+        <div>
+          <h3>First lead</h3>
+          <p class="goal">Hand accounts to a senior lead. Add the first Strategy Associate to run the bench.</p>
+          <div class="meta">
+            <div class="cell"><div class="lab">Hire</div><div class="val">Account Lead #1 (12+ yrs) + Strategy Associate / AI Producer</div></div>
+            <div class="cell"><div class="lab">Target</div><div class="val">~A$80–120k/mo recurring</div></div>
+            <div class="cell"><div class="lab">Trigger</div><div class="val"><span class="trigger">You can't service the next client well</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stg">
+        <div class="badge">STAGE 3</div>
+        <div>
+          <h3>The engine</h3>
+          <p class="goal">Now it's a firm, not a founder. Multiple leads, formal tiers, a partner/equity path.</p>
+          <div class="meta">
+            <div class="cell"><div class="lab">Hire</div><div class="val">Leads #2–3 · Integrator toward full-time</div></div>
+            <div class="cell"><div class="lab">Build</div><div class="val">Retainer tiers productized · equity path launched</div></div>
+            <div class="cell"><div class="lab">Trigger</div><div class="val"><span class="trigger">Lead #1 at ~4–5 load points</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stg">
+        <div class="badge">STAGE 4</div>
+        <div>
+          <h3>Built to sell</h3>
+          <p class="goal">Whether you ever sell or not, this is what "done well" looks like.</p>
+          <div class="meta">
+            <div class="cell"><div class="lab">Assets</div><div class="val">Documented IP (the bench) · recurring revenue · founder-independent delivery</div></div>
+            <div class="cell"><div class="lab">Outcome</div><div class="val">Strong margins · brand equity · a sellable business</div></div>
+            <div class="cell"><div class="lab">Reality</div><div class="val"><span class="trigger">Building for sale = building well</span></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HOW YOU RUN IT -->
+  <section class="sect">
+    <h2>How you run it — without being the operator</h2>
+    <p class="sub">Give the Integrator a simple operating system. You show up to the rhythm. You manage the Integrator and the numbers — not the people and the spreadsheets. That's a visionary's job.</p>
+    <div class="run">
+      <div class="runcard">
+        <h3>Weekly L10</h3>
+        <ul>
+          <li>90 minutes, same time every week</li>
+          <li>Scorecard reviewed first</li>
+          <li>Client health: Red / Amber / Green</li>
+          <li>Issues surfaced &amp; solved, not discussed</li>
+        </ul>
+      </div>
+      <div class="runcard">
+        <h3>The one-page scorecard</h3>
+        <ul>
+          <li>Recurring revenue (MRR)</li>
+          <li>New pipeline value</li>
+          <li>Net revenue retention</li>
+          <li>Utilisation — load points per lead</li>
+          <li>Cash in bank</li>
+        </ul>
+      </div>
+      <div class="runcard">
+        <h3>Quarterly Rocks</h3>
+        <ul>
+          <li>3–5 priorities per quarter</li>
+          <li>You set direction</li>
+          <li>Integrator drives execution</li>
+          <li>Reviewed at each quarter close</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <blockquote>
+    You're not sitting on a gold mine because you can run a business. You're sitting on one because you can fill a room. Hire the person who runs it — and go fill more rooms.
+    <cite>The build-out, in one sentence</cite>
+  </blockquote>
+
+  <footer>
+    <span>The PR Hub — build-out blueprint.</span>
+    <span>Companion to the operating model · Reviewed quarterly.</span>
+  </footer>
+
+</div>
+</body>
+</html>
