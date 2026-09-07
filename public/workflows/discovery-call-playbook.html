@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="The 30-minute new-business discovery call, run to a script: the email that sets it up, the internal question framework with listen-fors, and the client-facing prompts to send.">
+<title>The Discovery Call</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#FBFAF8; --surface:#FFFFFF; --surface-2:#F5F4F0;
+    --ink:#20242E; --muted:#5A6172; --faint:#8A909E;
+    --line:#E6E3DC; --line-strong:#D6D2C8;
+    --accent:#0E7A6E; --accent-soft:#E4F1EF; --accent-ring:#BFE0DA;
+    --warn:#C0392B; --warn-soft:#FBEBE8; --warn-ring:#E6C3BC;
+    --shadow:0 1px 2px rgba(32,36,46,.05),0 10px 30px -14px rgba(32,36,46,.22);
+    --f-display:"Bricolage Grotesque",system-ui,sans-serif;
+    --f-body:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+    --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+    --measure:66ch;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+      --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+      --line:#2B2F3A; --line-strong:#363B48;
+      --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+      --warn:#F0776A; --warn-soft:rgba(240,119,106,.10); --warn-ring:rgba(240,119,106,.34);
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+    --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+    --line:#2B2F3A; --line-strong:#363B48;
+    --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+    --warn:#F0776A; --warn-soft:rgba(240,119,106,.10); --warn-ring:rgba(240,119,106,.34);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--f-body); line-height:1.6; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
+  .wrap{max-width:920px; margin:0 auto; padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px) 90px;}
+  .col{max-width:var(--measure);}
+  a{color:var(--accent); text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1px;}
+
+  /* top bar */
+  .topbar{display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap;
+    padding-bottom:16px; border-bottom:1px solid var(--line); margin-bottom:clamp(32px,6vw,58px);}
+  .home{font-family:var(--f-mono); font-size:12px; letter-spacing:.04em; color:var(--muted); text-decoration:none;}
+  .home:hover{color:var(--accent);}
+  .filed{font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint);}
+
+  /* hero */
+  .eyebrow{font-family:var(--f-mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 16px;}
+  h1{font-family:var(--f-display); font-weight:800; font-size:clamp(34px,7vw,68px); line-height:1.0; letter-spacing:-.025em; text-wrap:balance; margin:0 0 20px;}
+  .standfirst{font-family:var(--f-display); font-weight:500; font-size:clamp(18px,2.4vw,25px); line-height:1.35; color:var(--muted); max-width:36ch; margin:0 0 28px;}
+  .whofor{display:flex; gap:12px; border-left:3px solid var(--accent); padding:6px 0 6px 16px; font-size:14.5px; color:var(--muted); max-width:60ch;}
+  .whofor b{color:var(--ink);}
+
+  /* thesis band */
+  .thesis{background:var(--ink); border-radius:16px; padding:clamp(30px,5vw,54px); margin:clamp(40px,7vw,72px) 0; box-shadow:var(--shadow);}
+  .thesis .eyebrow{color:var(--accent);}
+  .thesis-q{font-family:var(--f-display); font-weight:700; font-size:clamp(24px,4.6vw,42px); line-height:1.08; letter-spacing:-.02em; text-wrap:balance; color:var(--paper); margin:0 0 20px;}
+  .thesis-b{color:rgba(255,255,255,.72); max-width:62ch; font-size:16.5px; margin:0;}
+  .thesis-b strong{color:#fff; font-weight:600;}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .thesis{background:#0A0C11; border:1px solid var(--line);}
+    :root:not([data-theme="light"]) .thesis-q{color:var(--ink);} :root:not([data-theme="light"]) .thesis-b{color:var(--muted);} :root:not([data-theme="light"]) .thesis-b strong{color:var(--ink);}}
+  :root[data-theme="dark"] .thesis{background:#0A0C11; border:1px solid var(--line);}
+  :root[data-theme="dark"] .thesis-q{color:var(--ink);} :root[data-theme="dark"] .thesis-b{color:var(--muted);} :root[data-theme="dark"] .thesis-b strong{color:var(--ink);}
+
+  /* part dividers */
+  .part{display:grid; grid-template-columns:auto 1fr; gap:clamp(16px,3vw,26px); align-items:center;
+    margin:clamp(52px,9vw,92px) 0 8px; padding:26px 0 22px; border-top:2px solid var(--ink);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .part{border-color:var(--accent-ring);}}
+  :root[data-theme="dark"] .part{border-color:var(--accent-ring);}
+  .part-mark{font-family:var(--f-mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600;}
+  .part h2{font-family:var(--f-display); font-weight:800; font-size:clamp(26px,5vw,46px); line-height:1.0; letter-spacing:-.025em; margin:6px 0 0; text-wrap:balance;}
+  .part .who{font-family:var(--f-mono); font-size:11px; letter-spacing:.06em; color:var(--faint); border:1px solid var(--line-strong); border-radius:999px; padding:6px 13px; white-space:nowrap; justify-self:end; align-self:start;}
+  .part-lede{max-width:var(--measure); color:var(--muted); font-size:16px; margin:2px 0 0;}
+  .part-lede strong{color:var(--ink); font-weight:600;}
+
+  /* phases */
+  section.phase{margin:clamp(32px,5vw,52px) 0;}
+  .phase-head{display:grid; grid-template-columns:auto 1fr auto; gap:clamp(14px,3vw,22px); align-items:start;
+    border-top:1px solid var(--line-strong); padding-top:22px; margin-bottom:20px;}
+  .phase-num{font-family:var(--f-mono); font-size:clamp(19px,3vw,28px); font-weight:600; color:var(--accent); line-height:1; padding-top:.25em; font-variant-numeric:tabular-nums;}
+  .phase-kicker{font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); margin:0 0 6px;}
+  .phase-title{font-family:var(--f-display); font-weight:700; font-size:clamp(21px,3.6vw,32px); line-height:1.05; letter-spacing:-.02em; text-wrap:balance; margin:0;}
+  .phase-title em{font-style:normal; color:var(--accent);}
+  .clock{font-family:var(--f-mono); font-size:11px; font-weight:600; letter-spacing:.04em; color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent-ring); border-radius:999px; padding:5px 11px; white-space:nowrap; align-self:start; margin-top:.2em;}
+  .phase-body{max-width:var(--measure);}
+  .phase-body p{margin:0 0 1.05em;}
+  .phase-body h3{font-family:var(--f-body); font-size:15.5px; font-weight:700; letter-spacing:-.005em; margin:1.7em 0 .5em;}
+  b{font-weight:600;}
+
+  /* the prompt (what the client sees) + the ask (what we actually say) */
+  .say{background:var(--surface-2); border-left:3px solid var(--line-strong); border-radius:0 10px 10px 0; padding:15px 18px; margin:14px 0 18px; font-size:15px; color:var(--ink);}
+  .say .lbl{font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); font-weight:600; display:block; margin-bottom:7px;}
+  .say em{font-style:italic; color:var(--muted);}
+
+  ol.asks{list-style:none; counter-reset:s; margin:6px 0 0; padding:0;}
+  ol.asks li{counter-increment:s; display:grid; grid-template-columns:auto 1fr; gap:13px; padding:10px 0; border-bottom:1px solid var(--line); align-items:baseline;}
+  ol.asks li:last-child{border-bottom:none;}
+  ol.asks li::before{content:counter(s); font-family:var(--f-mono); font-size:12px; font-weight:600; color:var(--accent); font-variant-numeric:tabular-nums;}
+  li .why{color:var(--faint); font-size:13px; display:block; margin-top:3px;}
+
+  /* listen-for box */
+  .listen{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin:18px 0; box-shadow:var(--shadow);}
+  .listen .box-label{font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 12px; display:flex; align-items:center; gap:9px;}
+  .listen .box-label::before{content:"👂"; width:auto; height:auto;}
+  .listen ul{list-style:none; margin:0; padding:0;}
+  .listen li{display:grid; grid-template-columns:auto 1fr; gap:11px; padding:8px 0; border-bottom:1px solid var(--line); font-size:14.5px; color:var(--muted); align-items:baseline;}
+  .listen li:last-child{border-bottom:none;}
+  .listen li::before{content:"→"; color:var(--accent); font-weight:700; font-family:var(--f-mono);}
+  .listen li b{color:var(--ink);}
+
+  /* tweak / pivot rows */
+  .tweak{border:1px dashed var(--accent-ring); background:var(--accent-soft); border-radius:12px; padding:16px 18px; margin:16px 0;}
+  .tweak .box-label{font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 10px;}
+  .tweak p{margin:0 0 .7em; font-size:14.5px; color:var(--ink);}
+  .tweak p:last-child{margin-bottom:0;}
+  .tweak .if{font-family:var(--f-mono); font-size:12px; color:var(--accent); font-weight:600;}
+
+  /* generic callout */
+  .box{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin:24px 0; box-shadow:var(--shadow);}
+  .box-label{font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 12px; display:flex; align-items:center; gap:9px;}
+  .box>.box-label::before{content:""; width:20px; height:2px; background:var(--accent); display:inline-block;}
+  .box h4{font-family:var(--f-display); font-size:20px; font-weight:700; letter-spacing:-.01em; margin:0 0 10px; text-wrap:balance;}
+  .box p{margin:0 0 .8em; color:var(--muted); font-size:15px;}
+  .box p:last-child{margin-bottom:0;}
+
+  /* email / document template block */
+  .template{background:var(--surface-2); border:1px dashed var(--line-strong); border-radius:12px; padding:24px 26px; margin:22px 0; font-size:15px; line-height:1.62; color:var(--ink);}
+  .template .t-label{font-family:var(--f-mono); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); font-weight:600; margin-bottom:16px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+  .template .meta{font-family:var(--f-mono); font-size:12.5px; color:var(--muted); border-bottom:1px solid var(--line-strong); padding-bottom:12px; margin-bottom:16px;}
+  .template .meta b{color:var(--ink);}
+  .template p{margin:0 0 1em;}
+  .template p:last-child{margin-bottom:0;}
+  .template ol,.template ul{margin:0 0 1em; padding-left:1.3em;}
+  .template li{margin:0 0 .55em;}
+  .fill{background:var(--accent-soft); border:1px solid var(--accent-ring); border-radius:5px; padding:1px 6px; font-family:var(--f-mono); font-size:.86em; color:var(--accent); font-weight:600; white-space:nowrap;}
+  .note-inline{font-family:var(--f-mono); font-size:12px; color:var(--warn); background:var(--warn-soft); border:1px solid var(--warn-ring); border-radius:5px; padding:1px 7px;}
+
+  /* the client-facing area block */
+  .cfa{background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:0 12px 12px 0; padding:18px 22px; margin:14px 0; box-shadow:var(--shadow);}
+  .cfa h4{font-family:var(--f-display); font-size:19px; font-weight:700; letter-spacing:-.01em; margin:0 0 7px;}
+  .cfa p{margin:0; color:var(--muted); font-size:15px;}
+
+  /* junior vs senior */
+  .contrast{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:22px 0;}
+  .contrast>div{background:var(--surface); padding:18px 20px;}
+  .contrast .label{font-family:var(--f-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; font-weight:600; margin:0 0 9px;}
+  .contrast .junior .label{color:var(--faint);}
+  .contrast .senior{background:var(--accent-soft);}
+  .contrast .senior .label{color:var(--accent);}
+  .contrast p{margin:0; font-size:14px; color:var(--muted); line-height:1.5;}
+  .contrast .senior p{color:var(--ink);}
+
+  /* checks */
+  ul.checks{list-style:none; margin:6px 0 0; padding:0;}
+  ul.checks li{display:grid; grid-template-columns:auto 1fr; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); align-items:baseline;}
+  ul.checks li:last-child{border-bottom:none;}
+  ul.checks li::before{content:"✓"; color:var(--accent); font-weight:700; font-size:14px;}
+
+  /* closer */
+  .closer{background:var(--ink); border-radius:16px; padding:clamp(30px,5vw,52px); margin:clamp(40px,7vw,72px) 0 30px;}
+  .closer .eyebrow{color:var(--accent);}
+  .closer h2{font-family:var(--f-display); font-weight:700; font-size:clamp(24px,4vw,34px); letter-spacing:-.02em; color:var(--paper); margin:0 0 8px;}
+  .closer p.sub{color:rgba(255,255,255,.72); max-width:60ch; margin:0 0 18px;}
+  .closer ul.checks li{color:rgba(255,255,255,.9); border-color:rgba(255,255,255,.12);}
+  .closer ul.checks li::before{color:var(--accent);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .closer{background:#0A0C11; border:1px solid var(--line);}
+    :root:not([data-theme="light"]) .closer h2{color:var(--ink);} :root:not([data-theme="light"]) .closer p.sub{color:var(--muted);} :root:not([data-theme="light"]) .closer ul.checks li{color:var(--ink); border-color:var(--line);}}
+  :root[data-theme="dark"] .closer{background:#0A0C11; border:1px solid var(--line);}
+  :root[data-theme="dark"] .closer h2{color:var(--ink);} :root[data-theme="dark"] .closer p.sub{color:var(--muted);} :root[data-theme="dark"] .closer ul.checks li{color:var(--ink); border-color:var(--line);}
+  .redflags{margin-top:28px; padding-top:24px; border-top:1px solid rgba(255,255,255,.14);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .redflags{border-color:var(--line);}}
+  :root[data-theme="dark"] .redflags{border-color:var(--line);}
+  .redflags .box-label{color:var(--warn);} .redflags .box-label::before{background:var(--warn);}
+  .redflags ul{list-style:none; margin:0; padding:0;}
+  .redflags li{display:grid; grid-template-columns:auto 1fr; gap:12px; padding:9px 0; border-bottom:1px solid rgba(255,255,255,.1); color:rgba(255,255,255,.82); font-size:14.5px;}
+  .redflags li:last-child{border-bottom:none;}
+  .redflags li::before{content:"✕"; color:var(--warn); font-weight:700;}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .redflags li{color:var(--muted); border-color:var(--line);}}
+  :root[data-theme="dark"] .redflags li{color:var(--muted); border-color:var(--line);}
+
+  footer{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+
+  @media (max-width:640px){
+    .contrast{grid-template-columns:1fr;}
+    .phase-head{grid-template-columns:auto 1fr; gap:12px 14px;}
+    .clock{grid-column:2; justify-self:start;}
+    .part{grid-template-columns:1fr;}
+    .part .who{justify-self:start;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <a class="home" href="/workflows/hub.html">← Workflows Hub</a>
+    <span class="filed">New Business · Field Guide No. 01</span>
+  </div>
+
+  <div class="eyebrow">The PR Hub · How we run a first conversation</div>
+  <h1>The 30-minute discovery call</h1>
+  <p class="standfirst">One call, run to a script — so a prospect leaves feeling understood, and we leave knowing whether it's a fit.</p>
+  <div class="whofor"><span><b>Who this is for:</b> anyone on the team who books and runs a first conversation with a potential new client. It gives you the email to set it up, the questions to ask (and what to listen for), and the framework we send the prospect beforehand.</span></div>
+
+  <div class="thesis">
+    <p class="eyebrow">The one idea to hold onto</p>
+    <p class="thesis-q">A discovery call isn't a pitch. It's a diagnosis.</p>
+    <p class="thesis-b">In thirty minutes we are not trying to sell — we're trying to <strong>understand a business well enough to know if we can move its needle</strong>, and to make the person in front of us feel genuinely heard. We send six areas in advance so they arrive relaxed, not revising. The framework is the <strong>floor, not the ceiling</strong>: it guarantees we cover the ground, and it frees you to follow the thread that matters. If you spend the call reading questions off a list, you've missed the point.</p>
+  </div>
+
+  <!-- ============ PART ONE ============ -->
+  <div class="part">
+    <div class="part-mark">Part One</div>
+    <div>
+      <div class="part-mark">The set-up email</div>
+      <h2>What you send to book the call</h2>
+    </div>
+    <span class="who">Goes to the prospect</span>
+  </div>
+  <p class="part-lede col">This is the covering email that goes out once a call is in the diary. It does three jobs: it lowers the pressure (<strong>"no need to prepare anything formal"</strong>), it frames us as thoughtful before we've said a word, and it attaches the six areas so they can think loosely in advance. Copy it, then tailor everything in <span class="fill">[green]</span>. The notes in <span class="note-inline">red</span> are instructions for you — delete them before sending.</p>
+
+  <div class="template">
+    <div class="t-label"><span>Email template — tailor &amp; send</span><span>The PR Hub</span></div>
+    <div class="meta"><b>To:</b> <span class="fill">[prospect first name + email]</span><br>
+      <b>Subject:</b> Looking forward to our chat — a few things we'd love to explore<br>
+      <span class="note-inline">Tailor the subject if there's a warmer hook, e.g. "Ahead of Thursday — what we'd love to understand about [Company]"</span></div>
+
+    <p>Hi <span class="fill">[first name]</span>,</p>
+
+    <p>Thank you for making the time — I'm really looking forward to our conversation <span class="fill">[on Thursday / next week / at 2pm]</span>. <span class="note-inline">If there was a referrer or a specific trigger, acknowledge it here: "Lovely to be introduced by [name]" / "Great to connect after [event / your piece in X]."</span></p>
+
+    <p>To help us make the most of our 30 minutes, I've outlined a few areas below that I'd love to explore. <b>There's no need to prepare anything formal</b> — these are simply conversation prompts, and please add anything else you think would be helpful for us to understand.</p>
+
+    <p><span class="note-inline">Choose ONE: paste the six areas inline (below), or attach "The PR Hub — A Few Things We'd Love to Explore.pdf" and write: "I've attached a short outline of what we'd love to cover."</span></p>
+
+    <p><b>The areas we'd love to explore:</b></p>
+    <ol>
+      <li><b>The business today</b> — a quick picture of where things are now: growth, customers, markets, and anything that's materially changed over the past 12 months.</li>
+      <li><b>Where you're heading</b> — your most important priorities over the next 12–18 months, and where greater visibility, credibility or authority could make a commercial difference.</li>
+      <li><b>Who you need to reach</b> — the customers, partners or audiences you most want to find and trust the business, and what you'd want them to understand when they discover you through media, search or AI platforms.</li>
+      <li><b>What you want to be known for</b> — how the business is perceived today, what may be misunderstood or underappreciated, and what you'd like to be known for in three to five years.</li>
+      <li><b>The founder story</b> — the story behind why the business was created, how the founders came together, and the experiences or beliefs that shape how you operate.</li>
+      <li><b>The opportunity for PR</b> — any results, data, partnerships, milestones or insights that could bring the story to life, and what a successful engagement would ultimately help you achieve.</li>
+    </ol>
+
+    <p>Again — no homework required. I'll guide us through it on the day.</p>
+
+    <p>Looking forward to it.</p>
+
+    <p>Warmly,<br>
+    <span class="fill">[Your name]</span><br>
+    <span class="fill">[Title]</span> · The PR Hub<br>
+    <span class="fill">[phone]</span></p>
+  </div>
+
+  <div class="tweak">
+    <p class="box-label">Tailoring rules</p>
+    <p><span class="if">Keep it under one screen.</span> If it scrolls, they'll skim. Six areas, one reassurance, one sign-off.</p>
+    <p><span class="if">Warm the top, never the list.</span> Personalise the opening line to them; leave the six areas broadly as-is — they're deliberately universal, and rewriting them per prospect is where this goes wrong.</p>
+    <p><span class="if">Send it 2–3 days out.</span> Far enough that it's not homework the night before; close enough that the call is real in their mind.</p>
+  </div>
+
+  <!-- ============ PART TWO ============ -->
+  <div class="part">
+    <div class="part-mark">Part Two</div>
+    <div>
+      <div class="part-mark">The question framework</div>
+      <h2>How you actually run the 30 minutes</h2>
+    </div>
+    <span class="who">Internal — never sent</span>
+  </div>
+  <p class="part-lede col">This is your side of the call, and it stays internal. For each area you get: <strong>the ask</strong> (how to open it out loud), <strong>listen for</strong> (the signals that tell you what kind of business — and person — you're dealing with), and <strong>tweak if</strong> (how to bend the questions when a signal fires). Times are a guide to keep you honest against the clock, not a stopwatch.</p>
+
+  <div class="box">
+    <p class="box-label">The clock — a 30-minute shape</p>
+    <p><b>0–2 min · Open &amp; frame</b> — warm welcome, restate the shape ("I'll run us through those six areas, then we'll talk next steps"), and get a yes. · <b>2–26 min · The six areas</b>, ~4 min each. · <b>26–30 min · Close &amp; next steps.</b></p>
+    <p>If you're running long, the two areas you can compress are 1 (business today) and 5 (founder story) — you can pull those from research and a follow-up. Never sacrifice 2, 3 or 6: heading, audience and the PR opportunity are the three that tell you if there's a mandate here.</p>
+  </div>
+
+  <!-- 01 -->
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">01</div>
+      <div><p class="phase-kicker">Area one · orient yourself fast</p><h2 class="phase-title">The business <em>today</em></h2></div>
+      <span class="clock">~4 min</span>
+    </div>
+    <div class="phase-body col">
+      <div class="say"><span class="lbl">The ask — open it like this</span>Before we get into where you're going, give me the shape of the business as it is right now — <em>how you'd describe it to someone who's never heard of you, and what's genuinely changed in the last year.</em></div>
+      <ol class="asks">
+        <li><b>In a sentence, what does the business do — and for whom?</b><span class="why">Their one-liner tells you how clearly they see themselves. A rambling answer is itself a finding.</span></li>
+        <li><b>How big are you now — team, customers, revenue band, markets?</b><span class="why">You're sizing the opportunity and the budget reality without asking about budget.</span></li>
+        <li><b>What's materially changed in the last 12 months — grown, launched, shifted, hired?</b><span class="why">Change is where stories and momentum live. Flat means you'll have to manufacture news.</span></li>
+      </ol>
+      <div class="listen">
+        <p class="box-label">Listen for</p>
+        <ul>
+          <li><b>Momentum vs. plateau.</b> "We doubled" / "we just entered [market]" = fuel. "Steady, ticking along" = you'll need to work harder for angles.</li>
+          <li><b>How they talk about customers.</b> Named, specific, proud — or vague? Tells you whether case studies exist.</li>
+          <li><b>Numbers they volunteer.</b> The figures they reach for unprompted are the ones they're proud of — and the ones a journalist will care about too.</li>
+          <li><b>Category confidence.</b> Do they own their space, or hedge ("sort of a...")? Positioning work may be the real job.</li>
+        </ul>
+      </div>
+      <div class="tweak">
+        <p class="box-label">Tweak if…</p>
+        <p><span class="if">If they undersell it →</span> mirror it back bigger: "So you've gone from X to Y in a year — that's a growth story most of your competitors would kill for." Watch whether they light up or resist. That reaction is data.</p>
+        <p><span class="if">If they oversell / it's all vision, no substance →</span> gently anchor: "And where's that showing up in the numbers today?" You need to know if there's a there there before we attach our name to it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">02</div>
+      <div><p class="phase-kicker">Area two · find the commercial engine</p><h2 class="phase-title">Where you're <em>heading</em></h2></div>
+      <span class="clock">~4 min</span>
+    </div>
+    <div class="phase-body col">
+      <div class="say"><span class="lbl">The ask — open it like this</span>Now the next 12 to 18 months — <em>what are the one or two things that, if they happen, make it a great year? And where would being better known actually help you get there?</em></div>
+      <ol class="asks">
+        <li><b>What are your top priorities over the next 12–18 months?</b><span class="why">Anchor everything else to this. PR that doesn't serve the priority is a vanity exercise.</span></li>
+        <li><b>Where would greater visibility, credibility or authority make a commercial difference?</b><span class="why">This is the money question of the whole call. It converts "we want PR" into "we want X outcome."</span></li>
+        <li><b>What's standing in the way of that today?</b><span class="why">The obstacle is often exactly what we're being hired to move — a trust gap, an awareness gap, a category we don't yet own.</span></li>
+      </ol>
+      <div class="listen">
+        <p class="box-label">Listen for</p>
+        <ul>
+          <li><b>A commercial goal, not a PR goal.</b> "Raise a round" / "enter [market]" / "win enterprise deals" is gold. "Get more coverage" is a symptom — dig past it to the outcome underneath.</li>
+          <li><b>Visibility, credibility, or authority — which one?</b> They're different jobs. Awareness (nobody knows us), trust (they know us but don't believe us), or authority (be the name in the category). Name which they actually need.</li>
+          <li><b>A deadline or a trigger.</b> A raise, a launch, a board mandate. Urgency changes tier and timeline — and closes faster.</li>
+          <li><b>Realism.</b> Do the ambition and the resources line up? A moonshot on a shoestring is a red flag worth surfacing kindly.</li>
+        </ul>
+      </div>
+      <div class="tweak">
+        <p class="box-label">Tweak if…</p>
+        <p><span class="if">If they only give you activity ("we want to be in the press") →</span> ladder up: "And if that lands perfectly — what does it unlock for the business?" Keep asking "so that…?" until you hit a commercial outcome.</p>
+        <p><span class="if">If they name a hard trigger (raise / launch / sale) →</span> pivot to the timeline immediately: "When does that need to land?" This reshapes the entire proposal and often the tier.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">03</div>
+      <div><p class="phase-kicker">Area three · define the target</p><h2 class="phase-title">Who you need to <em>reach</em></h2></div>
+      <span class="clock">~4 min</span>
+    </div>
+    <div class="phase-body col">
+      <div class="say"><span class="lbl">The ask — open it like this</span>Think about the people you most need to find you and trust you — <em>customers, partners, investors, talent. When one of them Googles you or asks an AI about your space, what do you need them to walk away believing?</em></div>
+      <ol class="asks">
+        <li><b>Who are the audiences that matter most — and which is the priority?</b><span class="why">Everyone says "everyone." Force a rank. The priority audience dictates which media and channels we go after.</span></li>
+        <li><b>Where do they already look for information and who do they already trust?</b><span class="why">Tells you the outlets, formats and voices that actually reach them — not the ones that flatter the client.</span></li>
+        <li><b>When they discover you through media, search or AI, what should they immediately understand?</b><span class="why">This is the message we'll be engineering. Their answer is the raw material for positioning.</span></li>
+      </ol>
+      <div class="listen">
+        <p class="box-label">Listen for</p>
+        <ul>
+          <li><b>Specificity of audience.</b> "CFOs at mid-market SaaS firms" is workable; "businesses" is not. Vagueness here means positioning work comes first.</li>
+          <li><b>The discovery gap.</b> What they want understood vs. what actually shows up today when you search them. That gap is the brief.</li>
+          <li><b>AI / search awareness.</b> Do they get that buyers now ask AI platforms about their category? Modern framing is a differentiator we can lead with.</li>
+          <li><b>B2B vs. B2C vs. investor/talent.</b> Each points at a completely different media strategy. Note which dominates.</li>
+        </ul>
+      </div>
+      <div class="tweak">
+        <p class="box-label">Tweak if…</p>
+        <p><span class="if">If they list five audiences →</span> "If we could only move the needle with one this year, which one?" The forced choice reveals the real commercial driver.</p>
+        <p><span class="if">If they've never thought about search / AI discovery →</span> plant the seed lightly: "Have you looked at what comes up when someone asks ChatGPT about [category]?" — it reframes PR as something bigger than press, and it's often the moment they lean in.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">04</div>
+      <div><p class="phase-kicker">Area four · the perception gap</p><h2 class="phase-title">What you want to be <em>known for</em></h2></div>
+      <span class="clock">~4 min</span>
+    </div>
+    <div class="phase-body col">
+      <div class="say"><span class="lbl">The ask — open it like this</span>Two versions of this — <em>how do you think the market sees you today, honestly? And in three to five years, what do you want to be the name for?</em></div>
+      <ol class="asks">
+        <li><b>How is the business perceived today?</b><span class="why">Their read on their own reputation. Compare it to what you found in research — the gap is telling.</span></li>
+        <li><b>What's misunderstood or underappreciated about you?</b><span class="why">Often the single richest vein in the whole call — the untold story they're frustrated nobody sees.</span></li>
+        <li><b>In 3–5 years, what do you want to be known for?</b><span class="why">The destination for the positioning. Everything we do should bend the perception toward this.</span></li>
+      </ol>
+      <div class="listen">
+        <p class="box-label">Listen for</p>
+        <ul>
+          <li><b>The frustration.</b> When they get animated about being misread, you've found the emotional core of the engagement — and usually the best story.</li>
+          <li><b>Gap between current and aspirational.</b> Small gap = amplification job. Big gap = repositioning job. Very different scopes and timelines.</li>
+          <li><b>A category they want to own.</b> "The go-to for X" is authority-building — our highest-value, stickiest work.</li>
+          <li><b>Founder ego vs. business need.</b> Is "known for" about the founder's profile or the company's commercial position? Both are valid — just name which, so the proposal aims right.</li>
+        </ul>
+      </div>
+      <div class="tweak">
+        <p class="box-label">Tweak if…</p>
+        <p><span class="if">If they can't articulate a 3–5 year "known for" →</span> that IS the finding — say so warmly: "That's honestly one of the most valuable things we help clients define." You've just scoped positioning work.</p>
+        <p><span class="if">If current perception is actively negative →</span> slow down and probe gently — is there a reputation issue in play? That changes this from growth PR to something more sensitive, and it needs to surface now, not after signing.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">05</div>
+      <div><p class="phase-kicker">Area five · the human material</p><h2 class="phase-title">The founder <em>story</em></h2></div>
+      <span class="clock">~4 min</span>
+    </div>
+    <div class="phase-body col">
+      <div class="say"><span class="lbl">The ask — open it like this</span>I always want to understand the why. <em>What made you start this — what did you see, or what were you frustrated by? And how did the founding team come together?</em></div>
+      <ol class="asks">
+        <li><b>Why did you start it — what did you see that others didn't?</b><span class="why">Origin stories are the most portable, media-friendly asset a founder-led business has.</span></li>
+        <li><b>How did the founders come together?</b><span class="why">The team's chemistry and complementarity is often a story in itself — and a credibility signal.</span></li>
+        <li><b>What beliefs or experiences shape how you operate?</b><span class="why">This is the values layer — the thread for thought leadership and the founder's personal brand.</span></li>
+      </ol>
+      <div class="listen">
+        <p class="box-label">Listen for</p>
+        <ul>
+          <li><b>A moment, not a mission statement.</b> The specific incident — the lived frustration, the turned-down deal — is what makes press. Steer them from abstract to anecdote.</li>
+          <li><b>Founder as spokesperson potential.</b> Are they warm, quotable, willing to be visible? A media-able founder massively expands what we can do.</li>
+          <li><b>Conviction / contrarian belief.</b> A strong, spiky point of view is the seed of every thought-leadership program.</li>
+          <li><b>Sensitivities.</b> Co-founder splits, past failures, personal hardship — handle with care, but note them; they're often the strongest and most delicate material.</li>
+        </ul>
+      </div>
+      <div class="tweak">
+        <p class="box-label">Tweak if…</p>
+        <p><span class="if">If they're modest / "it's not that interesting" →</span> reassure and dig: "The best founder stories always sound ordinary from the inside — walk me through the actual moment you decided to do this." Almost always unlocks the gold.</p>
+        <p><span class="if">If they light up and run long →</span> let them. This is the area where over-time is a good sign — you can borrow the minutes back from Area 1. Just don't lose the close.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">06</div>
+      <div><p class="phase-kicker">Area six · the proof and the prize</p><h2 class="phase-title">The opportunity for <em>PR</em></h2></div>
+      <span class="clock">~4 min</span>
+    </div>
+    <div class="phase-body col">
+      <div class="say"><span class="lbl">The ask — open it like this</span>Last one, and it's the practical one. <em>What have you got that could bring this story to life — results, data, partnerships, milestones? And if we did brilliant work together, what would it ultimately have helped you achieve?</em></div>
+      <ol class="asks">
+        <li><b>What proof points do you have — results, data, partnerships, milestones, awards?</b><span class="why">Our raw ammunition. No proof = we build proof first, which is a different (and slower) engagement.</span></li>
+        <li><b>Is there data or insight only you have?</b><span class="why">Proprietary data is the single most powerful earned-media asset a business can own. Always ask.</span></li>
+        <li><b>What would a successful engagement ultimately achieve for the business?</b><span class="why">Their definition of success = how we'll be measured. Close the loop back to Area 2's commercial goal.</span></li>
+      </ol>
+      <div class="listen">
+        <p class="box-label">Listen for</p>
+        <ul>
+          <li><b>Hard, checkable assets.</b> Real numbers, named partners, dated milestones — the things a journalist can stand behind. Note every one.</li>
+          <li><b>Proprietary data.</b> If they sit on usage data, market insight, a survey they could run — flag it hard. This alone can anchor a whole program.</li>
+          <li><b>How they define success.</b> Coverage volume? Lead quality? A specific outcome? This is the KPI conversation starting — capture it exactly.</li>
+          <li><b>Expectation mismatch.</b> If they expect the front page next week off zero assets, that gap needs a gentle, honest reset — better now than in month two.</li>
+        </ul>
+      </div>
+      <div class="tweak">
+        <p class="box-label">Tweak if…</p>
+        <p><span class="if">If they're asset-rich →</span> get specific and greedy: "Could you share the last 12 months of numbers before we speak again?" You're already scoping the first campaign.</p>
+        <p><span class="if">If they're asset-light →</span> reframe, don't deflate: "Part of the early work is often building the proof points that don't exist yet — and that's very doable." Sets honest expectations and keeps the door open.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSE -->
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">→</div>
+      <div><p class="phase-kicker">The last four minutes</p><h2 class="phase-title">Close, and set the next step</h2></div>
+      <span class="clock">~3 min</span>
+    </div>
+    <div class="phase-body col">
+      <p>Never let the call fade out. Land it deliberately: <b>reflect, gauge, and name the next move.</b></p>
+      <ol class="asks">
+        <li><b>Reflect it back in one line.</b> "So the headline for me is — you're [growing fast / at an inflection], you want to be known for [X] with [audience], and the real prize is [commercial goal]." Watch them nod or correct. Either way you win.</li>
+        <li><b>One open question.</b> "Is there anything important I haven't asked about?" The best material sometimes arrives here.</li>
+        <li><b>Name the next step and own it.</b> "Here's what I'll do: I'll pull together [a short point of view / some initial thinking] and come back to you by [day]." Concrete, dated, ours to deliver.</li>
+      </ol>
+      <div class="contrast">
+        <div class="junior"><p class="label">Junior close</p><p>"Great, this was really helpful — we'll be in touch!" Vague, passive, forgettable. The lead cools.</p></div>
+        <div class="senior"><p class="label">Senior close</p><p>Reflects the business back sharper than they said it, then commits to a specific, dated next step they didn't have to ask for. They leave feeling understood and pulled forward.</p></div>
+      </div>
+      <div class="box">
+        <p class="box-label">Straight after — while it's warm</p>
+        <p>Spend ten minutes now, not tomorrow: write up the six areas against what you heard, flag the <b>commercial goal</b>, the <b>priority audience</b>, the <b>best story</b>, and the <b>proof points</b>. Note your read on <b>fit and tier</b>, and the <b>one thing</b> that would make this a yes or a no. Then do the next step you promised, on time. The follow-through is the pitch.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PART THREE ============ -->
+  <div class="part">
+    <div class="part-mark">Part Three</div>
+    <div>
+      <div class="part-mark">The client-facing framework</div>
+      <h2>The six areas, exactly as they receive them</h2>
+    </div>
+    <span class="who">Goes to the prospect</span>
+  </div>
+  <p class="part-lede col">This is the clean version — the outline that goes inside (or attached to) the Part One email. No internal notes, no questions, no clock. Just the six areas, worded to reassure and to make them feel the conversation will be about <strong>them</strong>. Paste it into the email, or drop it into a one-page PDF on letterhead if you want it to feel considered. Do not add your listen-fors here.</p>
+
+  <div class="template">
+    <div class="t-label"><span>Client-facing — send as-is</span><span>The PR Hub</span></div>
+    <p style="font-family:var(--f-display); font-weight:700; font-size:20px; letter-spacing:-.01em; margin:0 0 6px;">A few things we'd love to explore</p>
+    <p style="color:var(--muted);">To help us make the most of our 30 minutes, here are the areas we'd love to explore together. There's no need to prepare anything formal — these are simply conversation prompts, and please add anything else you think would be helpful for us to understand.</p>
+
+    <div class="cfa"><h4>1 · The business today</h4><p>A quick picture of where the business is now — its growth, customers, markets, and anything that has materially changed over the past 12 months.</p></div>
+    <div class="cfa"><h4>2 · Where you're heading</h4><p>Your most important priorities over the next 12–18 months, and where greater visibility, credibility or authority could make a commercial difference.</p></div>
+    <div class="cfa"><h4>3 · Who you need to reach</h4><p>The customers, partners or audiences you most want to find and trust the business — and what you'd ideally want them to understand when they discover you through media, search or AI platforms.</p></div>
+    <div class="cfa"><h4>4 · What you want to be known for</h4><p>How the business is perceived today, what may be misunderstood or underappreciated, and what you'd like the company to be known for in three to five years.</p></div>
+    <div class="cfa"><h4>5 · The founder story</h4><p>The story behind why the business was created, how the founders came together, and the experiences or beliefs that have shaped the way you operate.</p></div>
+    <div class="cfa"><h4>6 · The opportunity for PR</h4><p>Any customer results, data, partnerships, milestones or insights that may help bring the story to life — along with what a successful PR engagement would ultimately help the business achieve.</p></div>
+
+    <p style="color:var(--muted); margin-top:16px;">That's it — no homework required. We'll guide you through it on the day.</p>
+  </div>
+
+  <!-- closer -->
+  <div class="closer">
+    <p class="eyebrow">Before, during, after</p>
+    <h2>The discovery-call checklist</h2>
+    <p class="sub">Run this in your head each time. If you can tick all six, you ran it like a senior.</p>
+    <ul class="checks">
+      <li>I sent the set-up email 2–3 days out, tailored at the top, six areas left intact.</li>
+      <li>I did 15 minutes of research first — I know their category, their news, and what shows up when you search them.</li>
+      <li>I let them talk. I followed the thread, not the script — the list was my floor, not my cage.</li>
+      <li>I left with the <b>commercial goal</b>, the <b>priority audience</b>, the <b>best story</b>, and the <b>proof points</b>.</li>
+      <li>I reflected the business back sharper than they said it, and named a specific, dated next step.</li>
+      <li>I wrote it up while it was warm, and I did the next step on time.</li>
+    </ul>
+    <div class="redflags">
+      <p class="box-label">Red flags — the tells of a junior call</p>
+      <ul>
+        <li>You read the questions off the list, in order, like a form.</li>
+        <li>You talked more than they did, or pitched The PR Hub before you understood the business.</li>
+        <li>You left with "we want more coverage" and never laddered up to the commercial goal.</li>
+        <li>You accepted "everyone" as the target audience.</li>
+        <li>You ended with "we'll be in touch" and no dated next step.</li>
+        <li>You promised a follow-up and let it slip.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <span>The PR Hub — internal workflows.</span>
+    <span>Questions → Samantha.</span>
+  </footer>
+
+</div>
+</body>
+</html>
