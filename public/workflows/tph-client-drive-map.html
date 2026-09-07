@@ -219,10 +219,11 @@
       <h3>What changed for 2026</h3>
       <ul>
         <li><span class="mk">→</span><span><span class="mono">PITCHES</span> moved out of SHARED into <b>INTERNAL</b> (team-only).</span></li>
+        <li><span class="mk">→</span><span><span class="mono">DISCOVERY CALLS</span> is now <b>INTERNAL only</b> — notes, transcripts &amp; AI analysis never sit in the client-facing SHARED folder.</span></li>
         <li><span class="mk">→</span><span><span class="mono strike">MEETING</span> renamed to <span class="mono">NOTES</span> (holds EOW updates + meetings).</span></li>
         <li><span class="mk">→</span><span><span class="mono strike">PR PLAN &amp; STRATEGY</span> replaced by <span class="mono">QUARTERLY PLANS</span>.</span></li>
         <li><span class="mk">→</span><span><span class="mono strike">COVERAGES</span> renamed to <span class="mono">COVERAGE</span>.</span></li>
-        <li><span class="mk">→</span><span>New sub-folders added under <span class="mono">DISCOVERY CALLS</span>, <span class="mono">MEDIA RELATIONS</span> &amp; <span class="mono">REPORTING</span>.</span></li>
+        <li><span class="mk">→</span><span>New sub-folders added under <span class="mono">MEDIA RELATIONS</span> &amp; <span class="mono">REPORTING</span>.</span></li>
       </ul>
     </div>
     <div class="fbox rem">
@@ -231,7 +232,7 @@
         <li><span class="mk">✕</span><span><span class="mono strike">PR TRACKER</span></span></li>
         <li><span class="mk">✕</span><span><span class="mono strike">Client Tracker sheet</span></span></li>
         <li><span class="mk">✕</span><span><span class="mono strike">WIPs</span></span></li>
-        <li><span class="mk">✕</span><span><span class="mono strike">CLIENT DOCUMENT</span> &amp; <span class="mono strike">CLIENT UPDATE</span></span></li>
+        <li><span class="mk">✕</span><span><span class="mono strike">CLIENT UPDATE</span> (<span class="mono">CLIENT DOCUMENTS</span> reinstated for client-supplied background)</span></li>
         <li><span class="mk">✕</span><span><span class="mono strike">PITCHES</span> as a SHARED folder (now Internal only)</span></li>
       </ul>
     </div>
@@ -254,12 +255,13 @@ const shared = [
       R('FINAL ENTRY/S',{note:{t:'rule',l:'Store here',x:'The <b>final submitted entry</b> plus any supporting docs — financials, imagery, etc. — so it’s easy to pull up later.'}}),
     ]}),
   ]}),
-  R('CONTRACT',{note:{t:'rule',l:'Every client',x:'Save the <b>Word doc AND the signed PDF</b> for every client — no exceptions.'}}),
-  R('DISCOVERY CALLS',{note:{t:'rule',l:'Include',x:'Add the <b>transcript</b> and the <b>AI analysis</b> for each call.'},kids:[
-    R('PRE ENGAGEMENT'),
-    R('ONBOARDING'),
-    R('[MONTH]',{note:{t:'rule',l:'Naming',x:'Name this with the <b>actual month</b> (e.g. <span class="mono">MARCH</span>) so files are easy to source.'}}),
+  R('CLIENT DOCUMENTS',{note:{t:'rule',l:'Background from client',x:'Materials the <b>client gives us</b> as background — information memorandum, existing marketing collateral, brand guidelines, company/product decks, research. Their source material, kept for reference.'},kids:[
+    R('INFORMATION MEMORANDUM'),
+    R('MARKETING MATERIALS'),
+    R('BRAND & GUIDELINES'),
+    R('OTHER BACKGROUND'),
   ]}),
+  R('CONTRACT',{note:{t:'rule',l:'Every client',x:'Save the <b>Word doc AND the signed PDF</b> for every client — no exceptions.'}}),
   R('EVENTS',{kids:[
     R('SPEAKING',{kids:[R('[NAME OF EVENT]')]}),
     R('ATTENDING/HOSTING',{kids:[R('[NAME OF EVENT]')]}),
@@ -294,9 +296,9 @@ const shared = [
 
 const internal = [
   R('PITCHES',{kids:[R('HEADLINE/NEWS ANGLE')]}),
-  R('DISCOVERY CALLS',{kids:[
+  R('DISCOVERY CALLS',{note:{t:'rule',l:'Team only',x:'Notes, <b>transcripts</b> and <b>AI analysis</b> for every call — kept internal, never in the client-facing SHARED folder.'},kids:[
     R('PRE ENGAGEMENT'), R('ONBOARDING'),
-    R('ONGOING',{kids:[R('[MONTH]')]}),
+    R('ONGOING',{kids:[R('[MONTH]',{note:{t:'rule',l:'Naming',x:'Name this with the <b>actual month</b> (e.g. <span class="mono">MARCH</span>) so files are easy to source.'}})]}),
   ]}),
   R('MEDIA LISTS'),
 ];
