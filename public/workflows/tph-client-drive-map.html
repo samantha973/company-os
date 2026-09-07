@@ -187,8 +187,12 @@
       </div>
     </div>
     <div class="lcard">
-      <h3>Golden rules</h3>
-      <p>Use the <b>actual month name</b> for month folders. Keep file names consistent: <span class="mono">Name_Company_Name_A</span>. Coloured notes below are non-negotiable.</p>
+      <h3>File naming — always</h3>
+      <p>Date first, then client, then type: <span class="mono">DD-MM-YY_Client Name_Type</span>. Use the <b>actual month name</b> for month folders. Coloured notes below are non-negotiable.</p>
+      <div class="chipline">
+        <span class="tag-ex">08-09-26_Acme Co_WIP</span>
+        <span class="tag-ex">08-09-26_Acme Co_Discovery</span>
+      </div>
     </div>
   </section>
 
@@ -288,7 +292,9 @@ const shared = [
   ]}),
   R('NOTES',{kids:[
     R('EOW UPDATES',{kids:[R('[MONTH]')]}),
-    R('MEETINGS',{kids:[R('[MONTH]')]}),
+    R('MEETINGS',{note:{t:'rule',l:'Client WIP meetings',x:'The meeting <b>lead records the call</b> and forwards the transcript to <b>Shruti</b> to file here, under the month it happened.'},kids:[
+      R('[MONTH]',{note:{t:'rule',l:'File name',x:'Save as <span class="mono">DD-MM-YY_Client&nbsp;Name_WIP</span> — e.g. <span class="mono">08-09-26_Acme&nbsp;Co_WIP</span>.'}}),
+    ]}),
   ]}),
   R('QUARTERLY PLANS',{kids:[R('[NAME OF QUARTER — e.g. Q3 2026]')]}),
   R('REPORTING',{kids:[R('QUARTERLY'), R('ANNUAL'), R('EVALUATIONS')]}),
