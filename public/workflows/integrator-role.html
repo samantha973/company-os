@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="The PR Hub Integrator (COO/GM) role spec and scorecard — the first strategic hire that runs the firm so the founder can lead it.">
+<title>The Integrator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#FBFAF8; --surface:#FFFFFF; --surface-2:#F5F4F0;
+    --ink:#20242E; --muted:#5A6172; --faint:#8A909E;
+    --line:#E6E3DC; --line-strong:#D6D2C8;
+    --accent:#0E7A6E; --accent-soft:#E4F1EF; --accent-ring:#BFE0DA;
+    --gold:#B4791C; --gold-soft:#F6ECDA; --gold-ring:#E4CFA6;
+    --stop:#B23B3B; --stop-soft:#F7E4E4;
+    --shadow:0 1px 2px rgba(32,36,46,.05),0 10px 30px -14px rgba(32,36,46,.22);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+      --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+      --line:#2B2F3A; --line-strong:#363B48;
+      --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+      --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+      --stop:#E07A7A; --stop-soft:rgba(224,122,122,.12);
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+    --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+    --line:#2B2F3A; --line-strong:#363B48;
+    --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+    --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+    --stop:#E07A7A; --stop-soft:rgba(224,122,122,.12);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:960px; margin:0 auto; padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px) 90px;}
+  .eyebrow{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700;}
+  h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(34px,6vw,60px);
+    line-height:1.0; letter-spacing:-.025em; margin:.28em 0 .32em; text-wrap:balance;}
+  .lede{color:var(--muted); font-size:clamp(16px,1.7vw,19px); max-width:64ch; margin:0 0 6px;}
+  .sig{margin-top:16px; font-size:13.5px; color:var(--faint);}
+  .sig a{color:var(--accent); font-weight:600; text-decoration:none;}
+  h2{font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(22px,3.4vw,30px); font-weight:800;
+    letter-spacing:-.015em; margin:0 0 4px; text-wrap:balance;}
+  .sect{margin-top:clamp(44px,6vw,72px);}
+  .kicker{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:0 0 14px;}
+  .sub{color:var(--muted); max-width:66ch; margin:2px 0 22px; font-size:15.5px;}
+  p{margin:0 0 16px;}
+  .big{font-size:clamp(19px,2.4vw,25px); line-height:1.45; font-weight:500; color:var(--ink); max-width:38ch;
+    font-family:"Bricolage Grotesque",sans-serif; letter-spacing:-.01em;}
+  .big .hl{color:var(--accent);}
+  hr.rule{border:0; border-top:1px solid var(--line); margin:0;}
+
+  /* vis/int split */
+  .split{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:600px){ .split{grid-template-columns:1fr;} }
+  .half{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px; box-shadow:var(--shadow);}
+  .half.int{border-color:var(--accent-ring); border-top:3px solid var(--accent);}
+  .half .role{font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; margin-bottom:6px; color:var(--faint);}
+  .half.int .role{color:var(--accent);}
+  .half h3{font-family:"Bricolage Grotesque",sans-serif; font-size:19px; font-weight:800; margin:0 0 10px;}
+  .half ul{margin:0; padding-left:18px; font-size:13.5px; color:var(--muted);}
+  .half ul li{margin-bottom:5px;}
+
+  /* owns list */
+  ul.tick{list-style:none; margin:0; padding:0; display:grid; gap:9px;}
+  ul.tick li{position:relative; padding-left:26px; font-size:14.5px; color:var(--ink);}
+  ul.tick li::before{content:""; position:absolute; left:2px; top:7px; width:10px; height:10px; border-radius:3px;
+    background:var(--accent-soft); border:1.5px solid var(--accent);}
+  ul.tick li b{font-weight:700;}
+
+  /* scorecard table */
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow);}
+  table{border-collapse:collapse; width:100%; min-width:600px; background:var(--surface); font-size:14px;}
+  th,td{text-align:left; padding:12px 16px; border-bottom:1px solid var(--line); vertical-align:top;}
+  th{font-family:"IBM Plex Sans"; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); font-weight:700; background:var(--surface-2);}
+  tr:last-child td{border-bottom:0;}
+  td b{color:var(--ink);}
+  code{font-family:"IBM Plex Mono",monospace; font-size:.86em; background:var(--surface-2); padding:1px 6px; border-radius:5px;}
+
+  /* cadence cards */
+  .cad{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:16px;}
+  .cadcard{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px; box-shadow:var(--shadow);}
+  .cadcard .when{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-weight:600;}
+  .cadcard h3{font-family:"Bricolage Grotesque",sans-serif; font-size:16px; font-weight:800; margin:6px 0 8px;}
+  .cadcard ul{margin:0; padding-left:18px; font-size:13px; color:var(--muted);}
+  .cadcard ul li{margin-bottom:5px;}
+
+  /* 90 day */
+  .qgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px;}
+  .qcol{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px; box-shadow:var(--shadow);}
+  .qcol .wk{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-weight:600;}
+  .qcol h4{font-family:"Bricolage Grotesque",sans-serif; font-size:16px; margin:6px 0 8px; font-weight:700;}
+  .qcol ul{margin:0; padding-left:18px; font-size:13px; color:var(--muted);}
+  .qcol ul li{margin-bottom:5px;}
+
+  /* profile / redflags two-col */
+  .cols2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:600px){ .cols2{grid-template-columns:1fr;} }
+  .panel{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px; box-shadow:var(--shadow);}
+  .panel.stop{border-color:var(--stop); background:var(--stop-soft);}
+  .panel h3{font-family:"Bricolage Grotesque",sans-serif; font-size:17px; font-weight:800; margin:0 0 10px;}
+  .panel.stop h3{color:var(--stop);}
+  .panel ul{margin:0; padding-left:18px; font-size:13.5px; color:var(--ink);}
+  .panel ul li{margin-bottom:6px;}
+
+  .counsel{border:1px solid var(--gold-ring); background:var(--gold-soft); border-radius:14px; padding:20px 22px; margin:18px 0;}
+  .counsel .h{display:flex; align-items:center; gap:9px; font-family:"Bricolage Grotesque",sans-serif; font-weight:800;
+    font-size:15px; color:var(--gold); letter-spacing:.01em; margin-bottom:8px;}
+  .counsel p{margin:0 0 10px; font-size:14.5px; color:var(--ink);}
+  .counsel p:last-child{margin-bottom:0;}
+
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px;}
+  .stat{background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .stat .v{font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(22px,3.4vw,28px); font-weight:800; line-height:1.05; letter-spacing:-.02em; color:var(--ink);}
+  .stat .l{font-size:12.5px; color:var(--muted); margin-top:8px; line-height:1.35;}
+
+  footer{margin-top:64px; padding-top:20px; border-top:1px solid var(--line);
+    font-size:12px; color:var(--faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  a.back{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--accent); text-decoration:none; margin-bottom:8px;}
+  .fnote{font-size:12.5px; color:var(--faint); margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="/workflows/hub.html">← Workflows Hub</a>
+  <div class="eyebrow">The PR Hub · Role Spec &amp; Scorecard</div>
+  <h1>The Integrator</h1>
+  <p class="lede">Your first strategic hire. The person who runs the firm so you can lead it. Get this one right and the bottleneck disappears — you go back to filling rooms and winning the room, and the machine keeps running whether you're in it or not.</p>
+  <div class="sig">Companion to <a href="/workflows/build-out-blueprint.html">the Build-Out Blueprint</a> · Hire trigger: 3–4 retainers signed</div>
+
+  <!-- THE DYNAMIC -->
+  <section class="sect">
+    <p class="kicker">The dynamic</p>
+    <p class="big">You are the Visionary. This hire is the <span class="hl">Integrator.</span> Two seats, one wheel.</p>
+    <p class="sub">Every enduring firm runs on this pairing. The Visionary sees around corners and opens doors. The Integrator turns the vision into a running operation, harmonises the team, and holds the whole thing accountable. Neither is senior to the other — they are two halves of one leadership.</p>
+    <div class="split">
+      <div class="half">
+        <div class="role">You keep · The Visionary</div>
+        <h3>Vision &amp; the market</h3>
+        <ul>
+          <li>The brand, the workshops, the counsel</li>
+          <li>Winning &amp; closing new business</li>
+          <li>Big-idea direction &amp; key relationships</li>
+          <li>Quarterly Rocks — the "what" and "why"</li>
+        </ul>
+      </div>
+      <div class="half int">
+        <div class="role">They own · The Integrator</div>
+        <h3>The running of the firm</h3>
+        <ul>
+          <li>Operations, finance, capacity, hiring</li>
+          <li>The weekly rhythm &amp; team accountability</li>
+          <li>Turning Rocks into execution — the "how"</li>
+          <li>Removing obstacles so delivery flies</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- THE MANDATE -->
+  <section class="sect">
+    <h2>The mandate — what they own</h2>
+    <p class="sub">One sentence: <b>the Integrator is accountable for the firm running profitably, on-rhythm, and to standard — without the founder in the engine room.</b></p>
+    <ul class="tick">
+      <li><b>The numbers.</b> Owns the P&amp;L, cash flow, invoicing, and the one-page scorecard. Knows the money cold, every week.</li>
+      <li><b>Capacity &amp; delivery ops.</b> Manages load points across leads, resourcing, and the workflow systems so nothing drops.</li>
+      <li><b>The operating rhythm.</b> Runs the weekly L10, holds Rocks on track, drives issues to resolution — not discussion.</li>
+      <li><b>Hiring &amp; onboarding.</b> Builds the recruitment pipeline, runs process, onboards leads and associates against the model.</li>
+      <li><b>Client health.</b> Owns the Red/Amber/Green system and renewal radar — surfaces risk before it becomes churn.</li>
+      <li><b>The bench &amp; systems.</b> Steward of the prompt-library governance, the coverage database, and reporting production.</li>
+      <li><b>Team &amp; culture.</b> The day-to-day people leader — performance, development, and the in-person cadence.</li>
+    </ul>
+    <div class="counsel">
+      <div class="h">The line you must hold</div>
+      <p>The Integrator runs the <em>business</em>; you own the <em>brand and the counsel</em>. The failure mode is you drifting back into operations because it's familiar. Don't. Every hour you spend running the firm is an hour not spent winning the business only you can win.</p>
+    </div>
+  </section>
+
+  <!-- THE SCORECARD -->
+  <section class="sect">
+    <h2>The scorecard</h2>
+    <p class="sub">What the Integrator is measured on — reviewed at the top of every weekly L10. Lead indicators up top (they predict the future), lag indicators below (they confirm it). Set the target column together in week one.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Number</th><th>Cadence</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td><b>Recurring revenue (MRR)</b></td><td>Weekly</td><td>The engine. The single most important number in the firm.</td></tr>
+          <tr><td><b>New pipeline value</b></td><td>Weekly</td><td>Leading indicator of future MRR. Sourced from the founder's brand engine.</td></tr>
+          <tr><td><b>Net revenue retention</b></td><td>Monthly</td><td>Are we growing accounts, not just keeping them? The valuation number.</td></tr>
+          <tr><td><b>Client health (R/A/G)</b></td><td>Weekly</td><td>Churn risk, surfaced early enough to fix.</td></tr>
+          <tr><td><b>Utilisation (load pts/lead)</b></td><td>Weekly</td><td>Capacity health — protects quality and margin. Cap ≈ 6.0.</td></tr>
+          <tr><td><b>Gross margin %</b></td><td>Monthly</td><td>Proof the model is working as designed (~55–65%).</td></tr>
+          <tr><td><b>Cash in bank / runway</b></td><td>Weekly</td><td>The number that lets everyone sleep.</td></tr>
+          <tr><td><b>Rocks on track (%)</b></td><td>Weekly</td><td>Are the quarter's priorities actually moving?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fnote">The live numbers behind this scorecard come straight from the <a href="/workflows/build-out-blueprint.html" style="color:var(--accent);font-weight:600;text-decoration:none;">financial model</a>. Wire them together once and the L10 runs itself.</p>
+  </section>
+
+  <!-- FIRST 90 DAYS -->
+  <section class="sect">
+    <h2>First 90 days</h2>
+    <p class="sub">How you'll know the hire is working — before the probation period is up.</p>
+    <div class="qgrid">
+      <div class="qcol">
+        <div class="wk">DAYS 1–30</div>
+        <h4>Learn &amp; stabilise</h4>
+        <ul>
+          <li>Master the model, the bench, the systems</li>
+          <li>Take invoicing &amp; the scorecard off the founder</li>
+          <li>Stand up the weekly L10 properly</li>
+          <li>Map every client's health &amp; renewal date</li>
+        </ul>
+      </div>
+      <div class="qcol">
+        <div class="wk">DAYS 31–60</div>
+        <h4>Own the rhythm</h4>
+        <ul>
+          <li>Run the L10 unaided; issues getting solved</li>
+          <li>Capacity &amp; load points actively managed</li>
+          <li>Hiring pipeline for Lead #1 underway</li>
+          <li>Reporting production humming</li>
+        </ul>
+      </div>
+      <div class="qcol">
+        <div class="wk">DAYS 61–90</div>
+        <h4>Free the founder</h4>
+        <ul>
+          <li>Founder out of day-to-day operations</li>
+          <li>Financials clean, forecast reliable</li>
+          <li>First Rock delivered on time</li>
+          <li>Founder's calendar visibly back on sales &amp; brand</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO -->
+  <section class="sect">
+    <h2>Who you're looking for</h2>
+    <div class="cols2">
+      <div class="panel">
+        <h3>Green flags</h3>
+        <ul>
+          <li>Ops/GM/COO background — ideally in a service or agency business</li>
+          <li>Loves systems, rhythm, and finishing things (not the spotlight)</li>
+          <li>Financially fluent — reads a P&amp;L like a story</li>
+          <li>Calm under pressure; holds people to account without drama</li>
+          <li>Genuinely energised sitting <em>behind</em> a visionary, not competing with one</li>
+          <li>Has run a weekly accountability rhythm before (EOS/AOS a plus)</li>
+        </ul>
+      </div>
+      <div class="panel stop">
+        <h3>Red flags</h3>
+        <ul>
+          <li>Wants to be the face / pitch for the founder role</li>
+          <li>Big on ideas, light on execution &amp; follow-through</li>
+          <li>Avoids hard conversations; conflict-averse</li>
+          <li>Needs detailed direction — can't self-start</li>
+          <li>PR-craft ego but no operating discipline</li>
+          <li>Treats finance as "someone else's job"</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMP & START -->
+  <section class="sect">
+    <h2>How to start &amp; what to pay</h2>
+    <p class="sub">Start fractional to de-risk it, convert to full-time as the firm scales. Illustrative AUD — calibrate to seniority and market.</p>
+    <div class="stats">
+      <div class="stat"><div class="v">Fractional<br>~A$1.5–2.5k/day</div><div class="l">1–2 days/week. Stages 1–2, while you prove the model.</div></div>
+      <div class="stat"><div class="v">Full-time<br>~A$180–220k</div><div class="l">Package as the firm hits Stage 3. Consider a profit-share.</div></div>
+      <div class="stat"><div class="v">Equity<br>path optional</div><div class="l">A small equity or long-term incentive turns a hire into a partner in the outcome.</div></div>
+    </div>
+    <div class="counsel">
+      <div class="h">Where to find them</div>
+      <p>Fractional COO networks, EOS/AOS Integrator communities, and operators leaving agencies who are tired of the pyramid but love the craft of running one. Your own EO/YPO network will know exactly the person — ask it.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>The PR Hub — Integrator role spec.</span>
+    <span>Owned by the Founder &amp; CEO · Reviewed on hire.</span>
+  </footer>
+
+</div>
+</body>
+</html>

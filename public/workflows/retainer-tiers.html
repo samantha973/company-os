@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="The PR Hub retainer tiers — three productized senior-led retainers built around founder authority and earned media.">
+<title>The Retainer Tiers</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#FBFAF8; --surface:#FFFFFF; --surface-2:#F5F4F0;
+    --ink:#20242E; --muted:#5A6172; --faint:#8A909E;
+    --line:#E6E3DC; --line-strong:#D6D2C8;
+    --accent:#0E7A6E; --accent-soft:#E4F1EF; --accent-ring:#BFE0DA;
+    --gold:#B4791C; --gold-soft:#F6ECDA; --gold-ring:#E4CFA6;
+    --stop:#B23B3B; --stop-soft:#F7E4E4;
+    --shadow:0 1px 2px rgba(32,36,46,.05),0 10px 30px -14px rgba(32,36,46,.22);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+      --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+      --line:#2B2F3A; --line-strong:#363B48;
+      --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+      --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+      --stop:#E07A7A; --stop-soft:rgba(224,122,122,.12);
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+    --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+    --line:#2B2F3A; --line-strong:#363B48;
+    --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+    --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+    --stop:#E07A7A; --stop-soft:rgba(224,122,122,.12);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1000px; margin:0 auto; padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px) 90px;}
+  .eyebrow{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700;}
+  h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(34px,6vw,60px);
+    line-height:1.0; letter-spacing:-.025em; margin:.28em 0 .32em; text-wrap:balance;}
+  .lede{color:var(--muted); font-size:clamp(16px,1.7vw,19px); max-width:64ch; margin:0 0 6px;}
+  .sig{margin-top:16px; font-size:13.5px; color:var(--faint);}
+  .sig a{color:var(--accent); font-weight:600; text-decoration:none;}
+  h2{font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(22px,3.4vw,30px); font-weight:800;
+    letter-spacing:-.015em; margin:0 0 4px; text-wrap:balance;}
+  .sect{margin-top:clamp(44px,6vw,72px);}
+  .kicker{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:0 0 14px;}
+  .sub{color:var(--muted); max-width:66ch; margin:2px 0 22px; font-size:15.5px;}
+  p{margin:0 0 16px;}
+  hr.rule{border:0; border-top:1px solid var(--line); margin:0;}
+
+  /* tier cards */
+  .tiers{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; align-items:start;}
+  .tier{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:24px 22px; box-shadow:var(--shadow); display:flex; flex-direction:column;}
+  .tier.feat{border:2px solid var(--accent); position:relative;}
+  .tier.feat::before{content:"MOST POPULAR"; position:absolute; top:-10px; left:22px; font-size:10px; letter-spacing:.12em;
+    font-weight:700; color:#fff; background:var(--accent); padding:3px 10px; border-radius:20px;}
+  .tier .name{font-family:"Bricolage Grotesque",sans-serif; font-size:23px; font-weight:800; letter-spacing:-.01em; margin:0;}
+  .tier .who{font-size:12.5px; color:var(--muted); margin:4px 0 14px; min-height:34px;}
+  .tier .price{font-family:"Bricolage Grotesque",sans-serif; font-size:30px; font-weight:800; color:var(--ink); letter-spacing:-.02em;}
+  .tier .price small{font-size:14px; color:var(--faint); font-weight:600;}
+  .tier .ns{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); font-weight:700; margin:16px 0 8px;}
+  .tier ul{list-style:none; margin:0 0 8px; padding:0; display:grid; gap:8px; flex:1;}
+  .tier ul li{position:relative; padding-left:24px; font-size:13.5px; color:var(--ink);}
+  .tier ul li::before{content:"✓"; position:absolute; left:0; top:0; color:var(--accent); font-weight:800;}
+  .tier ul li.off{color:var(--faint);}
+  .tier ul li.off::before{content:"–"; color:var(--faint);}
+  .tier .cap{margin-top:12px; padding-top:12px; border-top:1px solid var(--line); font-size:12px; color:var(--muted);}
+
+  /* comparison table */
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow);}
+  table{border-collapse:collapse; width:100%; min-width:640px; background:var(--surface); font-size:14px;}
+  th,td{text-align:left; padding:12px 16px; border-bottom:1px solid var(--line); vertical-align:top;}
+  th{font-family:"IBM Plex Sans"; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); font-weight:700; background:var(--surface-2);}
+  th.c, td.c{text-align:center;}
+  tr:last-child td{border-bottom:0;}
+  td b{color:var(--ink);}
+  .yes{color:var(--accent); font-weight:700;}
+  .no{color:var(--faint);}
+
+  /* earned-media ladder */
+  .ladder{display:grid; gap:10px;}
+  .rung{display:grid; grid-template-columns:auto 1fr auto; gap:16px; align-items:center;
+    background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 18px; box-shadow:var(--shadow);}
+  .rung .lv{font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:600; color:var(--accent); background:var(--accent-soft);
+    border:1px solid var(--accent-ring); border-radius:8px; padding:6px 10px; white-space:nowrap;}
+  .rung h4{font-family:"Bricolage Grotesque",sans-serif; font-size:15.5px; margin:0 0 2px; font-weight:700;}
+  .rung p{margin:0; font-size:13px; color:var(--muted);}
+  .rung .tag{font-size:11px; color:var(--gold); font-weight:600; white-space:nowrap;}
+
+  /* callouts */
+  .counsel{border:1px solid var(--gold-ring); background:var(--gold-soft); border-radius:14px; padding:20px 22px; margin:18px 0;}
+  .counsel .h{display:flex; align-items:center; gap:9px; font-family:"Bricolage Grotesque",sans-serif; font-weight:800;
+    font-size:15px; color:var(--gold); letter-spacing:.01em; margin-bottom:8px;}
+  .counsel p{margin:0 0 10px; font-size:14.5px; color:var(--ink);}
+  .counsel p:last-child{margin-bottom:0;}
+  .counsel .do{font-weight:600;}
+  .counsel .do::before{content:"→ "; color:var(--gold); font-weight:700;}
+
+  footer{margin-top:64px; padding-top:20px; border-top:1px solid var(--line);
+    font-size:12px; color:var(--faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  a.back{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--accent); text-decoration:none; margin-bottom:8px;}
+  .fnote{font-size:12.5px; color:var(--faint); margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="/workflows/hub.html">← Workflows Hub</a>
+  <div class="eyebrow">The PR Hub · Retainer Tiers</div>
+  <h1>Three ways to buy authority</h1>
+  <p class="lede">Founders don't want "PR." They want to be the name their market — and its AI — reaches for first. So we productized exactly that into three tiers. Legible to sell, easy to say yes to, engineered to climb.</p>
+  <div class="sig">Companion to <a href="/workflows/build-out-blueprint.html">the Build-Out Blueprint</a> · Pricing in AUD/month, ex-GST</div>
+
+  <!-- TIER CARDS -->
+  <section class="sect">
+    <div class="tiers">
+
+      <div class="tier">
+        <p class="name">Foundation</p>
+        <p class="who">For the founder starting to build a public profile. The on-ramp.</p>
+        <div class="price">A$6–8k<small>/mo</small></div>
+        <p class="ns">North star · Get discoverable</p>
+        <ul>
+          <li>Founder profile &amp; message architecture</li>
+          <li>LinkedIn pillars + content (2–3 posts/wk)</li>
+          <li>1 long-form article / month</li>
+          <li>Tier 2–3 earned media (trade + digital)</li>
+          <li>Newsjacking when the moment fits</li>
+          <li class="off">Proactive announcements programme</li>
+          <li class="off">Awards &amp; speaking</li>
+          <li class="off">Priority crisis counsel</li>
+        </ul>
+        <div class="cap">Load: <b>0.75 pts</b> · EOW note · monthly report</div>
+      </div>
+
+      <div class="tier feat">
+        <p class="name">Momentum</p>
+        <p class="who">For the founder ready to own their category conversation. The core engine.</p>
+        <div class="price">A$10–12k<small>/mo</small></div>
+        <p class="ns">North star · Own the conversation</p>
+        <ul>
+          <li>Everything in Foundation, plus:</li>
+          <li>Full 90-day strategic plan, quarterly</li>
+          <li>Proactive announcements drumbeat</li>
+          <li>Tier 1–2 earned media (national + AFR-grade)</li>
+          <li>2 long-form / month, media-pitched</li>
+          <li>Relevant awards programme</li>
+          <li>Event content harvesting</li>
+          <li class="off">Priority crisis counsel &amp; speaking</li>
+        </ul>
+        <div class="cap">Load: <b>1.0 pt</b> · EOW note · quarterly report + plan</div>
+      </div>
+
+      <div class="tier">
+        <p class="name">Authority</p>
+        <p class="who">For the founder who is — or intends to be — the voice of their industry.</p>
+        <div class="price">A$16k+<small>/mo</small></div>
+        <p class="ns">North star · Be the industry voice</p>
+        <ul>
+          <li>Everything in Momentum, plus:</li>
+          <li>Priority senior counsel &amp; on-call access</li>
+          <li>Tier 1 earned media as the priority</li>
+          <li>Thought-leadership platform build</li>
+          <li>Speaking &amp; awards pursued proactively</li>
+          <li>Crisis-ready — issues plan on file</li>
+          <li>Executive visibility across AI/GEO surfaces</li>
+        </ul>
+        <div class="cap">Load: <b>1.5–2.0 pts</b> · weekly touch · annual report + in-person</div>
+      </div>
+
+    </div>
+    <p class="fnote">Load points feed the capacity model — a lead carries ~6.0 points, not six logos. A crisis/activism-heavy Authority account counts as two. Price on the client's business impact, never on hours.</p>
+  </section>
+
+  <!-- COMPARISON -->
+  <section class="sect">
+    <h2>What's in each tier</h2>
+    <p class="sub">The upgrade path is the point. Every tier is a complete offer — and every tier leaves an obvious reason to climb.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Included</th><th class="c">Foundation</th><th class="c">Momentum</th><th class="c">Authority</th></tr></thead>
+        <tbody>
+          <tr><td>Founder profile &amp; messaging</td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+          <tr><td>LinkedIn strategy &amp; content</td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+          <tr><td>Long-form articles / month</td><td class="c">1</td><td class="c">2</td><td class="c">2–3</td></tr>
+          <tr><td>Earned-media tier focus</td><td class="c">Tier 2–3</td><td class="c">Tier 1–2</td><td class="c">Tier 1</td></tr>
+          <tr><td>Proactive announcements</td><td class="c no">–</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+          <tr><td>Awards programme</td><td class="c no">–</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+          <tr><td>Speaking pursuit</td><td class="c no">–</td><td class="c">Add-on</td><td class="c yes">✓</td></tr>
+          <tr><td>Priority / crisis counsel</td><td class="c no">–</td><td class="c no">–</td><td class="c yes">✓</td></tr>
+          <tr><td>Client touchpoint</td><td class="c">Monthly</td><td class="c">Fortnightly→Monthly</td><td class="c">Weekly</td></tr>
+          <tr><td>Reporting</td><td class="c">Monthly</td><td class="c">Quarterly</td><td class="c">Qtrly + Annual</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- EARNED MEDIA LADDER -->
+  <section class="sect">
+    <h2>The earned-media ladder</h2>
+    <p class="sub">Earned media is now the source AI and generative search <em>cite</em>. Higher tiers buy higher-authority placements — the ones that shape both the market and the machine.</p>
+    <div class="ladder">
+      <div class="rung">
+        <span class="lv">TIER 1</span>
+        <div><h4>National &amp; premium business</h4><p>AFR, The Australian, national broadcast, marquee international titles.</p></div>
+        <span class="tag">Authority · Momentum</span>
+      </div>
+      <div class="rung">
+        <span class="lv">TIER 2</span>
+        <div><h4>Sector-leading &amp; metro</h4><p>Category-defining trade titles, metro press, respected industry podcasts.</p></div>
+        <span class="tag">Momentum · Foundation</span>
+      </div>
+      <div class="rung">
+        <span class="lv">TIER 3</span>
+        <div><h4>Trade, digital &amp; niche</h4><p>Vertical trades, credible digital mastheads, newsletters — the discoverability base.</p></div>
+        <span class="tag">Foundation</span>
+      </div>
+    </div>
+    <div class="counsel">
+      <div class="h"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg> Sell the outcome, not the output</div>
+      <p>Never sell "placements." Sell the position: <em>"When someone — or something — searches your category, you're the founder that comes up."</em> That's what a CEO renews on, and it's what makes the earned-media ladder a value story, not a shopping list.</p>
+      <p class="do">Anchor every proposal to the client's north star, then show which tier reaches it. Price against the business it wins them, not the hours it takes you.</p>
+    </div>
+  </section>
+
+  <!-- PRICING PRINCIPLES -->
+  <section class="sect">
+    <h2>How to price &amp; pitch</h2>
+    <div class="counsel">
+      <div class="h">Three rules that hold the pricing line</div>
+      <p><b>1 · Anchor high, then descend.</b> Present Authority first. It makes Momentum feel like the sensible choice — which is exactly where you want most clients to land.</p>
+      <p><b>2 · Quarterly, not monthly.</b> Bill the quarter, aligned to the calendar. Cleaner cash, fewer conversations, and it matches the 90-day plan.</p>
+      <p><b>3 · One upgrade lever always visible.</b> Every Foundation and Momentum client should be able to see the next rung. Expansion revenue is the cheapest revenue you'll ever earn.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>The PR Hub — retainer tiers.</span>
+    <span>Pricing reviewed quarterly · Founder &amp; CEO.</span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="Central hub for The PR Hub's team workflow maps and reference guides.">
+<title>TPH Workflows Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#FBFAF8; --surface:#FFFFFF; --surface-2:#F5F4F0;
+    --ink:#20242E; --muted:#5A6172; --faint:#8A909E;
+    --line:#E6E3DC; --line-strong:#D6D2C8;
+    --accent:#0E7A6E; --accent-soft:#E4F1EF; --accent-ring:#BFE0DA;
+    --shadow:0 1px 2px rgba(32,36,46,.05),0 10px 30px -14px rgba(32,36,46,.22);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+      --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+      --line:#2B2F3A; --line-strong:#363B48;
+      --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+    --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+    --line:#2B2F3A; --line-strong:#363B48;
+    --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif; line-height:1.55; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:920px; margin:0 auto; padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px) 80px;}
+  .eyebrow{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700;}
+  h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(32px,5.5vw,54px);
+    line-height:1.03; letter-spacing:-.02em; margin:.3em 0 .3em; text-wrap:balance;}
+  .lede{color:var(--muted); font-size:clamp(15px,1.6vw,17.5px); max-width:60ch; margin:0 0 8px;}
+  .bookmark{display:inline-flex; align-items:center; gap:8px; margin-top:14px; padding:8px 14px;
+    background:var(--accent-soft); border:1px solid var(--accent-ring); border-radius:9px;
+    font-size:13px; color:var(--ink);}
+  .bookmark b{color:var(--accent);}
+  .sect{margin-top:44px;}
+  .sect h2{font-family:"Bricolage Grotesque",sans-serif; font-size:14px; letter-spacing:.03em;
+    text-transform:uppercase; color:var(--muted); font-weight:700; margin:0 0 16px;
+    padding-bottom:10px; border-bottom:1px solid var(--line);}
+  .cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px;}
+  a.card{display:flex; flex-direction:column; gap:8px; text-decoration:none; color:inherit;
+    background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 20px 18px;
+    box-shadow:var(--shadow); transition:transform .12s ease, border-color .12s ease;}
+  a.card:hover{transform:translateY(-2px); border-color:var(--accent-ring);}
+  a.card:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .card .ic{width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    background:var(--accent-soft); color:var(--accent); margin-bottom:4px;}
+  .card h3{font-family:"Bricolage Grotesque",sans-serif; font-size:18px; font-weight:700; margin:0; letter-spacing:-.01em;}
+  .card p{margin:0; font-size:13.5px; color:var(--muted); flex:1;}
+  .card .go{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--accent); margin-top:6px;}
+  .placeholder{border:1px dashed var(--line-strong); background:transparent; box-shadow:none;
+    display:flex; flex-direction:column; gap:6px; border-radius:14px; padding:20px; color:var(--faint);}
+  .placeholder h3{font-family:"IBM Plex Sans"; font-size:14px; font-weight:600; margin:0; color:var(--faint);}
+  .placeholder p{margin:0; font-size:12.5px;}
+  footer{margin-top:52px; padding-top:20px; border-top:1px solid var(--line);
+    font-size:12px; color:var(--faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  code{font-family:"IBM Plex Mono",monospace; font-size:.9em; background:var(--surface-2);
+    padding:1px 6px; border-radius:5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">The PR Hub</div>
+  <h1>Workflows Hub</h1>
+  <p class="lede">One place for the team's workflow maps, filing standards, and reference guides. Bookmark this page — new guides land here as we build them.</p>
+  <div class="bookmark">🔖&nbsp; <span>Bookmark <b>/workflows/hub.html</b> for quick access.</span></div>
+
+  <section class="sect">
+    <h2>Operating Model &amp; Strategy</h2>
+    <div class="cards">
+      <a class="card" href="/workflows/operating-model.html">
+        <div class="ic">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6.5v5c0 5 3.7 8.8 9 10.5 5.3-1.7 9-5.5 9-10.5v-5z"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <h3>The Senior-Led Agency</h3>
+        <p>How we're built and how we work: the senior-led, AI-leveraged operating model — structure, the 90-day plan, cadence, and where the model gets stress-tested.</p>
+        <span class="go">Open model →</span>
+      </a>
+
+      <a class="card" href="/workflows/build-out-blueprint.html">
+        <div class="ic">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+        </div>
+        <h3>From Gold Mine to Machine</h3>
+        <p>The staged build-out: the Visionary+Integrator unlock, revenue architecture, unit economics, and the phased hiring plan financed from cash flow.</p>
+        <span class="go">Open blueprint →</span>
+      </a>
+
+      <a class="card" href="/workflows/retainer-tiers.html">
+        <div class="ic">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 12h16M4 19h10"/></svg>
+        </div>
+        <h3>The Retainer Tiers</h3>
+        <p>Three productized senior-led retainers — Foundation, Momentum, Authority — with the earned-media ladder and how to price and pitch each.</p>
+        <span class="go">Open tiers →</span>
+      </a>
+
+      <a class="card" href="/workflows/integrator-role.html">
+        <div class="ic">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/><path d="M5 21a7 7 0 0 1 14 0"/></svg>
+        </div>
+        <h3>The Integrator</h3>
+        <p>Role spec + scorecard for the first strategic hire — the COO/GM who runs the firm so the founder can lead it. Mandate, 90-day plan, hiring profile.</p>
+        <span class="go">Open role spec →</span>
+      </a>
+
+      <a class="card" href="/workflows/accountability-plan.html">
+        <div class="ic">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <h3>The 12-Month Plan</h3>
+        <p>Finalisation checklist, four 90-day plans (Q4 2026→Q3 2027), funding discipline, and the founder + team scorecards. The plan that holds you to it.</p>
+        <span class="go">Open plan →</span>
+      </a>
+
+      <a class="card" href="/workflows/roadmap-3yr.html">
+        <div class="ic">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>
+        </div>
+        <h3>The 3-Year Roadmap</h3>
+        <p>The visual path to A$8M turnover at 45% net — founder-led, not founder-run. Org evolution, the financial staircase, and the margin engine.</p>
+        <span class="go">Open roadmap →</span>
+      </a>
+
+      <a class="card" href="/workflows/hiring-senior-leads.html">
+        <div class="ic">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11a4 4 0 1 0-4-4"/><path d="M3 21a7 7 0 0 1 11-5.7"/><path d="M17 15l2 2 4-4"/></svg>
+        </div>
+        <h3>Hiring Senior Leads</h3>
+        <p>What to test for, five real tasks to set candidates, red/green flags, interview questions, and how to manage them until the Integrator lands.</p>
+        <span class="go">Open guide →</span>
+      </a>
+
+      <a class="card" href="/workflows/integrator-audition.html">
+        <div class="ic">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 16.5 7.1 18.2 8 12.7 4 8.8 9.5 8z"/></svg>
+        </div>
+        <h3>The Integrator Audition</h3>
+        <p>Could a senior hire become your Integrator? The dual-track test: prove execution, probe the operating muscle, and a decision matrix to place them.</p>
+        <span class="go">Open audition →</span>
+      </a>
+
+      <div class="placeholder">
+        <h3>+ More coming</h3>
+        <p>Next strategy or operating guide will appear here.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sect">
+    <h2>New Business &amp; Growth</h2>
+    <div class="cards">
+      <a class="card" href="/workflows/discovery-call-playbook.html">
+        <div class="ic">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg>
+        </div>
+        <h3>The 30-Minute Discovery Call</h3>
+        <p>How we run a first conversation with a prospect: the set-up email to book it, the internal question framework with listen-fors and tweaks, and the six-area outline we send them beforehand.</p>
+        <span class="go">Open playbook →</span>
+      </a>
+
+      <div class="placeholder">
+        <h3>+ More coming</h3>
+        <p>Next new-business or growth guide will appear here.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sect">
+    <h2>Media &amp; Pitching</h2>
+    <div class="cards">
+      <a class="card" href="/workflows/media-pitch-playbook.html">
+        <div class="ic">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4a1 1 0 0 1 1-1h11l4 4v11"/><path d="M16 3v4h4"/><path d="M8 11h8M8 15h8M8 19h5"/></svg>
+        </div>
+        <h3>From Brief to Front Page</h3>
+        <p>The senior thinking behind a tier-one pitch, step by step: read the landscape, kill the announcement, climb to the story, extract from the client, and land the headline. Trains the way we think.</p>
+        <span class="go">Open playbook →</span>
+      </a>
+
+      <div class="placeholder">
+        <h3>+ More coming</h3>
+        <p>Next media or pitching guide will appear here.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sect">
+    <h2>Filing &amp; Operations</h2>
+    <div class="cards">
+      <a class="card" href="/workflows/tph-client-drive-map.html">
+        <div class="ic">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.2h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        </div>
+        <h3>Client Drive Folder Map</h3>
+        <p>The standard SHARED + INTERNAL folder structure every client folder follows in 2026, with naming rules built in.</p>
+        <span class="go">Open map →</span>
+      </a>
+
+      <div class="placeholder">
+        <h3>+ More coming</h3>
+        <p>Next filing or ops guide will appear here.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>The PR Hub — internal workflows.</span>
+    <span>Questions → Samantha.</span>
+  </footer>
+</div>
+</body>
+</html>

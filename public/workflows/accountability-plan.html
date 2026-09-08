@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="The PR Hub 12-month accountability plan — finalisation checklist, four 90-day plans, funding discipline, and scorecards.">
+<title>The 12-Month Plan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#FBFAF8; --surface:#FFFFFF; --surface-2:#F5F4F0;
+    --ink:#20242E; --muted:#5A6172; --faint:#8A909E;
+    --line:#E6E3DC; --line-strong:#D6D2C8;
+    --accent:#0E7A6E; --accent-soft:#E4F1EF; --accent-ring:#BFE0DA;
+    --gold:#B4791C; --gold-soft:#F6ECDA; --gold-ring:#E4CFA6;
+    --stop:#B23B3B; --stop-soft:#F7E4E4;
+    --shadow:0 1px 2px rgba(32,36,46,.05),0 10px 30px -14px rgba(32,36,46,.22);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+      --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+      --line:#2B2F3A; --line-strong:#363B48;
+      --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+      --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+      --stop:#E07A7A; --stop-soft:rgba(224,122,122,.12);
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+    --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+    --line:#2B2F3A; --line-strong:#363B48;
+    --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+    --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+    --stop:#E07A7A; --stop-soft:rgba(224,122,122,.12);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:980px; margin:0 auto; padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px) 90px;}
+  .eyebrow{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700;}
+  h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(34px,6vw,58px);
+    line-height:1.0; letter-spacing:-.025em; margin:.28em 0 .32em; text-wrap:balance;}
+  .lede{color:var(--muted); font-size:clamp(16px,1.7vw,19px); max-width:64ch; margin:0 0 6px;}
+  .sig{margin-top:16px; font-size:13.5px; color:var(--faint);}
+  .sig a{color:var(--accent); font-weight:600; text-decoration:none;}
+  h2{font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(22px,3.4vw,30px); font-weight:800;
+    letter-spacing:-.015em; margin:0 0 4px; text-wrap:balance;}
+  .sect{margin-top:clamp(44px,6vw,72px);}
+  .kicker{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:0 0 14px;}
+  .sub{color:var(--muted); max-width:66ch; margin:2px 0 22px; font-size:15.5px;}
+  p{margin:0 0 16px;}
+  hr.rule{border:0; border-top:1px solid var(--line); margin:0;}
+
+  /* checklist */
+  .check{display:grid; gap:22px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));}
+  .grp{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px; box-shadow:var(--shadow);}
+  .grp h3{font-family:"Bricolage Grotesque",sans-serif; font-size:16px; font-weight:800; margin:0 0 12px; display:flex; align-items:center; gap:8px;}
+  .grp h3 .dot{width:9px; height:9px; border-radius:50%; background:var(--accent);}
+  .grp ul{list-style:none; margin:0; padding:0; display:grid; gap:10px;}
+  .grp li{position:relative; padding-left:28px; font-size:13.5px; color:var(--ink);}
+  .grp li::before{content:""; position:absolute; left:0; top:1px; width:16px; height:16px; border-radius:4px;
+    border:1.6px solid var(--line-strong); background:var(--surface-2);}
+  .grp li b{font-weight:700;}
+  .grp li .m{color:var(--muted); font-size:12.5px;}
+
+  /* sequence */
+  .seq{display:grid; grid-template-columns:1fr auto 1fr auto 1fr; gap:0; align-items:center;
+    background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden;}
+  .seq .step{padding:18px 20px; text-align:center;}
+  .seq .arw{color:var(--faint); font-size:22px; padding:0 4px;}
+  .seq .step .n{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent); font-weight:600;}
+  .seq .step h4{font-family:"Bricolage Grotesque",sans-serif; font-size:15px; margin:6px 0 4px; font-weight:800;}
+  .seq .step p{margin:0; font-size:12px; color:var(--muted);}
+  @media (max-width:640px){ .seq{grid-template-columns:1fr;} .seq .arw{transform:rotate(90deg); padding:4px 0;} }
+
+  /* quarter blocks */
+  .quarter{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:0; box-shadow:var(--shadow); margin-bottom:22px; overflow:hidden;}
+  .quarter .qhead{display:flex; flex-wrap:wrap; align-items:baseline; gap:12px; padding:20px 24px; background:var(--accent-soft); border-bottom:1px solid var(--accent-ring);}
+  .quarter .qhead .q{font-family:"Bricolage Grotesque",sans-serif; font-size:22px; font-weight:800; color:var(--accent); letter-spacing:-.01em;}
+  .quarter .qhead .th{font-family:"Bricolage Grotesque",sans-serif; font-size:18px; font-weight:700; color:var(--ink);}
+  .quarter .qhead .dates{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted); margin-left:auto;}
+  .quarter .qbody{padding:20px 24px;}
+  .qmeta{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px;}
+  .chip{font-size:12px; font-weight:600; padding:5px 11px; border-radius:20px; letter-spacing:.01em;}
+  .chip.hire{color:var(--gold); background:var(--gold-soft); border:1px solid var(--gold-ring);}
+  .chip.tgt{color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent-ring);}
+  .chip.mile{color:var(--ink); background:var(--surface-2); border:1px solid var(--line);}
+  .rocks{list-style:none; margin:0; padding:0; display:grid; gap:9px;}
+  .rocks li{display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:start; font-size:14px;}
+  .rocks li .rk{position:relative; padding-left:22px;}
+  .rocks li .rk::before{content:""; position:absolute; left:0; top:6px; width:11px; height:11px; border-radius:3px; background:var(--accent-soft); border:1.5px solid var(--accent);}
+  .rocks li .own{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--faint); white-space:nowrap; padding-top:2px;}
+  .fund{margin-top:14px; padding-top:12px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--muted);}
+  .fund b{color:var(--gold);}
+
+  /* scorecard tables */
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow);}
+  table{border-collapse:collapse; width:100%; min-width:560px; background:var(--surface); font-size:14px;}
+  th,td{text-align:left; padding:11px 15px; border-bottom:1px solid var(--line); vertical-align:top;}
+  th{font-family:"IBM Plex Sans"; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); font-weight:700; background:var(--surface-2);}
+  tr:last-child td{border-bottom:0;}
+  td b{color:var(--ink);}
+
+  .counsel{border:1px solid var(--gold-ring); background:var(--gold-soft); border-radius:14px; padding:20px 22px; margin:18px 0;}
+  .counsel .h{display:flex; align-items:center; gap:9px; font-family:"Bricolage Grotesque",sans-serif; font-weight:800;
+    font-size:15px; color:var(--gold); letter-spacing:.01em; margin-bottom:8px;}
+  .counsel p{margin:0 0 10px; font-size:14.5px; color:var(--ink);}
+  .counsel p:last-child{margin-bottom:0;}
+
+  .cad{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:16px;}
+  .cadcard{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px; box-shadow:var(--shadow);}
+  .cadcard .when{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-weight:600;}
+  .cadcard h3{font-family:"Bricolage Grotesque",sans-serif; font-size:16px; font-weight:800; margin:6px 0 8px;}
+  .cadcard ul{margin:0; padding-left:18px; font-size:13px; color:var(--muted);}
+  .cadcard ul li{margin-bottom:5px;}
+
+  footer{margin-top:64px; padding-top:20px; border-top:1px solid var(--line);
+    font-size:12px; color:var(--faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  a.back{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--accent); text-decoration:none; margin-bottom:8px;}
+  .fnote{font-size:12.5px; color:var(--faint); margin-top:8px;}
+  .toc{display:flex; flex-wrap:wrap; gap:8px; margin-top:20px;}
+  .toc a{font-size:12.5px; font-weight:600; color:var(--accent); text-decoration:none; background:var(--accent-soft);
+    border:1px solid var(--accent-ring); border-radius:20px; padding:5px 12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="/workflows/hub.html">← Workflows Hub</a>
+  <div class="eyebrow">The PR Hub · 12-Month Accountability Plan</div>
+  <h1>The plan that holds you to it</h1>
+  <p class="lede">A vision without a quarter-by-quarter plan is a wish. This is the finalisation checklist, four 90-day plans to Q3 2027, the funding discipline that pays for it, and the scorecards that keep you — and the team — honest every single week.</p>
+  <div class="sig">Companion to <a href="/workflows/build-out-blueprint.html">the Build-Out Blueprint</a> · Goal: a solid 12 clients by Q3 2027 · Reviewed quarterly</div>
+  <div class="counsel" style="margin-top:22px">
+    <div class="h">The insight that shapes this plan</div>
+    <p>Demand is not your constraint — <b>capacity is.</b> You're already holding back on leads you could close, because you can't yet service them to standard. So this is a <b>capacity-led plan</b>: hire the right people, and the button you press is the pipeline you're already sitting on. Every hire directly unlocks revenue that's waiting.</p>
+  </div>
+  <div class="toc">
+    <a href="#finalise">1 · Finalise</a>
+    <a href="#sequence">2 · Sequence</a>
+    <a href="#plans">3 · The four quarters</a>
+    <a href="#funding">4 · Funding</a>
+    <a href="#scorecard">5 · Scorecards</a>
+    <a href="#rhythm">6 · Rhythm</a>
+  </div>
+
+  <!-- FINALISE -->
+  <section class="sect" id="finalise">
+    <h2>1 · What you need to finalise the blueprint</h2>
+    <p class="sub">Five buckets. Tick these off and the blueprint stops being a document and becomes a business you're running. Most are one decision or one afternoon.</p>
+    <div class="check">
+      <div class="grp">
+        <h3><span class="dot"></span>Decisions (only you)</h3>
+        <ul>
+          <li><b>Lock the three tier prices.</b> <span class="m">Confirm Foundation / Momentum / Authority exact numbers.</span></li>
+          <li><b>Confirm your own package.</b> <span class="m">The draw the model pays you (A$200k assumed).</span></li>
+          <li><b>Partner/equity path — yes or no.</b> <span class="m">Decide the principle now; detail later.</span></li>
+          <li><b>Set the 12-month target.</b> <span class="m">Locked: a solid 12 clients by Q3 2027.</span></li>
+        </ul>
+      </div>
+      <div class="grp">
+        <h3><span class="dot"></span>Money &amp; funding</h3>
+        <ul>
+          <li><b>Know your baseline.</b> <span class="m">Current MRR, cash on hand, runway.</span></li>
+          <li><b>Set the cash buffer rule.</b> <span class="m">~3 months of a new hire's cost in reserve before each hire.</span></li>
+          <li><b>Bookkeeping + monthly P&amp;L.</b> <span class="m">So the scorecard has real numbers.</span></li>
+          <li><b>Quarterly billing live.</b> <span class="m">Move all clients onto calendar-quarter invoicing.</span></li>
+        </ul>
+      </div>
+      <div class="grp">
+        <h3><span class="dot"></span>Foundations &amp; systems</h3>
+        <ul>
+          <li><b>MSA / contract template.</b> <span class="m">Scope, deliverables, renewal dates baked in.</span></li>
+          <li><b>Coverage database live.</b> <span class="m">Central, client-accessible, always current.</span></li>
+          <li><b>Prompt library — named owner + version control.</b> <span class="m">Your IP; protect it.</span></li>
+          <li><b>PI insurance + entity/ops housekeeping.</b></li>
+        </ul>
+      </div>
+      <div class="grp">
+        <h3><span class="dot"></span>People</h3>
+        <ul>
+          <li><b>Senior Lead #1 brief + search.</b> <span class="m">Your first delivery hire — start now.</span></li>
+          <li><b>Full-time admin.</b> <span class="m">The operational spine while you stay in the engine longer.</span></li>
+          <li><b>Fractional bookkeeper / ops support.</b> <span class="m">Covers finance until the Integrator lands.</span></li>
+          <li><b>Integrator spec ready.</b> <span class="m">Search opens once leads are embedded.</span></li>
+        </ul>
+      </div>
+      <div class="grp">
+        <h3><span class="dot"></span>Brand engine (top of funnel)</h3>
+        <ul>
+          <li><b>New website.</b> <span class="m">The brand-engine home — buildable with Claude Code.</span></li>
+          <li><b>Content cadence committed.</b> <span class="m">Weekly LinkedIn + long-form; non-negotiable.</span></li>
+          <li><b>Workshop calendar.</b> <span class="m">EO/YPO sessions booked out a quarter ahead.</span></li>
+          <li><b>Pipeline tracker.</b> <span class="m">Every lead from every room, followed up.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- SEQUENCE -->
+  <section class="sect" id="sequence">
+    <h2>2 · Your hiring sequence</h2>
+    <p class="sub">You've chosen to embed 1–2 senior leads first, then bring the Integrator in — funded properly, and picked carefully. That's the right instinct for control and cash. Here's the sequence, and the one risk we're managing around it.</p>
+    <div class="seq">
+      <div class="step"><div class="n">STEP 1 · Q4–Q1</div><h4>Senior Leads #1–2</h4><p>Embed, work closely, hand over delivery.</p></div>
+      <div class="arw">→</div>
+      <div class="step"><div class="n">STEP 2 · Q2</div><h4>The Integrator</h4><p>Funded by real revenue. Chosen, not rushed.</p></div>
+      <div class="arw">→</div>
+      <div class="step"><div class="n">STEP 3 · Q3</div><h4>Consolidate &amp; step back</h4><p>Lock in a solid 12; founder out of the engine room.</p></div>
+    </div>
+    <div class="counsel">
+      <div class="h">⚠ The risk we're managing</div>
+      <p>Leads-first means <b>you stay the operator longer</b> — invoicing, capacity, rhythm all still land on you until Q2. We offset it three ways: a <b>full-time admin</b> and a <b>fractional bookkeeper</b> carry the load, and you run a disciplined weekly rhythm from day one so the habits are built before the Integrator inherits them. If ops start eating your selling time before Q2, that's the signal to pull the Integrator forward.</p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- THE FOUR QUARTERS -->
+  <section class="sect" id="plans">
+    <h2>3 · The four 90-day plans</h2>
+    <p class="sub">Calendar quarters, 3–5 Rocks each. A Rock is a must-hit priority for the quarter — owned by one person, done or not done. Targets are run-rate at quarter end.</p>
+
+    <div class="quarter">
+      <div class="qhead"><span class="q">Q4 2026</span><span class="th">Systematise &amp; first senior lead</span><span class="dates">Oct–Dec 2026</span></div>
+      <div class="qbody">
+        <div class="qmeta">
+          <span class="chip hire">Hire: Senior Lead #1 + full-time admin</span>
+          <span class="chip tgt">Target: ~7 clients · ~A$77k MRR</span>
+          <span class="chip mile">Milestone: no longer the only deliverer</span>
+        </div>
+        <ul class="rocks">
+          <li><span class="rk">Lock the 3 tiers &amp; pricing; move every client to quarterly billing</span><span class="own">Founder</span></li>
+          <li><span class="rk">Hire &amp; embed Senior Lead #1; hand over 3–4 accounts</span><span class="own">Founder</span></li>
+          <li><span class="rk">Stand up systems: coverage DB, prompt-library owner, MSA template</span><span class="own">Founder + Admin</span></li>
+          <li><span class="rk">Launch new website + commit the weekly brand-engine cadence</span><span class="own">Founder + Claude Code</span></li>
+          <li><span class="rk">Funding foundation: 3-month buffer, bookkeeping, live forecast</span><span class="own">Founder + bookkeeper</span></li>
+        </ul>
+        <div class="fund"><b>Funding note:</b> hire Lead #1 only with 2–3 accounts ready to hand over, so they ramp fast — not idle.</div>
+      </div>
+    </div>
+
+    <div class="quarter">
+      <div class="qhead"><span class="q">Q1 2027</span><span class="th">Second lead + the AI producer</span><span class="dates">Jan–Mar 2027</span></div>
+      <div class="qbody">
+        <div class="qmeta">
+          <span class="chip hire">Hire: Senior Lead #2 + Strategy Associate</span>
+          <span class="chip tgt">Target: ~9 clients · ~A$99k MRR</span>
+          <span class="chip mile">Milestone: the bench is running</span>
+        </div>
+        <ul class="rocks">
+          <li><span class="rk">Hire &amp; embed Senior Lead #2</span><span class="own">Founder</span></li>
+          <li><span class="rk">Hire first Strategy Associate / AI Producer to run the bench across leads</span><span class="own">Founder</span></li>
+          <li><span class="rk">Formalise the 90-day client planning process + quarterly value scorecard</span><span class="own">Leads</span></li>
+          <li><span class="rk">Brand engine relentless: workshops booked a quarter ahead, weekly content live</span><span class="own">Founder</span></li>
+          <li><span class="rk">Finalise Integrator spec &amp; open the search</span><span class="own">Founder</span></li>
+        </ul>
+        <div class="fund"><b>Funding note:</b> two leads now carry delivery — this is the revenue that funds the Integrator properly in Q2.</div>
+      </div>
+    </div>
+
+    <div class="quarter">
+      <div class="qhead"><span class="q">Q2 2027</span><span class="th">Bring in the Integrator</span><span class="dates">Apr–Jun 2027</span></div>
+      <div class="qbody">
+        <div class="qmeta">
+          <span class="chip hire">Hire: The Integrator (fractional → embedding)</span>
+          <span class="chip tgt">Target: ~11 clients · ~A$121k MRR</span>
+          <span class="chip mile">Milestone: founder exits delivery</span>
+        </div>
+        <ul class="rocks">
+          <li><span class="rk">Hire the Integrator; hand over ops, finance &amp; the weekly rhythm</span><span class="own">Founder</span></li>
+          <li><span class="rk">Founder fully out of day-to-day delivery — back on brand + sales</span><span class="own">Founder + Integrator</span></li>
+          <li><span class="rk">Launch the partner / equity path for top leads</span><span class="own">Founder</span></li>
+          <li><span class="rk">NRR focus: tier-upgrade &amp; expansion plays into existing accounts</span><span class="own">Leads</span></li>
+          <li><span class="rk">Open the Senior Lead #3 pipeline</span><span class="own">Integrator</span></li>
+        </ul>
+        <div class="fund"><b>Funding note:</b> start the Integrator fractional to de-risk; convert to full-time as Q3 revenue confirms.</div>
+      </div>
+    </div>
+
+    <div class="quarter">
+      <div class="qhead"><span class="q">Q3 2027</span><span class="th">Lock in a solid 12 &amp; run the machine</span><span class="dates">Jul–Sep 2027</span></div>
+      <div class="qbody">
+        <div class="qmeta">
+          <span class="chip hire">Consolidate team; open Lead #3 pipeline for FY28</span>
+          <span class="chip tgt">Target: 12 clients · ~A$132k MRR (~A$1.6M run-rate)</span>
+          <span class="chip mile">Milestone: founder-independent delivery</span>
+        </div>
+        <ul class="rocks">
+          <li><span class="rk">Lock in a solid 12 retainer clients, delivered to standard</span><span class="own">Founder + Integrator</span></li>
+          <li><span class="rk">Integrator runs the full L10 + scorecard unaided</span><span class="own">Integrator</span></li>
+          <li><span class="rk">Balance capacity by load points across the two leads + associate</span><span class="own">Integrator</span></li>
+          <li><span class="rk">Annual reports + in-person client visits cycle complete</span><span class="own">Leads</span></li>
+          <li><span class="rk">12-month review + set the FY28 vision &amp; Rocks (incl. Lead #3)</span><span class="own">Founder</span></li>
+        </ul>
+        <div class="fund"><b>Funding note:</b> at 12 clients the firm is comfortably self-funding — reinvest the surplus into people, IP, and the next growth wave.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- FUNDING -->
+  <section class="sect" id="funding">
+    <h2>4 · How to fund it properly</h2>
+    <p class="sub">You said it yourself — fund it properly. Here's the discipline that means you never over-extend and never need outside capital.</p>
+    <div class="counsel">
+      <div class="h">The three funding rules</div>
+      <p><b>1 · Cash buffer before every hire.</b> Keep ~3 months of a new person's fully-loaded cost in reserve before their start date. That covers the ramp gap between hiring them and their seats filling.</p>
+      <p><b>2 · Hire into demand, never hope.</b> A senior lead only starts when 2–3 accounts are ready to hand over. An idle senior is the most expensive mistake in this model.</p>
+      <p><b>3 · Pay yourself, then measure profit.</b> Your A$200k package is a cost, not the leftovers. EBITDA is what's left after — that's the honest number, and it's what funds the next hire.</p>
+    </div>
+    <p class="fnote">Model every hire's timing in the <a href="/workflows/build-out-blueprint.html" style="color:var(--accent);font-weight:600;text-decoration:none;">financial model</a> before you commit to it. If the buffer isn't there, the hire waits.</p>
+  </section>
+
+  <hr class="rule">
+
+  <!-- SCORECARDS -->
+  <section class="sect" id="scorecard">
+    <h2>5 · The scorecards</h2>
+    <p class="sub">What gets measured gets done. Reviewed at the top of every weekly meeting — target vs actual, green or red, no story required. The live tracker is the companion spreadsheet; the numbers below are what it holds.</p>
+
+    <p class="kicker" style="margin-top:24px">Founder scorecard — the numbers only you drive</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Number</th><th>Weekly goal (illustrative)</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td><b>New pipeline value added</b></td><td>≥ A$30k</td><td>Future MRR. Your #1 job.</td></tr>
+          <tr><td><b>Sales conversations held</b></td><td>≥ 5</td><td>The activity behind the pipeline.</td></tr>
+          <tr><td><b>Workshops / talks delivered or booked</b></td><td>≥ 1</td><td>Paid top-of-funnel.</td></tr>
+          <tr><td><b>Content published</b></td><td>≥ 3 posts + 1 long-form/mo</td><td>The brand engine, relentless.</td></tr>
+          <tr><td><b>Proposals out</b></td><td>≥ 2</td><td>Converts pipeline to revenue.</td></tr>
+          <tr><td><b>Hours in delivery ops</b></td><td>↓ trending to zero</td><td>The bottleneck you're escaping.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="kicker" style="margin-top:28px">Company scorecard — owned by you now, the Integrator later</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Number</th><th>Cadence</th><th>Healthy</th></tr></thead>
+        <tbody>
+          <tr><td><b>Recurring revenue (MRR)</b></td><td>Weekly</td><td>Growing to A$132k+</td></tr>
+          <tr><td><b>New pipeline value</b></td><td>Weekly</td><td>≥ 3× next hire's cost</td></tr>
+          <tr><td><b>Net revenue retention</b></td><td>Monthly</td><td>> 100%</td></tr>
+          <tr><td><b>Client health (R/A/G)</b></td><td>Weekly</td><td>All green/amber</td></tr>
+          <tr><td><b>Utilisation (load pts/lead)</b></td><td>Weekly</td><td>≤ 6.0</td></tr>
+          <tr><td><b>Gross margin %</b></td><td>Monthly</td><td>55–65%</td></tr>
+          <tr><td><b>Cash buffer (months)</b></td><td>Weekly</td><td>≥ 3</td></tr>
+          <tr><td><b>Rocks on track</b></td><td>Weekly</td><td>100%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="kicker" style="margin-top:28px">Team scorecard — one number that defines each role</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Role</th><th>Primary number</th><th>Also tracked</th></tr></thead>
+        <tbody>
+          <tr><td><b>Senior Account Lead</b></td><td>Client health (R/A/G) + retention</td><td>Load points, quality bar, EOW notes sent</td></tr>
+          <tr><td><b>Strategy Associate / AI Producer</b></td><td>Drafts delivered on time &amp; on standard</td><td>Bench turnaround, fact-check pass rate</td></tr>
+          <tr><td><b>Administrative Assistant</b></td><td>Coverage logged + reports out on time</td><td>Workflow hygiene, DB accuracy</td></tr>
+          <tr><td><b>Integrator (from Q2)</b></td><td>Firm on-rhythm &amp; on-plan</td><td>The whole company scorecard</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fnote">The companion tracker holds all three scorecards plus a 13-week grid and the quarterly Rocks — fill target vs actual each week and it tells you at a glance where the firm is drifting.</p>
+  </section>
+
+  <hr class="rule">
+
+  <!-- RHYTHM -->
+  <section class="sect" id="rhythm">
+    <h2>6 · The accountability rhythm</h2>
+    <p class="sub">The plan only works if it's reviewed. Three loops keep you honest.</p>
+    <div class="cad">
+      <div class="cadcard">
+        <div class="when">WEEKLY · 90 min</div>
+        <h3>Leadership L10</h3>
+        <ul>
+          <li>Scorecard first — target vs actual</li>
+          <li>Rock status</li>
+          <li>Client health R/A/G</li>
+          <li>Issues solved, not discussed</li>
+        </ul>
+      </div>
+      <div class="cadcard">
+        <div class="when">MONTHLY · 60 min</div>
+        <h3>Founder review</h3>
+        <ul>
+          <li>P&amp;L + cash buffer check</li>
+          <li>Pipeline &amp; brand-engine health</li>
+          <li>Are we on the quarter's target?</li>
+          <li>Next hire trigger — hit or not?</li>
+        </ul>
+      </div>
+      <div class="cadcard">
+        <div class="when">QUARTERLY · half day</div>
+        <h3>Rock reset</h3>
+        <ul>
+          <li>Score the quarter's Rocks</li>
+          <li>Client quarterly reports out</li>
+          <li>Set next quarter's 3–5 Rocks</li>
+          <li>Re-forecast the model</li>
+        </ul>
+      </div>
+    </div>
+    <div class="counsel">
+      <div class="h">Keep yourself accountable</div>
+      <p>Put the weekly L10 and the quarterly reset in the calendar for the next 12 months <em>today</em> — recurring, non-negotiable, before anything else fills the slots. A plan in a drawer changes nothing. A plan reviewed every Monday changes everything.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>The PR Hub — 12-month accountability plan.</span>
+    <span>Goal: a solid 12 clients by Q3 2027 · Reviewed quarterly.</span>
+  </footer>
+
+</div>
+</body>
+</html>

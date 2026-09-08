@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="The PR Hub 3-year roadmap — from founder-run to a A$8M, 45% net-profit firm that runs without the founder in the day-to-day.">
+<title>The 3-Year Roadmap</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#FBFAF8; --surface:#FFFFFF; --surface-2:#F5F4F0;
+    --ink:#20242E; --muted:#5A6172; --faint:#8A909E;
+    --line:#E6E3DC; --line-strong:#D6D2C8;
+    --accent:#0E7A6E; --accent-soft:#E4F1EF; --accent-ring:#BFE0DA; --accent-ink:#0A5E55;
+    --gold:#B4791C; --gold-soft:#F6ECDA; --gold-ring:#E4CFA6;
+    --shadow:0 1px 2px rgba(32,36,46,.05),0 10px 30px -14px rgba(32,36,46,.22);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+      --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+      --line:#2B2F3A; --line-strong:#363B48;
+      --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35); --accent-ink:#8CE8DC;
+      --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+    --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+    --line:#2B2F3A; --line-strong:#363B48;
+    --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35); --accent-ink:#8CE8DC;
+    --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1060px; margin:0 auto; padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px) 90px;}
+  .eyebrow{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700;}
+  h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(34px,6vw,60px);
+    line-height:1.0; letter-spacing:-.025em; margin:.28em 0 .32em; text-wrap:balance;}
+  .lede{color:var(--muted); font-size:clamp(16px,1.7vw,19px); max-width:64ch; margin:0 0 6px;}
+  .sig{margin-top:16px; font-size:13.5px; color:var(--faint);}
+  .sig a{color:var(--accent); font-weight:600; text-decoration:none;}
+  h2{font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(22px,3.4vw,30px); font-weight:800;
+    letter-spacing:-.015em; margin:0 0 4px; text-wrap:balance;}
+  .sect{margin-top:clamp(44px,6vw,72px);}
+  .kicker{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:0 0 14px;}
+  .sub{color:var(--muted); max-width:66ch; margin:2px 0 22px; font-size:15.5px;}
+  p{margin:0 0 16px;}
+  hr.rule{border:0; border-top:1px solid var(--line); margin:0;}
+
+  /* destination */
+  .dest{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  @media (max-width:680px){ .dest{grid-template-columns:1fr;} }
+  .goal{background:var(--ink); color:var(--paper); border-radius:18px; padding:26px 24px; box-shadow:var(--shadow);}
+  .goal .v{font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(34px,5vw,46px); font-weight:800; line-height:1; letter-spacing:-.02em; color:var(--accent-ink);}
+  .goal .l{font-size:14px; color:#B9C0CC; margin-top:10px; line-height:1.4;}
+
+  /* three shifts */
+  .shifts{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  @media (max-width:760px){ .shifts{grid-template-columns:1fr;} }
+  .shift{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px 22px; box-shadow:var(--shadow);}
+  .shift .n{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-weight:600;}
+  .shift h3{font-family:"Bricolage Grotesque",sans-serif; font-size:17px; font-weight:800; margin:8px 0 8px; letter-spacing:-.01em;}
+  .shift .fromto{font-size:13px; color:var(--muted);}
+  .shift .fromto b{color:var(--ink);}
+  .shift .arrow{color:var(--accent); font-weight:700; margin:0 6px;}
+
+  /* financial staircase */
+  .stair{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; align-items:end;}
+  @media (max-width:680px){ .stair{grid-template-columns:repeat(2,1fr);} }
+  .step{background:var(--surface); border:1px solid var(--line); border-radius:14px 14px 0 0; box-shadow:var(--shadow); padding:16px 16px 18px; border-bottom:3px solid var(--accent); display:flex; flex-direction:column; justify-content:flex-end;}
+  .step .bar{background:linear-gradient(180deg,var(--accent-soft),transparent); border-radius:10px; margin-bottom:14px;}
+  .step .yr{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--faint); font-weight:600;}
+  .step .rev{font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(22px,3vw,30px); font-weight:800; letter-spacing:-.02em; line-height:1; margin:4px 0 2px;}
+  .step .net{font-size:12.5px; color:var(--accent); font-weight:700;}
+  .step .cl{font-size:12px; color:var(--muted); margin-top:6px;}
+
+  /* org evolution */
+  .orggrid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  @media (max-width:860px){ .orggrid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .orggrid{grid-template-columns:1fr;} }
+  .orgcol{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; box-shadow:var(--shadow);}
+  .orgcol .ph{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent); font-weight:600;}
+  .orgcol h4{font-family:"Bricolage Grotesque",sans-serif; font-size:15px; font-weight:800; margin:4px 0 12px;}
+  .lyr{border:1px solid var(--line); border-radius:9px; padding:8px 10px; margin-bottom:7px; font-size:12px; text-align:center; background:var(--surface-2);}
+  .lyr.you{background:var(--accent-soft); border-color:var(--accent-ring); color:var(--accent-ink); font-weight:700;}
+  .lyr.integ{background:var(--gold-soft); border-color:var(--gold-ring); color:var(--gold); font-weight:600;}
+  .lyr .role{font-weight:700; display:block; font-size:12px;}
+  .lyr .cnt{font-size:10.5px; color:var(--muted);}
+  .orgcol .founder-role{margin-top:10px; font-size:11.5px; color:var(--muted); border-top:1px dashed var(--line); padding-top:8px;}
+  .orgcol .founder-role b{color:var(--ink);}
+
+  /* margin engine */
+  .engine{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:680px){ .engine{grid-template-columns:1fr;} }
+  .ecard{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px; box-shadow:var(--shadow);}
+  .ecard h3{font-family:"Bricolage Grotesque",sans-serif; font-size:17px; font-weight:800; margin:0 0 12px;}
+  .ecard .row{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--line); font-size:13.5px;}
+  .ecard .row:last-child{border-bottom:0;}
+  .ecard .row .k{color:var(--muted);} .ecard .row .v{font-family:"IBM Plex Mono",monospace; font-weight:600;}
+  .ecard .row.tot{border-top:2px solid var(--line-strong); margin-top:6px; padding-top:10px; border-bottom:0;}
+  .ecard .row.tot .k{font-weight:700; color:var(--ink);} .ecard .row.tot .v{color:var(--accent); font-weight:700;}
+
+  .counsel{border:1px solid var(--gold-ring); background:var(--gold-soft); border-radius:14px; padding:20px 22px; margin:18px 0;}
+  .counsel .h{display:flex; align-items:center; gap:9px; font-family:"Bricolage Grotesque",sans-serif; font-weight:800;
+    font-size:15px; color:var(--gold); letter-spacing:.01em; margin-bottom:8px;}
+  .counsel p{margin:0 0 10px; font-size:14.5px; color:var(--ink);}
+  .counsel p:last-child{margin-bottom:0;}
+  .counsel .who{font-size:12px; color:var(--gold); font-weight:700; margin-top:6px;}
+
+  blockquote{margin:24px 0; padding:4px 0 4px 22px; border-left:3px solid var(--accent);
+    font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(18px,2.6vw,23px); font-weight:500; letter-spacing:-.01em; line-height:1.4; color:var(--ink);}
+  blockquote cite{display:block; font-family:"IBM Plex Sans"; font-style:normal; font-size:13px; font-weight:600; color:var(--faint); margin-top:12px; letter-spacing:.02em;}
+
+  footer{margin-top:64px; padding-top:20px; border-top:1px solid var(--line);
+    font-size:12px; color:var(--faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  a.back{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--accent); text-decoration:none; margin-bottom:8px;}
+  .fnote{font-size:12.5px; color:var(--faint); margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="/workflows/hub.html">← Workflows Hub</a>
+  <div class="eyebrow">The PR Hub · 3-Year Roadmap</div>
+  <h1>From founder-run to founder-led</h1>
+  <p class="lede">The destination is not a bigger job for you. It's a business worth A$8M that runs without you in the engine room — where you are the face, the founder, and the strategic head, but not the one doing the day-to-day. Here's how the structure evolves to get there.</p>
+  <div class="sig">Companion to <a href="/workflows/build-out-blueprint.html">the Build-Out Blueprint</a> &amp; <a href="/workflows/accountability-plan.html">the 12-Month Plan</a> · Horizon: 3 years (to ~2029)</div>
+
+  <!-- DESTINATION -->
+  <section class="sect">
+    <p class="kicker">The destination · Year 3</p>
+    <div class="dest">
+      <div class="goal"><div class="v">A$8M</div><div class="l">Minimum annual turnover — a real firm, not a big freelancer.</div></div>
+      <div class="goal"><div class="v">45%</div><div class="l">Net profit margin — extraordinary for services, only possible with the AI-leveraged model.</div></div>
+      <div class="goal"><div class="v">0 days</div><div class="l">Founder in day-to-day execution. You lead and represent; you don't run the floor.</div></div>
+    </div>
+  </section>
+
+  <!-- THREE SHIFTS -->
+  <section class="sect">
+    <h2>Three shifts that get you there</h2>
+    <p class="sub">A$8M at 45% net with you out of the day-to-day isn't one big leap — it's three deliberate shifts, made in order.</p>
+    <div class="shifts">
+      <div class="shift">
+        <div class="n">SHIFT 01</div>
+        <h3>You: doer → leader → face</h3>
+        <p class="fromto"><b>Delivering the work</b> <span class="arrow">→</span> <b>leading the people</b> <span class="arrow">→</span> <b>being the brand &amp; the strategy.</b> Each year you hand one layer down.</p>
+      </div>
+      <div class="shift">
+        <div class="n">SHIFT 02</div>
+        <h3>Labour → leverage</h3>
+        <p class="fromto"><b>People doing everything</b> <span class="arrow">→</span> <b>senior people directing an AI bench.</b> This is what makes 45% net possible where rivals sit at 15%.</p>
+      </div>
+      <div class="shift">
+        <div class="n">SHIFT 03</div>
+        <h3>Practice → asset</h3>
+        <p class="fromto"><b>A firm that needs you</b> <span class="arrow">→</span> <b>a firm that owns its IP, its clients &amp; its rhythm.</b> Founder-independent, and therefore valuable.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- FINANCIAL STAIRCASE -->
+  <section class="sect">
+    <h2>The financial staircase</h2>
+    <p class="sub">Turnover climbs as capacity is added; net margin climbs as the AI leverage and the operating discipline mature. Illustrative AUD — the shape is the point.</p>
+    <div class="stair">
+      <div class="step"><div class="bar" style="height:26px;"></div><div class="yr">NOW</div><div class="rev">~A$0.7M</div><div class="net">net ~20%</div><div class="cl">~5 clients · founder doing it all</div></div>
+      <div class="step"><div class="bar" style="height:60px;"></div><div class="yr">YEAR 1</div><div class="rev">~A$1.6M</div><div class="net">net ~28%</div><div class="cl">12 clients · 2 leads · founder leading</div></div>
+      <div class="step"><div class="bar" style="height:120px;"></div><div class="yr">YEAR 2</div><div class="rev">~A$4M</div><div class="net">net ~38%</div><div class="cl">~26 clients · 5 leads · Integrator in</div></div>
+      <div class="step"><div class="bar" style="height:200px;"></div><div class="yr">YEAR 3</div><div class="rev">A$8M</div><div class="net">net 45%</div><div class="cl">~45 clients · 8 leads · founder is the face</div></div>
+    </div>
+    <p class="fnote">Year 3 revenue mix: ~A$6.5M retainers (≈45 clients at premium tiers) + ~A$0.8M workshops/speaking + ~A$0.7M earned-media projects &amp; other = A$8M.</p>
+  </section>
+
+  <!-- ORG EVOLUTION -->
+  <section class="sect">
+    <h2>How the structure evolves</h2>
+    <p class="sub">Watch where <span style="color:var(--accent-ink);font-weight:700;">you</span> sit each year — moving up and out of delivery as each layer below you matures.</p>
+    <div class="orggrid">
+
+      <div class="orgcol">
+        <div class="ph">NOW</div>
+        <h4>Founder-run</h4>
+        <div class="lyr you"><span class="role">You</span><span class="cnt">sell + deliver + run everything</span></div>
+        <div class="lyr">AI bench<span class="cnt"> + admin/VA</span></div>
+        <div class="founder-role">Your role: <b>everything</b>. The bottleneck.</div>
+      </div>
+
+      <div class="orgcol">
+        <div class="ph">YEAR 1</div>
+        <h4>Founder-led delivery</h4>
+        <div class="lyr you"><span class="role">You</span><span class="cnt">sell + counsel + lead the leads</span></div>
+        <div class="lyr"><span class="role">Senior Leads ×2</span><span class="cnt">own client delivery</span></div>
+        <div class="lyr integ"><span class="role">+ Associate</span><span class="cnt">runs AI bench</span></div>
+        <div class="lyr"><span class="role">Admin</span><span class="cnt">ops spine</span></div>
+        <div class="founder-role">Your role: <b>player-coach</b>. Report line for the leads.</div>
+      </div>
+
+      <div class="orgcol">
+        <div class="ph">YEAR 2</div>
+        <h4>Integrator runs it</h4>
+        <div class="lyr you"><span class="role">You</span><span class="cnt">face + strategy + BD</span></div>
+        <div class="lyr integ"><span class="role">Integrator / COO</span><span class="cnt">runs the day-to-day</span></div>
+        <div class="lyr"><span class="role">Senior Leads ×5</span><span class="cnt">+ associates ×2</span></div>
+        <div class="lyr"><span class="role">Ops team ×2</span></div>
+        <div class="founder-role">Your role: <b>out of delivery</b>. On the business.</div>
+      </div>
+
+      <div class="orgcol">
+        <div class="ph">YEAR 3</div>
+        <h4>Founder-led firm</h4>
+        <div class="lyr you"><span class="role">You — Founder &amp; Face</span><span class="cnt">brand, vision, key relationships</span></div>
+        <div class="lyr integ"><span class="role">Integrator / MD</span><span class="cnt">runs the firm</span></div>
+        <div class="lyr"><span class="role">Account Directors ×2</span><span class="cnt">lead the leads</span></div>
+        <div class="lyr"><span class="role">Senior Leads ×8 + Assoc ×4</span></div>
+        <div class="lyr"><span class="role">Ops / BD team ×3</span></div>
+        <div class="founder-role">Your role: <b>the face &amp; strategic head</b>. Not the floor.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- THE MARGIN ENGINE -->
+  <section class="sect">
+    <h2>What has to be true for 45% net</h2>
+    <p class="sub">45% net profit is the whole game — and it's rare. Traditional agencies never get near it because payroll eats 55–60% of revenue. Your one structural advantage makes it possible: <b>keep payroll under ~45% of revenue by letting AI carry the junior load.</b></p>
+    <div class="engine">
+      <div class="ecard">
+        <h3>The typical agency</h3>
+        <div class="row"><span class="k">Payroll (pyramid of juniors)</span><span class="v">55–60%</span></div>
+        <div class="row"><span class="k">Overheads &amp; delivery</span><span class="v">20–25%</span></div>
+        <div class="row tot"><span class="k">Net profit</span><span class="v">10–18%</span></div>
+      </div>
+      <div class="ecard">
+        <h3>The PR Hub at Year 3</h3>
+        <div class="row"><span class="k">Payroll (senior + AI bench)</span><span class="v">~43%</span></div>
+        <div class="row"><span class="k">Overheads, tools &amp; delivery</span><span class="v">~12%</span></div>
+        <div class="row tot"><span class="k">Net profit</span><span class="v">45%</span></div>
+      </div>
+    </div>
+    <div class="counsel">
+      <div class="h">The four levers that hold 45%</div>
+      <p><b>1 · Payroll ratio &le; 45%.</b> Every senior lead must carry enough revenue (via AI leverage) to keep this ratio. Watch it like a hawk.</p>
+      <p><b>2 · Price on value, raise every year.</b> Premium tiers climb A$11k → A$13–15k as authority compounds. Higher price, same cost = pure margin.</p>
+      <p><b>3 · The AI bench is the margin.</b> It's what lets 8 leads do the work of an agency of 40. Protect and reinvest in it as your #1 asset.</p>
+      <p><b>4 · No idle seniors, no scope creep.</b> Utilisation and disciplined scope are where services-firm margin quietly dies.</p>
+      <p class="who">— Chris Savage, advisory lens</p>
+    </div>
+  </section>
+
+  <blockquote>
+    A firm that needs its founder in the engine room is a job with staff. A firm that runs without you is an asset. The whole three years is the journey from one to the other.
+    <cite>The roadmap, in one sentence</cite>
+  </blockquote>
+
+  <footer>
+    <span>The PR Hub — 3-year roadmap.</span>
+    <span>Destination: A$8M · 45% net · founder-led, not founder-run.</span>
+  </footer>
+
+</div>
+</body>
+</html>
