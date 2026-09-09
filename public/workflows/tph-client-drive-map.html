@@ -116,6 +116,9 @@
   li.node.ph > .row .fname-node{color:var(--muted); font-style:italic;}
   li.node.ph > .row .ficon{opacity:.5;}
   .youname{font-family:"IBM Plex Sans"; font-style:normal; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--faint); border:1px dashed var(--line-strong); border-radius:20px; padding:1px 8px;}
+  .filetag{font-family:"IBM Plex Sans"; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); background:var(--surface-2); border:1px solid var(--line); border-radius:20px; padding:1px 8px;}
+  .ficon.fileic{opacity:.75;}
+  li.node.file > .row .fname-node{font-weight:400;}
 
   /* notes */
   .note{
@@ -188,9 +191,9 @@
     </div>
     <div class="lcard">
       <h3>File naming — always</h3>
-      <p>Date first, then client, then type: <span class="mono">DD-MM-YY_Client Name_Type</span>. Use the <b>actual month name</b> for month folders. Coloured notes below are non-negotiable.</p>
+      <p>Date first, then client, then type: <span class="mono">DD-MM-YY_Client Name_Type</span>. Meeting files are named by type + date. Use the <b>actual month name</b> for month folders. Coloured notes below are non-negotiable.</p>
       <div class="chipline">
-        <span class="tag-ex">08-09-26_Acme Co_WIP</span>
+        <span class="tag-ex">Meeting Transcript_09-09-26</span>
         <span class="tag-ex">08-09-26_Acme Co_Discovery</span>
       </div>
     </div>
@@ -250,7 +253,7 @@
 
 <script>
 // data model: {n:name, ph:placeholder?, note:{type,label,text}, kids:[]}
-const R = (n,opts={})=>({n, ph:opts.ph||n.trim().startsWith('['), note:opts.note||null, kids:opts.kids||[]});
+const R = (n,opts={})=>({n, ph:opts.ph||n.trim().startsWith('['), file:opts.file||false, note:opts.note||null, kids:opts.kids||[]});
 
 const shared = [
   R('AWARDS',{kids:[
@@ -295,8 +298,13 @@ const shared = [
   ]}),
   R('NOTES',{kids:[
     R('EOW UPDATES',{kids:[R('[MONTH]')]}),
-    R('MEETINGS',{note:{t:'rule',l:'Client WIP meetings',x:'The meeting <b>lead records the call</b> and forwards the transcript to <b>Shruti</b> to file here, under the month it happened.'},kids:[
-      R('[MONTH]',{note:{t:'rule',l:'File name',x:'Save as <span class="mono">DD-MM-YY_Client&nbsp;Name_WIP</span> — e.g. <span class="mono">08-09-26_Acme&nbsp;Co_WIP</span>.'}}),
+    R('MEETINGS',{note:{t:'rule',l:'Client WIP meetings',x:'The meeting <b>lead records the call</b>. <b>Shruti</b> files the transcript here; the account lead labels &amp; forwards the meeting notes. Filed by month, then by meeting date.'},kids:[
+      R('[MONTH]',{kids:[
+        R('[DATE — DD-MM]',{note:{t:'rule',l:'One folder per meeting',x:'A dated folder for each meeting (day-month, e.g. <span class="mono">09-09</span>). Holds the two files below.'},kids:[
+          R('Meeting Transcript_DD-MM-YY',{file:true}),
+          R('Meeting Notes_DD-MM-YY',{file:true}),
+        ]}),
+      ]}),
     ]}),
   ]}),
   R('QUARTERLY PLANS',{kids:[R('[NAME OF QUARTER — e.g. Q3 2026]')]}),
@@ -313,15 +321,17 @@ const internal = [
 ];
 
 const folderSVG = '<svg class="ficon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.2h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
+const fileSVG = '<svg class="ficon fileic" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>';
 const noteSVG = '<svg class="nicon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 15 8.5 22 9.3l-5 4.6L18.4 21 12 17.4 5.6 21 7 13.9l-5-4.6 7-0.8z"/></svg>';
 const flagSVG = '<svg class="nicon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4M4 4h13l-2 4 2 4H4"/></svg>';
 
 function esc(s){return s;}
 function renderNode(node){
   const li=document.createElement('li');
-  li.className='node'+(node.ph?' ph':'');
+  li.className='node'+(node.ph?' ph':'')+(node.file?' file':'');
   const row=document.createElement('div'); row.className='row';
-  row.innerHTML = folderSVG + '<span class="fname-node">'+esc(node.n)+'</span>' + (node.ph?'<span class="youname">you name it</span>':'');
+  const tag = node.ph ? '<span class="youname">you name it</span>' : (node.file ? '<span class="filetag">file</span>' : '');
+  row.innerHTML = (node.file?fileSVG:folderSVG) + '<span class="fname-node">'+esc(node.n)+'</span>' + tag;
   li.appendChild(row);
   if(node.note){
     const nt=document.createElement('div');
