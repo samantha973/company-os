@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="The PR Hub — the dual-track audition for a senior hire who could become the Integrator: prove execution first, probe the operating muscle alongside.">
+<title>The Integrator Audition</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#FBFAF8; --surface:#FFFFFF; --surface-2:#F5F4F0;
+    --ink:#20242E; --muted:#5A6172; --faint:#8A909E;
+    --line:#E6E3DC; --line-strong:#D6D2C8;
+    --accent:#0E7A6E; --accent-soft:#E4F1EF; --accent-ring:#BFE0DA; --accent-ink:#0A5E55;
+    --gold:#B4791C; --gold-soft:#F6ECDA; --gold-ring:#E4CFA6;
+    --stop:#B23B3B; --stop-soft:#F7E4E4;
+    --shadow:0 1px 2px rgba(32,36,46,.05),0 10px 30px -14px rgba(32,36,46,.22);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+      --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+      --line:#2B2F3A; --line-strong:#363B48;
+      --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35); --accent-ink:#8CE8DC;
+      --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+      --stop:#E07A7A; --stop-soft:rgba(224,122,122,.12);
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+    --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+    --line:#2B2F3A; --line-strong:#363B48;
+    --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35); --accent-ink:#8CE8DC;
+    --gold:#E7A94B; --gold-soft:rgba(231,169,75,.10); --gold-ring:rgba(231,169,75,.34);
+    --stop:#E07A7A; --stop-soft:rgba(224,122,122,.12);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:960px; margin:0 auto; padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px) 90px;}
+  .eyebrow{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700;}
+  h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(34px,6vw,58px);
+    line-height:1.0; letter-spacing:-.025em; margin:.28em 0 .32em; text-wrap:balance;}
+  .lede{color:var(--muted); font-size:clamp(16px,1.7vw,19px); max-width:64ch; margin:0 0 6px;}
+  .sig{margin-top:16px; font-size:13.5px; color:var(--faint);}
+  .sig a{color:var(--accent); font-weight:600; text-decoration:none;}
+  h2{font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(22px,3.4vw,30px); font-weight:800;
+    letter-spacing:-.015em; margin:0 0 4px; text-wrap:balance;}
+  .sect{margin-top:clamp(44px,6vw,72px);}
+  .kicker{font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); font-weight:700; margin:0 0 14px;}
+  .sub{color:var(--muted); max-width:66ch; margin:2px 0 22px; font-size:15.5px;}
+  p{margin:0 0 16px;}
+  .big{font-size:clamp(19px,2.4vw,25px); line-height:1.45; font-weight:500; color:var(--ink); max-width:34ch;
+    font-family:"Bricolage Grotesque",sans-serif; letter-spacing:-.01em;}
+  .big .hl{color:var(--accent);}
+  hr.rule{border:0; border-top:1px solid var(--line); margin:0;}
+
+  /* two tracks */
+  .tracks{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:640px){ .tracks{grid-template-columns:1fr;} }
+  .track{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:22px 24px; box-shadow:var(--shadow);}
+  .track.exec{border-top:3px solid var(--accent);}
+  .track.integ{border-top:3px solid var(--gold);}
+  .track .tag{font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:700;}
+  .track.exec .tag{color:var(--accent);} .track.integ .tag{color:var(--gold);}
+  .track h3{font-family:"Bricolage Grotesque",sans-serif; font-size:20px; font-weight:800; margin:8px 0 4px; letter-spacing:-.01em;}
+  .track .q{font-size:13px; color:var(--muted); font-style:italic; margin:0 0 14px;}
+  .track ul{margin:0; padding-left:18px; font-size:13.5px; color:var(--ink);}
+  .track ul li{margin-bottom:6px;}
+  .track .bar{margin-top:14px; padding-top:12px; border-top:1px dashed var(--line); font-size:12.5px; color:var(--muted);}
+  .track .bar b{color:var(--ink);}
+
+  /* signals */
+  .sig-list{display:grid; gap:12px;}
+  .signal{display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:start;
+    background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .signal .ic{width:38px; height:38px; border-radius:10px; background:var(--gold-soft); border:1px solid var(--gold-ring);
+    display:flex; align-items:center; justify-content:center; color:var(--gold); flex:none;}
+  .signal h4{font-family:"Bricolage Grotesque",sans-serif; font-size:16px; margin:0 0 3px; font-weight:800;}
+  .signal p{margin:0; font-size:13.5px; color:var(--muted);}
+  .signal .watch{margin-top:6px; font-size:12.5px; color:var(--ink);}
+  .signal .watch b{color:var(--gold);}
+
+  /* matrix */
+  .matrix{display:grid; grid-template-columns:120px 1fr 1fr; grid-auto-rows:auto; gap:0; border:1px solid var(--line);
+    border-radius:14px; overflow:hidden; box-shadow:var(--shadow); background:var(--surface);}
+  .matrix .cell{padding:16px; border-right:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .matrix .hd{background:var(--surface-2); font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; font-weight:700; color:var(--faint); text-align:center; display:flex; align-items:center; justify-content:center;}
+  .matrix .axis{background:var(--surface-2); font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; font-weight:700; color:var(--faint); writing-mode:vertical-rl; transform:rotate(180deg); text-align:center; display:flex; align-items:center; justify-content:center;}
+  .matrix .q h4{font-family:"Bricolage Grotesque",sans-serif; font-size:15px; margin:0 0 4px; font-weight:800;}
+  .matrix .q p{margin:0; font-size:12.5px; color:var(--muted);}
+  .matrix .win h4{color:var(--accent);}
+  .matrix .keep h4{color:var(--accent-ink);}
+  .matrix .not h4{color:var(--gold);}
+  .matrix .pass h4{color:var(--stop);}
+  .matrix .cell:nth-child(3n){border-right:0;}
+  @media (max-width:640px){ .matrix{grid-template-columns:1fr;} .matrix .axis{writing-mode:horizontal-tb; transform:none;} .matrix .cell{border-right:0;} }
+
+  /* gates */
+  .gates{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+  @media (max-width:720px){ .gates{grid-template-columns:1fr;} }
+  .gate{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px; box-shadow:var(--shadow);}
+  .gate .when{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent); font-weight:600;}
+  .gate h4{font-family:"Bricolage Grotesque",sans-serif; font-size:16px; margin:6px 0 8px; font-weight:800;}
+  .gate ul{margin:0; padding-left:18px; font-size:13px; color:var(--muted);}
+  .gate ul li{margin-bottom:5px;}
+
+  .counsel{border:1px solid var(--gold-ring); background:var(--gold-soft); border-radius:14px; padding:20px 22px; margin:18px 0;}
+  .counsel .h{display:flex; align-items:center; gap:9px; font-family:"Bricolage Grotesque",sans-serif; font-weight:800;
+    font-size:15px; color:var(--gold); letter-spacing:.01em; margin-bottom:8px;}
+  .counsel p{margin:0 0 10px; font-size:14.5px; color:var(--ink);}
+  .counsel p:last-child{margin-bottom:0;}
+  .counsel .who{font-size:12px; color:var(--gold); font-weight:700; margin-top:6px;}
+
+  .quote-say{background:var(--accent-soft); border:1px solid var(--accent-ring); border-radius:14px; padding:20px 22px; margin:18px 0;
+    font-family:"Bricolage Grotesque",sans-serif; font-size:clamp(16px,2vw,19px); font-weight:500; color:var(--ink); line-height:1.45;}
+  .quote-say .lab{font-family:"IBM Plex Sans"; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:8px;}
+
+  footer{margin-top:64px; padding-top:20px; border-top:1px solid var(--line);
+    font-size:12px; color:var(--faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  a.back{display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--accent); text-decoration:none; margin-bottom:8px;}
+  .fnote{font-size:12.5px; color:var(--faint); margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="/workflows/hiring-senior-leads.html">← Hiring Senior Leads</a>
+  <div class="eyebrow">The PR Hub · The Integrator Audition</div>
+  <h1>Could this hire become your Integrator?</h1>
+  <p class="lede">Maybe. But test into it — never drift into it. This is the dual-track audition for a senior hire who might grow into your right hand: prove they can run an account front-to-back, and probe — separately — whether they can run the firm. Two different bets. Win the first before you place the second.</p>
+  <div class="sig">Companion to <a href="/workflows/hiring-senior-leads.html">Hiring Senior Leads</a> &amp; <a href="/workflows/integrator-role.html">the Integrator spec</a>.</div>
+
+  <!-- THE ONE IDEA -->
+  <section class="sect">
+    <p class="kicker">The trap to avoid</p>
+    <p class="big">"She's brilliant at delivery" must never quietly become <span class="hl">"she'll make a great Integrator."</span></p>
+    <p class="sub">Running an account is <b>craft</b>. Running the firm is <b>operations</b>. Most brilliant executors have one muscle, not both — which is exactly why they end up back inside agencies rather than building their own. Test the two muscles separately, in order.</p>
+  </section>
+
+  <hr class="rule">
+
+  <!-- THE TWO TRACKS -->
+  <section class="sect">
+    <h2>Two tracks, run in parallel</h2>
+    <div class="tracks">
+      <div class="track exec">
+        <div class="tag">Track 1 · prove first</div>
+        <h3>Execution</h3>
+        <p class="q">Can she run an account front-to-back, to my standard?</p>
+        <ul>
+          <li>The five hiring tasks (90-day plan, newsjack, red pen, AI-leverage, hard client moment)</li>
+          <li>Then real accounts: is she green on her own book?</li>
+          <li>The quality bar is <em>yours</em> until she's earned it</li>
+        </ul>
+        <div class="bar"><b>The gate:</b> if she can't clear this, the Integrator question is moot. You can't have someone running delivery who can't do delivery.</div>
+      </div>
+      <div class="track integ">
+        <div class="tag">Track 2 · probe alongside</div>
+        <h3>The operating muscle</h3>
+        <p class="q">Can she run the firm — people, process, numbers, accountability?</p>
+        <ul>
+          <li>Watch the five signals below in everyday work</li>
+          <li>Give her a small slice of ops to run and see what happens</li>
+          <li>Different signals entirely from craft — don't conflate them</li>
+        </ul>
+        <div class="bar"><b>The gate:</b> "can't build a business" is fine (that's your job). "Can't run one operationally" is not. That's what you're testing.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE FIVE SIGNALS -->
+  <section class="sect">
+    <h2>The five Integrator signals</h2>
+    <p class="sub">You won't find these in the execution tasks — you find them in how she works over weeks. Watch for them deliberately.</p>
+    <div class="sig-list">
+      <div class="signal">
+        <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div>
+        <div>
+          <h4>1 · Systems instinct</h4>
+          <p>Does she turn "how we did this" into a repeatable process — or does it all live in her head?</p>
+          <p class="watch"><b>Test it:</b> ask her to document how she onboarded a client. Great = a reusable checklist others could follow.</p>
+        </div>
+      </div>
+      <div class="signal">
+        <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 4-5"/></svg></div>
+        <div>
+          <h4>2 · Financial comfort</h4>
+          <p>Can she read a P&amp;L and a capacity plan without flinching? Does she think in margin and utilisation?</p>
+          <p class="watch"><b>Test it:</b> walk her through the model. Great = she asks sharp questions about margin and load, not glazed silence.</p>
+        </div>
+      </div>
+      <div class="signal">
+        <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 16.5 7.1 18.2 8 12.7 4 8.8 9.5 8z"/></svg></div>
+        <div>
+          <h4>3 · Accountability spine</h4>
+          <p>Will she hold <em>another</em> senior person to a deadline — and have the hard conversation? This is the one most executors fail.</p>
+          <p class="watch"><b>Test it:</b> give her a peer coordination task. Great = she chases, sets expectations, and doesn't just do it herself to avoid friction.</p>
+        </div>
+      </div>
+      <div class="signal">
+        <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11a4 4 0 1 0-4-4"/><path d="M3 21a7 7 0 0 1 14 0"/></svg></div>
+        <div>
+          <h4>4 · Team temperament</h4>
+          <p>Does she light up making <em>others</em> excellent — or does she need to be the one doing the great work herself?</p>
+          <p class="watch"><b>Test it:</b> have her brief and review the associate's output. Great = she coaches and elevates, and takes pride in their win.</p>
+        </div>
+      </div>
+      <div class="signal">
+        <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <div>
+          <h4>5 · Runs the rhythm</h4>
+          <p>Does she run a tight, on-time meeting that ends in decisions — or let it sag into a chat?</p>
+          <p class="watch"><b>Test it:</b> hand her the weekly team check-in for a month. Great = agenda, scorecard first, issues closed, on time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- DECISION MATRIX -->
+  <section class="sect">
+    <h2>Where she lands — the decision</h2>
+    <p class="sub">Score the two tracks independently, then read the quadrant. Every outcome except one is a good outcome — which is exactly why the audition de-risks the bet.</p>
+    <div class="matrix">
+      <div class="cell hd"></div>
+      <div class="cell hd">Weak operating muscle</div>
+      <div class="cell hd">Strong operating muscle</div>
+
+      <div class="cell axis">Strong execution</div>
+      <div class="cell q keep">
+        <h4>Keep her as a star lead</h4>
+        <p>A superb Senior Account Lead. Don't force the ops role — you've still made a brilliant hire. Great outcome.</p>
+      </div>
+      <div class="cell q win">
+        <h4>Integrator track — earn it</h4>
+        <p>The prize. Frame the path, hand over ops in stages, and you may have solved your biggest structural problem.</p>
+      </div>
+
+      <div class="cell axis">Weak execution</div>
+      <div class="cell q pass">
+        <h4>Pass</h4>
+        <p>Can't do the work, can't run the firm. However lovely the history, this isn't the hire.</p>
+      </div>
+      <div class="cell q not">
+        <h4>Not yet — maybe later</h4>
+        <p>An operator who can't yet deliver. Possible pure-ops role down the track, but not leading client delivery now.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE STRUCTURE -->
+  <section class="sect">
+    <h2>How to structure it</h2>
+    <p class="sub">A designed audition, not a promise. She joins as a Senior Lead — that's the title and the deal today — with the Integrator path named openly as something to be earned.</p>
+    <div class="quote-say">
+      <div class="lab">Say this to her — plainly</div>
+      "I want to see you run accounts brilliantly first. If that's there, and you show me you can run people and process, there's a real path to you running the day-to-day of the firm with me. Earned, not given — and we'll both know within six months."
+    </div>
+    <div class="gates">
+      <div class="gate">
+        <div class="when">DAY 1</div>
+        <h4>Set the frame</h4>
+        <ul>
+          <li>Title: Senior Account Lead</li>
+          <li>Name the Integrator path honestly</li>
+          <li>Give her the model, tiers &amp; bench</li>
+          <li>Agree what you're both testing for</li>
+        </ul>
+      </div>
+      <div class="gate">
+        <div class="when">90 DAYS</div>
+        <h4>Execution gate</h4>
+        <ul>
+          <li>Is she green on her own accounts?</li>
+          <li>Clients happy? Quality at standard?</li>
+          <li>Any early Integrator signals showing?</li>
+          <li>If execution isn't there — she's a lead, not more</li>
+        </ul>
+      </div>
+      <div class="gate">
+        <div class="when">~6 MONTHS</div>
+        <h4>Integrator gate</h4>
+        <ul>
+          <li>Is she running <em>others</em> well?</li>
+          <li>Documenting process, holding the line?</li>
+          <li>Comfortable with the numbers &amp; rhythm?</li>
+          <li>If yes — put "Integrator" on the table</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE HISTORY -->
+  <section class="sect">
+    <div class="counsel">
+      <div class="h">On the history &amp; the loyalty</div>
+      <p>Nine years of wanting to work with you is real — it means trust, shared values, and someone who'll walk through walls for you. That's gold in a right hand. But it's also the thing that will make you generous when you should be objective.</p>
+      <p><b>Decide on evidence, not affection.</b> The kindest thing you can do for a friendship is not put a friend in a role they'll fail in. And name the real risk out loud: if you make her Integrator on hope and she turns out to be a craftsperson, not an operator, you lose twice — the function <em>and</em> the friend. The audition is exactly what prevents that.</p>
+      <p class="who">— Chris Savage, advisory lens</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>The PR Hub — the Integrator audition.</span>
+    <span>Test into it. Never drift into it.</span>
+  </footer>
+
+</div>
+</body>
+</html>
