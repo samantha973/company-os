@@ -274,16 +274,18 @@ const shared = [
     R('ATTENDING/HOSTING',{kids:[R('[NAME OF EVENT]')]}),
   ]}),
   R('IMAGERY',{kids:[
+    R('COMPANY',{kids:[R('HIGH RES'), R('LOW RES')]}),
+    R('LOGOS'),
+    R('PARTNERS'),
+    R('SOCIAL'),
     R('TALENT',{kids:[
       R('[TALENT NAME]',{note:{t:'rule',l:'File names',x:'Label files <span class="mono">Name_Company_Name_A</span>, <span class="mono">Name_Company_Name_B</span>, and so on.'},kids:[
         R('HIGH RES'), R('LOW RES'),
       ]}),
-      R('COMPANY',{kids:[R('HIGH RES'), R('LOW RES')]}),
     ]}),
     R('VIDEOS',{note:{t:'rule',l:'Sub-folders',x:'Create sub-folders as needed for easy identification.'},kids:[
       R('B-ROLL'), R('TALENT'), R('OTHER'),
     ]}),
-    R('SOCIALS'),
   ]}),
   R('LINKEDIN',{kids:[R('STRATEGY'), R('IMAGES')]}),
   R('MEDIA RELATIONS',{kids:[
@@ -313,12 +315,13 @@ const shared = [
 ];
 
 const internal = [
-  R('PITCHES',{kids:[R('HEADLINE/NEWS ANGLE')]}),
+  R('CLIENT CASE STUDIES'),
   R('DISCOVERY CALLS',{note:{t:'rule',l:'Team only',x:'Notes, <b>transcripts</b> and <b>AI analysis</b> for every call — kept internal, never in the client-facing SHARED folder.'},kids:[
     R('PRE ENGAGEMENT'), R('ONBOARDING'),
     R('ONGOING',{kids:[R('[MONTH]',{note:{t:'rule',l:'Naming',x:'Name this with the <b>actual month</b> (e.g. <span class="mono">MARCH</span>) so files are easy to source.'}})]}),
   ]}),
   R('MEDIA LISTS'),
+  R('PITCHES',{kids:[R('HEADLINE/NEWS ANGLE')]}),
 ];
 
 const folderSVG = '<svg class="ficon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.2h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
