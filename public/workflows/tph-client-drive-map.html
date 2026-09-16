@@ -277,7 +277,9 @@ const shared = [
     R('COMPANY',{kids:[R('HIGH RES'), R('LOW RES')]}),
     R('LOGOS'),
     R('PARTNERS'),
-    R('SOCIAL'),
+    R('SOCIAL',{kids:[
+      R('[MONTH]',{note:{t:'rule',l:'Who files it',x:'Whoever adds a social image creates a <b>subfolder for the month</b> and files it there.'}}),
+    ]}),
     R('TALENT',{kids:[
       R('[TALENT NAME]',{note:{t:'rule',l:'File names',x:'Label files <span class="mono">Name_Company_Name_A</span>, <span class="mono">Name_Company_Name_B</span>, and so on.'},kids:[
         R('HIGH RES'), R('LOW RES'),
@@ -315,7 +317,7 @@ const shared = [
 ];
 
 const internal = [
-  R('CLIENT CASE STUDIES'),
+  R('CLIENT CASE STUDIES',{note:{t:'rule',l:'What goes here',x:'The case-study work we produce <b>with clients</b>, filed here for use in <b>new business and testimonials</b>. Not the same as SHARED &gt; MEDIA RELATIONS &gt; CASE STUDIES, which is client-facing.'}}),
   R('DISCOVERY CALLS',{note:{t:'rule',l:'Team only',x:'Notes, <b>transcripts</b> and <b>AI analysis</b> for every call — kept internal, never in the client-facing SHARED folder.'},kids:[
     R('PRE ENGAGEMENT'), R('ONBOARDING'),
     R('ONGOING',{kids:[R('[MONTH]',{note:{t:'rule',l:'Naming',x:'Name this with the <b>actual month</b> (e.g. <span class="mono">MARCH</span>) so files are easy to source.'}})]}),
