@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="description" content="The PR Hub's NEW BUSINESS – INTERNAL filing framework for potential-client (new business) activity, separate from the client filing system.">
-<title>TPH New Business Filing</title>
+<meta name="description" content="The standard INTERNAL Google Drive folder structure every The PR Hub new-business prospect follows in 2026 — team-only, kept separate from live clients.">
+<title>TPH New Business Drive Map</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,17 +13,20 @@
     --paper:#FBFAF8; --surface:#FFFFFF; --surface-2:#F5F4F0;
     --ink:#20242E; --muted:#5A6172; --faint:#8A909E;
     --line:#E6E3DC; --line-strong:#D6D2C8;
-    --accent:#9A2F5E; --accent-soft:#F7E8EF; --accent-ring:#E9C4D5;
+    --shared:#0E7A6E; --shared-soft:#E4F1EF; --shared-ring:#BFE0DA;
+    --internal:#9A2F5E; --internal-soft:#F7E8EF; --internal-ring:#E9C4D5;
     --flag:#B4670A; --flag-soft:#FBEFD9; --flag-ring:#EAD3A0;
     --shadow:0 1px 2px rgba(32,36,46,.05),0 8px 24px -12px rgba(32,36,46,.18);
     --guide:#DAD6CC;
   }
+  :root:not([data-theme="light"]){}
   @media (prefers-color-scheme:dark){
     :root:not([data-theme="light"]){
       --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
       --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
       --line:#2B2F3A; --line-strong:#363B48;
-      --accent:#EE7CAB; --accent-soft:rgba(238,124,171,.10); --accent-ring:rgba(238,124,171,.35);
+      --shared:#31D0BC; --shared-soft:rgba(49,208,188,.10); --shared-ring:rgba(49,208,188,.35);
+      --internal:#EE7CAB; --internal-soft:rgba(238,124,171,.10); --internal-ring:rgba(238,124,171,.35);
       --flag:#E7A73C; --flag-soft:rgba(231,167,60,.10); --flag-ring:rgba(231,167,60,.38);
       --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -14px rgba(0,0,0,.6);
       --guide:#333845;
@@ -33,131 +36,240 @@
     --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
     --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
     --line:#2B2F3A; --line-strong:#363B48;
-    --accent:#EE7CAB; --accent-soft:rgba(238,124,171,.10); --accent-ring:rgba(238,124,171,.35);
+    --shared:#31D0BC; --shared-soft:rgba(49,208,188,.10); --shared-ring:rgba(49,208,188,.35);
+    --internal:#EE7CAB; --internal-soft:rgba(238,124,171,.10); --internal-ring:rgba(238,124,171,.35);
     --flag:#E7A73C; --flag-soft:rgba(231,167,60,.10); --flag-ring:rgba(231,167,60,.38);
     --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -14px rgba(0,0,0,.6);
     --guide:#333845;
   }
+
   *{box-sizing:border-box}
-  body{margin:0; background:var(--paper); color:var(--ink);
-    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif; line-height:1.5; -webkit-font-smoothing:antialiased;}
-  .wrap{max-width:840px; margin:0 auto; padding:clamp(20px,4vw,52px) clamp(16px,4vw,40px) 72px;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+    line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px; margin:0 auto; padding:clamp(20px,4vw,52px) clamp(16px,4vw,40px) 72px;}
+
+  /* ---------- header ---------- */
   header.masthead{border-bottom:1px solid var(--line); padding-bottom:26px; margin-bottom:30px;}
-  .eyebrow{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700;}
-  h1{font-family:"Bricolage Grotesque",sans-serif; font-weight:800; font-size:clamp(30px,5.2vw,50px);
-    line-height:1.03; letter-spacing:-.02em; margin:.28em 0 .35em; text-wrap:balance; max-width:18ch;}
+  .eyebrow{font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); font-weight:600;}
+  h1{
+    font-family:"Bricolage Grotesque",sans-serif; font-weight:800;
+    font-size:clamp(30px,5.2vw,52px); line-height:1.02; letter-spacing:-.02em;
+    margin:.28em 0 .35em; text-wrap:balance; max-width:16ch;
+  }
   .lede{color:var(--muted); font-size:clamp(15px,1.6vw,17px); max-width:60ch; margin:0;}
-  .sep-note{display:flex; gap:9px; align-items:flex-start; margin-top:20px; padding:12px 15px;
-    background:var(--accent-soft); border:1px solid var(--accent-ring); border-radius:10px; font-size:13.5px; max-width:64ch;}
-  .sep-note b{color:var(--accent);}
-  .legend{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin:28px 0 34px;}
+
+  /* breadcrumb path */
+  .path{
+    display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:22px;
+    font-family:"IBM Plex Mono",monospace; font-size:13.5px;
+  }
+  .crumb{background:var(--surface-2); border:1px solid var(--line); border-radius:7px; padding:5px 11px; color:var(--ink); font-weight:500;}
+  .crumb.ph{border-style:dashed; color:var(--muted);}
+  .crumb.hero{border-color:var(--internal-ring); color:var(--internal); background:var(--internal-soft); font-weight:600;}
+  .sep{color:var(--faint);}
+
+  /* ---------- how to read ---------- */
+  .legend{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px;
+    margin:28px 0 36px;
+  }
   .lcard{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:15px 16px; box-shadow:var(--shadow);}
   .lcard h3{margin:0 0 7px; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:600;}
   .lcard p{margin:0; font-size:13.5px; color:var(--ink);}
-  .mono{font-family:"IBM Plex Mono",monospace;}
-  .tag-ex{font-family:"IBM Plex Mono",monospace; font-size:12px; border:1px dashed var(--line-strong); border-radius:6px; padding:2px 7px; color:var(--muted); display:inline-block; margin-top:9px;}
+  .lcard p .mono{font-family:"IBM Plex Mono",monospace;}
+  .chipline{display:flex; gap:8px; align-items:center; margin-top:9px; font-size:12.5px; color:var(--muted); flex-wrap:wrap;}
+  .swatch{display:inline-flex; align-items:center; gap:7px; font-weight:600; font-size:12.5px;}
+  .dot{width:11px; height:11px; border-radius:3px; display:inline-block;}
+  .dot.i{background:var(--internal);}
+  .tag-ex{font-family:"IBM Plex Mono",monospace; font-size:12px; border:1px dashed var(--line-strong); border-radius:6px; padding:2px 7px; color:var(--muted);}
+
+  /* ---------- panel (single, internal) ---------- */
   .panel{background:var(--surface); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); overflow:hidden;}
-  .panel-head{padding:16px 20px; display:flex; align-items:baseline; gap:12px; border-bottom:1px solid var(--accent-ring); background:var(--accent-soft);}
-  .panel-head .kicker{font-size:11px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:var(--accent);}
+  .panel-head{padding:16px 20px; display:flex; align-items:baseline; gap:12px; border-bottom:1px solid var(--line);}
+  .panel.internal .panel-head{background:var(--internal-soft); border-bottom-color:var(--internal-ring);}
+  .panel-head .kicker{font-size:11px; letter-spacing:.16em; text-transform:uppercase; font-weight:700;}
+  .panel.internal .kicker{color:var(--internal);}
+  .panel-head .fname{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:14px; margin-left:auto; color:var(--muted);}
   .panel-head h2{font-family:"Bricolage Grotesque",sans-serif; font-size:19px; margin:0; font-weight:700; letter-spacing:-.01em;}
-  .panel-head .fname{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:13.5px; margin-left:auto; color:var(--muted);}
   .panel-sub{padding:11px 20px 4px; font-size:12.5px; color:var(--muted);}
   .tree-root{padding:8px 18px 22px;}
+
+  /* ---------- tree ---------- */
   ul.tree{list-style:none; margin:0; padding:0;}
   ul.tree ul{list-style:none; margin:0; padding:0 0 0 22px; position:relative;}
   ul.tree ul::before{content:""; position:absolute; left:9px; top:0; bottom:12px; width:1.5px; background:var(--guide);}
   li.node{position:relative;}
   ul.tree ul > li.node::before{content:""; position:absolute; left:-13px; top:15px; width:13px; height:1.5px; background:var(--guide);}
   .row{display:flex; align-items:center; gap:8px; padding:4px 0; min-height:28px;}
-  .ficon{flex:0 0 auto; color:var(--accent); opacity:.9;}
+  .ficon{flex:0 0 auto; color:var(--internal); opacity:.9;}
   .fname-node{font-family:"IBM Plex Mono",monospace; font-size:13.5px; font-weight:500; color:var(--ink); letter-spacing:-.01em;}
   li.node.ph > .row .fname-node{color:var(--muted); font-style:italic;}
   li.node.ph > .row .ficon{opacity:.5;}
-  li.node.sugg > .row .fname-node{color:var(--faint);}
-  .youname{font-style:normal; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--faint); border:1px dashed var(--line-strong); border-radius:20px; padding:1px 8px;}
-  .sugg-tag{font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent-ring); border-radius:20px; padding:1px 8px;}
-  .note{display:flex; gap:9px; margin:2px 0 8px 2px; padding:9px 12px; background:var(--accent-soft); border:1px solid var(--accent-ring);
-    border-radius:9px; font-size:12.5px; color:var(--ink); line-height:1.45; max-width:56ch;}
-  .note.flag{background:var(--flag-soft); border-color:var(--flag-ring);}
+  .youname{font-family:"IBM Plex Sans"; font-style:normal; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--faint); border:1px dashed var(--line-strong); border-radius:20px; padding:1px 8px;}
+  .filetag{font-family:"IBM Plex Sans"; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); background:var(--surface-2); border:1px solid var(--line); border-radius:20px; padding:1px 8px;}
+  .ficon.fileic{opacity:.75;}
+  li.node.file > .row .fname-node{font-weight:400;}
+
+  /* notes */
+  .note{
+    display:flex; gap:9px; margin:2px 0 8px 2px; padding:9px 12px;
+    background:var(--internal-soft); border:1px solid var(--internal-ring);
+    border-radius:9px; font-size:12.5px; color:var(--ink); line-height:1.45; max-width:54ch;
+  }
   .note .nicon{flex:0 0 auto; margin-top:1px;}
-  .note .lbl{font-weight:700; text-transform:uppercase; letter-spacing:.06em; font-size:10.5px; margin-right:2px; color:var(--accent);}
+  .note.flag{background:var(--flag-soft); border-color:var(--flag-ring);}
+  .note b{font-weight:700;}
+  .note .mono{font-family:"IBM Plex Mono",monospace;}
+  .note .lbl{font-weight:700; text-transform:uppercase; letter-spacing:.06em; font-size:10.5px; margin-right:2px;}
+  .note.rule .lbl{color:var(--internal);}
   .note.flag .lbl{color:var(--flag);}
-  footer.end{margin-top:40px; padding-top:20px; border-top:1px solid var(--line); font-size:12px; color:var(--faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
-  @media print{ body{background:#fff;} .panel,.lcard{box-shadow:none;} .wrap{padding:0;} }
+
+  /* ---------- how it flows / naming ---------- */
+  .footcols{display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:40px;}
+  @media(max-width:720px){ .footcols{grid-template-columns:1fr;} }
+  .fbox{background:var(--surface-2); border:1px solid var(--line); border-radius:14px; padding:20px 22px;}
+  .fbox h3{font-family:"Bricolage Grotesque",sans-serif; margin:0 0 12px; font-size:16px; font-weight:700;}
+  .fbox ul{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:9px;}
+  .fbox li{font-size:13px; color:var(--ink); display:flex; gap:9px; align-items:flex-start;}
+  .fbox li .mk{font-family:"IBM Plex Mono",monospace; flex:0 0 auto; margin-top:1px; color:var(--internal);}
+  .mono{font-family:"IBM Plex Mono",monospace;}
+  footer.end{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); font-size:12px; color:var(--faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  @media print{
+    body{background:#fff;} .panel,.lcard,.fbox{box-shadow:none;}
+    .wrap{padding:0;} .panel{break-inside:avoid;}
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="masthead">
     <div class="eyebrow">The PR Hub · Filing Standard · 2026</div>
-    <h1>New Business Filing</h1>
-    <p class="lede">Where potential-client (new business) activity is filed — kept entirely separate from live client folders. This whole area is <b>internal</b>: the prospect never sees it.</p>
-    <div class="sep-note">
-      <span>🔒</span>
-      <span><b>Separate to CLIENTS.</b> A prospect is filed here until they sign. When they become a client, their live work moves into the client Drive system — this stays as the new-business record.</span>
+    <h1>New Business Drive Map</h1>
+    <p class="lede">The one structure every prospect folder follows while we&rsquo;re winning the work — so anyone on the team can find, file and pick up a pitch without guessing. Kept entirely separate from live clients: this whole area is <b>internal</b> and the prospect never sees it.</p>
+
+    <div class="path">
+      <span class="crumb hero">NEW BUSINESS</span><span class="sep">&rsaquo;</span>
+      <span class="crumb ph">[MONTH]</span><span class="sep">&rsaquo;</span>
+      <span class="crumb ph">[PROSPECT NAME]</span><span class="sep">&rsaquo;</span>
+      <span class="crumb ph">[SUB-FOLDER]</span>
     </div>
   </header>
 
   <section class="legend">
     <div class="lcard">
-      <h3>The process</h3>
-      <p>The meeting <b>lead records the discovery call</b> and forwards the transcript to <b>Shruti</b> to file here, under the month it happened.</p>
+      <h3>How to read this</h3>
+      <p>Everything here is <b>team-only</b>. A prospect lives under the <b>month</b> they&rsquo;re first talked to, then their own folder. Build every prospect to match this map.</p>
+      <div class="chipline">
+        <span class="swatch"><span class="dot i"></span>INTERNAL — team only, never shared with the prospect</span>
+      </div>
     </div>
     <div class="lcard">
       <h3>Placeholders</h3>
-      <p>Anything in <span class="mono">[BRACKETS]</span> you fill in — the month, and the prospect's name.</p>
+      <p>Anything in <span class="mono">[BRACKETS]</span> is a name <b>you</b> fill in &mdash; swap it for the real month and prospect. Use the <b>actual month name</b> for month folders.</p>
+      <div class="chipline">
+        <span class="tag-ex">[MONTH]</span><span class="tag-ex">[PROSPECT NAME]</span>
+      </div>
     </div>
     <div class="lcard">
-      <h3>File naming — always</h3>
-      <p>Date first, then client, then type: <span class="mono">DD-MM-YY_Client Name_Discovery</span>.</p>
-      <span class="tag-ex">08-09-26_Acme Co_Discovery</span>
+      <h3>File naming &mdash; always</h3>
+      <p>Date first, then prospect, then type: <span class="mono">DD-MM-YY_Prospect_Type</span>. Every deck is saved as a <b>workable file (Word or HTML) AND a PDF</b>.</p>
+      <div class="chipline">
+        <span class="tag-ex">20-09-26_Acme Co_Discovery</span>
+        <span class="tag-ex">20-09-26_Acme Co_Deck</span>
+      </div>
     </div>
   </section>
 
-  <section class="panel">
+  <section class="panel internal">
     <div class="panel-head">
       <span class="kicker">Internal · Team only</span>
       <h2>NEW BUSINESS</h2>
-      <span class="fname">NEW BUSINESS – INTERNAL</span>
+      <span class="fname">NEW BUSINESS &rsaquo; [MONTH] &rsaquo; [PROSPECT NAME]</span>
     </div>
-    <div class="panel-sub">Filed by month, then by prospect.</div>
+    <div class="panel-sub">Every prospect folder is built the same way. A prospect stays here until they sign &mdash; then their live work moves into the client Drive system and this remains the new-business record.</div>
     <div class="tree-root" id="tree-nb"></div>
   </section>
 
+  <div class="footcols">
+    <div class="fbox">
+      <h3>How a prospect flows through</h3>
+      <ul>
+        <li><span class="mk">1</span><span>Prospect is created under the <span class="mono">[MONTH]</span> they&rsquo;re first talked to, then their own <span class="mono">[PROSPECT NAME]</span> folder.</span></li>
+        <li><span class="mk">2</span><span>The initial call/meeting transcript is filed in <span class="mono">INITIAL DISCOVERY</span>.</span></li>
+        <li><span class="mk">3</span><span>The deck is built and presented from <span class="mono">PRESENTATION DECK &rsaquo; PRESENTATION LIVE</span>.</span></li>
+        <li><span class="mk">4</span><span>After live feedback, the tweaked, confirmed deck goes in <span class="mono">PRESENTATION SENT</span> &mdash; workable file + PDF &mdash; and that&rsquo;s what&rsquo;s sent over.</span></li>
+        <li><span class="mk">5</span><span>If they sign, the work moves into the <b>client</b> Drive system; this stays as the new-business record.</span></li>
+      </ul>
+    </div>
+    <div class="fbox">
+      <h3>Two deck folders &mdash; why</h3>
+      <ul>
+        <li><span class="mk">&rarr;</span><span><span class="mono">PRESENTATION LIVE</span> &mdash; the version we present in the room and gather feedback on.</span></li>
+        <li><span class="mk">&rarr;</span><span><span class="mono">PRESENTATION SENT</span> &mdash; the same deck after any post-meeting tweaks, ready to send. Keeping both preserves what was shown vs. what was sent.</span></li>
+        <li><span class="mk">&rarr;</span><span>Each holds a <b>workable file (Word/HTML)</b> so it can be edited, plus a <b>PDF</b> for sending.</span></li>
+      </ul>
+    </div>
+  </div>
+
   <footer class="end">
-    <span>The PR Hub — new business filing (internal).</span>
-    <span>Starter framework · questions → Samantha.</span>
+    <span>The PR Hub &mdash; internal new-business filing standard.</span>
+    <span>A starter framework &mdash; we add to it as we go. Questions &rarr; Samantha.</span>
   </footer>
 </div>
 
 <script>
-const R = (n,opts={})=>({n, ph:opts.ph||n.trim().startsWith('['), sugg:opts.sugg||false, note:opts.note||null, kids:opts.kids||[]});
+// data model: {n:name, ph:placeholder?, file?, note:{t,l,x}, kids:[]}
+const R = (n,opts={})=>({n, ph:opts.ph||n.trim().startsWith('['), file:opts.file||false, note:opts.note||null, kids:opts.kids||[]});
 
 const nb = [
-  R('[MONTH]',{note:{t:'rule',l:'Naming',x:'Name with the <b>actual month</b> (e.g. <span class="mono">SEPTEMBER</span>) so files are easy to source.'},kids:[
-    R('[CLIENT NAME]',{note:{t:'rule',l:'The prospect',x:'One folder per potential client, inside the month you first met them.'},kids:[
-      R('DISCOVERY',{note:{t:'rule',l:'File name',x:'Discovery-call transcript, saved as <span class="mono">DD-MM-YY_Client&nbsp;Name_Discovery</span> — e.g. <span class="mono">08-09-26_Acme&nbsp;Co_Discovery</span>.'}}),
-      R('PROPOSALS & PITCH',{sugg:true}),
-      R('BACKGROUND & RESEARCH',{sugg:true}),
+  R('[MONTH]',{note:{t:'rule',l:'Month first',x:'Named with the <b>actual month</b> the prospect is first talked to (e.g. <span class="mono">SEPTEMBER</span>). Every prospect sits inside a month.'},kids:[
+    R('[PROSPECT NAME]',{note:{t:'rule',l:'One folder per prospect',x:'The prospect&rsquo;s own folder. Build the four sub-folders below every time.'},kids:[
+
+      R('INITIAL DISCOVERY',{note:{t:'rule',l:'The first call',x:'The <b>transcript from the initial call or meeting</b> with the prospect is filed here. The meeting lead records it; the transcript is filed here.'},kids:[
+        R('Discovery Transcript_DD-MM-YY',{file:true}),
+      ]}),
+
+      R('PRESENTATION DECK',{note:{t:'rule',l:'Two versions',x:'Holds the two folders below &mdash; the deck we present live, and the deck we send after feedback.'},kids:[
+        R('PRESENTATION LIVE',{note:{t:'rule',l:'Presented in the room',x:'The version we <b>present live</b> and take feedback on. Keep the workable file and the PDF &mdash; and the <b>transcript of the presentation meeting</b> lives here too.'},kids:[
+          R('DD-MM-YY_Prospect_Deck (Word/HTML)',{file:true}),
+          R('DD-MM-YY_Prospect_Deck (PDF)',{file:true}),
+          R('Meeting Transcript_DD-MM-YY',{file:true}),
+        ]}),
+        R('PRESENTATION SENT',{note:{t:'rule',l:'Tweaked, then sent',x:'The <b>confirmed</b> deck after any post-meeting tweaks &mdash; this is what&rsquo;s sent to the prospect. Keep the workable file and the PDF.'},kids:[
+          R('DD-MM-YY_Prospect_Deck (Word/HTML)',{file:true}),
+          R('DD-MM-YY_Prospect_Deck (PDF)',{file:true}),
+        ]}),
+      ]}),
+
+      R('BACKGROUND DOCUMENTS',{note:{t:'rule',l:'Given to us',x:'Anything the <b>prospect gives us</b> as background &mdash; information memorandums, marketing decks, research, existing collateral. Their source material, kept for reference.'}}),
+
+      R('ASSETS',{note:{t:'rule',l:'For the deck',x:'Logos and imagery we want to use in the deck &mdash; the prospect&rsquo;s logo, photography, any visual assets.'}}),
+
     ]}),
   ]}),
 ];
 
 const folderSVG = '<svg class="ficon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.2h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
+const fileSVG = '<svg class="ficon fileic" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>';
 const noteSVG = '<svg class="nicon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 15 8.5 22 9.3l-5 4.6L18.4 21 12 17.4 5.6 21 7 13.9l-5-4.6 7-0.8z"/></svg>';
+const flagSVG = '<svg class="nicon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22V4M4 4h13l-2 4 2 4H4"/></svg>';
 
+function esc(s){return s;}
 function renderNode(node){
   const li=document.createElement('li');
-  li.className='node'+(node.ph?' ph':'')+(node.sugg?' sugg':'');
+  li.className='node'+(node.ph?' ph':'')+(node.file?' file':'');
   const row=document.createElement('div'); row.className='row';
-  let tag='';
-  if(node.ph) tag='<span class="youname">you name it</span>';
-  else if(node.sugg) tag='<span class="sugg-tag">suggested</span>';
-  row.innerHTML = folderSVG + '<span class="fname-node">'+node.n+'</span>' + tag;
+  const tag = node.ph ? '<span class="youname">you name it</span>' : (node.file ? '<span class="filetag">file</span>' : '');
+  row.innerHTML = (node.file?fileSVG:folderSVG) + '<span class="fname-node">'+esc(node.n)+'</span>' + tag;
   li.appendChild(row);
   if(node.note){
-    const nt=document.createElement('div'); nt.className='note '+(node.note.t==='flag'?'flag':'rule');
-    nt.innerHTML = noteSVG + '<span><span class="lbl">'+node.note.l+'</span>'+node.note.x+'</span>';
+    const nt=document.createElement('div');
+    nt.className='note '+(node.note.t==='flag'?'flag':'rule');
+    nt.innerHTML = (node.note.t==='flag'?flagSVG:noteSVG) + '<span><span class="lbl">'+node.note.l+'</span>'+node.note.x+'</span>';
     li.appendChild(nt);
   }
   if(node.kids && node.kids.length){
@@ -167,11 +279,12 @@ function renderNode(node){
   }
   return li;
 }
-(function(){
+function mount(id,data){
   const ul=document.createElement('ul'); ul.className='tree';
-  nb.forEach(n=>ul.appendChild(renderNode(n)));
-  document.getElementById('tree-nb').appendChild(ul);
-})();
+  data.forEach(n=>ul.appendChild(renderNode(n)));
+  document.getElementById(id).appendChild(ul);
+}
+mount('tree-nb',nb);
 </script>
 </body>
 </html>
