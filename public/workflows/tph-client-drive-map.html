@@ -296,7 +296,11 @@ const shared = [
     R('COVERAGE'),
     R('CASE STUDIES',{kids:[R('[TALENT OR COMPANY NAME]')]}),
     R('PODCASTS',{kids:[R('[NAME]')]}),
-    R('MEDIA RELEASES',{kids:[R('[ANNOUNCEMENT NAME]'), R('FINAL')]}),
+    R('MEDIA RELEASES',{note:{t:'rule',l:'Every release',x:'Always save <b>both</b> the Word / Google Doc <b>and</b> the PDF. Every release goes out on the client’s <b>company letterhead</b> — if there isn’t one, create it using the client’s logo.'},kids:[
+      R('[ANGLE / TOPIC / THEME]',{note:{t:'rule',l:'Name the folder',x:'Name this after the <b>angle, topic or theme</b> of the release. Example: for TaxiBox, a folder called <span class="mono">Bunnings</span>.'},kids:[
+        R('[MEDIA VERTICAL]',{note:{t:'rule',l:'Only if needed',x:'Add vertical subfolders <b>only</b> when you’re running different releases for different trade verticals, e.g. <span class="mono">Property</span>, <span class="mono">Business</span>, <span class="mono">Consumer</span>, <span class="mono">Building</span>.'}}),
+      ]}),
+    ]}),
     R('NEWS ANNOUNCEMENT STRATEGY',{note:{t:'rule',l:'One folder per announcement',x:'Create a subfolder named after the <b>actual news announcement</b>, and keep that announcement’s strategy in it.'},kids:[
       R('[NAME OF NEWS ANNOUNCEMENT]'),
     ]}),
