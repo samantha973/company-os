@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bunnings Launch — Media Targeting Plan</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#FBFAF8;--surface:#FFFFFF;--surface-2:#F5F4F0;
+    --ink:#20242E;--muted:#5A6172;--faint:#8A909E;
+    --line:#E6E3DC;--line-strong:#D6D2C8;
+    --accent:#0E7A6E;--accent-soft:#E4F1EF;--accent-ring:#BFE0DA;
+    --amber:#B45309;--amber-soft:#FBF0E2;
+    --f-display:"Bricolage Grotesque",system-ui,sans-serif;
+    --f-body:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+    --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --paper:#13151B;--surface:#1B1E26;--surface-2:#222530;--ink:#ECEEF2;--muted:#9AA1B0;--faint:#727988;
+    --line:#2B2F3A;--line-strong:#363B48;--accent:#31D0BC;--accent-soft:rgba(49,208,188,.10);--accent-ring:rgba(49,208,188,.35);
+    --amber:#F0A54A;--amber-soft:rgba(240,165,74,.12);
+  }}
+  :root[data-theme="dark"]{
+    --paper:#13151B;--surface:#1B1E26;--surface-2:#222530;--ink:#ECEEF2;--muted:#9AA1B0;--faint:#727988;
+    --line:#2B2F3A;--line-strong:#363B48;--accent:#31D0BC;--accent-soft:rgba(49,208,188,.10);--accent-ring:rgba(49,208,188,.35);
+    --amber:#F0A54A;--amber-soft:rgba(240,165,74,.12);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:900px;margin:0 auto;padding:clamp(24px,5vw,56px) clamp(18px,4vw,40px) 90px;}
+  .eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:500;margin:0 0 12px;}
+  h1{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,5vw,44px);line-height:1.02;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance;}
+  .lede{color:var(--muted);font-size:15.5px;max-width:64ch;margin:0;}
+  .datestamp{font-family:var(--f-mono);font-size:11.5px;color:var(--faint);margin-top:12px;}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 8px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .pill{font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:20px;font-weight:500;}
+  .p-lead{background:var(--accent);color:#fff;}
+  .p-w2{background:var(--accent-soft);color:var(--accent);}
+  .p-w3{background:var(--surface-2);color:var(--muted);border:1px solid var(--line);}
+  .p-trade{background:var(--surface-2);color:var(--muted);border:1px solid var(--line);}
+  .p-held{background:var(--amber-soft);color:var(--amber);}
+  .p-add{background:var(--amber-soft);color:var(--amber);}
+  .legend .pill{cursor:default;}
+  h2.sec{font-family:var(--f-display);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:40px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line);}
+  .vert{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin:14px 0;}
+  .vert .top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px;}
+  .vert .vnum{font-family:var(--f-mono);font-size:13px;color:var(--faint);}
+  .vert h3{font-family:var(--f-display);font-weight:800;font-size:20px;letter-spacing:-.01em;margin:0;flex:1;min-width:200px;}
+  .titles{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 14px;}
+  .titles span{font-family:var(--f-mono);font-size:12px;background:var(--surface-2);border:1px solid var(--line);border-radius:7px;padding:4px 9px;color:var(--ink);}
+  .label{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 4px;}
+  .headline{font-family:var(--f-display);font-weight:700;font-size:16.5px;line-height:1.25;letter-spacing:-.01em;margin:0 0 14px;color:var(--ink);border-left:3px solid var(--accent);padding-left:12px;}
+  .synopsis{font-size:14.5px;color:var(--muted);margin:0;}
+  .synopsis b{color:var(--ink);}
+  .added-note{background:var(--amber-soft);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:16px 0;font-size:14px;}
+  .added-note b{color:var(--amber);}
+  footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">The PR Hub · Internal planning — not for distribution</p>
+  <h1>Bunnings launch — media targeting plan</h1>
+  <p class="lede">The verticals we're targeting for the TAXIBOX × Bunnings announcement, in the order we'll work them, with example titles, the lead headline, and the angle for each stream.</p>
+  <p class="datestamp">Prepared 8 September 2026 · Client: TAXIBOX · Campaign: Move with Bunnings</p>
+
+  <div class="legend">
+    <span class="pill p-lead">Lead</span>
+    <span class="pill p-w2">Wave 2 — on publication</span>
+    <span class="pill p-w3">Wave 3 — with case study</span>
+    <span class="pill p-trade">Trade — ongoing</span>
+    <span class="pill p-held">Held — separate story</span>
+    <span class="pill p-add">Recommended addition</span>
+  </div>
+
+  <h2 class="sec">Core streams</h2>
+
+  <!-- 1 -->
+  <div class="vert">
+    <div class="top"><span class="vnum">01</span><h3>Tier 1 — National business press</h3><span class="pill p-lead">Lead</span></div>
+    <div class="titles"><span>Australian Financial Review</span><span>The Australian (Business)</span><span>Capital Brief</span><span>Sky News Business / ausbiz</span></div>
+    <p class="label">Strongest headline</p>
+    <p class="headline">It now costs more than $80,000 to move house — so Bunnings is moving into storage instead</p>
+    <p class="synopsis">The macro-pegged flagship. As moving costs climb into six figures for a capital-city upgrade, Australians renovate rather than relocate — a <b>~$44bn renovation market (HIA)</b>, growing about twice as fast as the economy. Bunnings, the home of the renovation, is monetising the storage-and-moving squeeze that creates, via challenger TAXIBOX, reaching ~80% of Australians. The story is a retail giant's move into the economics of staying put, and the established, national challenger it backed (a brand-awareness gap of ~18% vs ~50% for incumbents — source to be confirmed with client). Interviews: Bunnings COO + TAXIBOX CEO.</p>
+  </div>
+
+  <!-- 2 -->
+  <div class="vert">
+    <div class="top"><span class="vnum">02</span><h3>Property &amp; commercial real estate</h3><span class="pill p-held">Light now · big story held</span></div>
+    <div class="titles"><span>The Urban Developer</span><span>Australian Property Journal</span><span>realestatesource</span><span>AFR Property</span></div>
+    <p class="label">Strongest headline</p>
+    <p class="headline">Denser homes, pricier moves: Bunnings and TAXIBOX target the storage gap in Australian housing</p>
+    <p class="synopsis">Homes are shrinking and moves are costlier, fuelling demand for flexible storage (a <b>$2.5bn industry</b>, IBISWorld). Bunnings' entry is a read on where housing is heading. <b>Note:</b> the stronger property story — TAXIBOX Local's national site rollout (50–200 sites, freehold/leasehold) — is held as a separate exclusive for the property desk (Sarah Petty, AFR). This vertical gets a light touch now, the main play later.</p>
+  </div>
+
+  <!-- 3 -->
+  <div class="vert">
+    <div class="top"><span class="vnum">03</span><h3>Mid-tier business — SME &amp; founder</h3><span class="pill p-w2">Wave 2</span></div>
+    <div class="titles"><span>SmartCompany</span><span>Dynamic Business</span><span>Startup Daily</span><span>Kochie's Business Builders</span></div>
+    <p class="label">Strongest headline</p>
+    <p class="headline">Why Bunnings chose TAXIBOX: how a proven challenger brand earned a partnership with a giant</p>
+    <p class="synopsis">A founder story about <b>strength, not luck</b>. When Australia's most trusted retailer decided to move into moving and storage, it didn't build its own — it chose TAXIBOX. What made it the obvious partner: an <b>already-national</b> operator with 15 years and <b>hundreds of thousands of moves</b> behind it (250k+ customers, 10k+ units), a customer experience that outrates the traditional industry, a flexible door-to-door model, and the tech to plug straight into Bunnings' national network. The lesson for founders — build enough credibility, scale and reliability and the biggest players come to you. Founder interview with Ben Cohn.</p>
+  </div>
+
+  <!-- 4 -->
+  <div class="vert">
+    <div class="top"><span class="vnum">04</span><h3>National consumer — news &amp; broadcast</h3><span class="pill p-w3">Wave 3</span></div>
+    <div class="titles"><span>news.com.au</span><span>The Daily Telegraph</span><span>Herald Sun</span><span>A Current Affair / Today / Sunrise</span></div>
+    <p class="label">Strongest headline</p>
+    <p class="headline">Where do you put your house while you rebuild it? Now it's one trip — to Bunnings</p>
+    <p class="synopsis">The relatable human yarn. Moving is expensive, so Australians renovate — and every reno creates the "where does everything go?" headache. The new Bunnings service turns the storage-shed trek into a single Bunnings trip (get a sausage and sort your storage). Told through a <b>real family mid-reno</b> — bespoke, filmable talent we can offer one outlet exclusively. Strong TV and tabloid material.</p>
+  </div>
+
+  <!-- 5 -->
+  <div class="vert">
+    <div class="top"><span class="vnum">05</span><h3>Trade — retail &amp; hardware</h3><span class="pill p-trade">Trade</span></div>
+    <div class="titles"><span>Inside Retail</span><span>Power Retail</span><span>HNN — Hardware News Network</span><span>Inside FMCG</span></div>
+    <p class="label">Strongest headline</p>
+    <p class="headline">Bunnings extends its services push into moving and storage — the commercial strategy read</p>
+    <p class="synopsis">For retail/hardware trade readers: Bunnings' latest services expansion (after Uber Eats and PowerPass) into moving and storage via TAXIBOX, deepening its commercial and trade offer. What it signals about Bunnings' services strategy and its play for the commercial customer. HNN covers Bunnings closely — give them the strategy detail and imagery.</p>
+  </div>
+
+  <!-- 6 -->
+  <div class="vert">
+    <div class="top"><span class="vnum">06</span><h3>Trade — building &amp; construction</h3><span class="pill p-trade">Trade</span></div>
+    <div class="titles"><span>Build Australia</span><span>Architecture &amp; Design</span><span>HIA / Master Builders channels</span><span>The Fifth Estate</span></div>
+    <p class="label">Strongest headline</p>
+    <p class="headline">New on-site storage option for builders as Bunnings adds moving and storage</p>
+    <p class="synopsis">For builders and construction readers: a practical new way to get storage to the job site — a container delivered to site or yard, used as an extension of the shed, then moved or stored. Ties to Bunnings' commercial/trade offer; commercial customers are already <b>10–15% of TAXIBOX and growing</b>. Lead with utility on the tools, not the brand milestone.</p>
+  </div>
+
+  <!-- 7 -->
+  <div class="vert">
+    <div class="top"><span class="vnum">07</span><h3>Trade — logistics, removals &amp; self-storage</h3><span class="pill p-trade">Trade</span></div>
+    <div class="titles"><span>MHD Supply Chain</span><span>Self Storage Association of Australasia (SSAA)</span><span>AFRA (removers) newsletter</span><span>Fully Loaded</span></div>
+    <p class="label">Strongest headline</p>
+    <p class="headline">Mobile meets retail: inside the Bunnings–TAXIBOX tie-up reshaping storage distribution</p>
+    <p class="synopsis">For the logistics, removals and self-storage industries: the operational model — fusing door-to-door mobile storage with retail distribution reach — and what it means for the sector. The tech-and-logistics capability traditional operators struggle to replicate (Ben's point: they'll never get into trucking logistics). Interview on the model.</p>
+  </div>
+
+  <h2 class="sec">Recommended additions — verticals worth adding</h2>
+  <div class="added-note"><b>Why these:</b> the "improve, don't move" macro peg unlocks money and home/reno audiences the core plan misses, and radio is the fastest, most relatable reach for a story like this. All four broaden coverage without diluting the tier-one exclusive.</div>
+
+  <!-- 8 -->
+  <div class="vert">
+    <div class="top"><span class="vnum">08</span><h3>Personal finance &amp; money</h3><span class="pill p-add">Addition</span> <span class="pill p-w2">Wave 2</span></div>
+    <div class="titles"><span>Yahoo Finance Australia</span><span>Money magazine</span><span>news.com.au (Money)</span><span>Finder / Canstar</span></div>
+    <p class="label">Strongest headline</p>
+    <p class="headline">It costs $80,000+ to move house — the maths driving Australians to renovate, and store, instead</p>
+    <p class="synopsis">A money-desk explainer riding the cost-of-living peg. Stamp duty and moving costs now run into six figures, making "improve, don't move" the rational choice — and storage is the hidden line item. Data-led, with cost breakdowns and practical tips, plus the new lower-friction Bunnings/TAXIBOX option as the "smart money" angle.</p>
+  </div>
+
+  <!-- 9 -->
+  <div class="vert">
+    <div class="top"><span class="vnum">09</span><h3>Home, renovation &amp; lifestyle</h3><span class="pill p-add">Addition</span> <span class="pill p-w3">Wave 3</span></div>
+    <div class="titles"><span>Domain (Living)</span><span>realestate.com.au (Lifestyle)</span><span>Homes to Love</span><span>Better Homes and Gardens</span></div>
+    <p class="label">Strongest headline</p>
+    <p class="headline">Renovating? The smartest way to store your home while you rebuild — sorted at Bunnings</p>
+    <p class="synopsis">A practical reno-lifestyle piece: how to handle storage during a renovation without the storage-shed trek, using the door-to-door Bunnings/TAXIBOX service. Tips on staging a reno, protecting furniture, packing at your pace — with real reno visuals and the case-study family. Natural fit for home and reno audiences, and pairs with the consumer round.</p>
+  </div>
+
+  <!-- 10 -->
+  <div class="vert">
+    <div class="top"><span class="vnum">10</span><h3>Radio &amp; talkback</h3><span class="pill p-add">Addition</span> <span class="pill p-w3">Wave 3</span></div>
+    <div class="titles"><span>2GB / 3AW (talkback)</span><span>ABC Radio (Mornings / Drive)</span><span>Nova / KIIS (breakfast)</span></div>
+    <p class="label">Strongest headline</p>
+    <p class="headline">The renovation headache every listener knows — and the one-trip fix at Bunnings</p>
+    <p class="synopsis">Radio is the fastest relatable reach for this story. Talkback loves a "have you ever" hook — the storage-shed trek, the reno chaos — and Ben (or the case-study family) makes an easy, warm segment. Metro talkback for reach; ABC Mornings for the cost-of-living framing. Low lift, high relatability.</p>
+  </div>
+
+  <h2 class="sec">Sequencing</h2>
+  <div class="vert">
+    <p class="synopsis"><b>Lead:</b> Tier 1 business (AFR), interview-led, sets the agenda. <b>Wave 2 (on publication):</b> SME/founder, retail trade, personal finance. <b>Wave 3 (with the case study):</b> consumer news &amp; broadcast, home/reno lifestyle, radio. <b>Ongoing:</b> building and logistics/removals/storage trade. <b>Held:</b> TAXIBOX Local's national rollout — the bigger property story, pitched separately once Bunnings has run.</p>
+  </div>
+
+  <footer>The PR Hub for TAXIBOX · Internal planning document · Updated 8 Sep 2026 · Figures sourced (HIA, ABS, IBISWorld, Medianet); brand-awareness figure to be confirmed with client</footer>
+</div>
+</body>
+</html>
