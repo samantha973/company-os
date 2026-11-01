@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="How The PR Hub runs a client evaluation check-in: the senior, relationship-level review held every three to six months, independent of the day-to-day account team — how to set it up, what to ask, and how to close the loop.">
+<title>The Client Evaluation Check-in</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#FBFAF8; --surface:#FFFFFF; --surface-2:#F5F4F0;
+    --ink:#20242E; --muted:#5A6172; --faint:#8A909E;
+    --line:#E6E3DC; --line-strong:#D6D2C8;
+    --accent:#0E7A6E; --accent-soft:#E4F1EF; --accent-ring:#BFE0DA;
+    --warn:#C0392B; --warn-soft:#FBEBE8; --warn-ring:#E6C3BC;
+    --shadow:0 1px 2px rgba(32,36,46,.05),0 10px 30px -14px rgba(32,36,46,.22);
+    --f-display:"Bricolage Grotesque",system-ui,sans-serif;
+    --f-body:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+    --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+    --measure:66ch;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+      --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+      --line:#2B2F3A; --line-strong:#363B48;
+      --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+      --warn:#F0776A; --warn-soft:rgba(240,119,106,.10); --warn-ring:rgba(240,119,106,.34);
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#13151B; --surface:#1B1E26; --surface-2:#222530;
+    --ink:#ECEEF2; --muted:#9AA1B0; --faint:#727988;
+    --line:#2B2F3A; --line-strong:#363B48;
+    --accent:#31D0BC; --accent-soft:rgba(49,208,188,.10); --accent-ring:rgba(49,208,188,.35);
+    --warn:#F0776A; --warn-soft:rgba(240,119,106,.10); --warn-ring:rgba(240,119,106,.34);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -16px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--f-body); line-height:1.6; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
+  .wrap{max-width:920px; margin:0 auto; padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px) 90px;}
+  .col{max-width:var(--measure);}
+  a{color:var(--accent); text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1px;}
+
+  /* top bar */
+  .topbar{display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap;
+    padding-bottom:16px; border-bottom:1px solid var(--line); margin-bottom:clamp(32px,6vw,58px);}
+  .home{font-family:var(--f-mono); font-size:12px; letter-spacing:.04em; color:var(--muted); text-decoration:none;}
+  .home:hover{color:var(--accent);}
+  .filed{font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint);}
+
+  /* hero */
+  .eyebrow{font-family:var(--f-mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 16px;}
+  h1{font-family:var(--f-display); font-weight:800; font-size:clamp(34px,7vw,68px); line-height:1.0; letter-spacing:-.025em; text-wrap:balance; margin:0 0 20px;}
+  .standfirst{font-family:var(--f-display); font-weight:500; font-size:clamp(18px,2.4vw,25px); line-height:1.35; color:var(--muted); max-width:38ch; margin:0 0 28px;}
+  .whofor{display:flex; gap:12px; border-left:3px solid var(--accent); padding:6px 0 6px 16px; font-size:14.5px; color:var(--muted); max-width:60ch;}
+  .whofor b{color:var(--ink);}
+
+  /* thesis band */
+  .thesis{background:var(--ink); border-radius:16px; padding:clamp(30px,5vw,54px); margin:clamp(40px,7vw,72px) 0; box-shadow:var(--shadow);}
+  .thesis .eyebrow{color:var(--accent);}
+  .thesis-q{font-family:var(--f-display); font-weight:700; font-size:clamp(24px,4.6vw,42px); line-height:1.08; letter-spacing:-.02em; text-wrap:balance; color:var(--paper); margin:0 0 20px;}
+  .thesis-b{color:rgba(255,255,255,.72); max-width:62ch; font-size:16.5px; margin:0;}
+  .thesis-b strong{color:#fff; font-weight:600;}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .thesis{background:#0A0C11; border:1px solid var(--line);}
+    :root:not([data-theme="light"]) .thesis-q{color:var(--ink);} :root:not([data-theme="light"]) .thesis-b{color:var(--muted);} :root:not([data-theme="light"]) .thesis-b strong{color:var(--ink);}}
+  :root[data-theme="dark"] .thesis{background:#0A0C11; border:1px solid var(--line);}
+  :root[data-theme="dark"] .thesis-q{color:var(--ink);} :root[data-theme="dark"] .thesis-b{color:var(--muted);} :root[data-theme="dark"] .thesis-b strong{color:var(--ink);}
+
+  /* part dividers */
+  .part{display:grid; grid-template-columns:auto 1fr; gap:clamp(16px,3vw,26px); align-items:center;
+    margin:clamp(52px,9vw,92px) 0 8px; padding:26px 0 22px; border-top:2px solid var(--ink);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .part{border-color:var(--accent-ring);}}
+  :root[data-theme="dark"] .part{border-color:var(--accent-ring);}
+  .part-mark{font-family:var(--f-mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); font-weight:600;}
+  .part h2{font-family:var(--f-display); font-weight:800; font-size:clamp(26px,5vw,46px); line-height:1.0; letter-spacing:-.025em; margin:6px 0 0; text-wrap:balance;}
+  .part .who{font-family:var(--f-mono); font-size:11px; letter-spacing:.06em; color:var(--faint); border:1px solid var(--line-strong); border-radius:999px; padding:6px 13px; white-space:nowrap; justify-self:end; align-self:start;}
+  .part-lede{max-width:var(--measure); color:var(--muted); font-size:16px; margin:2px 0 0;}
+  .part-lede strong{color:var(--ink); font-weight:600;}
+
+  /* phases */
+  section.phase{margin:clamp(32px,5vw,52px) 0;}
+  .phase-head{display:grid; grid-template-columns:auto 1fr auto; gap:clamp(14px,3vw,22px); align-items:start;
+    border-top:1px solid var(--line-strong); padding-top:22px; margin-bottom:20px;}
+  .phase-num{font-family:var(--f-mono); font-size:clamp(19px,3vw,28px); font-weight:600; color:var(--accent); line-height:1; padding-top:.25em; font-variant-numeric:tabular-nums;}
+  .phase-kicker{font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); margin:0 0 6px;}
+  .phase-title{font-family:var(--f-display); font-weight:700; font-size:clamp(21px,3.6vw,32px); line-height:1.05; letter-spacing:-.02em; text-wrap:balance; margin:0;}
+  .phase-title em{font-style:normal; color:var(--accent);}
+  .clock{font-family:var(--f-mono); font-size:11px; font-weight:600; letter-spacing:.04em; color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent-ring); border-radius:999px; padding:5px 11px; white-space:nowrap; align-self:start; margin-top:.2em;}
+  .phase-body{max-width:var(--measure);}
+  .phase-body p{margin:0 0 1.05em;}
+  .phase-body h3{font-family:var(--f-body); font-size:15.5px; font-weight:700; letter-spacing:-.005em; margin:1.7em 0 .5em;}
+  b{font-weight:600;}
+
+  /* the chair's line + the ask */
+  .say{background:var(--surface-2); border-left:3px solid var(--line-strong); border-radius:0 10px 10px 0; padding:15px 18px; margin:14px 0 18px; font-size:15px; color:var(--ink);}
+  .say .lbl{font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); font-weight:600; display:block; margin-bottom:7px;}
+  .say em{font-style:italic; color:var(--muted);}
+
+  ol.asks{list-style:none; counter-reset:s; margin:6px 0 0; padding:0;}
+  ol.asks li{counter-increment:s; display:grid; grid-template-columns:auto 1fr; gap:13px; padding:10px 0; border-bottom:1px solid var(--line); align-items:baseline;}
+  ol.asks li:last-child{border-bottom:none;}
+  ol.asks li::before{content:counter(s); font-family:var(--f-mono); font-size:12px; font-weight:600; color:var(--accent); font-variant-numeric:tabular-nums;}
+  li .why{color:var(--faint); font-size:13px; display:block; margin-top:3px;}
+
+  /* probe list (deeper questions) */
+  ol.probes{list-style:none; counter-reset:p; margin:6px 0 0; padding:0;}
+  ol.probes li{counter-increment:p; display:grid; grid-template-columns:auto 1fr; gap:15px; padding:15px 0; border-bottom:1px solid var(--line); align-items:start;}
+  ol.probes li:last-child{border-bottom:none;}
+  ol.probes li::before{content:counter(p,decimal-leading-zero); font-family:var(--f-mono); font-size:12px; font-weight:600; color:var(--accent); font-variant-numeric:tabular-nums; padding-top:3px;}
+  ol.probes .q{font-size:15.5px; color:var(--ink); font-weight:600; line-height:1.4;}
+  ol.probes .q em{font-style:italic; font-weight:600; color:var(--accent);}
+  ol.probes .why{color:var(--muted); font-size:13.5px; display:block; margin-top:5px; font-weight:400; line-height:1.5;}
+
+  /* listen-for box */
+  .listen{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin:18px 0; box-shadow:var(--shadow);}
+  .listen .box-label{font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 12px; display:flex; align-items:center; gap:9px;}
+  .listen .box-label::before{content:"👂"; width:auto; height:auto;}
+  .listen ul{list-style:none; margin:0; padding:0;}
+  .listen li{display:grid; grid-template-columns:auto 1fr; gap:11px; padding:8px 0; border-bottom:1px solid var(--line); font-size:14.5px; color:var(--muted); align-items:baseline;}
+  .listen li:last-child{border-bottom:none;}
+  .listen li::before{content:"→"; color:var(--accent); font-weight:700; font-family:var(--f-mono);}
+  .listen li b{color:var(--ink);}
+
+  /* tweak / rules rows */
+  .tweak{border:1px dashed var(--accent-ring); background:var(--accent-soft); border-radius:12px; padding:16px 18px; margin:16px 0;}
+  .tweak .box-label{font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 10px;}
+  .tweak p{margin:0 0 .7em; font-size:14.5px; color:var(--ink);}
+  .tweak p:last-child{margin-bottom:0;}
+  .tweak .if{font-family:var(--f-mono); font-size:12px; color:var(--accent); font-weight:600;}
+
+  /* generic callout */
+  .box{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin:24px 0; box-shadow:var(--shadow);}
+  .box-label{font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:0 0 12px; display:flex; align-items:center; gap:9px;}
+  .box>.box-label::before{content:""; width:20px; height:2px; background:var(--accent); display:inline-block;}
+  .box h4{font-family:var(--f-display); font-size:20px; font-weight:700; letter-spacing:-.01em; margin:0 0 10px; text-wrap:balance;}
+  .box p{margin:0 0 .8em; color:var(--muted); font-size:15px;}
+  .box p:last-child{margin-bottom:0;}
+
+  /* the four scored areas */
+  .area{background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:0 12px 12px 0; padding:16px 20px; margin:12px 0; box-shadow:var(--shadow);}
+  .area .top{display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap;}
+  .area h4{font-family:var(--f-display); font-size:18px; font-weight:700; letter-spacing:-.01em; margin:0 0 6px;}
+  .area .score{font-family:var(--f-mono); font-size:11px; color:var(--accent); font-weight:600; background:var(--accent-soft); border:1px solid var(--accent-ring); border-radius:999px; padding:3px 10px; white-space:nowrap;}
+  .area p{margin:0; color:var(--muted); font-size:14.5px;}
+
+  /* document / template block */
+  .template{background:var(--surface-2); border:1px dashed var(--line-strong); border-radius:12px; padding:24px 26px; margin:22px 0; font-size:15px; line-height:1.62; color:var(--ink);}
+  .template .t-label{font-family:var(--f-mono); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); font-weight:600; margin-bottom:16px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+  .template .meta{font-family:var(--f-mono); font-size:12.5px; color:var(--muted); border-bottom:1px solid var(--line-strong); padding-bottom:12px; margin-bottom:16px;}
+  .template .meta b{color:var(--ink);}
+  .template p{margin:0 0 1em;}
+  .template p:last-child{margin-bottom:0;}
+  .fill{background:var(--accent-soft); border:1px solid var(--accent-ring); border-radius:5px; padding:1px 6px; font-family:var(--f-mono); font-size:.86em; color:var(--accent); font-weight:600; white-space:nowrap;}
+
+  /* junior vs senior */
+  .contrast{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:22px 0;}
+  .contrast>div{background:var(--surface); padding:18px 20px;}
+  .contrast .label{font-family:var(--f-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; font-weight:600; margin:0 0 9px;}
+  .contrast .junior .label{color:var(--faint);}
+  .contrast .senior{background:var(--accent-soft);}
+  .contrast .senior .label{color:var(--accent);}
+  .contrast p{margin:0; font-size:14px; color:var(--muted); line-height:1.5;}
+  .contrast .senior p{color:var(--ink);}
+
+  /* checks */
+  ul.checks{list-style:none; margin:6px 0 0; padding:0;}
+  ul.checks li{display:grid; grid-template-columns:auto 1fr; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); align-items:baseline;}
+  ul.checks li:last-child{border-bottom:none;}
+  ul.checks li::before{content:"✓"; color:var(--accent); font-weight:700; font-size:14px;}
+
+  /* closer */
+  .closer{background:var(--ink); border-radius:16px; padding:clamp(30px,5vw,52px); margin:clamp(40px,7vw,72px) 0 30px;}
+  .closer .eyebrow{color:var(--accent);}
+  .closer h2{font-family:var(--f-display); font-weight:700; font-size:clamp(24px,4vw,34px); letter-spacing:-.02em; color:var(--paper); margin:0 0 8px;}
+  .closer p.sub{color:rgba(255,255,255,.72); max-width:60ch; margin:0 0 18px;}
+  .closer ul.checks li{color:rgba(255,255,255,.9); border-color:rgba(255,255,255,.12);}
+  .closer ul.checks li::before{color:var(--accent);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .closer{background:#0A0C11; border:1px solid var(--line);}
+    :root:not([data-theme="light"]) .closer h2{color:var(--ink);} :root:not([data-theme="light"]) .closer p.sub{color:var(--muted);} :root:not([data-theme="light"]) .closer ul.checks li{color:var(--ink); border-color:var(--line);}}
+  :root[data-theme="dark"] .closer{background:#0A0C11; border:1px solid var(--line);}
+  :root[data-theme="dark"] .closer h2{color:var(--ink);} :root[data-theme="dark"] .closer p.sub{color:var(--muted);} :root[data-theme="dark"] .closer ul.checks li{color:var(--ink); border-color:var(--line);}
+  .redflags{margin-top:28px; padding-top:24px; border-top:1px solid rgba(255,255,255,.14);}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .redflags{border-color:var(--line);}}
+  :root[data-theme="dark"] .redflags{border-color:var(--line);}
+  .redflags .box-label{color:var(--warn);} .redflags .box-label::before{background:var(--warn);}
+  .redflags ul{list-style:none; margin:0; padding:0;}
+  .redflags li{display:grid; grid-template-columns:auto 1fr; gap:12px; padding:9px 0; border-bottom:1px solid rgba(255,255,255,.1); color:rgba(255,255,255,.82); font-size:14.5px;}
+  .redflags li:last-child{border-bottom:none;}
+  .redflags li::before{content:"✕"; color:var(--warn); font-weight:700;}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .redflags li{color:var(--muted); border-color:var(--line);}}
+  :root[data-theme="dark"] .redflags li{color:var(--muted); border-color:var(--line);}
+
+  footer{margin-top:44px; padding-top:20px; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+
+  @media (max-width:640px){
+    .contrast{grid-template-columns:1fr;}
+    .phase-head{grid-template-columns:auto 1fr; gap:12px 14px;}
+    .clock{grid-column:2; justify-self:start;}
+    .part{grid-template-columns:1fr;}
+    .part .who{justify-self:start;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <a class="home" href="/workflows/hub.html">← Workflows Hub</a>
+    <span class="filed">Client Service · Field Guide No. 02</span>
+  </div>
+
+  <div class="eyebrow">The PR Hub · How we run a client evaluation</div>
+  <h1>The client evaluation check-in</h1>
+  <p class="standfirst">The senior half-hour that protects the relationship — held every three to six months, above the day-to-day team.</p>
+  <div class="whofor"><span><b>Who this is for:</b> the founder or a senior principal running the check-in — deliberately <b>someone outside the day-to-day account team</b>, so the client can be candid. It takes you from spotting a client is due, through the two emails that set it up, to running the conversation, scoring it, and closing the loop with the account team.</span></div>
+
+  <div class="thesis">
+    <p class="eyebrow">The one idea to hold onto</p>
+    <p class="thesis-q">This meeting exists to hear the client — not to defend the work.</p>
+    <p class="thesis-b">A client will tell a senior voice from outside the weekly grind things they'd never raise in a WIP. That candour is the whole point. We're not here to justify what we've done or sell the next thing — we're here to <strong>ask how it's really landing, listen without flinching, and make them feel heard and valued</strong>. Not everything goes 100%, and an agency confident in its work isn't afraid to ask for the feedback and act on it. Run well, this is the meeting that turns a good account into a long one.</p>
+  </div>
+
+  <div class="box">
+    <p class="box-label">How often — and why the range</p>
+    <h4>Every three to six months. Never past six.</h4>
+    <p>We tell clients we run these <b>every three to six months</b>. The range is deliberate: it lets you pick the <em>right</em> moment — after a campaign lands, when the team or scope has shifted, when the account needs a reset — rather than forcing a date on the calendar. The one hard rule: <b>no account goes more than six months without one.</b> If you're unsure whether it's time, it's time.</p>
+  </div>
+
+  <!-- ============ PART ONE ============ -->
+  <div class="part">
+    <div class="part-mark">Part One</div>
+    <div>
+      <div class="part-mark">Set it up</div>
+      <h2>From &ldquo;they're due&rdquo; to a date in the diary</h2>
+    </div>
+    <span class="who">Before the meeting</span>
+  </div>
+  <p class="part-lede col">Setting up an evaluation is four moves: <strong>spot who's due, ask for a time, give them a gentle heads-up, and prep properly with the account team.</strong> Two emails do the client-facing work — the first books it, the second frames it — and neither asks the client to do any homework.</p>
+
+  <!-- 01 -->
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">01</div>
+      <div><p class="phase-kicker">Step one · spot who's due</p><h2 class="phase-title">Check when they last had <em>one</em></h2></div>
+    </div>
+    <div class="phase-body col">
+      <p>Open the <a href="https://docs.google.com/spreadsheets/d/1pT1HA4i4tLdDYNCGXeTeQa51J9gi2ekhEDTXTIuSNkY/edit?usp=sharing">Client Evaluation Meeting Feedback sheet</a> and check the client's tab for the date of their last check-in. Anyone past the three-month mark is a candidate; anyone near six months is overdue.</p>
+      <div class="tweak">
+        <p class="box-label">Make it a habit, not a scramble</p>
+        <p><span class="if">Drop a reminder in your calendar</span> for roughly when each client's next check-in should fall, so these never sneak up on you.</p>
+        <p><span class="if">Sense-check the timing with the account team</span> before you reach out — they'll know if something on the account (a campaign mid-flight, a team change, a wobble) makes now exactly the right, or exactly the wrong, moment.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">02</div>
+      <div><p class="phase-kicker">Step two · the booking email</p><h2 class="phase-title">Ask for a <em>time</em></h2></div>
+    </div>
+    <div class="phase-body col">
+      <p>Keep it warm and low-friction. You're asking for half an hour of open conversation, not scheduling a performance review. Offer a couple of concrete times so it's easy to say yes.</p>
+      <div class="template">
+        <div class="t-label"><span>Email 1 · book the check-in</span><span>The PR Hub</span></div>
+        <div class="meta"><b>Subject:</b> Time for a catch up</div>
+        <p>Hi <span class="fill">[name]</span>,</p>
+        <p>I'd love to get 30 minutes in the diary to hear how things are going with us from your perspective. We do this from time to time with clients to understand what's working well, where you're seeing the most value, and anything we could be doing better.</p>
+        <p>It's also a good chance to hear what's coming up for <span class="fill">[company]</span> and make sure we're putting our time and energy into the things that matter most to you.</p>
+        <p>Would any of these times work? Nothing to prepare — just a chance for an open conversation. If not, let me know some alternatives and we'll find a slot.</p>
+        <p style="color:var(--muted);"><span class="fill">[Day, date — time, time]</span><br><span class="fill">[Day, date — time, time]</span></p>
+        <p>Speak soon,<br><span class="fill">[your name]</span></p>
+      </div>
+      <div class="tweak">
+        <p class="box-label">Why it reads this way</p>
+        <p><span class="if">"From time to time," not "quarterly review."</span> Clients relax into a catch-up; they brace for an appraisal. The language sets the tone before the meeting starts.</p>
+        <p><span class="if">Offer times, don't ask for availability.</span> Two options with specific slots gets a reply far faster than an open "when suits?".</p>
+        <p><span class="if">It's by Zoom, ~30 minutes.</span> Say so if it helps — it signals this is light, not a big commitment.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">03</div>
+      <div><p class="phase-kicker">Step three · lock it + the heads-up</p><h2 class="phase-title">Confirm, then set the <em>frame</em></h2></div>
+    </div>
+    <div class="phase-body col">
+      <p>Once they've picked a time, send a calendar invite with the Zoom link and <b>bcc the account team</b> so they know it's happening. Then — and this is the piece that makes the conversation richer — send a short heads-up that gives them a feel for what you'll talk about. <b>Not homework. Not a form.</b> Just enough that they arrive knowing this is about making the partnership better.</p>
+      <div class="template">
+        <div class="t-label"><span>Email 2 · the heads-up (send once booked)</span><span>The PR Hub</span></div>
+        <div class="meta"><b>Subject:</b> Looking forward to our catch up</div>
+        <p>Hi <span class="fill">[name]</span>,</p>
+        <p>Lovely — <span class="fill">[day/time]</span> it is, invite on its way.</p>
+        <p>Nothing at all to prepare, but so you know where I'm coming from: I just want to hear how you feel it's all going. We'll touch on how well you think we understand your business and where it's heading, how you rate the results and the quality of the work, how we're communicating, and — most usefully — anything you'd want us doing differently or more of.</p>
+        <p>We do this because we genuinely want to keep getting better at what we do for you. Not everything in PR goes exactly to plan, and we'd far rather hear the honest version so we can shape how we work together from here. It's a chance for you to be heard, and for us to make sure our energy is going where it matters most to <span class="fill">[company]</span>.</p>
+        <p>Looking forward to it.</p>
+        <p>Warm regards,<br><span class="fill">[your name]</span></p>
+      </div>
+      <div class="tweak">
+        <p class="box-label">The line this email has to walk</p>
+        <p><span class="if">Signal the themes, don't issue a questionnaire.</span> "We'll touch on…" primes them to think; a numbered list of questions turns a catch-up into an exam.</p>
+        <p><span class="if">Name the spirit out loud.</span> That we want the honest version, that not everything goes to plan, that we're committed to improving — this is what makes a client open up rather than be polite.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">04</div>
+      <div><p class="phase-kicker">Step four · prep with the team</p><h2 class="phase-title">Walk in across the <em>account</em></h2></div>
+    </div>
+    <div class="phase-body col">
+      <p>The day before, <b>speak with the account team</b> to get the real picture — what's working, what's been bumpy, and where the gaps are on either side. Then read the <b>current PR plan and the recent coverage</b> so you can hold your own on the detail. You're running this independently of the team, but you're never walking in blind.</p>
+      <div class="listen">
+        <p class="box-label">Get from the account team</p>
+        <ul>
+          <li><b>What's genuinely working</b> — so you can acknowledge it specifically, not generically.</li>
+          <li><b>Any live friction</b> — a slow patch, a pitch that's stalled, a handover that felt bumpy. Know it before the client raises it.</li>
+          <li><b>Gaps on either side</b> — where we're waiting on the client, and where we've dropped a ball. Honesty here makes you credible in the room.</li>
+          <li><b>What they'd love steered</b> — the thing the team can't easily say to the client, but you can.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PART TWO ============ -->
+  <div class="part">
+    <div class="part-mark">Part Two</div>
+    <div>
+      <div class="part-mark">Run the conversation</div>
+      <h2>The half-hour itself</h2>
+    </div>
+    <span class="who">In the meeting</span>
+  </div>
+  <p class="part-lede col">One-on-one with the client (anyone on their side is welcome), by Zoom. You're scoring four areas out of ten — but the scores are the <strong>scaffolding, not the point</strong>. The gold is in the "why" behind each number and in the deeper questions you ask around them. Open by getting a yes to record, so you can capture it faithfully.</p>
+
+  <div class="box">
+    <p class="box-label">Say this at the top — every time</p>
+    <p><em>"Thanks so much for the time. This is really just a chance for me to hear how it's all going from your side, so we can keep getting better for you. Nothing's off limits. Mind if I record it so I capture your feedback properly?"</em> Wait for the yes. If they decline, take careful notes instead.</p>
+  </div>
+
+  <h3 class="phase-body col" style="font-family:var(--f-body);font-weight:700;font-size:15.5px;margin:2.2em 0 .6em;">The four areas you score</h3>
+  <p class="col" style="color:var(--muted);margin:0 0 6px;">Capture each in the <a href="https://docs.google.com/spreadsheets/d/1pT1HA4i4tLdDYNCGXeTeQa51J9gi2ekhEDTXTIuSNkY/edit?usp=sharing">Client Evaluation Meeting Feedback sheet</a> — a score <em>and</em> the notes behind it. The number is a conversation-opener; the notes are the asset.</p>
+
+  <div class="area">
+    <div class="top"><h4>1 · Understanding your business objectives</h4><span class="score">/10</span></div>
+    <p>How well do we understand how your business works and where it's heading — and are we aligning the PR strategy to it?</p>
+  </div>
+  <div class="area">
+    <div class="top"><h4>2 · Results &amp; outcomes vs goals</h4><span class="score">/10</span></div>
+    <p>Against the goals set with the account team, how do you rate the results and outcomes so far?</p>
+  </div>
+  <div class="area">
+    <div class="top"><h4>3 · Quality of work</h4><span class="score">/10</span></div>
+    <p>How do you rate the quality of the work the account team produces — the writing, the thinking, the delivery?</p>
+  </div>
+  <div class="area">
+    <div class="top"><h4>4 · Would you recommend us?</h4><span class="score">Y / N</span></div>
+    <p>Would you recommend The PR Hub to a friend or colleague? The single truest read on how the relationship really sits.</p>
+  </div>
+  <p class="col" style="color:var(--muted);margin:1.1em 0 0;">Then an open <b>"anything else?"</b> — often where the most useful feedback of the whole meeting surfaces.</p>
+
+  <div class="tweak" style="border-style:solid;">
+    <p class="box-label">The one scoring rule that matters</p>
+    <p><span class="if">Score the period you're in — never show past scores.</span> The number should reflect how we're doing <b>now</b>, not be anchored to what they gave last time. Don't read previous scores back to the client, and don't let them mark "an improvement on last time" — ask them to rate today, fresh.</p>
+  </div>
+
+  <h3 class="phase-body col" style="font-family:var(--f-body);font-weight:700;font-size:15.5px;margin:2.4em 0 .6em;">The ten questions to dig deeper on</h3>
+  <p class="col" style="color:var(--muted);margin:0 0 4px;">A score on its own tells you little. These ten prompts — drawn from what clients have actually raised in past evaluations — are where you probe. You won't use all ten every time; pick the ones that fit the account and follow the thread wherever it goes. Ask open, then stay quiet and let them talk.</p>
+
+  <ol class="probes col">
+    <li>
+      <div>
+        <span class="q">Has what you're trying to achieve <em>shifted</em> since we started — and are we building around where you're heading now?</span>
+        <span class="why">Objectives move: a pivot, a new market, a raise. The most common root cause of a soft "understanding" score is that we're still serving the old brief.</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <span class="q">Are we bringing you enough <em>ideas</em>, or do you feel you're having to chase us?</span>
+        <span class="why">Clients consistently want proactivity — to be led, not just be responsive. "Chase us more, bring more forward" is a recurring note. Find out where they want us out in front.</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <span class="q">When a piece of coverage lands, is it clear to you what it actually <em>did</em> for the business?</span>
+        <span class="why">Activity without a line back to business impact erodes perceived value. Probe how they judge whether PR is working — and whether we're drawing that line for them.</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <span class="q">Are we agreed on what <em>success</em> looks like this period — and are we tracking to it?</span>
+        <span class="why">Fuzzy or unshared KPIs are behind a lot of middling result scores. If success was never clearly defined, that's the conversation to have — ideally with the team afterwards.</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <span class="q">Do you feel we've got enough <em>live in the market</em>, or are we circling the same angle too long?</span>
+        <span class="why">Momentum matters to how clients feel about value. "We seem to be circling one pitch" and "I'd like to see more active pitches" come up — test the sense of pace.</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <span class="q">Is our coverage reaching the <em>audiences that matter</em> to you — or the same ones each time?</span>
+        <span class="why">Clients worry about echo chambers and about landing in the right outlets for their sector. Ask where they want to be seen that we're not getting them yet.</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <span class="q">Does the <em>writing sound like you</em>, and land where it needs to?</span>
+        <span class="why">Quality scores swing most on written work — voice, thought leadership, getting the language right. Find out where it's nailed it and where it's missed.</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <span class="q">Are you hearing what's being said in your market from <em>us first</em> — or from elsewhere?</span>
+        <span class="why">Clients expect their PR agency to be their eyes and ears. Hearing about coverage or market chatter from the market first is a quiet but real dissatisfier.</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <span class="q">Is the <em>way and the rhythm</em> we communicate working for you — channels, meetings, reports?</span>
+        <span class="why">Preferences differ wildly: some want email only, some find Slack too much, some want fewer meetings and just the notes. Tailoring this is an easy, high-trust win.</span>
+      </div>
+    </li>
+    <li>
+      <div>
+        <span class="q">Through any team or account changes, has it stayed clear <em>who's doing what</em> — and that you're well looked after?</span>
+        <span class="why">Handovers and transitions are where confidence leaks. If a change felt bumpy, name it, own it, and reassure them on continuity.</span>
+      </div>
+    </li>
+  </ol>
+
+  <!-- ============ PART THREE ============ -->
+  <div class="part">
+    <div class="part-mark">Part Three</div>
+    <div>
+      <div class="part-mark">Close the loop</div>
+      <h2>Turning candour into change</h2>
+    </div>
+    <span class="who">After the meeting</span>
+  </div>
+  <p class="part-lede col">Feedback the account never sees is feedback wasted. The meeting isn't done when the call ends — it's done when the team knows what was said and what changes because of it. Four moves: <strong>tidy the notes, debrief with the team, write it up, and file it.</strong></p>
+
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">01</div>
+      <div><p class="phase-kicker">Straight after</p><h2 class="phase-title">Tidy the <em>notes</em></h2></div>
+    </div>
+    <div class="phase-body col">
+      <p>While it's fresh, clean up the scores and comments in the <a href="https://docs.google.com/spreadsheets/d/1pT1HA4i4tLdDYNCGXeTeQa51J9gi2ekhEDTXTIuSNkY/edit?usp=sharing">Client Evaluation Meeting Feedback sheet</a>. Make sure every score has the "why" against it and the open comments are captured faithfully — in the client's words where they said something that matters.</p>
+    </div>
+  </section>
+
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">02</div>
+      <div><p class="phase-kicker">Within a few days</p><h2 class="phase-title">Debrief with <em>the team</em></h2></div>
+    </div>
+    <div class="phase-body col">
+      <p>Set a short meeting with the <b>account lead and leadership</b> to walk through what came up — the wins to keep doing, the friction to fix, and anything that needs a genuine change in how we run the account. This is where feedback becomes action, not a filed form.</p>
+      <div class="contrast">
+        <div class="junior"><p class="label">Feedback wasted</p><p>Scores logged in the sheet, nobody told, nothing changes. Next check-in, the client raises the same thing — and now they're frustrated they said it once already.</p></div>
+        <div class="senior"><p class="label">Feedback that lands</p><p>The team hears it within days, owns the fixable things, and the client sees the change before the next catch-up. That's what keeps clients for years.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">03</div>
+      <div><p class="phase-kicker">After the debrief</p><h2 class="phase-title">Write it up &amp; <em>file it</em></h2></div>
+    </div>
+    <div class="phase-body col">
+      <p>Write up the follow-up notes from the debrief — the feedback, the decisions, and what each person is picking up — so the <b>account team has a reference to act on and to raise in future client meetings</b>. Then file it per the <a href="/workflows/tph-client-drive-map.html">Client Drive Folder Map</a>:</p>
+      <p style="font-family:var(--f-mono);font-size:13.5px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:12px 14px;max-width:var(--measure);">SHARED → REPORTING → EVALUATIONS</p>
+      <p>Name it date-led so it sorts itself: <span style="font-family:var(--f-mono);font-size:13px;">2026-11-01_<span class="fill">[Client]</span>_Evaluation_Notes</span>. The running scores stay in the Client Evaluation Meeting Feedback sheet; the written follow-up lives in the client's Drive folder.</p>
+    </div>
+  </section>
+
+  <!-- closer -->
+  <div class="closer">
+    <p class="eyebrow">Before, during, after</p>
+    <h2>The evaluation checklist</h2>
+    <p class="sub">Run this each time. Tick all six and you ran it like the senior voice the client needs to hear from.</p>
+    <ul class="checks">
+      <li>I checked when they were last evaluated, sense-checked the timing with the account team, and no client is past six months.</li>
+      <li>I sent the warm booking email with two concrete times, then the heads-up email that framed the spirit without setting homework.</li>
+      <li>I prepped with the account team — what's working, the friction, the gaps — and read the current plan and recent coverage.</li>
+      <li>I got a yes to record, scored all four areas for the current period only, and never read back past scores.</li>
+      <li>I used the deeper questions to get past the number, listened more than I talked, and left them feeling genuinely heard.</li>
+      <li>I tidied the notes, debriefed the team within days, wrote up the follow-up, and filed it under REPORTING → EVALUATIONS.</li>
+    </ul>
+    <div class="redflags">
+      <p class="box-label">Red flags — the tells of an evaluation run badly</p>
+      <ul>
+        <li>It got pushed so long the client was overdue — or it was skipped because the account "seemed fine".</li>
+        <li>The email read like a performance review, or asked the client to fill something in beforehand.</li>
+        <li>You walked in without the team's read, so the client surfaced friction you should have known about.</li>
+        <li>You anchored the scores to last time, or defended the work instead of listening to the feedback.</li>
+        <li>You talked more than the client did — and left without the honest version.</li>
+        <li>The feedback sat in the sheet and never reached the team, so nothing actually changed.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <span>The PR Hub — internal workflows.</span>
+    <span>Questions → Samantha.</span>
+  </footer>
+
+</div>
+</body>
+</html>
