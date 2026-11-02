@@ -192,10 +192,16 @@
     <div class="lcard">
       <h3>File naming — always</h3>
       <p>Date first, then client, then type: <span class="mono">DD-MM-YY_Client Name_Type</span>. Meeting files are named by type + date. Use the <b>actual month name</b> for month folders. Coloured notes below are non-negotiable.</p>
+      <p style="margin-top:7px">Approved <b>Types</b> for synthesised docs: <span class="mono">Onboarding Pack</span>, <span class="mono">Account Overview</span>, <span class="mono">Agenda</span>, <span class="mono">Run-Sheet</span>, <span class="mono">Discovery</span>.</p>
       <div class="chipline">
         <span class="tag-ex">Meeting Transcript_09-09-26</span>
-        <span class="tag-ex">08-09-26_Acme Co_Discovery</span>
+        <span class="tag-ex">03-11-26_Acme Co_Agenda</span>
+        <span class="tag-ex">03-11-26_Acme Co_Onboarding Pack</span>
       </div>
+    </div>
+    <div class="lcard">
+      <h3>When a prospect signs</h3>
+      <p>Migrate the new-business material into the client folders: <b>discovery transcripts + the client&rsquo;s talking points</b> → <span class="mono">INTERNAL › DISCOVERY CALLS › PRE ENGAGEMENT</span>; the <b>pitch deck</b> → <span class="mono">INTERNAL › PITCHES</span>; <b>standing client background</b> → <span class="mono">SHARED › CLIENT DOCUMENTS</span>.</p>
     </div>
   </section>
 
@@ -231,6 +237,9 @@
         <li><span class="mk">→</span><span><span class="mono strike">PR PLAN &amp; STRATEGY</span> replaced by <span class="mono">QUARTERLY PLANS</span>.</span></li>
         <li><span class="mk">→</span><span><span class="mono strike">COVERAGES</span> renamed to <span class="mono">COVERAGE</span>.</span></li>
         <li><span class="mk">→</span><span>New sub-folders added under <span class="mono">MEDIA RELATIONS</span> &amp; <span class="mono">REPORTING</span>.</span></li>
+        <li><span class="mk">→</span><span><span class="mono">DISCOVERY CALLS › ONBOARDING</span> now holds the <b>Onboarding Pack / Account Overview</b> and the session <b>run-sheet</b>.</span></li>
+        <li><span class="mk">→</span><span>Meeting folders now include a <span class="mono">Meeting Agenda</span> file — client-facing agenda in SHARED, run-sheet in INTERNAL.</span></li>
+        <li><span class="mk">→</span><span>Added a <b>new-business → client</b> migration guide (see &ldquo;When a prospect signs&rdquo;).</span></li>
       </ul>
     </div>
     <div class="fbox rem">
@@ -262,11 +271,10 @@ const shared = [
       R('FINAL ENTRY/S',{note:{t:'rule',l:'Store here',x:'The <b>final submitted entry</b> plus any supporting docs — financials, imagery, etc. — so it’s easy to pull up later.'}}),
     ]}),
   ]}),
-  R('CLIENT DOCUMENTS',{note:{t:'rule',l:'Background from client',x:'Materials the <b>client gives us</b> as background — information memorandum, existing marketing collateral, brand guidelines, company/product decks, research. Their source material, kept for reference.'},kids:[
+  R('CLIENT DOCUMENTS',{note:{t:'rule',l:'Standing background only',x:'Materials the <b>client gives us</b> as <b>standing background</b> — information memorandum, existing marketing collateral, brand guidelines, company/product decks, research. Kept for reference. If the client sends something as <b>input to our strategy or discovery</b> (talking points, answers to our questions), it is <b>not</b> filed here — it goes to <span class="mono">INTERNAL › DISCOVERY CALLS</span>.'},kids:[
     R('INFORMATION MEMORANDUM'),
     R('MARKETING MATERIALS'),
     R('BRAND & GUIDELINES'),
-    R('LETTERHEAD',{note:{t:'rule',l:'For media releases',x:'The client’s <b>company letterhead</b> for media releases. If they don’t have one, create it from the client’s logo and keep it here.'}}),
     R('OTHER BACKGROUND'),
   ]}),
   R('CONTRACT',{note:{t:'rule',l:'Every client',x:'Save the <b>Word doc AND the signed PDF</b> for every client — no exceptions.'}}),
@@ -279,10 +287,10 @@ const shared = [
     R('LOGOS'),
     R('PARTNERS'),
     R('SOCIAL',{kids:[
-      R('[MONTH]',{note:{t:'rule',l:'Files it + names it',x:'Whoever adds a social image creates a <b>subfolder for the month</b> and files it here (IMAGERY &gt; SOCIAL &gt; MONTH). Name each file <span class="mono">[Client-name] - topic - DDMM</span>.'}}),
+      R('[MONTH]',{note:{t:'rule',l:'Who files it',x:'Whoever adds a social image creates a <b>subfolder for the month</b> and files it there.'}}),
     ]}),
     R('TALENT',{kids:[
-      R('[TALENT NAME]',{note:{t:'rule',l:'File names',x:'File names should always be <span class="mono">Talent name - Company name - A</span>, then <span class="mono">Talent name - Company name - B</span>, and so forth. If a company name is purposely in <b>CAPS</b>, honour that in the file title.'},kids:[
+      R('[TALENT NAME]',{note:{t:'rule',l:'File names',x:'Label files <span class="mono">Name_Company_Name_A</span>, <span class="mono">Name_Company_Name_B</span>, and so on.'},kids:[
         R('HIGH RES'), R('LOW RES'),
       ]}),
     ]}),
@@ -297,11 +305,7 @@ const shared = [
     R('COVERAGE'),
     R('CASE STUDIES',{kids:[R('[TALENT OR COMPANY NAME]')]}),
     R('PODCASTS',{kids:[R('[NAME]')]}),
-    R('MEDIA RELEASES',{note:{t:'rule',l:'Every release',x:'Always save <b>both</b> the Word / Google Doc <b>and</b> the PDF. Every release goes out on the client’s <b>company letterhead</b> — if there isn’t one, create it using the client’s logo.'},kids:[
-      R('[ANGLE / TOPIC / THEME]',{note:{t:'rule',l:'Name the folder',x:'Name this after the <b>angle, topic or theme</b> of the release. Example: for TaxiBox, a folder called <span class="mono">Bunnings</span>.'},kids:[
-        R('[MEDIA VERTICAL]',{note:{t:'rule',l:'Only if needed',x:'Add vertical subfolders <b>only</b> when you’re running different releases for different trade verticals, e.g. <span class="mono">Property</span>, <span class="mono">Business</span>, <span class="mono">Consumer</span>, <span class="mono">Building</span>.'}}),
-      ]}),
-    ]}),
+    R('MEDIA RELEASES',{kids:[R('[ANNOUNCEMENT NAME]'), R('FINAL')]}),
     R('NEWS ANNOUNCEMENT STRATEGY',{note:{t:'rule',l:'One folder per announcement',x:'Create a subfolder named after the <b>actual news announcement</b>, and keep that announcement’s strategy in it.'},kids:[
       R('[NAME OF NEWS ANNOUNCEMENT]'),
     ]}),
@@ -310,7 +314,8 @@ const shared = [
     R('EOW UPDATES',{kids:[R('[MONTH]')]}),
     R('MEETINGS',{note:{t:'rule',l:'Client WIP meetings',x:'The meeting <b>lead records the call</b>. <b>Shruti</b> files the transcript here; the account lead labels &amp; forwards the meeting notes. Filed by month, then by meeting date.'},kids:[
       R('[MONTH]',{kids:[
-        R('[DATE — DD-MM]',{note:{t:'rule',l:'One folder per meeting',x:'A dated folder for each meeting (day-month, e.g. <span class="mono">09-09</span>). Holds the two files below.'},kids:[
+        R('[DATE — DD-MM]',{note:{t:'rule',l:'One folder per meeting',x:'A dated folder for each meeting (day-month, e.g. <span class="mono">09-09</span>). Holds the files below. The <b>client-facing agenda</b> (on letterhead) lives here in SHARED; the <b>internal run-sheet</b> version stays in INTERNAL.'},kids:[
+          R('Meeting Agenda_DD-MM-YY',{file:true}),
           R('Meeting Transcript_DD-MM-YY',{file:true}),
           R('Meeting Notes_DD-MM-YY',{file:true}),
         ]}),
@@ -323,16 +328,16 @@ const shared = [
 
 const internal = [
   R('CLIENT CASE STUDIES',{note:{t:'rule',l:'What goes here',x:'The case-study work we produce <b>with clients</b>, filed here for use in <b>new business and testimonials</b>. Not the same as SHARED &gt; MEDIA RELATIONS &gt; CASE STUDIES, which is client-facing.'}}),
-  R('CLIENT OVERVIEW / HANDOVER NOTES',{note:{t:'rule',l:'Snapshot for whoever is next',x:'Where we create and file <b>handover documents</b> that let someone new to the account get to know the client in a snapshot. Useful when someone <b>leaves</b>, goes <b>on leave</b>, or a <b>new person</b> is brought onto the account.'},kids:[
-    R('[MONTH]',{note:{t:'rule',l:'Naming',x:'File each handover in a subfolder for the <b>actual month</b> (e.g. <span class="mono">MARCH</span>).'}}),
-  ]}),
   R('DISCOVERY CALLS',{note:{t:'rule',l:'Team only',x:'Notes, <b>transcripts</b> and <b>AI analysis</b> for every call — kept internal, never in the client-facing SHARED folder.'},kids:[
-    R('PRE ENGAGEMENT'), R('ONBOARDING'),
+    R('PRE ENGAGEMENT',{note:{t:'rule',l:'New-business discovery',x:'Everything from the new-business phase that transfers in when the prospect signs: <b>discovery call transcripts</b>, the client&rsquo;s own <b>talking points / answers</b>, and any <b>AI analysis</b>.'}}),
+    R('ONBOARDING',{note:{t:'rule',l:'Onboarding pack lives here',x:'The onboarding call materials <b>and</b> the synthesised <b>Onboarding Pack / Account Overview</b> (the &ldquo;as if you were in every meeting&rdquo; brief) plus the <b>internal run-sheet</b> for the session. Account lead owns the pack; admin files it.'},kids:[
+      R('DD-MM-YY_Client_Onboarding Pack',{file:true}),
+      R('DD-MM-YY_Client_Run-Sheet',{file:true}),
+    ]}),
     R('ONGOING',{kids:[R('[MONTH]',{note:{t:'rule',l:'Naming',x:'Name this with the <b>actual month</b> (e.g. <span class="mono">MARCH</span>) so files are easy to source.'}})]}),
   ]}),
   R('MEDIA LISTS'),
   R('PITCHES',{kids:[R('HEADLINE/NEWS ANGLE')]}),
-  R('PRE-ENGAGEMENT FILES',{note:{t:'rule',l:'When a prospect becomes a client',x:'Once a potential customer <b>becomes a confirmed client</b>, everything presented to them to date is copied here by the <b>admin assistant</b>: internal files (including <b>transcripts</b>), external files we presented, and background documents gathered during the new-business process. The person on the account must <b>advise the admin assistant</b> to do this.'}}),
   R('STRATEGY, ANGLES & IDEAS',{note:{t:'rule',l:'Internal thinking',x:'Where we capture <b>angles, ideas and thought leadership</b> for pitching and speaking opportunities — from an event we attended, a client conversation, or internal brainstorming. <b>Team only</b>, never client-facing.'},kids:[
     R('[WHAT IT&rsquo;S FROM — e.g. EVENT NAME + MONTH]',{note:{t:'rule',l:'One subfolder per source',x:'Whoever files creates a subfolder <b>clearly named for what it&rsquo;s from</b>. Example: you attended and recorded a client event and captured ideas from the panel — name the folder <span class="mono">Event Name Month</span> and file that thinking inside.'}}),
   ]}),
