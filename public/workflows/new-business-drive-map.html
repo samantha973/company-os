@@ -200,9 +200,10 @@
       <ul>
         <li><span class="mk">1</span><span>Prospect is created under the <span class="mono">[MONTH]</span> they&rsquo;re first talked to, then their own <span class="mono">[PROSPECT NAME]</span> folder.</span></li>
         <li><span class="mk">2</span><span>The initial call/meeting transcript is filed in <span class="mono">INITIAL DISCOVERY</span>.</span></li>
-        <li><span class="mk">3</span><span>The deck is built and presented from <span class="mono">PRESENTATION DECK &rsaquo; PRESENTATION LIVE</span>.</span></li>
-        <li><span class="mk">4</span><span>After live feedback, the tweaked, confirmed deck goes in <span class="mono">PRESENTATION SENT</span> &mdash; workable file + PDF &mdash; and that&rsquo;s what&rsquo;s sent over.</span></li>
-        <li><span class="mk">5</span><span>If they sign, the work moves into the <b>client</b> Drive system; this stays as the new-business record.</span></li>
+        <li><span class="mk">3</span><span>Every later meeting gets its own dated folder in <span class="mono">MEETINGS &rsaquo; [DD-MM-YY]</span>, holding that meeting&rsquo;s transcript and everything we sent after it.</span></li>
+        <li><span class="mk">4</span><span>The deck is built and presented from <span class="mono">PRESENTATION DECK &rsaquo; PRESENTATION LIVE</span>.</span></li>
+        <li><span class="mk">5</span><span>After live feedback, the tweaked, confirmed deck goes in <span class="mono">PRESENTATION SENT</span> &mdash; workable file + PDF &mdash; and that&rsquo;s what&rsquo;s sent over.</span></li>
+        <li><span class="mk">6</span><span>If they sign, the work moves into the <b>client</b> Drive system; this stays as the new-business record.</span></li>
       </ul>
     </div>
     <div class="fbox">
@@ -227,10 +228,19 @@ const R = (n,opts={})=>({n, ph:opts.ph||n.trim().startsWith('['), file:opts.file
 
 const nb = [
   R('[MONTH]',{note:{t:'rule',l:'Month first',x:'Named with the <b>actual month</b> the prospect is first talked to (e.g. <span class="mono">SEPTEMBER</span>). Every prospect sits inside a month.'},kids:[
-    R('[PROSPECT NAME]',{note:{t:'rule',l:'One folder per prospect',x:'The prospect&rsquo;s own folder. Build the four sub-folders below every time.'},kids:[
+    R('[PROSPECT NAME]',{note:{t:'rule',l:'One folder per prospect',x:'The prospect&rsquo;s own folder. Build all six sub-folders below every time, even if some start empty.'},kids:[
 
       R('INITIAL DISCOVERY',{note:{t:'rule',l:'The first call',x:'The <b>transcript from the initial call or meeting</b> with the prospect is filed here. The meeting lead records it; the transcript is filed here.'},kids:[
         R('Discovery Transcript_DD-MM-YY',{file:true}),
+      ]}),
+
+      R('MEETINGS',{note:{t:'flag',l:'One dated folder per meeting',x:'We often meet a prospect <b>several times before they sign</b>. Every meeting after the initial discovery gets its <b>own sub-folder named with the meeting date</b> (<span class="mono">DD-MM-YY</span>, e.g. <span class="mono">14-10-26</span>). Inside it goes <b>the transcript from that meeting</b> and <b>every follow-up note or document sent after that meeting</b>, all in the same folder. Never mix two meetings in one folder.'},kids:[
+        R('[DD-MM-YY]',{note:{t:'rule',l:'One meeting',x:'The date of the meeting. Holds that meeting&rsquo;s transcript plus anything we sent afterwards: follow-up email, notes, proposals, extra info.'},kids:[
+          R('Meeting Transcript_DD-MM-YY',{file:true}),
+          R('DD-MM-YY_Prospect_Follow-up Notes',{file:true}),
+          R('DD-MM-YY_Prospect_[Document sent post-meeting]',{file:true}),
+        ]}),
+        R('[DD-MM-YY]',{note:{t:'rule',l:'Next meeting',x:'A new dated folder for each meeting, same contents.'}}),
       ]}),
 
       R('PRESENTATION DECK',{note:{t:'rule',l:'Two versions',x:'Holds the two folders below &mdash; the deck we present live, and the deck we send after feedback.'},kids:[
@@ -245,7 +255,9 @@ const nb = [
         ]}),
       ]}),
 
-      R('BACKGROUND DOCUMENTS',{note:{t:'rule',l:'Given to us',x:'Anything the <b>prospect gives us</b> as background &mdash; information memorandums, marketing decks, research, existing collateral. Their source material, kept for reference.'}}),
+      R('BACKGROUND DOCUMENTS',{note:{t:'rule',l:'Given to us',x:'Business background the <b>prospect gives us</b> &mdash; information memorandums, company overviews, research, reports. Their source material, kept for reference.'}}),
+
+      R('BRAND AND MARKETING',{note:{t:'rule',l:'How they show up',x:'The prospect&rsquo;s <b>brand and marketing material</b> &mdash; brand guidelines, marketing decks, campaigns, existing PR and comms collateral. Shows us how they present themselves today.'}}),
 
       R('ASSETS',{note:{t:'rule',l:'For the deck',x:'Logos and imagery we want to use in the deck &mdash; the prospect&rsquo;s logo, photography, any visual assets.'}}),
 
