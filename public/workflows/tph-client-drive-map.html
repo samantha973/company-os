@@ -304,6 +304,9 @@ const shared = [
     R('BYLINES & ARTICLES',{kids:[R('[MONTH]')]}),
     R('COVERAGE'),
     R('INTERVIEWS',{note:{t:'rule',l:'Written interviews, not coverage',x:'Store the <b>Google Docs / written interviews</b> the client has actually done (their Q&amp;A responses). This is separate from published <b>COVERAGE</b> — the resulting article goes in the <span class="mono">COVERAGE</span> folder.'}}),
+    R('INTERVIEW BRIEFS',{note:{t:'rule',l:'How to file a brief',x:'Create a subfolder named for the <b>media publication, podcast or event</b>, then a <b>month</b> folder inside it, then file your interview brief there — so every brief is easy to find. Path: <span class="mono">INTERVIEW BRIEFS › [Publication / Podcast / Event] › [MONTH] › brief</span>.'},kids:[
+      R('[PUBLICATION / PODCAST / EVENT NAME]',{kids:[R('[MONTH]')]}),
+    ]}),
     R('CASE STUDIES',{kids:[R('[TALENT OR COMPANY NAME]')]}),
     R('PODCASTS',{kids:[R('[NAME]')]}),
     R('MEDIA RELEASES',{kids:[R('[ANNOUNCEMENT NAME]'), R('FINAL')]}),
