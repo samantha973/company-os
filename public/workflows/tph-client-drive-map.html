@@ -303,9 +303,8 @@ const shared = [
     R('BIOS & BOILERPLATE',{kids:[R('[TALENT NAME]'), R('COMPANY BOILERPLATE')]}),
     R('BYLINES & ARTICLES',{kids:[R('[MONTH]')]}),
     R('COVERAGE'),
-    R('INTERVIEWS',{note:{t:'rule',l:'Written interviews, not coverage',x:'Store the <b>Google Docs / written interviews</b> the client has actually done (their Q&amp;A responses). This is separate from published <b>COVERAGE</b> — the resulting article goes in the <span class="mono">COVERAGE</span> folder.'}}),
-    R('INTERVIEW BRIEFS',{note:{t:'rule',l:'How to file a brief',x:'Create a subfolder named for the <b>media publication, podcast or event</b>, then a <b>month</b> folder inside it, then file your interview brief there — so every brief is easy to find. Path: <span class="mono">INTERVIEW BRIEFS › [Publication / Podcast / Event] › [MONTH] › brief</span>.'},kids:[
-      R('[PUBLICATION / PODCAST / EVENT NAME]',{kids:[R('[MONTH]')]}),
+    R('INTERVIEWS',{note:{t:'rule',l:'One subfolder per outlet',x:'Create a subfolder named for the <b>media outlet or title</b> (the publication, podcast or show), and file that interview&rsquo;s <b>brief</b> and the client&rsquo;s <b>written interview / Q&amp;A doc</b> inside it. The published article still goes in <span class="mono">COVERAGE</span>.'},kids:[
+      R('[MEDIA OUTLET / TITLE]'),
     ]}),
     R('CASE STUDIES',{kids:[R('[TALENT OR COMPANY NAME]')]}),
     R('PODCASTS',{kids:[R('[NAME]')]}),
